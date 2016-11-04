@@ -30,6 +30,7 @@ func (p *Page) renderBodySelect(node *Node) (isFallthrough bool) {
 	uiBuffer := termui.NewList()
 	uiBuffer.BorderLabel = node.BorderLabel
 	uiBuffer.Border = node.Border
+	uiBuffer.BorderFg = node.BorderFg
 
 	if node.Width < 0 {
 		if true == node.Border {

@@ -17,10 +17,13 @@ func (p *Node) InitNodeSelect() *NodeSelect {
 	nodeSelect.Children = make([]NodeSelectOption, 0)
 	p.Data = nodeSelect
 	p.KeyPress = nodeSelect.KeyPress
+	p.FocusMode = nodeSelect.FocusMode
+	p.UnFocusMode = nodeSelect.UnFocusMode
 
 	nodeSelect.SelectedOptionColorFg = COLOR_SELECTED_OPTION_COLORFG
 	nodeSelect.SelectedOptionColorBg = COLOR_SELECTED_OPTION_COLORBG
 	nodeSelect.Border = true
+	nodeSelect.BorderFg = COLOR_DEFAULT_BORDERFG
 	nodeSelect.Width = -1
 	nodeSelect.Height = -1
 
@@ -35,7 +38,7 @@ type NodeSelectOption struct {
 func (p *NodeSelect) KeyPress(e termui.Event) {
 	keyStr := e.Data.(termui.EvtKbd).KeyStr
 	if "<escape>" == keyStr {
-		p.Node.page.ActiveNode = nil
+		p.Node.quitActiveMode()
 		return
 	}
 
@@ -59,4 +62,16 @@ func (p *NodeSelect) KeyPress(e termui.Event) {
 		return
 	}
 
+}
+
+func (p *NodeSelect) FocusMode() {
+	p.Node.uiBuffer.(*termui.List).Border = true
+	p.Node.uiBuffer.(*termui.List).BorderFg = COLOR_FOCUSMODE_BORDERFG
+	termui.Render(p.Node.uiBuffer.(termui.Bufferer))
+}
+
+func (p *NodeSelect) UnFocusMode() {
+	p.Node.uiBuffer.(*termui.List).Border = p.Node.Border
+	p.Node.uiBuffer.(*termui.List).BorderFg = p.Node.BorderFg
+	termui.Render(p.Node.uiBuffer.(termui.Bufferer))
 }

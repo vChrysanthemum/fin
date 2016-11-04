@@ -6,6 +6,8 @@ import (
 )
 
 type NodeKeyPress func(e termui.Event)
+type NodeFocusMode func()
+type NodeUnFocusMode func()
 
 type Node struct {
 	page *Page
@@ -31,9 +33,12 @@ type Node struct {
 	ColorBg     string
 	BorderLabel string
 	Border      bool
+	BorderFg    termui.Attribute
 	HtmlData    string
 	Data        interface{}
 	KeyPress    NodeKeyPress
+	FocusMode   NodeFocusMode
+	UnFocusMode NodeUnFocusMode
 }
 
 type NodeBody struct{}

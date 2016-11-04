@@ -7,6 +7,9 @@ func (p *Page) renderBodyEditor(node *Node) (isFallthrough bool) {
 	uiBuffer := node.Data.(*NodeEditor).Editor
 	uiBuffer.BorderLabel = node.BorderLabel
 	uiBuffer.Border = node.Border
+	uiBuffer.BorderFg = node.BorderFg
+	uiBuffer.Border = node.Border
+	uiBuffer.BorderFg = node.BorderFg
 	uiBuffer.Width = node.Width
 	uiBuffer.Height = node.Height
 	uiBuffer.X = p.renderingX

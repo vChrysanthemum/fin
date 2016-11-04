@@ -3,20 +3,23 @@ package editor
 import "github.com/gizak/termui"
 
 type Editor struct {
-	Block
+	FirstLine, LastLine, CurrentLine *Line
+
+	Lines []*Line
+
+	*Block
 
 	TextFgColor termui.Attribute
 	TextBgColor termui.Attribute
-	Lines       []*Line
-
-	FirstLine, LastLine, CurrentLine *Line
+	WrapLength  int // words wrap limit. Note it may not work properly with multi-width char
 }
 
 func NewEditor() *Editor {
 	return &Editor{
+		Lines:       make([]*Line, 0),
+		Block:       NewBlock(),
 		TextFgColor: termui.ThemeAttr("par.text.fg"),
 		TextBgColor: termui.ThemeAttr("par.text.bg"),
-		Lines:       make([]*Line, 0),
 	}
 }
 
@@ -62,8 +65,14 @@ func (p *Editor) Buffer() termui.Buffer {
 	buf := p.Block.Buffer()
 
 	fg, bg := p.TextFgColor, p.TextBgColor
-	//cs := termui.DefaultTxBuilder.Build(p.Data.String(), fg, bg)
 	cs := termui.DefaultTxBuilder.Build(p.Text(), fg, bg)
+
+	// wrap if WrapLength set
+	if p.WrapLength < 0 {
+		cs = termui.WrapTx(cs, p.Width-2)
+	} else if p.WrapLength > 0 {
+		cs = termui.WrapTx(cs, p.WrapLength)
+	}
 
 	y, x, n := 0, 0, 0
 	for y < p.innerArea.Dy() && n < len(cs) {
