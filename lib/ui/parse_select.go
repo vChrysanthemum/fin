@@ -13,9 +13,6 @@ func (p *Page) parseBodySelect(parentNode *Node, htmlNode *html.Node) (ret *Node
 	nodeSelect := ret.InitNodeSelect()
 
 	ret.Data = nodeSelect
-	ret.Border = true
-	ret.Width = -1
-	ret.Height = -1
 
 	return
 }

@@ -2,22 +2,30 @@ package ui
 
 import "github.com/gizak/termui"
 
-func (p *Page) renderBodySelect(node *Node) (isFallthrough bool) {
-	isFallthrough = false
-	items := make([]string, 0)
+func (p *Node) refreshUiBufferItems() {
+	nodeSelect := p.Data.(*NodeSelect)
 
-	var (
-		str        string
-		nodeSelect = node.Data.(*NodeSelect)
-	)
-	for _, nodeOption := range nodeSelect.Children {
-		str = nodeOption.Data
-		if "" != node.ColorFg {
-			str = "[" + str + "]" + "(fg-" + node.ColorFg + ")"
+	items := make([]string, 0)
+	var str string
+	for index, nodeOption := range nodeSelect.Children {
+		str = FormatStringWithWidth(nodeOption.Data, nodeSelect.ChildrenMaxStringWidth)
+		if index == nodeSelect.SelectedOptionIndex {
+			str = "[" + str + "]" +
+				"(fg-" + nodeSelect.SelectedOptionColorFg +
+				",bg-" + nodeSelect.SelectedOptionColorBg + ")"
+		} else {
+			str = "[" + str + "]" + "(fg-" + p.ColorFg + ")"
 		}
 		items = append(items, str)
-
 	}
+
+	p.uiBuffer.(*termui.List).Items = items
+}
+
+func (p *Page) renderBodySelect(node *Node) (isFallthrough bool) {
+	isFallthrough = false
+
+	nodeSelect := node.Data.(*NodeSelect)
 
 	uiBuffer := termui.NewList()
 	uiBuffer.BorderLabel = node.BorderLabel
@@ -25,7 +33,7 @@ func (p *Page) renderBodySelect(node *Node) (isFallthrough bool) {
 
 	if node.Width < 0 {
 		if true == node.Border {
-			node.Width = nodeSelect.ChildrenMaxStringWidth + 3
+			node.Width = nodeSelect.ChildrenMaxStringWidth + 2
 		} else {
 			node.Width = nodeSelect.ChildrenMaxStringWidth
 		}
@@ -34,20 +42,19 @@ func (p *Page) renderBodySelect(node *Node) (isFallthrough bool) {
 
 	if node.Height < 0 {
 		if true == node.Border {
-			node.Height = len(items) + 2
+			node.Height = len(nodeSelect.Children) + 2
 		} else {
-			node.Height = len(items)
+			node.Height = len(nodeSelect.Children)
 		}
 	}
 	uiBuffer.Height = node.Height
 
 	uiBuffer.X = p.renderingX
 	uiBuffer.Y = p.renderingY
-	uiBuffer.Items = items
-
-	uiBuffer.ItemFgColor = termui.ColorCyan
 
 	node.uiBuffer = uiBuffer
+
+	nodeSelect.refreshUiBufferItems()
 
 	p.bufferersAppend(node, uiBuffer)
 

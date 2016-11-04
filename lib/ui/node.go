@@ -28,6 +28,7 @@ type Node struct {
 	Width, Height int
 
 	ColorFg     string
+	ColorBg     string
 	BorderLabel string
 	Border      bool
 	HtmlData    string

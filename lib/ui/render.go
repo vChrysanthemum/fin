@@ -1,10 +1,6 @@
 package ui
 
-import (
-	"log"
-
-	"github.com/gizak/termui"
-)
+import "github.com/gizak/termui"
 
 type RenderExecFunc func(node *Node) (isFallthrough bool)
 
@@ -26,7 +22,6 @@ func (p *Page) prepareRender() {
 func (p *Page) bufferersAppend(node *Node, buffer termui.Bufferer) {
 	if nil != node && true == node.Parent.isShouldTermuiRenderChild {
 	} else {
-		log.Println(node.HtmlData, node.Width, node.Height)
 		p.bufferers = append(p.bufferers, buffer)
 	}
 }

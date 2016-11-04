@@ -3,3 +3,9 @@ package ui
 const (
 	TABLE_TR_COLS = 12
 )
+
+var (
+	COLOR_BODY_DEFAULT_COLORFG    = "blue"
+	COLOR_SELECTED_OPTION_COLORFG = "white"
+	COLOR_SELECTED_OPTION_COLORBG = "black"
+)
