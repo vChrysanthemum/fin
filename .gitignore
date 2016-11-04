@@ -1,0 +1,8 @@
+src/
+*.swp
+pkg/
+bin/
+log/
+*.pyc
+.idea/
+lua/
