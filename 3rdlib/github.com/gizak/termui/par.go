@@ -39,9 +39,9 @@ func (p *Par) Buffer() Buffer {
 
 	// wrap if WrapLength set
 	if p.WrapLength < 0 {
-		cs = wrapTx(cs, p.Width-2)
+		cs = WrapTx(cs, p.Width-2)
 	} else if p.WrapLength > 0 {
-		cs = wrapTx(cs, p.WrapLength)
+		cs = WrapTx(cs, p.WrapLength)
 	}
 
 	y, x, n := 0, 0, 0

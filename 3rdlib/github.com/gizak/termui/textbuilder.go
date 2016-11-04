@@ -191,7 +191,7 @@ func (mtb *MarkdownTxBuilder) parse(str string) {
 	mtb.plainTx = normTx
 }
 
-func wrapTx(cs []Cell, wl int) []Cell {
+func WrapTx(cs []Cell, wl int) []Cell {
 	tmpCell := make([]Cell, len(cs))
 	copy(tmpCell, cs)
 
