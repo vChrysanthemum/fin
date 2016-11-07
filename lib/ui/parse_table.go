@@ -1,14 +1,12 @@
 package ui
 
 import (
-	"log"
 	"strconv"
 
 	"golang.org/x/net/html"
 )
 
 func (p *Page) parseBodyTable(parentNode *Node, htmlNode *html.Node) (ret *Node, isFallthrough bool) {
-	p.isTable = true
 	ret = p.newNode(htmlNode)
 	parentNode.addChild(ret)
 	isFallthrough = true
@@ -21,7 +19,6 @@ func (p *Page) parseBodyTable(parentNode *Node, htmlNode *html.Node) (ret *Node,
 }
 
 func (p *Page) parseBodyTableTr(parentNode *Node, htmlNode *html.Node) (ret *Node, isFallthrough bool) {
-	log.Println("fuck", htmlNode.Data)
 	ret = p.newNode(htmlNode)
 	parentNode.addChild(ret)
 	isFallthrough = true

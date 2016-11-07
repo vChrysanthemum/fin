@@ -11,7 +11,6 @@ type Page struct {
 	Title       string
 	IdToNodeMap map[string]*Node
 
-	isTable   bool
 	bufferers []termui.Bufferer
 
 	script         *Script
@@ -49,12 +48,7 @@ func newPage() *Page {
 func (p *Page) Serve() {
 	defer termui.Close()
 
-	if true == p.isTable {
-		termui.Body.Align()
-		termui.Render(termui.Body)
-	} else {
-		termui.Render(p.bufferers...)
-	}
+	termui.Render(p.bufferers...)
 
 	p.registerHandles()
 

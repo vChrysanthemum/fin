@@ -23,3 +23,6 @@ build_select:
 
 build_table:
 	go build -o ./bin/table ./test/table.go
+
+build_script:
+	go build -o ./bin/script ./test/script.go

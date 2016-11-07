@@ -76,6 +76,8 @@ func (p *Page) renderBodyTable(node *Node) (isFallthrough bool) {
 		uiRows []*termui.Row
 	)
 
+	nodeTableData := node.Data.(*NodeTable)
+
 	uiRows = make([]*termui.Row, 0)
 	for nodeTr = node.FirstChild; nodeTr != nil; nodeTr = nodeTr.NextSibling {
 		uiCols = p._renderBodyTableOneRow(nodeTr)
@@ -83,7 +85,12 @@ func (p *Page) renderBodyTable(node *Node) (isFallthrough bool) {
 		uiRows = append(uiRows, termui.NewRow(uiCols...))
 	}
 
-	termui.Body.AddRows(uiRows...)
+	nodeTableData.Body.BgColor = termui.ThemeAttr("bg")
+	nodeTableData.Body.Width = termui.TermWidth()
+	nodeTableData.Body.AddRows(uiRows...)
+	nodeTableData.Body.Align()
+
+	p.bufferersAppend(node, nodeTableData.Body)
 
 	return
 }

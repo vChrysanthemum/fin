@@ -67,35 +67,6 @@ func (p *Node) InitNodePar() *NodePar {
 	return nodePar
 }
 
-type NodeTable struct {
-	NodeTrList []NodeTableTr
-}
-
-func (p *Node) InitNodeTable() *NodeTable {
-	nodeTable := new(NodeTable)
-	p.Data = nodeTable
-	return nodeTable
-}
-
-type NodeTableTr struct{}
-
-func (p *Node) InitNodeTableTr() *NodeTableTr {
-	nodeTableTr := new(NodeTableTr)
-	p.Data = nodeTableTr
-	return nodeTableTr
-}
-
-type NodeTableTrTd struct {
-	Cols   int
-	Offset int
-}
-
-func (p *Node) InitNodeTableTrTd() *NodeTableTrTd {
-	nodeTableTrTd := new(NodeTableTrTd)
-	p.Data = nodeTableTrTd
-	return nodeTableTrTd
-}
-
 func (p *Node) addChild(child *Node) {
 	if nil == p {
 		return

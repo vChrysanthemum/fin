@@ -7,13 +7,6 @@ func (p *Page) registerHandles() {
 		termui.StopLoop()
 	})
 
-	termui.Handle("/sys/wnd/resize", func(e termui.Event) {
-		termui.Body.Width = termui.TermWidth()
-		termui.Body.Align()
-		termui.Clear()
-		termui.Render(termui.Body)
-	})
-
 	termui.Handle("/sys/kbd", func(e termui.Event) {
 		if nil != p.ActiveNode && nil != p.ActiveNode.KeyPress {
 			p.ActiveNode.KeyPress(e)
