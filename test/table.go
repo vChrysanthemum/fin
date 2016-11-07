@@ -20,9 +20,14 @@ func main() {
 		<table>
 			<tr>
 				<td>
-					<par>
-						asd;lfkasfkja;sdlf
-					</par>
+					<tr>
+						<td>
+							<par>asd;lfkasfkja;sdlf</par>
+						</td>
+						<td>
+							<par>hiasdlfkj</par>
+						</td>
+					</tr>
 				</td>
 			</tr>
 			<tr>
@@ -38,6 +43,12 @@ func main() {
 						<option value="1">test1</option>
 						<option value="1">test2</option>
 					</select>
+					<par>
+						
+					</par>
+					<par border="true">
+						;laksfjsdf 你好世界
+					</par>
 				</td>
 				<td>
 					<editor></editor>
