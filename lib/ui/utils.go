@@ -1,6 +1,8 @@
 package ui
 
 import (
+	"image"
+
 	"github.com/gizak/termui"
 	rw "github.com/mattn/go-runewidth"
 )
@@ -41,5 +43,7 @@ func uirender(bs ...termui.Bufferer) {
 }
 
 func (p *Page) uiclear() {
-	termui.Render(p.clearMask)
+	min := image.Point{0, 0}
+	max := image.Point{termui.TermWidth() - 1, termui.TermHeight() - 1}
+	termui.ClearArea(image.Rectangle{min, max}, termui.ColorDefault)
 }

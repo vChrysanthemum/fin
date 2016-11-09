@@ -140,7 +140,9 @@ func render(bs ...Bufferer) {
 }
 
 func Clear() {
+	renderLock.Lock()
 	tm.Clear(tm.ColorDefault, toTmAttr(ThemeAttr("bg")))
+	renderLock.Unlock()
 }
 
 func clearArea(r image.Rectangle, bg Attribute) {
@@ -152,8 +154,10 @@ func clearArea(r image.Rectangle, bg Attribute) {
 }
 
 func ClearArea(r image.Rectangle, bg Attribute) {
+	renderLock.Lock()
 	clearArea(r, bg)
 	tm.Flush()
+	renderLock.Unlock()
 }
 
 var renderJobs chan []Bufferer
