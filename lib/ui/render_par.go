@@ -30,5 +30,7 @@ func (p *Page) renderBodyPar(node *Node) (isFallthrough bool) {
 
 	p.BufferersAppend(node, uiBuffer)
 
+	p.renderingY = uiBuffer.Y + uiBuffer.Height
+
 	return
 }

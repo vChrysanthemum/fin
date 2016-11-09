@@ -1,6 +1,9 @@
 package ui
 
-import "golang.org/x/net/html"
+import (
+	"github.com/gizak/termui"
+	"golang.org/x/net/html"
+)
 
 func (p *Page) parseBodyEditor(parentNode *Node, htmlNode *html.Node) (ret *Node, isFallthrough bool) {
 	ret = p.newNode(htmlNode)
@@ -10,8 +13,8 @@ func (p *Page) parseBodyEditor(parentNode *Node, htmlNode *html.Node) (ret *Node
 	nodeEditor := ret.InitNodeEditor()
 
 	ret.Data = nodeEditor
-	ret.Width = 30
-	ret.Height = 30
+	ret.Width = termui.TermWidth()
+	ret.Height = 10
 
 	return
 }

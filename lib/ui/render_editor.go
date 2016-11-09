@@ -20,6 +20,8 @@ func (p *Page) renderBodyEditor(node *Node) (isFallthrough bool) {
 
 	p.BufferersAppend(node, uiBuffer)
 
+	p.renderingY = uiBuffer.Y + uiBuffer.Height
+
 	p.pushWorkingNode(node)
 
 	return

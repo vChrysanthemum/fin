@@ -8,6 +8,8 @@ import (
 type NodeKeyPress func(e termui.Event)
 type NodeFocusMode func()
 type NodeUnFocusMode func()
+type NodeActiveMode func()
+type NodeUnActiveMode func()
 type NodeSetText func(content string)
 
 type Node struct {
@@ -38,9 +40,11 @@ type Node struct {
 	HtmlData    string
 	Data        interface{}
 
-	KeyPress    NodeKeyPress
-	FocusMode   NodeFocusMode
-	UnFocusMode NodeUnFocusMode
+	KeyPress     NodeKeyPress
+	FocusMode    NodeFocusMode
+	UnFocusMode  NodeUnFocusMode
+	ActiveMode   NodeActiveMode
+	UnActiveMode NodeUnActiveMode
 
 	SetText NodeSetText
 }
