@@ -1,8 +1,11 @@
 package ui
 
-import "github.com/gizak/termui"
+import (
+	"github.com/gizak/termui"
+)
 
 type NodeSelect struct {
+	DisableQuit bool
 	*Node
 	SelectedOptionColorFg  string
 	SelectedOptionColorBg  string
@@ -43,7 +46,7 @@ type NodeSelectOption struct {
 
 func (p *NodeSelect) KeyPress(e termui.Event) {
 	keyStr := e.Data.(termui.EvtKbd).KeyStr
-	if "<escape>" == keyStr {
+	if "<escape>" == keyStr && false == p.DisableQuit {
 		p.Node.QuitActiveMode()
 		return
 	}

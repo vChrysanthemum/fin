@@ -26,12 +26,13 @@ type Page struct {
 	parseAgentMap  []*ParseAgent
 	renderAgentMap []*RenderAgent
 
-	doc               *html.Node
-	parsingNodesStack *list.List
-	FirstChildNode    *Node
-	WorkingNodes      *list.List
-	FocusNode         *list.Element
-	ActiveNode        *Node
+	doc                   *html.Node
+	parsingNodesStack     *list.List
+	FirstChildNode        *Node
+	WorkingNodes          *list.List
+	NodeActiveAfterRender *Node
+	FocusNode             *list.Element
+	ActiveNode            *Node
 
 	renderingX int
 	renderingY int
@@ -64,16 +65,8 @@ func (p *Page) DumpNodesHtmlData() {
 }
 
 func (p *Page) RemoveNode(node *Node) {
-	if p.ActiveNode == node {
-		node.QuitActiveMode()
-	}
-
-	if p.FirstChildNode == node {
-		p.FirstChildNode = node.NextSibling
-	}
-
-	if nil != p.FocusNode && p.FocusNode.Value.(*Node) == node {
-		p.FocusNode = p.FocusNode.Next()
+	if nil != node.OnRemove {
+		node.OnRemove()
 	}
 
 	for k, v := range p.Bufferers {
@@ -83,11 +76,27 @@ func (p *Page) RemoveNode(node *Node) {
 		}
 	}
 
+	if p.FirstChildNode == node {
+		p.FirstChildNode = node.NextSibling
+	}
+
 	for nodeElement := p.WorkingNodes.Front(); nodeElement != nil; nodeElement = nodeElement.Next() {
 		if nodeElement.Value.(*Node) == node {
 			p.WorkingNodes.Remove(nodeElement)
 			break
 		}
+	}
+
+	if p.NodeActiveAfterRender == node {
+		p.NodeActiveAfterRender = nil
+	}
+
+	if nil != p.FocusNode && p.FocusNode.Value.(*Node) == node {
+		p.FocusNode = p.FocusNode.Next()
+	}
+
+	if p.ActiveNode == node {
+		node.QuitActiveMode()
 	}
 
 	if nil != node.Parent {
@@ -107,6 +116,8 @@ func (p *Page) RemoveNode(node *Node) {
 	if nil != node.PrevSibling {
 		node.PrevSibling.NextSibling = node.NextSibling
 	}
+
+	p.Rerender()
 }
 
 func (p *Page) Serve() {

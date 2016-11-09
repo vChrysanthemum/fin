@@ -73,7 +73,7 @@ func (p *Page) registerHandles() {
 func (p *Page) pushWorkingNode(node *Node) {
 	p.WorkingNodes.PushBack(node)
 	p.FocusNode = p.WorkingNodes.Back()
-	p.SetActiveNode(node)
+	p.NodeActiveAfterRender = node
 }
 
 func (p *Node) QuitActiveMode() {

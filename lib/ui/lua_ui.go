@@ -22,12 +22,14 @@ func (p *Script) luaFuncWindowConfirm(L *lua.LState) int {
 		return 0
 	}
 
+	nodeSelectData := nodeSelect.Data.(*NodeSelect)
+
 	termui.Render(page.Bufferers...)
 
 	p.page.SetActiveNode(nodeSelect)
 
 	nodeSelect.OnKeyPressEnter()
-	nodeSelectData := nodeSelect.Data.(*NodeSelect)
+	nodeSelectData.DisableQuit = true
 	L.Push(lua.LString(nodeSelectData.Children[nodeSelectData.SelectedOptionIndex].Value))
 
 	page.Bufferers = []termui.Bufferer{}

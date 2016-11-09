@@ -90,5 +90,14 @@ func (p *Page) Render() error {
 	p.renderingX = 0
 	p.renderingY = 0
 
-	return p.render(p.FirstChildNode)
+	err := p.render(p.FirstChildNode)
+	if nil != err {
+		return err
+	}
+
+	if nil != p.NodeActiveAfterRender {
+		p.SetActiveNode(p.NodeActiveAfterRender)
+	}
+
+	return nil
 }

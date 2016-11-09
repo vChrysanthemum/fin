@@ -119,10 +119,6 @@ func (p *Script) luaFuncNodeRemove(L *lua.LState) int {
 	}
 
 	p.page.RemoveNode(node)
-	if nil != node.OnRemove {
-		node.OnRemove()
-	}
-	p.page.Rerender()
 
 	return 0
 }
