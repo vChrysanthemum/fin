@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"inn/ui"
 	"io/ioutil"
 	"log"
@@ -8,11 +9,13 @@ import (
 )
 
 func main() {
+	target := os.Args[1]
+
 	log.SetFlags(log.Lshortfile | log.LstdFlags | log.Lmicroseconds)
-	logFile, _ := os.OpenFile("./log/table.log", os.O_CREATE|os.O_RDWR|os.O_APPEND, 0777)
+	logFile, _ := os.OpenFile(fmt.Sprintf("./log/%s.log", target), os.O_CREATE|os.O_RDWR|os.O_APPEND, 0777)
 	log.SetOutput(logFile)
 
-	content, _ := ioutil.ReadFile("./test/html/script.html")
+	content, _ := ioutil.ReadFile(fmt.Sprintf("./test/html/%s.html", target))
 	page, err := ui.Parse(string(content))
 	if nil != err {
 		panic(err)

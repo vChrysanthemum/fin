@@ -15,14 +15,5 @@ test_ui:
 versioning:
 	bash mkversion.sh 
 
-build_editor:
-	go build -o ./bin/editor ./test/editor.go
-
-build_select:
-	go build -o ./bin/select ./test/select.go
-
-build_table:
-	go build -o ./bin/table ./test/table.go
-
-build_script:
-	go build -o ./bin/script ./test/script.go
+build_ui:
+	go build -o ./bin/ui ./test/ui.go
