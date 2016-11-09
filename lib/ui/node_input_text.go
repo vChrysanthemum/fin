@@ -16,9 +16,13 @@ func (p *Node) InitNodeInputText() *NodeInputText {
 	inputText := new(NodeInputText)
 	inputText.Node = p
 	inputText.Editor = editor.NewEditor()
+	inputText.Editor.Border = true
+	inputText.Editor.BorderTop = false
+	inputText.Editor.BorderLeft = false
+	inputText.Editor.BorderRight = false
 	inputText.Editor.BorderBottom = true
 	inputText.WaitKeyPressEnterChans = make([]chan bool, 0)
-	p.Border = false
+	p.Border = true
 	p.BorderFg = COLOR_DEFAULT_BORDERFG
 	p.Data = inputText
 	p.KeyPress = inputText.KeyPress
@@ -51,13 +55,11 @@ func (p *NodeInputText) KeyPress(e termui.Event) {
 }
 
 func (p *NodeInputText) FocusMode() {
-	p.Node.uiBuffer.(*editor.Editor).Border = true
 	p.Node.uiBuffer.(*editor.Editor).BorderFg = COLOR_FOCUSMODE_BORDERFG
 	termui.Render(p.Node.uiBuffer.(termui.Bufferer))
 }
 
 func (p *NodeInputText) UnFocusMode() {
-	p.Node.uiBuffer.(*editor.Editor).Border = p.Node.Border
 	p.Node.uiBuffer.(*editor.Editor).BorderFg = p.Node.BorderFg
 	termui.Render(p.Node.uiBuffer.(termui.Bufferer))
 }
