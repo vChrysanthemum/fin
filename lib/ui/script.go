@@ -26,9 +26,10 @@ func (p *Page) prepareScript() {
 	script.luaState.SetGlobal("base", luaBase)
 	script.luaState.SetField(luaBase, "ResBaseDir", lua.LString(GlobalOption.LuaResBaseDir))
 	script.luaState.SetField(luaBase, "Log", script.luaState.NewFunction(script.LuaFuncLog))
-	script.luaState.SetField(luaBase, "GetNodePointer", script.luaState.NewFunction(script.luaFuncGetNodePointer))
-	script.luaState.SetField(luaBase, "GetNodeHtmlData", script.luaState.NewFunction(script.luaFuncGetNodeHtmlData))
 	script.luaState.SetField(luaBase, "WindowConfirm", script.luaState.NewFunction(script.luaFuncWindowConfirm))
+	script.luaState.SetField(luaBase, "GetNodePointer", script.luaState.NewFunction(script.luaFuncGetNodePointer))
+	script.luaState.SetField(luaBase, "NodeGetHtmlData", script.luaState.NewFunction(script.luaFuncNodeGetHtmlData))
+	script.luaState.SetField(luaBase, "NodeSetText", script.luaState.NewFunction(script.luaFuncNodeSetText))
 
 	err = script.luaState.DoFile(filepath.Join(GlobalOption.LuaResBaseDir, "ui/core.lua"))
 	if nil != err {

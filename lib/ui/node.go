@@ -8,6 +8,7 @@ import (
 type NodeKeyPress func(e termui.Event)
 type NodeFocusMode func()
 type NodeUnFocusMode func()
+type NodeSetText func(content string)
 
 type Node struct {
 	page *Page
@@ -36,9 +37,12 @@ type Node struct {
 	BorderFg    termui.Attribute
 	HtmlData    string
 	Data        interface{}
+
 	KeyPress    NodeKeyPress
 	FocusMode   NodeFocusMode
 	UnFocusMode NodeUnFocusMode
+
+	SetText NodeSetText
 }
 
 type NodeBody struct{}
@@ -55,16 +59,6 @@ func (p *Node) InitNodeDiv() *NodeDiv {
 	nodeDiv := new(NodeDiv)
 	p.Data = nodeDiv
 	return nodeDiv
-}
-
-type NodePar struct {
-	Text string
-}
-
-func (p *Node) InitNodePar() *NodePar {
-	nodePar := new(NodePar)
-	p.Data = nodePar
-	return nodePar
 }
 
 func (p *Node) addChild(child *Node) {

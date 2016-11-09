@@ -6,9 +6,7 @@ func (p *Page) renderBodyPar(node *Node) (isFallthrough bool) {
 	isFallthrough = false
 	nodePar := node.Data.(*NodePar)
 
-	if "" != node.ColorFg {
-		nodePar.Text = "[" + nodePar.Text + "]" + "(fg-" + node.ColorFg + ")"
-	}
+	nodePar.RenderText()
 
 	uiBuffer := termui.NewPar(nodePar.Text)
 	uiBuffer.BorderLabel = node.BorderLabel

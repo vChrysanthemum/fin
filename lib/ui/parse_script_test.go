@@ -18,7 +18,7 @@ func TestParseHtmlScript(t *testing.T) {
 	ui.Init(ui.Option{LuaResBaseDir: filepath.Join(os.Args[1], "lua")})
 	script := strings.Trim(`
 	function test()
-		print(Node("head"):HtmlData())
+		print(Node("head"):GetHtmlData())
 		print('call lua success.')
 	end
 	test()

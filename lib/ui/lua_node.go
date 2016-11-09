@@ -23,7 +23,7 @@ func (p *Script) luaFuncGetNodePointer(L *lua.LState) int {
 	return 1
 }
 
-func (p *Script) luaFuncGetNodeHtmlData(L *lua.LState) int {
+func (p *Script) luaFuncNodeGetHtmlData(L *lua.LState) int {
 	var (
 		node *Node
 		ok   bool
@@ -43,4 +43,28 @@ func (p *Script) luaFuncGetNodeHtmlData(L *lua.LState) int {
 	}
 
 	return 1
+}
+
+func (p *Script) luaFuncNodeSetText(L *lua.LState) int {
+	var (
+		node *Node
+		ok   bool
+	)
+
+	lv := L.ToUserData(1)
+	text := L.ToString(2)
+	if nil == lv || nil == lv.Value {
+		return 0
+	}
+
+	node, ok = lv.Value.(*Node)
+	if false == ok || nil == node {
+		return 0
+	}
+
+	if nil != node.SetText {
+		node.SetText(text)
+	}
+
+	return 0
 }
