@@ -9,18 +9,23 @@ if "confirm" == result then
   if "confirm" == WindowConfirm("是否再次确定") then
     Node("SelectTest"):SetActive();
   else 
-    Node("EditorInput"):SetActive();
+    Node("InputTextTest"):SetActive();
   end
 end
-Log(result);
 Node("ParResult"):SetText(result);
+Node("InputTextTest"):OnKeyPressEnter(
+  function(node)
+    Node("ParResult0"):SetText(Node("InputTextTest"):GetValue())
+  end
+);
   </script>
-  <par id="ParResult" width=10 height=3>你好</par>
-  <par id="ParResult" width=10 height=3>你好</par>
-  <par id="ParResult" width=10 height=3>你好</par>
-  <par id="ParResult" width=10 height=3>你好</par>
-  <editor id="EditorInput" height=3>
-  </editor>
+  <par id="ParResult"  height=3>你好</par>
+  <par id="ParResult0" height=3>你好</par>
+  <par id="ParResult1" height=3>你好</par>
+  <par id="ParResult2" height=3>你好</par>
+  <par id="ParResult3" height=3>你好</par>
+  <inputtext id="InputTextTest" height=3>
+  </inputtext>
   <select id="SelectTest">
     <option value="cancel">取消</option>
     <option value="confirm">确定</option>

@@ -10,7 +10,9 @@ type NodeFocusMode func()
 type NodeUnFocusMode func()
 type NodeActiveMode func()
 type NodeUnActiveMode func()
+type NodeGetValue func() string
 type NodeSetText func(content string)
+type NodeOnKeyPressEnter func()
 
 type Node struct {
 	page *Page
@@ -46,7 +48,9 @@ type Node struct {
 	ActiveMode   NodeActiveMode
 	UnActiveMode NodeUnActiveMode
 
-	SetText NodeSetText
+	SetText         NodeSetText
+	GetValue        NodeGetValue
+	OnKeyPressEnter NodeOnKeyPressEnter
 }
 
 type NodeBody struct{}

@@ -61,8 +61,8 @@ func (p *Script) luaFuncNodeGetHtmlData(L *lua.LState) int {
 }
 
 func (p *Script) luaFuncNodeSetText(L *lua.LState) int {
-	text := L.ToString(2)
 	lu := L.ToUserData(1)
+	text := L.ToString(2)
 	node := p._getNodePointerFromUserData(L, lu)
 	if nil == node {
 		return 0
@@ -71,6 +71,42 @@ func (p *Script) luaFuncNodeSetText(L *lua.LState) int {
 	if nil != node.SetText {
 		node.SetText(text)
 	}
+
+	return 0
+}
+
+func (p *Script) luaFuncNodeGetValue(L *lua.LState) int {
+	lu := L.ToUserData(1)
+	node := p._getNodePointerFromUserData(L, lu)
+	if nil == node || nil == node.GetValue {
+		L.Push(lua.LNil)
+		return 1
+	}
+
+	L.Push(lua.LString(node.GetValue()))
+	return 1
+}
+
+func (p *Script) luaFuncNodeOnKeyPressEnter(L *lua.LState) int {
+	lu := L.ToUserData(1)
+	callback := L.ToFunction(2)
+	node := p._getNodePointerFromUserData(L, lu)
+	if nil == node || nil == node.OnKeyPressEnter {
+		return 0
+	}
+
+	go func(_L *lua.LState, _node *Node, _callback *lua.LFunction) {
+		_node.OnKeyPressEnter()
+		luaNode := _L.NewUserData()
+		luaNode.Value = node
+		if err := _L.CallByParam(lua.P{
+			Fn:      _callback,
+			NRet:    0,
+			Protect: true,
+		}, luaNode); err != nil {
+			panic(err)
+		}
+	}(L, node, callback)
 
 	return 0
 }

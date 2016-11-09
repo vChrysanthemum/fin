@@ -9,18 +9,20 @@ type NodeSelect struct {
 	SelectedOptionIndex    int
 	Children               []NodeSelectOption
 	ChildrenMaxStringWidth int
-	WaitResultChans        []chan NodeSelectOption
+	WaitKeyPressEnterChans []chan bool
 }
 
 func (p *Node) InitNodeSelect() *NodeSelect {
 	nodeSelect := new(NodeSelect)
 	nodeSelect.Node = p
 	nodeSelect.Children = make([]NodeSelectOption, 0)
-	nodeSelect.WaitResultChans = make([]chan NodeSelectOption, 0)
+	nodeSelect.WaitKeyPressEnterChans = make([]chan bool, 0)
 	p.Data = nodeSelect
 	p.KeyPress = nodeSelect.KeyPress
 	p.FocusMode = nodeSelect.FocusMode
 	p.UnFocusMode = nodeSelect.UnFocusMode
+	p.GetValue = nodeSelect.GetValue
+	p.OnKeyPressEnter = nodeSelect.OnKeyPressEnter
 
 	nodeSelect.SelectedOptionColorFg = COLOR_SELECTED_OPTION_COLORFG
 	nodeSelect.SelectedOptionColorBg = COLOR_SELECTED_OPTION_COLORBG
@@ -64,20 +66,16 @@ func (p *NodeSelect) KeyPress(e termui.Event) {
 		return
 	}
 
-	if "<enter>" == keyStr && len(p.WaitResultChans) > 0 {
-		for _, c := range p.WaitResultChans {
-			c <- p.Children[p.SelectedOptionIndex]
+	if "<enter>" == keyStr && len(p.WaitKeyPressEnterChans) > 0 {
+		p.Node.QuitActiveMode()
+		for _, c := range p.WaitKeyPressEnterChans {
+			c <- true
 			close(c)
 		}
-		p.WaitResultChans = make([]chan NodeSelectOption, 0)
+		p.WaitKeyPressEnterChans = make([]chan bool, 0)
+		return
 	}
 
-}
-
-func (p *NodeSelect) WaitResult() NodeSelectOption {
-	c := make(chan NodeSelectOption, 0)
-	p.WaitResultChans = append(p.WaitResultChans, c)
-	return <-c
 }
 
 func (p *NodeSelect) FocusMode() {
@@ -90,4 +88,15 @@ func (p *NodeSelect) UnFocusMode() {
 	p.Node.uiBuffer.(*termui.List).Border = p.Node.Border
 	p.Node.uiBuffer.(*termui.List).BorderFg = p.Node.BorderFg
 	termui.Render(p.Node.uiBuffer.(termui.Bufferer))
+}
+
+func (p *NodeSelect) GetValue() string {
+	nodeSelectOption := p.Children[p.SelectedOptionIndex]
+	return nodeSelectOption.Value
+}
+
+func (p *NodeSelect) OnKeyPressEnter() {
+	c := make(chan bool, 0)
+	p.WaitKeyPressEnterChans = append(p.WaitKeyPressEnterChans, c)
+	<-c
 }

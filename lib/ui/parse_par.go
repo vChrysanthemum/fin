@@ -1,6 +1,9 @@
 package ui
 
-import "golang.org/x/net/html"
+import (
+	"github.com/gizak/termui"
+	"golang.org/x/net/html"
+)
 
 func (p *Page) parseBodyPar(parentNode *Node, htmlNode *html.Node) (ret *Node, isFallthrough bool) {
 	ret = p.newNode(htmlNode)
@@ -15,6 +18,7 @@ func (p *Page) parseBodyPar(parentNode *Node, htmlNode *html.Node) (ret *Node, i
 
 	ret.Data = nodePar
 	ret.Height = -1
+	ret.Width = termui.TermWidth()
 
 	return
 }

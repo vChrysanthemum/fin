@@ -98,7 +98,9 @@ func (p *Page) SetActiveNode(node *Node) {
 
 func (p *Page) Refresh() {
 	termui.Clear()
-	termui.Render(p.Bufferers...)
+	if len(p.Bufferers) > 0 {
+		termui.Render(p.Bufferers...)
+	}
 	if nil != p.FocusNode {
 		p.SetActiveNode(p.FocusNode.Value.(*Node))
 	}

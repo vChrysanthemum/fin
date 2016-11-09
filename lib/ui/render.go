@@ -16,6 +16,7 @@ func (p *Page) prepareRender() {
 		&RenderAgent{[]string{"body", "editor"}, p.renderBodyEditor},
 		&RenderAgent{[]string{"body", "par"}, p.renderBodyPar},
 		&RenderAgent{[]string{"body", "table"}, p.renderBodyTable},
+		&RenderAgent{[]string{"body", "inputtext"}, p.renderBodyInputText},
 	}
 }
 
