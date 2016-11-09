@@ -36,6 +36,8 @@ type Page struct {
 
 	renderingX int
 	renderingY int
+
+	clearScreenBuffer *ClearScreenBuffer
 }
 
 func newPage() *Page {
@@ -49,6 +51,8 @@ func newPage() *Page {
 	ret.prepareScript()
 	ret.prepareParse()
 	ret.prepareRender()
+
+	ret.clearScreenBuffer = NewClearScreenBuffer()
 
 	return ret
 }

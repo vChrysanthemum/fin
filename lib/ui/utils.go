@@ -38,12 +38,35 @@ func ColorToTermuiAttribute(color string) termui.Attribute {
 	return termui.ColorDefault
 }
 
+type ClearScreenBuffer struct {
+	buf termui.Buffer
+}
+
+func NewClearScreenBuffer() *ClearScreenBuffer {
+	buf := termui.NewBuffer()
+	min := image.Point{0, 0}
+	max := image.Point{termui.TermWidth() - 1, termui.TermHeight() - 1}
+	buf.SetArea(image.Rectangle{min, max})
+	buf.Fill(' ', termui.ColorDefault, termui.ColorDefault)
+	return &ClearScreenBuffer{
+		buf: buf,
+	}
+}
+
+func (p *ClearScreenBuffer) Buffer() termui.Buffer {
+	return p.buf
+}
+
+func (p *ClearScreenBuffer) RefreshArea() {
+	min := image.Point{0, 0}
+	max := image.Point{termui.TermWidth() - 1, termui.TermHeight() - 1}
+	p.buf.SetArea(image.Rectangle{min, max})
+}
+
 func uirender(bs ...termui.Bufferer) {
 	termui.Render(bs...)
 }
 
 func (p *Page) uiclear() {
-	min := image.Point{0, 0}
-	max := image.Point{termui.TermWidth() - 1, termui.TermHeight() - 1}
-	termui.ClearArea(image.Rectangle{min, max}, termui.ColorDefault)
+	termui.Render(p.clearScreenBuffer)
 }

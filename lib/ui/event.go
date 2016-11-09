@@ -3,6 +3,10 @@ package ui
 import "github.com/gizak/termui"
 
 func (p *Page) registerHandles() {
+	termui.Handle("/sys/wnd/resize", func(e termui.Event) {
+		p.clearScreenBuffer.RefreshArea()
+	})
+
 	termui.Handle("/sys/kbd/q", func(termui.Event) {
 		termui.DefaultEvtStream.ResetHandlers()
 		termui.StopLoop()
