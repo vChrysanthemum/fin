@@ -39,3 +39,7 @@ func ColorToTermuiAttribute(color string) termui.Attribute {
 func uirender(bs ...termui.Bufferer) {
 	termui.Render(bs...)
 }
+
+func (p *Page) uiclear() {
+	termui.Render(p.clearMask)
+}

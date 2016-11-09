@@ -36,6 +36,8 @@ type Page struct {
 
 	renderingX int
 	renderingY int
+
+	clearMask *termui.Par
 }
 
 func newPage() *Page {
@@ -49,6 +51,13 @@ func newPage() *Page {
 	ret.prepareScript()
 	ret.prepareParse()
 	ret.prepareRender()
+
+	ret.clearMask = termui.NewPar("")
+	ret.clearMask.Border = false
+	ret.clearMask.X = 0
+	ret.clearMask.Y = 0
+	ret.clearMask.Height = termui.TermHeight()
+	ret.clearMask.Width = termui.TermWidth()
 
 	return ret
 }
@@ -93,7 +102,7 @@ func (p *Page) RemoveNode(node *Node) {
 }
 
 func (p *Page) Refresh() {
-	termui.Clear()
+	p.uiclear()
 
 	if len(p.Bufferers) > 0 {
 		uirender(p.Bufferers...)

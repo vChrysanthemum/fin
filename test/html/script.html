@@ -17,7 +17,9 @@ Node("InputTextTest"):OnKeyPressEnter(
   function(node)
     Node("ParResult0"):SetText(Node("InputTextTest"):GetValue())
     Node("InputTextTest"):Remove()
-    Node("SelectTest"):Remove()
+    if "confirm" == WindowConfirm("是否继续删除") then
+      Node("SelectTest"):Remove()
+    end
   end
 );
   </script>

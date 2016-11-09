@@ -1,8 +1,6 @@
 package ui
 
-import (
-	"github.com/gizak/termui"
-)
+import "github.com/gizak/termui"
 
 type NodeSelect struct {
 	DisableQuit bool

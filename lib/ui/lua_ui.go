@@ -1,9 +1,6 @@
 package ui
 
-import (
-	"github.com/gizak/termui"
-	lua "github.com/yuin/gopher-lua"
-)
+import lua "github.com/yuin/gopher-lua"
 
 func (p *Script) luaFuncWindowConfirm(L *lua.LState) int {
 	content := L.ToString(1)
@@ -24,7 +21,7 @@ func (p *Script) luaFuncWindowConfirm(L *lua.LState) int {
 
 	nodeSelectData := nodeSelect.Data.(*NodeSelect)
 
-	termui.Render(page.Bufferers...)
+	uirender(page.Bufferers...)
 
 	p.page.SetActiveNode(nodeSelect)
 
