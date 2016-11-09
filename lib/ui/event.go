@@ -105,3 +105,9 @@ func (p *Page) Refresh() {
 		p.SetActiveNode(p.FocusNode.Value.(*Node))
 	}
 }
+
+func (p *Page) Rerender() {
+	termui.Clear()
+	p.Render()
+	p.Refresh()
+}

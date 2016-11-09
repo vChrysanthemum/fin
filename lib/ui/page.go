@@ -16,7 +16,8 @@ func init() {
 }
 
 type Page struct {
-	Title       string
+	Title string
+
 	IdToNodeMap map[string]*Node
 
 	Bufferers []termui.Bufferer
@@ -41,8 +42,6 @@ func newPage() *Page {
 
 	ret.IdToNodeMap = make(map[string]*Node, 0)
 
-	ret.Bufferers = make([]termui.Bufferer, 0)
-
 	ret.parsingNodesStack = list.New()
 	ret.WorkingNodes = list.New()
 
@@ -62,6 +61,52 @@ func (p *Page) dumpNodesHtmlData(node *Node) {
 
 func (p *Page) DumpNodesHtmlData() {
 	p.dumpNodesHtmlData(p.FirstChildNode)
+}
+
+func (p *Page) RemoveNode(node *Node) {
+	if p.ActiveNode == node {
+		node.QuitActiveMode()
+	}
+
+	if p.FirstChildNode == node {
+		p.FirstChildNode = node.NextSibling
+	}
+
+	if nil != p.FocusNode && p.FocusNode.Value.(*Node) == node {
+		p.FocusNode = p.FocusNode.Next()
+	}
+
+	for k, v := range p.Bufferers {
+		if v == node.uiBuffer {
+			p.Bufferers = append(p.Bufferers[:k], p.Bufferers[k+1:]...)
+			break
+		}
+	}
+
+	for nodeElement := p.WorkingNodes.Front(); nodeElement != nil; nodeElement = nodeElement.Next() {
+		if nodeElement.Value.(*Node) == node {
+			p.WorkingNodes.Remove(nodeElement)
+			break
+		}
+	}
+
+	if nil != node.Parent {
+		node.Parent.ChildrenCount -= 1
+		if node.Parent.FirstChild == node {
+			node.Parent.FirstChild = node.NextSibling
+		}
+		if node.Parent.LastChild == node {
+			node.Parent.LastChild = node.PrevSibling
+		}
+	}
+
+	if nil != node.NextSibling {
+		node.NextSibling.PrevSibling = node.PrevSibling
+	}
+
+	if nil != node.PrevSibling {
+		node.PrevSibling.NextSibling = node.NextSibling
+	}
 }
 
 func (p *Page) Serve() {

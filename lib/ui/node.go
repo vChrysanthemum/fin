@@ -13,6 +13,7 @@ type NodeUnActiveMode func()
 type NodeGetValue func() string
 type NodeSetText func(content string)
 type NodeOnKeyPressEnter func()
+type NodeOnRemove func()
 
 type Node struct {
 	page *Page
@@ -51,6 +52,7 @@ type Node struct {
 	SetText         NodeSetText
 	GetValue        NodeGetValue
 	OnKeyPressEnter NodeOnKeyPressEnter
+	OnRemove        NodeOnRemove
 }
 
 type NodeBody struct{}

@@ -15,16 +15,19 @@ func (p *Node) InitNodePar() *NodePar {
 	return nodePar
 }
 
-func (p *NodePar) RenderText() {
+func (p *NodePar) RenderText() string {
+	var ret string
 	if "" != p.Node.ColorFg {
-		p.Text = "[" + p.Text + "]" + "(fg-" + p.Node.ColorFg + ")"
+		ret = "[" + p.Text + "]" + "(fg-" + p.Node.ColorFg + ")"
+	} else {
+		ret = p.Text
 	}
+	return ret
 }
 
 func (p *NodePar) SetText(content string) {
 	p.Text = content
-	p.RenderText()
 	uiBuffer := p.Node.uiBuffer.(*termui.Par)
-	uiBuffer.Text = p.Text
+	uiBuffer.Text = p.RenderText()
 	termui.Render(uiBuffer)
 }

@@ -110,3 +110,19 @@ func (p *Script) luaFuncNodeOnKeyPressEnter(L *lua.LState) int {
 
 	return 0
 }
+
+func (p *Script) luaFuncNodeRemove(L *lua.LState) int {
+	lu := L.ToUserData(1)
+	node := p._getNodePointerFromUserData(L, lu)
+	if nil == node || nil == node.OnKeyPressEnter {
+		return 0
+	}
+
+	p.page.RemoveNode(node)
+	if nil != node.OnRemove {
+		node.OnRemove()
+	}
+	p.page.Rerender()
+
+	return 0
+}

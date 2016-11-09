@@ -16,6 +16,7 @@ Node("ParResult"):SetText(result);
 Node("InputTextTest"):OnKeyPressEnter(
   function(node)
     Node("ParResult0"):SetText(Node("InputTextTest"):GetValue())
+    Node("InputTextTest"):Remove()
   end
 );
   </script>

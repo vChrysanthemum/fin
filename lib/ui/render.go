@@ -1,6 +1,10 @@
 package ui
 
-import "github.com/gizak/termui"
+import (
+	"container/list"
+
+	"github.com/gizak/termui"
+)
 
 type RenderExecFunc func(node *Node) (isFallthrough bool)
 
@@ -79,5 +83,12 @@ func (p *Page) render(node *Node) error {
 }
 
 func (p *Page) Render() error {
+	p.Bufferers = make([]termui.Bufferer, 0)
+	p.WorkingNodes = list.New()
+	p.FocusNode = nil
+	p.ActiveNode = nil
+	p.renderingX = 0
+	p.renderingY = 0
+
 	return p.render(p.FirstChildNode)
 }

@@ -6,9 +6,7 @@ func (p *Page) renderBodyPar(node *Node) (isFallthrough bool) {
 	isFallthrough = false
 	nodePar := node.Data.(*NodePar)
 
-	nodePar.RenderText()
-
-	uiBuffer := termui.NewPar(nodePar.Text)
+	uiBuffer := termui.NewPar(nodePar.RenderText())
 	uiBuffer.BorderLabel = node.BorderLabel
 	uiBuffer.Border = node.Border
 
