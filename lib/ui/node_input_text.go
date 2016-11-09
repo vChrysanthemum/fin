@@ -16,9 +16,10 @@ func (p *Node) InitNodeInputText() *NodeInputText {
 	inputText := new(NodeInputText)
 	inputText.Node = p
 	inputText.Editor = editor.NewEditor()
-	inputText.Border = false
-	inputText.BorderFg = COLOR_DEFAULT_BORDERFG
+	inputText.Editor.BorderBottom = true
 	inputText.WaitKeyPressEnterChans = make([]chan bool, 0)
+	p.Border = false
+	p.BorderFg = COLOR_DEFAULT_BORDERFG
 	p.Data = inputText
 	p.KeyPress = inputText.KeyPress
 	p.FocusMode = inputText.FocusMode
