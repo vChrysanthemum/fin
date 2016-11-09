@@ -5,7 +5,6 @@ package termbox
 import (
 	"bytes"
 	"io"
-	"log"
 	"os"
 	"strconv"
 	"syscall"
@@ -235,15 +234,10 @@ func send_char(x, y int, ch rune) {
 }
 
 func flush() error {
-	// TODO 这里 outbuf 可能小于零
-	if outbuf.Len() > 0 {
-		_, err := io.Copy(out, &outbuf)
-		outbuf.Reset()
-		if err != nil {
-			return err
-		}
-	} else {
-		outbuf = bytes.Buffer{}
+	_, err := io.Copy(out, &outbuf)
+	outbuf.Reset()
+	if err != nil {
+		return err
 	}
 	return nil
 }

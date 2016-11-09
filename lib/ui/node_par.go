@@ -19,5 +19,5 @@ func (p *NodePar) SetText(content string) {
 	p.Text = content
 	uiBuffer := p.Node.uiBuffer.(*termui.Par)
 	uiBuffer.Text = p.Text
-	termui.Render(uiBuffer)
+	uirender(uiBuffer)
 }

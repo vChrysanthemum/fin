@@ -79,7 +79,7 @@ func main() {
 	// build layout
 	ui.Body.AddRows(
 		ui.NewRow(
-			ui.NewCol(3, 3, sp),
+			ui.NewCol(6, 0, sp),
 			ui.NewCol(6, 0, lc)),
 		ui.NewRow(
 			ui.NewCol(3, 0, ls),

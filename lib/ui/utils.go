@@ -35,3 +35,7 @@ func ColorToTermuiAttribute(color string) termui.Attribute {
 
 	return termui.ColorDefault
 }
+
+func uirender(bs ...termui.Bufferer) {
+	termui.Render(bs...)
+}

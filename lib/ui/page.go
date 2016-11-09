@@ -2,7 +2,6 @@ package ui
 
 import (
 	"container/list"
-	"image"
 	"log"
 
 	"github.com/gizak/termui"
@@ -95,12 +94,9 @@ func (p *Page) RemoveNode(node *Node) {
 
 func (p *Page) Refresh() {
 	termui.Clear()
-	min := image.Point{X: 0, Y: 0}
-	max := image.Point{X: termui.TermWidth(), Y: termui.TermHeight()}
-	termui.ClearArea(image.Rectangle{Min: min, Max: max}, termui.ColorDefault)
 
 	if len(p.Bufferers) > 0 {
-		termui.Render(p.Bufferers...)
+		uirender(p.Bufferers...)
 	}
 	if nil != p.FocusNode {
 		p.SetActiveNode(p.FocusNode.Value.(*Node))
@@ -115,7 +111,7 @@ func (p *Page) Rerender() {
 func (p *Page) Serve() {
 	defer termui.Close()
 
-	termui.Render(p.Bufferers...)
+	uirender(p.Bufferers...)
 
 	p.registerHandles()
 	go p.script.Run()

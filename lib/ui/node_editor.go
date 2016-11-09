@@ -34,27 +34,27 @@ func (p *NodeEditor) KeyPress(e termui.Event) {
 	}
 
 	p.Editor.Write(keyStr)
-	termui.Render(p.Node.uiBuffer.(termui.Bufferer))
+	uirender(p.Node.uiBuffer.(termui.Bufferer))
 }
 
 func (p *NodeEditor) FocusMode() {
 	p.Node.uiBuffer.(*editor.Editor).Border = true
 	p.Node.uiBuffer.(*editor.Editor).BorderFg = COLOR_FOCUS_MODE_BORDERFG
-	termui.Render(p.Node.uiBuffer.(termui.Bufferer))
+	uirender(p.Node.uiBuffer.(termui.Bufferer))
 }
 
 func (p *NodeEditor) UnFocusMode() {
 	p.Node.uiBuffer.(*editor.Editor).Border = p.Node.Border
 	p.Node.uiBuffer.(*editor.Editor).BorderFg = p.Node.BorderFg
-	termui.Render(p.Node.uiBuffer.(termui.Bufferer))
+	uirender(p.Node.uiBuffer.(termui.Bufferer))
 }
 
 func (p *NodeEditor) ActiveMode() {
 	p.Node.uiBuffer.(*editor.Editor).BorderFg = COLOR_ACTIVE_MODE_BORDERFG
-	termui.Render(p.Node.uiBuffer.(termui.Bufferer))
+	uirender(p.Node.uiBuffer.(termui.Bufferer))
 }
 
 func (p *NodeEditor) UnActiveMode() {
 	p.Node.uiBuffer.(*editor.Editor).BorderFg = p.Node.BorderFg
-	termui.Render(p.Node.uiBuffer.(termui.Bufferer))
+	uirender(p.Node.uiBuffer.(termui.Bufferer))
 }
