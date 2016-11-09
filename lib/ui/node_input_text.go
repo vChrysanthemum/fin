@@ -26,10 +26,12 @@ func (p *Node) InitNodeInputText() *NodeInputText {
 	p.BorderFg = COLOR_DEFAULT_BORDERFG
 	p.Data = inputText
 	p.KeyPress = inputText.KeyPress
-	p.FocusMode = inputText.FocusMode
-	p.UnFocusMode = inputText.UnFocusMode
 	p.GetValue = inputText.GetValue
 	p.OnKeyPressEnter = inputText.OnKeyPressEnter
+	p.FocusMode = inputText.FocusMode
+	p.UnFocusMode = inputText.UnFocusMode
+	p.ActiveMode = inputText.ActiveMode
+	p.UnActiveMode = inputText.UnActiveMode
 	return inputText
 }
 
@@ -54,16 +56,6 @@ func (p *NodeInputText) KeyPress(e termui.Event) {
 	termui.Render(p.Node.uiBuffer.(termui.Bufferer))
 }
 
-func (p *NodeInputText) FocusMode() {
-	p.Node.uiBuffer.(*editor.Editor).BorderFg = COLOR_FOCUSMODE_BORDERFG
-	termui.Render(p.Node.uiBuffer.(termui.Bufferer))
-}
-
-func (p *NodeInputText) UnFocusMode() {
-	p.Node.uiBuffer.(*editor.Editor).BorderFg = p.Node.BorderFg
-	termui.Render(p.Node.uiBuffer.(termui.Bufferer))
-}
-
 func (p *NodeInputText) GetValue() string {
 	return string(p.Editor.Lines[0].Data)
 }
@@ -72,4 +64,24 @@ func (p *NodeInputText) OnKeyPressEnter() {
 	c := make(chan bool, 0)
 	p.WaitKeyPressEnterChans = append(p.WaitKeyPressEnterChans, c)
 	<-c
+}
+
+func (p *NodeInputText) FocusMode() {
+	p.Node.uiBuffer.(*editor.Editor).BorderFg = COLOR_FOCUS_MODE_BORDERFG
+	termui.Render(p.Node.uiBuffer.(termui.Bufferer))
+}
+
+func (p *NodeInputText) UnFocusMode() {
+	p.Node.uiBuffer.(*editor.Editor).BorderFg = p.Node.BorderFg
+	termui.Render(p.Node.uiBuffer.(termui.Bufferer))
+}
+
+func (p *NodeInputText) ActiveMode() {
+	p.Node.uiBuffer.(*editor.Editor).BorderFg = COLOR_ACTIVE_MODE_BORDERFG
+	termui.Render(p.Node.uiBuffer.(termui.Bufferer))
+}
+
+func (p *NodeInputText) UnActiveMode() {
+	p.Node.uiBuffer.(*editor.Editor).BorderFg = p.Node.BorderFg
+	termui.Render(p.Node.uiBuffer.(termui.Bufferer))
 }

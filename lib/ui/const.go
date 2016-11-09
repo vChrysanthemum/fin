@@ -11,5 +11,6 @@ var (
 	COLOR_SELECTED_OPTION_COLORFG = "white"
 	COLOR_SELECTED_OPTION_COLORBG = "black"
 	COLOR_DEFAULT_BORDERFG        = termui.ColorWhite
-	COLOR_FOCUSMODE_BORDERFG      = termui.ColorBlue
+	COLOR_FOCUS_MODE_BORDERFG     = termui.ColorMagenta
+	COLOR_ACTIVE_MODE_BORDERFG    = termui.ColorBlue
 )

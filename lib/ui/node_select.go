@@ -19,10 +19,12 @@ func (p *Node) InitNodeSelect() *NodeSelect {
 	nodeSelect.WaitKeyPressEnterChans = make([]chan bool, 0)
 	p.Data = nodeSelect
 	p.KeyPress = nodeSelect.KeyPress
-	p.FocusMode = nodeSelect.FocusMode
-	p.UnFocusMode = nodeSelect.UnFocusMode
 	p.GetValue = nodeSelect.GetValue
 	p.OnKeyPressEnter = nodeSelect.OnKeyPressEnter
+	p.FocusMode = nodeSelect.FocusMode
+	p.UnFocusMode = nodeSelect.UnFocusMode
+	p.ActiveMode = nodeSelect.ActiveMode
+	p.UnActiveMode = nodeSelect.UnActiveMode
 
 	nodeSelect.SelectedOptionColorFg = COLOR_SELECTED_OPTION_COLORFG
 	nodeSelect.SelectedOptionColorBg = COLOR_SELECTED_OPTION_COLORBG
@@ -78,18 +80,6 @@ func (p *NodeSelect) KeyPress(e termui.Event) {
 
 }
 
-func (p *NodeSelect) FocusMode() {
-	p.Node.uiBuffer.(*termui.List).Border = true
-	p.Node.uiBuffer.(*termui.List).BorderFg = COLOR_FOCUSMODE_BORDERFG
-	termui.Render(p.Node.uiBuffer.(termui.Bufferer))
-}
-
-func (p *NodeSelect) UnFocusMode() {
-	p.Node.uiBuffer.(*termui.List).Border = p.Node.Border
-	p.Node.uiBuffer.(*termui.List).BorderFg = p.Node.BorderFg
-	termui.Render(p.Node.uiBuffer.(termui.Bufferer))
-}
-
 func (p *NodeSelect) GetValue() string {
 	nodeSelectOption := p.Children[p.SelectedOptionIndex]
 	return nodeSelectOption.Value
@@ -99,4 +89,26 @@ func (p *NodeSelect) OnKeyPressEnter() {
 	c := make(chan bool, 0)
 	p.WaitKeyPressEnterChans = append(p.WaitKeyPressEnterChans, c)
 	<-c
+}
+
+func (p *NodeSelect) FocusMode() {
+	p.Node.uiBuffer.(*termui.List).Border = true
+	p.Node.uiBuffer.(*termui.List).BorderFg = COLOR_FOCUS_MODE_BORDERFG
+	termui.Render(p.Node.uiBuffer.(termui.Bufferer))
+}
+
+func (p *NodeSelect) UnFocusMode() {
+	p.Node.uiBuffer.(*termui.List).Border = p.Node.Border
+	p.Node.uiBuffer.(*termui.List).BorderFg = p.Node.BorderFg
+	termui.Render(p.Node.uiBuffer.(termui.Bufferer))
+}
+
+func (p *NodeSelect) ActiveMode() {
+	p.Node.uiBuffer.(*termui.List).BorderFg = COLOR_ACTIVE_MODE_BORDERFG
+	termui.Render(p.Node.uiBuffer.(termui.Bufferer))
+}
+
+func (p *NodeSelect) UnActiveMode() {
+	p.Node.uiBuffer.(*termui.List).BorderFg = p.Node.BorderFg
+	termui.Render(p.Node.uiBuffer.(termui.Bufferer))
 }
