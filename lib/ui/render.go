@@ -19,10 +19,10 @@ func (p *Page) prepareRender() {
 	}
 }
 
-func (p *Page) bufferersAppend(node *Node, buffer termui.Bufferer) {
+func (p *Page) BufferersAppend(node *Node, buffer termui.Bufferer) {
 	if nil != node && true == node.Parent.isShouldTermuiRenderChild {
 	} else {
-		p.bufferers = append(p.bufferers, buffer)
+		p.Bufferers = append(p.Bufferers, buffer)
 	}
 }
 
@@ -76,9 +76,5 @@ func (p *Page) render(node *Node) {
 }
 
 func (p *Page) Render() {
-	err := termui.Init()
-	if err != nil {
-		panic(err)
-	}
 	p.render(p.FirstChildNode)
 }

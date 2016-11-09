@@ -2,16 +2,24 @@ package ui
 
 import (
 	"container/list"
+	"fmt"
 
 	"github.com/gizak/termui"
 	"golang.org/x/net/html"
 )
 
+func init() {
+	err := termui.Init()
+	if err != nil {
+		panic(err)
+	}
+}
+
 type Page struct {
 	Title       string
 	IdToNodeMap map[string]*Node
 
-	bufferers []termui.Bufferer
+	Bufferers []termui.Bufferer
 
 	script         *Script
 	parseAgentMap  []*ParseAgent
@@ -33,7 +41,7 @@ func newPage() *Page {
 
 	ret.IdToNodeMap = make(map[string]*Node, 0)
 
-	ret.bufferers = make([]termui.Bufferer, 0)
+	ret.Bufferers = make([]termui.Bufferer, 0)
 
 	ret.parsingNodesStack = list.New()
 	ret.WorkingNodes = list.New()
@@ -45,10 +53,21 @@ func newPage() *Page {
 	return ret
 }
 
+func (p *Page) dumpNodesHtmlData(node *Node) {
+	fmt.Println(node.HtmlData)
+	for childNode := node.FirstChild; childNode != nil; childNode = childNode.NextSibling {
+		p.dumpNodesHtmlData(childNode)
+	}
+}
+
+func (p *Page) DumpNodesHtmlData() {
+	p.dumpNodesHtmlData(p.FirstChildNode)
+}
+
 func (p *Page) Serve() {
 	defer termui.Close()
 
-	termui.Render(p.bufferers...)
+	termui.Render(p.Bufferers...)
 
 	p.registerHandles()
 

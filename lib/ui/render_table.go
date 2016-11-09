@@ -90,7 +90,7 @@ func (p *Page) renderBodyTable(node *Node) (isFallthrough bool) {
 	nodeTableData.Body.AddRows(uiRows...)
 	nodeTableData.Body.Align()
 
-	p.bufferersAppend(node, nodeTableData.Body)
+	p.BufferersAppend(node, nodeTableData.Body)
 
 	return
 }

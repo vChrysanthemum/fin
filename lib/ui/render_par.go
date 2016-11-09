@@ -30,7 +30,7 @@ func (p *Page) renderBodyPar(node *Node) (isFallthrough bool) {
 
 	node.uiBuffer = uiBuffer
 
-	p.bufferersAppend(node, uiBuffer)
+	p.BufferersAppend(node, uiBuffer)
 
 	return
 }

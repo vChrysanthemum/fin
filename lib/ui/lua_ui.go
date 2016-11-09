@@ -7,7 +7,13 @@ import (
 )
 
 func (p *Script) luaFuncWindowConfirm(L *lua.LState) int {
-	title := L.ToString(1)
-	log.Println(title)
+	content := L.ToString(1)
+	log.Println(content)
+	page, err := Parse(content)
+	if nil != err {
+		return 0
+	}
+	page.DumpNodesHtmlData()
+
 	return 0
 }

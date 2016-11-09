@@ -18,7 +18,7 @@ type Node struct {
 
 	// 是否要渲染子节点
 	// 子节点将根据其父节点
-	// Node.isShouldTermuiRenderChild 来决定是否 将 node.uiBuffer append 进 page.bufferers
+	// Node.isShouldTermuiRenderChild 来决定是否 将 node.uiBuffer append 进 page.Bufferers
 	// 例: TableTrTd 将用到该字段
 	isShouldTermuiRenderChild bool
 

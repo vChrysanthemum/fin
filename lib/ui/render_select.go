@@ -57,7 +57,7 @@ func (p *Page) renderBodySelect(node *Node) (isFallthrough bool) {
 
 	nodeSelect.refreshUiBufferItems()
 
-	p.bufferersAppend(node, uiBuffer)
+	p.BufferersAppend(node, uiBuffer)
 
 	p.pushWorkingNode(node)
 
