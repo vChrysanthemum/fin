@@ -9,12 +9,14 @@ type NodeSelect struct {
 	SelectedOptionIndex    int
 	Children               []NodeSelectOption
 	ChildrenMaxStringWidth int
+	WaitResultChans        []chan NodeSelectOption
 }
 
 func (p *Node) InitNodeSelect() *NodeSelect {
 	nodeSelect := new(NodeSelect)
 	nodeSelect.Node = p
 	nodeSelect.Children = make([]NodeSelectOption, 0)
+	nodeSelect.WaitResultChans = make([]chan NodeSelectOption, 0)
 	p.Data = nodeSelect
 	p.KeyPress = nodeSelect.KeyPress
 	p.FocusMode = nodeSelect.FocusMode
@@ -38,7 +40,7 @@ type NodeSelectOption struct {
 func (p *NodeSelect) KeyPress(e termui.Event) {
 	keyStr := e.Data.(termui.EvtKbd).KeyStr
 	if "<escape>" == keyStr {
-		p.Node.quitActiveMode()
+		p.Node.QuitActiveMode()
 		return
 	}
 
@@ -62,6 +64,20 @@ func (p *NodeSelect) KeyPress(e termui.Event) {
 		return
 	}
 
+	if "<enter>" == keyStr && len(p.WaitResultChans) > 0 {
+		for _, c := range p.WaitResultChans {
+			c <- p.Children[p.SelectedOptionIndex]
+			close(c)
+		}
+		p.WaitResultChans = make([]chan NodeSelectOption, 0)
+	}
+
+}
+
+func (p *NodeSelect) WaitResult() NodeSelectOption {
+	c := make(chan NodeSelectOption, 0)
+	p.WaitResultChans = append(p.WaitResultChans, c)
+	return <-c
 }
 
 func (p *NodeSelect) FocusMode() {

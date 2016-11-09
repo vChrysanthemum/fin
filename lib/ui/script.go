@@ -25,6 +25,7 @@ func (p *Page) prepareScript() {
 	luaBase := script.luaState.NewTable()
 	script.luaState.SetGlobal("base", luaBase)
 	script.luaState.SetField(luaBase, "ResBaseDir", lua.LString(GlobalOption.LuaResBaseDir))
+	script.luaState.SetField(luaBase, "Log", script.luaState.NewFunction(script.LuaFuncLog))
 	script.luaState.SetField(luaBase, "GetNodePointer", script.luaState.NewFunction(script.luaFuncGetNodePointer))
 	script.luaState.SetField(luaBase, "GetNodeHtmlData", script.luaState.NewFunction(script.luaFuncGetNodeHtmlData))
 	script.luaState.SetField(luaBase, "WindowConfirm", script.luaState.NewFunction(script.luaFuncWindowConfirm))
@@ -41,10 +42,6 @@ func (p *Script) appendDoc(doc, docType string) {
 	if "text/lua" != docType {
 		return
 	}
-
-	if err := p.luaState.DoString(doc); nil != err {
-		panic(err)
-	}
 	p.luaDocs = append(p.luaDocs, doc)
 }
 
@@ -54,4 +51,12 @@ func (p *Page) GetLuaDocs(index int) string {
 
 func (p *Page) AppendScript(doc, docType string) {
 	p.script.appendDoc(doc, docType)
+}
+
+func (p *Script) Run() {
+	for _, doc := range p.luaDocs {
+		if err := p.luaState.DoString(doc); nil != err {
+			panic(err)
+		}
+	}
 }

@@ -17,7 +17,11 @@ func (p *Page) registerHandles() {
 
 		var nodeFocus *Node
 
-		if "<tab>" == keyStr {
+		// 切换ActiveNode
+		if "<tab>" == keyStr ||
+			"<up>" == keyStr || "<down>" == keyStr ||
+			"<left>" == keyStr || "<right>" == keyStr {
+
 			if nil != p.FocusNode {
 				nodeFocus = p.FocusNode.Value.(*Node)
 				if nil != nodeFocus.UnFocusMode {
@@ -28,10 +32,19 @@ func (p *Page) registerHandles() {
 			if nil == p.FocusNode {
 				p.FocusNode = p.WorkingNodes.Front()
 			} else {
-				if nil != p.FocusNode.Next() {
-					p.FocusNode = p.FocusNode.Next()
+				if "<tab>" == keyStr || "<down>" == keyStr || "<right>" == keyStr {
+					if nil != p.FocusNode.Next() {
+						p.FocusNode = p.FocusNode.Next()
+					} else {
+						p.FocusNode = p.WorkingNodes.Front()
+					}
 				} else {
-					p.FocusNode = p.WorkingNodes.Front()
+					// "<up>" == keyStr || "<left>" == keyStr
+					if nil != p.FocusNode.Prev() {
+						p.FocusNode = p.FocusNode.Prev()
+					} else {
+						p.FocusNode = p.WorkingNodes.Back()
+					}
 				}
 			}
 
@@ -43,6 +56,7 @@ func (p *Page) registerHandles() {
 			}
 		}
 
+		// 确认ActiveNode
 		if "<enter>" == keyStr {
 			if nil != p.FocusNode {
 				nodeFocus = p.FocusNode.Value.(*Node)
@@ -50,7 +64,7 @@ func (p *Page) registerHandles() {
 					nodeFocus.UnFocusMode()
 				}
 
-				p.ActiveNode = p.FocusNode.Value.(*Node)
+				p.SetActiveNode(p.FocusNode.Value.(*Node))
 			}
 		}
 	})
@@ -59,10 +73,10 @@ func (p *Page) registerHandles() {
 func (p *Page) pushWorkingNode(node *Node) {
 	p.WorkingNodes.PushBack(node)
 	p.FocusNode = p.WorkingNodes.Back()
-	p.ActiveNode = node
+	p.SetActiveNode(node)
 }
 
-func (p *Node) quitActiveMode() {
+func (p *Node) QuitActiveMode() {
 	if nil != p.page.FocusNode {
 		nodeFocus := p.page.FocusNode.Value.(*Node)
 		if nil != nodeFocus.FocusMode {
@@ -70,4 +84,16 @@ func (p *Node) quitActiveMode() {
 		}
 	}
 	p.page.ActiveNode = nil
+}
+
+func (p *Page) SetActiveNode(node *Node) {
+	p.ActiveNode = node
+}
+
+func (p *Page) Refresh() {
+	termui.Clear()
+	termui.Render(p.Bufferers...)
+	if nil != p.FocusNode {
+		p.SetActiveNode(p.FocusNode.Value.(*Node))
+	}
 }

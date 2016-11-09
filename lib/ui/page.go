@@ -70,6 +70,7 @@ func (p *Page) Serve() {
 	termui.Render(p.Bufferers...)
 
 	p.registerHandles()
+	go p.script.Run()
 
 	termui.Loop()
 }

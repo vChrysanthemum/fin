@@ -59,7 +59,7 @@ func (p *Page) fetchRenderAgentByNode(node *Node) (ret *RenderAgent) {
 	return ret
 }
 
-func (p *Page) render(node *Node) {
+func (p *Page) render(node *Node) error {
 	var (
 		renderAgent *RenderAgent
 		child       *Node
@@ -73,8 +73,10 @@ func (p *Page) render(node *Node) {
 	if nil != renderAgent {
 		renderAgent.render(node)
 	}
+
+	return nil
 }
 
-func (p *Page) Render() {
-	p.render(p.FirstChildNode)
+func (p *Page) Render() error {
+	return p.render(p.FirstChildNode)
 }
