@@ -4,12 +4,12 @@
 </head>
 <body colorfg="blue">
   <script type="text/lua">
-result = WindowConfirm("是否确定");
+result = WindowConfirm("是否确定开始使用");
 if "confirm" == result then
-  if "confirm" == WindowConfirm("是否再次确定") then
-    Node("SelectTest"):SetActive();
-  else 
+  if "confirm" == WindowConfirm("是否使用输入框") then
     Node("InputTextTest"):SetActive();
+  else 
+    Node("SelectTest"):SetActive();
   end
 end
 Node("ParResult"):SetText(result);
@@ -17,6 +17,7 @@ Node("InputTextTest"):OnKeyPressEnter(
   function(node)
     Node("ParResult0"):SetText(Node("InputTextTest"):GetValue())
     Node("InputTextTest"):Remove()
+    Node("SelectTest"):Remove()
   end
 );
   </script>
