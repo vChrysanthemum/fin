@@ -6,7 +6,7 @@ func (p *Page) renderBodyPar(node *Node) (isFallthrough bool) {
 	isFallthrough = false
 	nodePar := node.Data.(*NodePar)
 
-	uiBuffer := termui.NewPar(nodePar.RenderText())
+	uiBuffer := termui.NewPar(nodePar.Text)
 	uiBuffer.BorderLabel = node.BorderLabel
 	uiBuffer.Border = node.Border
 
@@ -23,6 +23,12 @@ func (p *Page) renderBodyPar(node *Node) (isFallthrough bool) {
 
 	uiBuffer.X = p.renderingX
 	uiBuffer.Y = p.renderingY
+	if "" != node.ColorFg {
+		uiBuffer.TextFgColor = ColorToTermuiAttribute(node.ColorFg)
+	}
+	if "" != node.ColorBg {
+		uiBuffer.TextBgColor = ColorToTermuiAttribute(node.ColorBg)
+	}
 
 	node.uiBuffer = uiBuffer
 
