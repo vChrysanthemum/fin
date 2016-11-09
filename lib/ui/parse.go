@@ -31,6 +31,7 @@ func (p *Page) prepareParse() {
 		&ParseAgent{[]string{"body", "editor"}, p.parseBodyEditor},
 		&ParseAgent{[]string{"body", "par"}, p.parseBodyPar},
 		&ParseAgent{[]string{"body", "inputtext"}, p.parseBodyInputText},
+		&ParseAgent{[]string{"body", "canvas"}, p.parseBodyCanvas},
 	}
 }
 

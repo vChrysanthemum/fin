@@ -19,10 +19,16 @@ while IFS=':' read -ra ADDR; do
 done <<< "$GOPATH"
 export PATH
 
-if [ ! -d "$HOME/.in" ];
+if [ ! -d "$HOME/.in/lua" ];
 then
     mkdir -p "$HOME/.in"
     ln -s "$(pwd)/lua" "$HOME/.in/lua"
+fi
+
+if [ ! -d "$HOME/.in/project" ];
+then
+    mkdir -p "$HOME/.in"
+    ln -s "$(pwd)/project" "$HOME/.in/project"
 fi
 
 if [ ! -d "$(pwd)/bin" ];

@@ -35,6 +35,8 @@ func (p *Page) prepareScript() {
 	script.luaState.SetField(luaBase, "NodeOnKeyPressEnter",
 		script.luaState.NewFunction(script.luaFuncNodeOnKeyPressEnter))
 	script.luaState.SetField(luaBase, "NodeRemove", script.luaState.NewFunction(script.luaFuncNodeRemove))
+	script.luaState.SetField(luaBase, "NodeCanvasSet", script.luaState.NewFunction(script.luaFuncNodeCanvasSet))
+	script.luaState.SetField(luaBase, "NodeCanvasDraw", script.luaState.NewFunction(script.luaFuncNodeCanvasDraw))
 
 	err = script.luaState.DoFile(filepath.Join(GlobalOption.LuaResBaseDir, "ui/core.lua"))
 	if nil != err {

@@ -1,5 +1,5 @@
 local _Node = {}
-local _mt = {__index = _Node}
+local _mtNode = {__index = _Node}
 
 function Node(id)
     local nodePointer = base.GetNodePointer(id)
@@ -7,7 +7,7 @@ function Node(id)
         return nil
     end
 
-    local ret = setmetatable({}, _mt)
+    local ret = setmetatable({}, _mtNode)
     ret.nodePointer = nodePointer
     return ret
 end
@@ -34,6 +34,14 @@ end
 
 function _Node.Remove(self)
     return base.NodeRemove(self.nodePointer)
+end
+
+function _Node.CanvasSet(self, x, y, ch, fg, bg)
+    return base.NodeCanvasSet(self.nodePointer, x, y, ch, fg, bg)
+end
+
+function _Node.CanvasDraw(self)
+    return base.NodeCanvasDraw(self.nodePointer)
 end
 
 function WindowConfirm(title)

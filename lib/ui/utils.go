@@ -15,7 +15,7 @@ func FormatStringWithWidth(src string, width int) string {
 	return src
 }
 
-func ColorToTermuiAttribute(color string) termui.Attribute {
+func ColorToTermuiAttribute(color string, defaultColor termui.Attribute) termui.Attribute {
 	switch color {
 	case "black":
 		return termui.ColorBlack
@@ -23,7 +23,7 @@ func ColorToTermuiAttribute(color string) termui.Attribute {
 		return termui.ColorRed
 	case "green":
 		return termui.ColorGreen
-	case "yello":
+	case "yellow":
 		return termui.ColorYellow
 	case "blue":
 		return termui.ColorBlue
@@ -35,7 +35,7 @@ func ColorToTermuiAttribute(color string) termui.Attribute {
 		return termui.ColorWhite
 	}
 
-	return termui.ColorDefault
+	return defaultColor
 }
 
 type ClearScreenBuffer struct {

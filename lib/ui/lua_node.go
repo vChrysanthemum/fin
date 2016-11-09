@@ -1,6 +1,11 @@
 package ui
 
-import lua "github.com/yuin/gopher-lua"
+import (
+	"unicode/utf8"
+
+	"github.com/gizak/termui"
+	lua "github.com/yuin/gopher-lua"
+)
 
 func (p *Script) _getNodePointerFromUserData(L *lua.LState, lu *lua.LUserData) *Node {
 	if nil == lu || nil == lu.Value {
@@ -13,6 +18,30 @@ func (p *Script) _getNodePointerFromUserData(L *lua.LState, lu *lua.LUserData) *
 	}
 
 	return node
+}
+
+func (p *Script) _getNodeCanvasPointerFromUserData(L *lua.LState, lu *lua.LUserData) *NodeCanvas {
+
+	if nil == lu || nil == lu.Value {
+		return nil
+	}
+
+	var (
+		node       *Node
+		nodeCanvas *NodeCanvas
+		ok         bool
+	)
+
+	node, ok = lu.Value.(*Node)
+	if false == ok || nil == node {
+		return nil
+	}
+
+	if nodeCanvas, ok = node.Data.(*NodeCanvas); false == ok {
+		return nil
+	}
+
+	return nodeCanvas
 }
 
 func (p *Script) luaFuncGetNodePointer(L *lua.LState) int {
@@ -114,11 +143,46 @@ func (p *Script) luaFuncNodeOnKeyPressEnter(L *lua.LState) int {
 func (p *Script) luaFuncNodeRemove(L *lua.LState) int {
 	lu := L.ToUserData(1)
 	node := p._getNodePointerFromUserData(L, lu)
-	if nil == node || nil == node.OnKeyPressEnter {
+	if nil == node {
 		return 0
 	}
 
 	p.page.RemoveNode(node)
 
+	return 0
+}
+
+func (p *Script) luaFuncNodeCanvasSet(L *lua.LState) int {
+	lu := L.ToUserData(1)
+	nodeCanvas := p._getNodeCanvasPointerFromUserData(L, lu)
+	if nil == nodeCanvas {
+		return 0
+	}
+
+	params := L.GetTop()
+	if params < 4 {
+		return 0
+	}
+
+	ch, _ := utf8.DecodeRuneInString(L.ToString(4))
+	colorFg := termui.ColorDefault
+	colorBg := termui.ColorBlue
+	if params >= 5 {
+		colorFg = ColorToTermuiAttribute(L.ToString(5), termui.ColorBlue)
+	}
+	if params >= 6 {
+		colorBg = ColorToTermuiAttribute(L.ToString(6), termui.ColorDefault)
+	}
+	nodeCanvas.Canvas.Set(L.ToInt(2), L.ToInt(3), &termui.Cell{ch, colorFg, colorBg})
+	return 0
+}
+
+func (p *Script) luaFuncNodeCanvasDraw(L *lua.LState) int {
+	lu := L.ToUserData(1)
+	nodeCanvas := p._getNodeCanvasPointerFromUserData(L, lu)
+	if nil == nodeCanvas {
+		return 0
+	}
+	uirender(nodeCanvas.Canvas)
 	return 0
 }

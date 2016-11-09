@@ -2,9 +2,9 @@ package ui
 
 import "github.com/gizak/termui"
 
-func (p *Page) renderBodyEditor(node *Node) (isFallthrough bool) {
+func (p *Page) renderBodyCanvas(node *Node) (isFallthrough bool) {
 	isFallthrough = false
-	uiBuffer := node.Data.(*NodeEditor).Editor
+	uiBuffer := node.Data.(*NodeCanvas).Canvas
 	uiBuffer.BorderLabel = node.BorderLabel
 	uiBuffer.Border = node.Border
 	uiBuffer.BorderFg = node.BorderFg
@@ -13,10 +13,10 @@ func (p *Page) renderBodyEditor(node *Node) (isFallthrough bool) {
 	uiBuffer.X = p.renderingX
 	uiBuffer.Y = p.renderingY
 	if "" != node.ColorFg {
-		uiBuffer.TextFgColor = ColorToTermuiAttribute(node.ColorFg, termui.ColorDefault)
+		uiBuffer.ItemFgColor = ColorToTermuiAttribute(node.ColorFg, termui.ColorDefault)
 	}
 	if "" != node.ColorBg {
-		uiBuffer.TextBgColor = ColorToTermuiAttribute(node.ColorBg, termui.ColorDefault)
+		uiBuffer.ItemBgColor = ColorToTermuiAttribute(node.ColorBg, termui.ColorDefault)
 	}
 
 	node.uiBuffer = uiBuffer

@@ -30,10 +30,10 @@ func (p *Page) renderBodyPar(node *Node) (isFallthrough bool) {
 	uiBuffer.X = p.renderingX
 	uiBuffer.Y = p.renderingY
 	if "" != node.ColorFg {
-		uiBuffer.TextFgColor = ColorToTermuiAttribute(node.ColorFg)
+		uiBuffer.TextFgColor = ColorToTermuiAttribute(node.ColorFg, termui.ColorDefault)
 	}
 	if "" != node.ColorBg {
-		uiBuffer.TextBgColor = ColorToTermuiAttribute(node.ColorBg)
+		uiBuffer.TextBgColor = ColorToTermuiAttribute(node.ColorBg, termui.ColorDefault)
 	}
 
 	node.uiBuffer = uiBuffer
