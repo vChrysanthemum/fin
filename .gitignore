@@ -5,4 +5,4 @@ bin/
 log/
 *.pyc
 .idea/
-lua/
+/lua/
