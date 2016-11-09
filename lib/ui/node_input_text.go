@@ -57,7 +57,11 @@ func (p *NodeInputText) KeyPress(e termui.Event) {
 }
 
 func (p *NodeInputText) GetValue() string {
-	return string(p.Editor.Lines[0].Data)
+	if len(p.Editor.Lines) > 0 {
+		return string(p.Editor.Lines[0].Data)
+	} else {
+		return ""
+	}
 }
 
 func (p *NodeInputText) OnKeyPressEnter() {

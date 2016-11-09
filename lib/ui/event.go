@@ -4,6 +4,7 @@ import "github.com/gizak/termui"
 
 func (p *Page) registerHandles() {
 	termui.Handle("/sys/kbd/q", func(termui.Event) {
+		termui.DefaultEvtStream.ResetHandlers()
 		termui.StopLoop()
 	})
 
@@ -94,20 +95,4 @@ func (p *Page) SetActiveNode(node *Node) {
 	if nil != p.ActiveNode && nil != p.ActiveNode.ActiveMode {
 		p.ActiveNode.ActiveMode()
 	}
-}
-
-func (p *Page) Refresh() {
-	termui.Clear()
-	if len(p.Bufferers) > 0 {
-		termui.Render(p.Bufferers...)
-	}
-	if nil != p.FocusNode {
-		p.SetActiveNode(p.FocusNode.Value.(*Node))
-	}
-}
-
-func (p *Page) Rerender() {
-	termui.Clear()
-	p.Render()
-	p.Refresh()
 }

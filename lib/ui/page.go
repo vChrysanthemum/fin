@@ -2,6 +2,7 @@ package ui
 
 import (
 	"container/list"
+	"image"
 	"log"
 
 	"github.com/gizak/termui"
@@ -29,9 +30,9 @@ type Page struct {
 	doc                   *html.Node
 	parsingNodesStack     *list.List
 	FirstChildNode        *Node
-	WorkingNodes          *list.List
 	NodeActiveAfterRender *Node
 	FocusNode             *list.Element
+	WorkingNodes          *list.List
 	ActiveNode            *Node
 
 	renderingX int
@@ -69,34 +70,14 @@ func (p *Page) RemoveNode(node *Node) {
 		node.OnRemove()
 	}
 
-	for k, v := range p.Bufferers {
-		if v == node.uiBuffer {
-			p.Bufferers = append(p.Bufferers[:k], p.Bufferers[k+1:]...)
-			break
-		}
+	delete(p.IdToNodeMap, node.Id)
+
+	if nil != node.PrevSibling {
+		node.PrevSibling.NextSibling = node.NextSibling
 	}
 
-	if p.FirstChildNode == node {
-		p.FirstChildNode = node.NextSibling
-	}
-
-	for nodeElement := p.WorkingNodes.Front(); nodeElement != nil; nodeElement = nodeElement.Next() {
-		if nodeElement.Value.(*Node) == node {
-			p.WorkingNodes.Remove(nodeElement)
-			break
-		}
-	}
-
-	if p.NodeActiveAfterRender == node {
-		p.NodeActiveAfterRender = nil
-	}
-
-	if nil != p.FocusNode && p.FocusNode.Value.(*Node) == node {
-		p.FocusNode = p.FocusNode.Next()
-	}
-
-	if p.ActiveNode == node {
-		node.QuitActiveMode()
+	if nil != node.NextSibling {
+		node.NextSibling.PrevSibling = node.PrevSibling
 	}
 
 	if nil != node.Parent {
@@ -109,15 +90,26 @@ func (p *Page) RemoveNode(node *Node) {
 		}
 	}
 
-	if nil != node.NextSibling {
-		node.NextSibling.PrevSibling = node.PrevSibling
-	}
-
-	if nil != node.PrevSibling {
-		node.PrevSibling.NextSibling = node.NextSibling
-	}
-
 	p.Rerender()
+}
+
+func (p *Page) Refresh() {
+	termui.Clear()
+	min := image.Point{X: 0, Y: 0}
+	max := image.Point{X: termui.TermWidth(), Y: termui.TermHeight()}
+	termui.ClearArea(image.Rectangle{Min: min, Max: max}, termui.ColorDefault)
+
+	if len(p.Bufferers) > 0 {
+		termui.Render(p.Bufferers...)
+	}
+	if nil != p.FocusNode {
+		p.SetActiveNode(p.FocusNode.Value.(*Node))
+	}
+}
+
+func (p *Page) Rerender() {
+	p.Render()
+	p.Refresh()
 }
 
 func (p *Page) Serve() {

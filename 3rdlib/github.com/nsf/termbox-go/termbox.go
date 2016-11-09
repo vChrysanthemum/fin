@@ -2,14 +2,18 @@
 
 package termbox
 
-import "unicode/utf8"
-import "bytes"
-import "syscall"
-import "unsafe"
+import (
+	"bytes"
+	"io"
+	"log"
+	"os"
+	"strconv"
+	"syscall"
+	"unicode/utf8"
+	"unsafe"
+)
+
 import "strings"
-import "strconv"
-import "os"
-import "io"
 
 // private API
 
@@ -231,10 +235,15 @@ func send_char(x, y int, ch rune) {
 }
 
 func flush() error {
-	_, err := io.Copy(out, &outbuf)
-	outbuf.Reset()
-	if err != nil {
-		return err
+	// TODO 这里 outbuf 可能小于零
+	if outbuf.Len() > 0 {
+		_, err := io.Copy(out, &outbuf)
+		outbuf.Reset()
+		if err != nil {
+			return err
+		}
+	} else {
+		outbuf = bytes.Buffer{}
 	}
 	return nil
 }

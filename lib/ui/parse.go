@@ -122,6 +122,7 @@ func (p *Page) parse(htmlNode *html.Node) *Node {
 			switch v.Key {
 			case "id":
 				p.IdToNodeMap[v.Val] = node
+				node.Id = v.Val
 			case "colorfg":
 				node.ColorFg = v.Val
 			case "borderlabel":

@@ -82,13 +82,19 @@ func (p *Page) render(node *Node) error {
 	return nil
 }
 
-func (p *Page) Render() error {
+func (p *Page) Clear() {
 	p.Bufferers = make([]termui.Bufferer, 0)
-	p.WorkingNodes = list.New()
+	p.NodeActiveAfterRender = nil
 	p.FocusNode = nil
+	p.WorkingNodes = list.New()
 	p.ActiveNode = nil
+
 	p.renderingX = 0
 	p.renderingY = 0
+}
+
+func (p *Page) Render() error {
+	p.Clear()
 
 	err := p.render(p.FirstChildNode)
 	if nil != err {

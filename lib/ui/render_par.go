@@ -6,7 +6,13 @@ func (p *Page) renderBodyPar(node *Node) (isFallthrough bool) {
 	isFallthrough = false
 	nodePar := node.Data.(*NodePar)
 
-	uiBuffer := termui.NewPar(nodePar.Text)
+	var uiBuffer *termui.Par
+	if nil != node.uiBuffer {
+		uiBuffer = node.uiBuffer.(*termui.Par)
+	} else {
+		uiBuffer = termui.NewPar(nodePar.Text)
+	}
+
 	uiBuffer.BorderLabel = node.BorderLabel
 	uiBuffer.Border = node.Border
 

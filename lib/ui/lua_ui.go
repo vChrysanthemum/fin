@@ -32,11 +32,10 @@ func (p *Script) luaFuncWindowConfirm(L *lua.LState) int {
 	nodeSelectData.DisableQuit = true
 	L.Push(lua.LString(nodeSelectData.Children[nodeSelectData.SelectedOptionIndex].Value))
 
-	page.Bufferers = []termui.Bufferer{}
-	page.Refresh()
+	page.Clear()
 
 	p.page.SetActiveNode(nil)
-	p.page.Refresh()
+	p.page.Rerender()
 
 	return 1
 }

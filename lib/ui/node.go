@@ -16,6 +16,7 @@ type NodeOnKeyPressEnter func()
 type NodeOnRemove func()
 
 type Node struct {
+	Id   string
 	page *Page
 
 	ChildrenCount int
@@ -78,6 +79,7 @@ func (p *Node) addChild(child *Node) {
 
 	child.Parent = p
 	child.Parent.ChildrenCount += 1
+
 	child.FirstChild = nil
 	child.LastChild = nil
 	child.PrevSibling = nil
