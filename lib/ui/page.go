@@ -2,7 +2,7 @@ package ui
 
 import (
 	"container/list"
-	"fmt"
+	"log"
 
 	"github.com/gizak/termui"
 	"golang.org/x/net/html"
@@ -54,7 +54,7 @@ func newPage() *Page {
 }
 
 func (p *Page) dumpNodesHtmlData(node *Node) {
-	fmt.Println(node.HtmlData)
+	log.Println(node.HtmlData)
 	for childNode := node.FirstChild; childNode != nil; childNode = childNode.NextSibling {
 		p.dumpNodesHtmlData(childNode)
 	}

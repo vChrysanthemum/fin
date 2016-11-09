@@ -1,8 +1,6 @@
 package ui
 
-import (
-	"github.com/gizak/termui"
-)
+import "github.com/gizak/termui"
 
 func (p *Page) _renderBodyTableOneRow(nodeTr *Node) []*termui.Row {
 	var (
@@ -33,13 +31,15 @@ func (p *Page) _renderBodyTableOneRow(nodeTr *Node) []*termui.Row {
 		}
 	}
 
-	_cols = (TABLE_TR_COLS - _cols) / len(needCalculateColNodeTdList)
-	if _cols <= 0 {
-		_cols = 1
-	}
+	if len(needCalculateColNodeTdList) > 0 {
+		_cols = (TABLE_TR_COLS - _cols) / len(needCalculateColNodeTdList)
+		if _cols <= 0 {
+			_cols = 1
+		}
 
-	for _, nodeTdData = range needCalculateColNodeTdList {
-		nodeTdData.Cols = _cols
+		for _, nodeTdData = range needCalculateColNodeTdList {
+			nodeTdData.Cols = _cols
+		}
 	}
 
 	// 渲染 BodyTableTrTd
