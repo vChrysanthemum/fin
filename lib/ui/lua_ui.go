@@ -3,6 +3,10 @@ package ui
 import lua "github.com/yuin/gopher-lua"
 
 func (p *Script) luaFuncWindowConfirm(L *lua.LState) int {
+	if L.GetTop() < 1 {
+		return 0
+	}
+
 	content := L.ToString(1)
 	page, err := Parse(content)
 	if nil != err {
@@ -25,9 +29,9 @@ func (p *Script) luaFuncWindowConfirm(L *lua.LState) int {
 
 	p.page.SetActiveNode(nodeSelect)
 
-	nodeSelect.OnKeyPressEnter()
 	nodeSelectData.DisableQuit = true
-	L.Push(lua.LString(nodeSelectData.Children[nodeSelectData.SelectedOptionIndex].Value))
+	nodeSelect.OnKeyPressEnter()
+	L.Push(lua.LString(nodeSelectData.GetValue()))
 
 	page.Clear()
 

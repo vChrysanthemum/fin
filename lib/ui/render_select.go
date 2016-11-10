@@ -47,14 +47,17 @@ func (p *Page) renderBodySelect(node *Node) (isFallthrough bool) {
 	}
 	uiBuffer.Width = node.Width
 
-	if node.Height < 0 {
-		if true == node.Border {
-			node.Height = len(nodeSelect.Children) + 2
-		} else {
-			node.Height = len(nodeSelect.Children)
-		}
+	var height int
+	if true == node.Border {
+		height = len(nodeSelect.Children) + 2
+	} else {
+		height = len(nodeSelect.Children)
 	}
-	uiBuffer.Height = node.Height
+	if node.Height < 0 {
+		uiBuffer.Height = height
+	} else {
+		uiBuffer.Height = maxint(node.Height, height)
+	}
 
 	uiBuffer.X = p.renderingX
 	uiBuffer.Y = p.renderingY

@@ -44,6 +44,14 @@ function _Node.CanvasDraw(self)
     return base.NodeCanvasDraw(self.nodePointer)
 end
 
+function _Node.SelectAppendOption(self, value, data)
+    return base.NodeSelectAppendOption(self.nodePointer, value, data)
+end
+
+function _Node.SelectClearOptions(self)
+    return base.NodeSelectClearOptions(self.nodePointer)
+end
+
 function WindowConfirm(title)
     content = string.format([[
     <table>

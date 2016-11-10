@@ -70,3 +70,13 @@ func uirender(bs ...termui.Bufferer) {
 func uiclear() {
 	termui.Render(GClearScreenBuffer)
 }
+
+func maxint(data ...int) int {
+	max := data[0]
+	for _, v := range data {
+		if v > max {
+			max = v
+		}
+	}
+	return max
+}

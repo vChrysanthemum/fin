@@ -16,9 +16,11 @@ Node("ParResult"):SetText(result);
 Node("InputTextTest"):OnKeyPressEnter(
   function(node)
     Node("ParResult0"):SetText(Node("InputTextTest"):GetValue())
+    Node("SelectTestChangeOptions"):SelectAppendOption("测试", "你好");
     Node("InputTextTest"):Remove()
     if "confirm" == WindowConfirm("是否继续删除") then
-      Node("SelectTest"):Remove()
+      Node("SelectTestRemove"):Remove()
+      Node("SelectTestChangeOptions"):SelectClearOptions();
     end
   end
 );
@@ -30,7 +32,11 @@ Node("InputTextTest"):OnKeyPressEnter(
   <par id="ParResult3" height=3>你好</par>
   <inputtext id="InputTextTest" height=3>
   </inputtext>
-  <select id="SelectTest">
+  <select id="SelectTestChangeOptions">
+    <option value="cancel">取消</option>
+    <option value="confirm">确定</option>
+  </select>
+  <select id="SelectTestRemove">
     <option value="cancel">取消</option>
     <option value="confirm">确定</option>
   </select>

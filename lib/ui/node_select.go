@@ -1,6 +1,9 @@
 package ui
 
-import "github.com/gizak/termui"
+import (
+	"github.com/gizak/termui"
+	rw "github.com/mattn/go-runewidth"
+)
 
 type NodeSelect struct {
 	DisableQuit bool
@@ -38,14 +41,18 @@ func (p *Node) InitNodeSelect() *NodeSelect {
 }
 
 type NodeSelectOption struct {
-	Data  string
 	Value string
+	Data  string
 }
 
 func (p *NodeSelect) KeyPress(e termui.Event) {
 	keyStr := e.Data.(termui.EvtKbd).KeyStr
 	if "<escape>" == keyStr && false == p.DisableQuit {
 		p.Node.QuitActiveMode()
+		return
+	}
+
+	if 0 == len(p.Children) {
 		return
 	}
 
@@ -84,6 +91,21 @@ func (p *NodeSelect) KeyPress(e termui.Event) {
 func (p *NodeSelect) GetValue() string {
 	nodeSelectOption := p.Children[p.SelectedOptionIndex]
 	return nodeSelectOption.Value
+}
+
+func (p *NodeSelect) AppendOption(value, data string) {
+	p.Children = append(p.Children, NodeSelectOption{Value: value, Data: data})
+	width := rw.StringWidth(data)
+	if width > p.ChildrenMaxStringWidth {
+		p.ChildrenMaxStringWidth = width
+	}
+	p.Node.refreshUiBufferItems()
+}
+
+func (p *NodeSelect) ClearOptions() {
+	p.SelectedOptionIndex = 0
+	p.Children = []NodeSelectOption{}
+	p.ChildrenMaxStringWidth = 0
 }
 
 func (p *NodeSelect) OnKeyPressEnter() {
