@@ -1,4 +1,4 @@
-package tinyiron
+package iron
 
 import (
 	"net/http"
@@ -12,7 +12,7 @@ type View struct {
 
 func (p *Server) Render(path string, w http.ResponseWriter, r *http.Request, ViewData map[string]interface{}) {
 	w.Header().Add("Content-Type", "text/html;charset=utf-8")
-	w.Header().Add("Server", "tinyiron")
+	w.Header().Add("Server", "iron")
 
 	var tmpl *template.Template
 
