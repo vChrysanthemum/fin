@@ -30,6 +30,7 @@ type Node struct {
 	isShouldTermuiRenderChild bool
 
 	uiBuffer interface{}
+	uiBlock  *termui.Block
 
 	// TODO 重构代码
 	// 这里用了绕了个弯
@@ -72,6 +73,15 @@ func (p *Node) InitNodeDiv() *NodeDiv {
 	return nodeDiv
 }
 
+func (p *Page) newNode(htmlNode *html.Node) *Node {
+	ret := new(Node)
+	ret.page = p
+	ret.HtmlData = htmlNode.Data
+	ret.Width = 1
+	ret.Height = 1
+	return ret
+}
+
 func (p *Node) addChild(child *Node) {
 	if nil == p {
 		return
@@ -95,13 +105,4 @@ func (p *Node) addChild(child *Node) {
 	}
 
 	p.LastChild = child
-}
-
-func (p *Page) newNode(htmlNode *html.Node) *Node {
-	ret := new(Node)
-	ret.page = p
-	ret.HtmlData = htmlNode.Data
-	ret.Width = 1
-	ret.Height = 1
-	return ret
 }

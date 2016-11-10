@@ -13,10 +13,8 @@ func (p *Page) renderBodyPar(node *Node) (isFallthrough bool) {
 		uiBuffer = termui.NewPar(nodePar.Text)
 	}
 
-	uiBuffer.BorderLabel = node.BorderLabel
-	uiBuffer.Border = node.Border
-
-	uiBuffer.Width = node.Width
+	node.uiBlock = &uiBuffer.Block
+	p.normalRenderNodeBlock(node)
 
 	if node.Height < 0 {
 		if true == node.Border {
@@ -27,8 +25,6 @@ func (p *Page) renderBodyPar(node *Node) (isFallthrough bool) {
 	}
 	uiBuffer.Height = node.Height
 
-	uiBuffer.X = p.renderingX
-	uiBuffer.Y = p.renderingY
 	if "" != node.ColorFg {
 		uiBuffer.TextFgColor = ColorToTermuiAttribute(node.ColorFg, termui.ColorDefault)
 	}

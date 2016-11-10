@@ -34,9 +34,8 @@ func (p *Page) renderBodySelect(node *Node) (isFallthrough bool) {
 		uiBuffer = termui.NewList()
 	}
 
-	uiBuffer.BorderLabel = node.BorderLabel
-	uiBuffer.Border = node.Border
-	uiBuffer.BorderFg = node.BorderFg
+	node.uiBlock = &uiBuffer.Block
+	p.normalRenderNodeBlock(node)
 
 	if node.Width < 0 {
 		if true == node.Border {
@@ -59,18 +58,15 @@ func (p *Page) renderBodySelect(node *Node) (isFallthrough bool) {
 		uiBuffer.Height = maxint(node.Height, height)
 	}
 
-	uiBuffer.X = p.renderingX
-	uiBuffer.Y = p.renderingY
-
 	node.uiBuffer = uiBuffer
 
 	nodeSelect.refreshUiBufferItems()
 
 	p.BufferersAppend(node, uiBuffer)
 
-	p.renderingY = uiBuffer.Y + uiBuffer.Height
-
 	p.pushWorkingNode(node)
+
+	p.renderingY = uiBuffer.Y + uiBuffer.Height
 
 	return
 }

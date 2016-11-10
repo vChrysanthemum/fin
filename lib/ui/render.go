@@ -83,6 +83,20 @@ func (p *Page) render(node *Node) error {
 	return nil
 }
 
+func (p *Page) normalRenderNodeBlock(node *Node) {
+	if nil == node.uiBlock {
+		return
+	}
+
+	node.uiBlock.BorderLabel = node.BorderLabel
+	node.uiBlock.Border = node.Border
+	node.uiBlock.BorderFg = node.BorderFg
+	node.uiBlock.Width = node.Width
+	node.uiBlock.Height = node.Height
+	node.uiBlock.X = p.renderingX
+	node.uiBlock.Y = p.renderingY
+}
+
 func (p *Page) Clear() {
 	p.Bufferers = make([]termui.Bufferer, 0)
 	p.NodeActiveAfterRender = nil
