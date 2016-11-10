@@ -14,7 +14,7 @@ if "confirm" == result then
 end
 Node("ParResult"):SetText(result);
 Node("InputTextTest"):OnKeyPressEnter(
-  function(node)
+  function(nodePointer)
     Node("ParResult0"):SetText(Node("InputTextTest"):GetValue())
     Node("SelectTestChangeOptions"):SelectAppendOption("测试", "你好");
     Node("InputTextTest"):Remove()

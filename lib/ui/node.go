@@ -106,3 +106,10 @@ func (p *Node) addChild(child *Node) {
 
 	p.LastChild = child
 }
+
+func (p *Node) render() {
+	if nil == p.uiBuffer {
+		return
+	}
+	uirender(p.uiBuffer.(termui.Bufferer))
+}

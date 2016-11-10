@@ -1,15 +1,27 @@
 local _Node = {}
 local _mtNode = {__index = _Node}
 
-function Node(id)
-    local nodePointer = base.GetNodePointer(id)
-    if nil == nodePointer then
-        return nil
+function Node(target)
+    local nodePointer
+    local targetType = type(target)
+    if "string" == targetType then
+      nodePointer = base.GetNodePointer(target)
+      if nil == nodePointer then
+          return nil
+      end 
+    elseif "userdata" == targetType then
+      nodePointer = target
+    else
+      return nil 
     end
 
     local ret = setmetatable({}, _mtNode)
     ret.nodePointer = nodePointer
     return ret
+end 
+
+function _Node.Render(self)
+    return base.NodeRender(self.nodePointer)
 end
 
 function _Node.SetActive(self)
@@ -52,6 +64,14 @@ function _Node.SelectClearOptions(self)
     return base.NodeSelectClearOptions(self.nodePointer)
 end
 
+function _Node.TerminalPopNewCommand(self)
+    return base.NodeTerminalPopNewCommand(self.nodePointer)
+end
+
+function _Node.TerminalWriteLine(self, line)
+    return base.NodeTerminalWriteLine(self.nodePointer, line)
+end
+
 function WindowConfirm(title)
     content = string.format([[
     <table>
@@ -74,6 +94,6 @@ function WindowConfirm(title)
     return base.WindowConfirm(content)
 end
 
-function Log(content)
-    base.Log(content)
+function Log(...)
+    base.Log(unpack(arg))
 end

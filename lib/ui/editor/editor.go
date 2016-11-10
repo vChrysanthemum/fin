@@ -31,6 +31,21 @@ func (p *Editor) Text() string {
 	return ret
 }
 
+func (p *Editor) WriteLine(line string) {
+	if 0 == len(p.Lines) {
+		p.CurrentLine = p.InitNewLine()
+	}
+
+	// 如果上一行不为空，则启用新一行
+	// 反之则利用上一行
+	if len(p.CurrentLine.Data) > 0 {
+		p.CurrentLine = p.InitNewLine()
+	}
+
+	p.CurrentLine.Data = []byte(line)
+	p.CurrentLine = p.InitNewLine()
+}
+
 func (p *Editor) Write(keyStr string) {
 	if 0 == len(p.Lines) {
 		p.CurrentLine = p.InitNewLine()

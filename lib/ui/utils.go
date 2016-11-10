@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"fmt"
 	"image"
 
 	"github.com/gizak/termui"
@@ -79,4 +80,8 @@ func maxint(data ...int) int {
 		}
 	}
 	return max
+}
+
+func Beep() {
+	fmt.Println("\a")
 }

@@ -3,7 +3,6 @@ package ui
 import lua "github.com/yuin/gopher-lua"
 
 func (p *Script) _getNodeSelectPointerFromUserData(L *lua.LState, lu *lua.LUserData) *NodeSelect {
-
 	if nil == lu || nil == lu.Value {
 		return nil
 	}

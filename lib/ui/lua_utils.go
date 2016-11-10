@@ -7,7 +7,11 @@ import (
 )
 
 func (p *Script) LuaFuncLog(L *lua.LState) int {
-	content := L.ToString(1)
-	log.Println(content)
+	params := L.GetTop()
+	var contents []string
+	for i := 1; i <= params; i++ {
+		contents = append(contents, L.ToString(i))
+	}
+	log.Println(contents)
 	return 0
 }

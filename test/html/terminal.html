@@ -1,0 +1,21 @@
+<html>
+<head>
+  <title>test</title>
+</head>
+<body colorfg="blue">
+  <script type="text/lua">
+  local NodeTerminalMain = Node("TerminalMain");
+  TerminalMainOnKeyPressEnter = function(nodePointer)
+    local command = Node(nodePointer):TerminalPopNewCommand()
+    if command == "punch" then
+      Log(command)
+      NodeTerminalMain:TerminalWriteLine("punch success.")
+      NodeTerminalMain:Render()
+    end
+    NodeTerminalMain:OnKeyPressEnter(TerminalMainOnKeyPressEnter)
+  end
+  NodeTerminalMain:OnKeyPressEnter(TerminalMainOnKeyPressEnter)
+  </script>
+  <terminal id="TerminalMain"></terminal>
+</body>
+</html>
