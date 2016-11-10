@@ -65,13 +65,13 @@ func (sl *Sparklines) update() {
 			sl.Lines[i].displayHeight = v.Height + 1
 		}
 	}
-	sl.displayWidth = sl.innerArea.Dx()
+	sl.displayWidth = sl.InnerArea.Dx()
 
 	// get how many lines gotta display
 	h := 0
 	sl.displayLines = 0
 	for _, v := range sl.Lines {
-		if h+v.displayHeight <= sl.innerArea.Dy() {
+		if h+v.displayHeight <= sl.InnerArea.Dy() {
 			sl.displayLines++
 		} else {
 			break
@@ -107,12 +107,12 @@ func (sl *Sparklines) Buffer() Buffer {
 		l := sl.Lines[i]
 		data := l.Data
 
-		if len(data) > sl.innerArea.Dx() {
-			data = data[len(data)-sl.innerArea.Dx():]
+		if len(data) > sl.InnerArea.Dx() {
+			data = data[len(data)-sl.InnerArea.Dx():]
 		}
 
 		if l.Title != "" {
-			rs := trimStr2Runes(l.Title, sl.innerArea.Dx())
+			rs := trimStr2Runes(l.Title, sl.InnerArea.Dx())
 			oftX := 0
 			for _, v := range rs {
 				w := charWidth(v)
@@ -121,8 +121,8 @@ func (sl *Sparklines) Buffer() Buffer {
 					Fg: l.TitleColor,
 					Bg: sl.Bg,
 				}
-				x := sl.innerArea.Min.X + oftX
-				y := sl.innerArea.Min.Y + oftY
+				x := sl.InnerArea.Min.X + oftX
+				y := sl.InnerArea.Min.Y + oftY
 				buf.Set(x, y, c)
 				oftX += w
 			}
@@ -142,8 +142,8 @@ func (sl *Sparklines) Buffer() Buffer {
 					Ch: ' ', // => sparks[7]
 					Bg: l.LineColor,
 				}
-				x := sl.innerArea.Min.X + j
-				y := sl.innerArea.Min.Y + oftY + l.Height - jj
+				x := sl.InnerArea.Min.X + j
+				y := sl.InnerArea.Min.Y + oftY + l.Height - jj
 
 				//p.Bg = sl.BgColor
 				buf.Set(x, y, c)
@@ -154,8 +154,8 @@ func (sl *Sparklines) Buffer() Buffer {
 					Fg: l.LineColor,
 					Bg: sl.Bg,
 				}
-				x := sl.innerArea.Min.X + j
-				y := sl.innerArea.Min.Y + oftY + l.Height - barCnt
+				x := sl.InnerArea.Min.X + j
+				y := sl.InnerArea.Min.Y + oftY + l.Height - barCnt
 				buf.Set(x, y, c)
 			}
 		}

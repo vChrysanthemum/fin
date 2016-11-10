@@ -50,7 +50,7 @@ func NewBarChart() *BarChart {
 }
 
 func (bc *BarChart) layout() {
-	bc.numBar = bc.innerArea.Dx() / (bc.BarGap + bc.BarWidth)
+	bc.numBar = bc.InnerArea.Dx() / (bc.BarGap + bc.BarWidth)
 	bc.labels = make([][]rune, bc.numBar)
 	bc.dataNum = make([][]rune, len(bc.Data))
 
@@ -71,7 +71,7 @@ func (bc *BarChart) layout() {
 			bc.max = bc.Data[i]
 		}
 	}
-	bc.scale = float64(bc.max) / float64(bc.innerArea.Dy()-1)
+	bc.scale = float64(bc.max) / float64(bc.InnerArea.Dy()-1)
 }
 
 func (bc *BarChart) SetMax(max int) {
@@ -110,8 +110,8 @@ func (bc *BarChart) Buffer() Buffer {
 					Fg: barFg,
 				}
 
-				x := bc.innerArea.Min.X + i*(bc.BarWidth+bc.BarGap) + j
-				y := bc.innerArea.Min.Y + bc.innerArea.Dy() - 2 - k
+				x := bc.InnerArea.Min.X + i*(bc.BarWidth+bc.BarGap) + j
+				y := bc.InnerArea.Min.Y + bc.InnerArea.Dy() - 2 - k
 				buf.Set(x, y, c)
 			}
 		}
@@ -123,8 +123,8 @@ func (bc *BarChart) Buffer() Buffer {
 				Bg: bc.Bg,
 				Fg: bc.TextColor,
 			}
-			y := bc.innerArea.Min.Y + bc.innerArea.Dy() - 1
-			x := bc.innerArea.Min.X + oftX + k
+			y := bc.InnerArea.Min.Y + bc.InnerArea.Dy() - 1
+			x := bc.InnerArea.Min.X + oftX + k
 			buf.Set(x, y, c)
 			k += w
 		}
@@ -139,8 +139,8 @@ func (bc *BarChart) Buffer() Buffer {
 			if h == 0 {
 				c.Bg = bc.Bg
 			}
-			x := bc.innerArea.Min.X + oftX + (bc.BarWidth-len(bc.dataNum[i]))/2 + j
-			y := bc.innerArea.Min.Y + bc.innerArea.Dy() - 2
+			x := bc.InnerArea.Min.X + oftX + (bc.BarWidth-len(bc.dataNum[i]))/2 + j
+			y := bc.InnerArea.Min.Y + bc.InnerArea.Dy() - 2
 			buf.Set(x, y, c)
 		}
 	}

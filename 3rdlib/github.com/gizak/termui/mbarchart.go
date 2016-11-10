@@ -57,7 +57,7 @@ func NewMBarChart() *MBarChart {
 }
 
 func (bc *MBarChart) layout() {
-	bc.numBar = bc.innerArea.Dx() / (bc.BarGap + bc.BarWidth)
+	bc.numBar = bc.InnerArea.Dx() / (bc.BarGap + bc.BarWidth)
 	bc.labels = make([][]rune, bc.numBar)
 	DataLen := 0
 	LabelLen := len(bc.DataLabels)
@@ -129,9 +129,9 @@ func (bc *MBarChart) layout() {
 	if bc.ShowScale {
 		s := fmt.Sprintf("%d", bc.max)
 		bc.maxScale = trimStr2Runes(s, len(s))
-		bc.scale = float64(bc.max) / float64(bc.innerArea.Dy()-2)
+		bc.scale = float64(bc.max) / float64(bc.InnerArea.Dy()-2)
 	} else {
-		bc.scale = float64(bc.max) / float64(bc.innerArea.Dy()-1)
+		bc.scale = float64(bc.max) / float64(bc.InnerArea.Dy()-1)
 	}
 
 }
@@ -164,8 +164,8 @@ func (bc *MBarChart) Buffer() Buffer {
 					if bc.BarColor[i1] == ColorDefault { // when color is default, space char treated as transparent!
 						c.Bg |= AttrReverse
 					}
-					x := bc.innerArea.Min.X + i*(bc.BarWidth+bc.BarGap) + j
-					y := bc.innerArea.Min.Y + bc.innerArea.Dy() - 2 - k - ph
+					x := bc.InnerArea.Min.X + i*(bc.BarWidth+bc.BarGap) + j
+					y := bc.InnerArea.Min.Y + bc.InnerArea.Dy() - 2 - k - ph
 					buf.Set(x, y, c)
 
 				}
@@ -180,8 +180,8 @@ func (bc *MBarChart) Buffer() Buffer {
 				Bg: bc.Bg,
 				Fg: bc.TextColor,
 			}
-			y := bc.innerArea.Min.Y + bc.innerArea.Dy() - 1
-			x := bc.innerArea.Max.X + oftX + ((bc.BarWidth - len(bc.labels[i])) / 2) + k
+			y := bc.InnerArea.Min.Y + bc.InnerArea.Dy() - 1
+			x := bc.InnerArea.Max.X + oftX + ((bc.BarWidth - len(bc.labels[i])) / 2) + k
 			buf.Set(x, y, c)
 			k += w
 		}
@@ -201,8 +201,8 @@ func (bc *MBarChart) Buffer() Buffer {
 				if h == 0 {
 					c.Bg = bc.Bg
 				}
-				x := bc.innerArea.Min.X + oftX + (bc.BarWidth-len(bc.dataNum[i1][i]))/2 + j
-				y := bc.innerArea.Min.Y + bc.innerArea.Dy() - 2 - ph
+				x := bc.InnerArea.Min.X + oftX + (bc.BarWidth-len(bc.dataNum[i1][i]))/2 + j
+				y := bc.InnerArea.Min.Y + bc.InnerArea.Dy() - 2 - ph
 				buf.Set(x, y, c)
 			}
 			ph += h
@@ -218,7 +218,7 @@ func (bc *MBarChart) Buffer() Buffer {
 			Fg: bc.TextColor,
 		}
 
-		y := bc.innerArea.Min.Y + bc.innerArea.Dy() - 2
+		y := bc.InnerArea.Min.Y + bc.InnerArea.Dy() - 2
 		x := bc.X
 		buf.Set(x, y, c)
 
@@ -230,7 +230,7 @@ func (bc *MBarChart) Buffer() Buffer {
 				Fg: bc.TextColor,
 			}
 
-			y := bc.innerArea.Min.Y
+			y := bc.InnerArea.Min.Y
 			x := bc.X + i
 
 			buf.Set(x, y, c)

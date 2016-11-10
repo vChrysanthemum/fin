@@ -3,7 +3,7 @@ package canvas
 import "github.com/gizak/termui"
 
 type Canvas struct {
-	Block
+	termui.Block
 	Image       [][]termui.Cell
 	ItemFgColor termui.Attribute
 	ItemBgColor termui.Attribute
@@ -13,7 +13,7 @@ type Canvas struct {
 // NewCanvas returns a new *Canvas with given text as its content.
 func NewCanvas() *Canvas {
 	return &Canvas{
-		Block:       *NewBlock(),
+		Block:       *termui.NewBlock(),
 		ItemFgColor: termui.ThemeAttr("par.text.fg"),
 		ItemBgColor: termui.ThemeAttr("par.text.bg"),
 		WrapLength:  0,
@@ -24,8 +24,8 @@ func (p *Canvas) Set(x, y int, cell *termui.Cell) {
 	if nil == p.Image {
 		p.Block.Align()
 
-		sumY := p.Block.innerArea.Max.Y - p.Block.innerArea.Min.Y
-		sumX := p.Block.innerArea.Max.X - p.Block.innerArea.Min.X
+		sumY := p.Block.InnerArea.Max.Y - p.Block.InnerArea.Min.Y
+		sumX := p.Block.InnerArea.Max.X - p.Block.InnerArea.Min.X
 		p.Image = make([][]termui.Cell, sumY)
 		for i := 0; i < sumY; i++ {
 			p.Image[i] = make([]termui.Cell, sumX)
@@ -44,8 +44,8 @@ func (p *Canvas) Buffer() termui.Buffer {
 	}
 
 	trimItems := p.Image
-	if len(trimItems) > p.innerArea.Dy() {
-		trimItems = trimItems[:p.innerArea.Dy()]
+	if len(trimItems) > p.InnerArea.Dy() {
+		trimItems = trimItems[:p.InnerArea.Dy()]
 	}
 	for i, v := range trimItems {
 		j := 0
@@ -54,7 +54,7 @@ func (p *Canvas) Buffer() termui.Buffer {
 			if 0 == w {
 				w = 1
 			}
-			buf.Set(p.innerArea.Min.X+j, p.innerArea.Min.Y+i, vv)
+			buf.Set(p.InnerArea.Min.X+j, p.InnerArea.Min.Y+i, vv)
 			j += w
 		}
 	}

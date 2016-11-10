@@ -7,7 +7,7 @@ type Editor struct {
 
 	Lines []*Line
 
-	*Block
+	termui.Block
 
 	TextFgColor termui.Attribute
 	TextBgColor termui.Attribute
@@ -17,7 +17,7 @@ type Editor struct {
 func NewEditor() *Editor {
 	return &Editor{
 		Lines:       make([]*Line, 0),
-		Block:       NewBlock(),
+		Block:       *termui.NewBlock(),
 		TextFgColor: termui.ThemeAttr("par.text.fg"),
 		TextBgColor: termui.ThemeAttr("par.text.bg"),
 	}
@@ -75,25 +75,25 @@ func (p *Editor) Buffer() termui.Buffer {
 	}
 
 	y, x, n := 0, 0, 0
-	for y < p.innerArea.Dy() && n < len(cs) {
+	for y < p.InnerArea.Dy() && n < len(cs) {
 		w := cs[n].Width()
-		if cs[n].Ch == '\n' || x+w > p.innerArea.Dx() {
+		if cs[n].Ch == '\n' || x+w > p.InnerArea.Dx() {
 			y++
 			x = 0 // set x = 0
 			if cs[n].Ch == '\n' {
 				n++
 			}
 
-			if y >= p.innerArea.Dy() {
-				buf.Set(p.innerArea.Min.X+p.innerArea.Dx()-1,
-					p.innerArea.Min.Y+p.innerArea.Dy()-1,
+			if y >= p.InnerArea.Dy() {
+				buf.Set(p.InnerArea.Min.X+p.InnerArea.Dx()-1,
+					p.InnerArea.Min.Y+p.InnerArea.Dy()-1,
 					termui.Cell{Ch: '…', Fg: p.TextFgColor, Bg: p.TextBgColor})
 				break
 			}
 			continue
 		}
 
-		buf.Set(p.innerArea.Min.X+x, p.innerArea.Min.Y+y, cs[n])
+		buf.Set(p.InnerArea.Min.X+x, p.InnerArea.Min.Y+y, cs[n])
 
 		n++
 		x += w

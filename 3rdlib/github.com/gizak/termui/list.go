@@ -54,9 +54,9 @@ func (l *List) Buffer() Buffer {
 	case "wrap":
 		cs := DefaultTxBuilder.Build(strings.Join(l.Items, "\n"), l.ItemFgColor, l.ItemBgColor)
 		i, j, k := 0, 0, 0
-		for i < l.innerArea.Dy() && k < len(cs) {
+		for i < l.InnerArea.Dy() && k < len(cs) {
 			w := cs[k].Width()
-			if cs[k].Ch == '\n' || j+w > l.innerArea.Dx() {
+			if cs[k].Ch == '\n' || j+w > l.InnerArea.Dx() {
 				i++
 				j = 0
 				if cs[k].Ch == '\n' {
@@ -64,7 +64,7 @@ func (l *List) Buffer() Buffer {
 				}
 				continue
 			}
-			buf.Set(l.innerArea.Min.X+j, l.innerArea.Min.Y+i, cs[k])
+			buf.Set(l.InnerArea.Min.X+j, l.InnerArea.Min.Y+i, cs[k])
 
 			k++
 			j++
@@ -72,15 +72,15 @@ func (l *List) Buffer() Buffer {
 
 	case "hidden":
 		trimItems := l.Items
-		if len(trimItems) > l.innerArea.Dy() {
-			trimItems = trimItems[:l.innerArea.Dy()]
+		if len(trimItems) > l.InnerArea.Dy() {
+			trimItems = trimItems[:l.InnerArea.Dy()]
 		}
 		for i, v := range trimItems {
-			cs := DTrimTxCls(DefaultTxBuilder.Build(v, l.ItemFgColor, l.ItemBgColor), l.innerArea.Dx())
+			cs := DTrimTxCls(DefaultTxBuilder.Build(v, l.ItemFgColor, l.ItemBgColor), l.InnerArea.Dx())
 			j := 0
 			for _, vv := range cs {
 				w := vv.Width()
-				buf.Set(l.innerArea.Min.X+j, l.innerArea.Min.Y+i, vv)
+				buf.Set(l.InnerArea.Min.X+j, l.InnerArea.Min.Y+i, vv)
 				j += w
 			}
 		}

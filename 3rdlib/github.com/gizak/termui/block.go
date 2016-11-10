@@ -98,7 +98,7 @@ func (b Block) drawBorderLabel(buf Buffer) {
 // Normally you do not need to create it manually.
 type Block struct {
 	area          image.Rectangle
-	innerArea     image.Rectangle
+	InnerArea     image.Rectangle
 	X             int
 	Y             int
 	Border        bool
@@ -161,23 +161,23 @@ func (b *Block) Align() {
 	b.area = MoveArea(b.area, b.X, b.Y)
 
 	// inner
-	b.innerArea.Min.X = b.area.Min.X + b.PaddingLeft
-	b.innerArea.Min.Y = b.area.Min.Y + b.PaddingTop
-	b.innerArea.Max.X = b.area.Max.X - b.PaddingRight
-	b.innerArea.Max.Y = b.area.Max.Y - b.PaddingBottom
+	b.InnerArea.Min.X = b.area.Min.X + b.PaddingLeft
+	b.InnerArea.Min.Y = b.area.Min.Y + b.PaddingTop
+	b.InnerArea.Max.X = b.area.Max.X - b.PaddingRight
+	b.InnerArea.Max.Y = b.area.Max.Y - b.PaddingBottom
 
 	if b.Border {
 		if b.BorderLeft {
-			b.innerArea.Min.X++
+			b.InnerArea.Min.X++
 		}
 		if b.BorderRight {
-			b.innerArea.Max.X--
+			b.InnerArea.Max.X--
 		}
 		if b.BorderTop {
-			b.innerArea.Min.Y++
+			b.InnerArea.Min.Y++
 		}
 		if b.BorderBottom {
-			b.innerArea.Max.Y--
+			b.InnerArea.Max.Y--
 		}
 	}
 }
@@ -186,7 +186,7 @@ func (b *Block) Align() {
 // calculating the padding and border, if any.
 func (b *Block) InnerBounds() image.Rectangle {
 	b.Align()
-	return b.innerArea
+	return b.InnerArea
 }
 
 // Buffer implements Bufferer interface.
@@ -226,15 +226,15 @@ func (b *Block) SetWidth(w int) {
 }
 
 func (b Block) InnerWidth() int {
-	return b.innerArea.Dx()
+	return b.InnerArea.Dx()
 }
 
 func (b Block) InnerHeight() int {
-	return b.innerArea.Dy()
+	return b.InnerArea.Dy()
 }
 
 func (b Block) InnerX() int {
-	return b.innerArea.Min.X
+	return b.InnerArea.Min.X
 }
 
-func (b Block) InnerY() int { return b.innerArea.Min.Y }
+func (b Block) InnerY() int { return b.InnerArea.Min.Y }
