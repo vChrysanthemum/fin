@@ -67,6 +67,6 @@ func uirender(bs ...termui.Bufferer) {
 	termui.Render(bs...)
 }
 
-func (p *Page) uiclear() {
-	termui.Render(p.clearScreenBuffer)
+func uiclear() {
+	termui.Render(GClearScreenBuffer)
 }

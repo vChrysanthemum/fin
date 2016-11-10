@@ -8,13 +8,6 @@ import (
 	"golang.org/x/net/html"
 )
 
-func init() {
-	err := termui.Init()
-	if err != nil {
-		panic(err)
-	}
-}
-
 type Page struct {
 	Title string
 
@@ -36,8 +29,6 @@ type Page struct {
 
 	renderingX int
 	renderingY int
-
-	clearScreenBuffer *ClearScreenBuffer
 }
 
 func newPage() *Page {
@@ -51,8 +42,6 @@ func newPage() *Page {
 	ret.prepareScript()
 	ret.prepareParse()
 	ret.prepareRender()
-
-	ret.clearScreenBuffer = NewClearScreenBuffer()
 
 	return ret
 }
@@ -97,7 +86,7 @@ func (p *Page) RemoveNode(node *Node) {
 }
 
 func (p *Page) Refresh() {
-	p.uiclear()
+	uiclear()
 
 	if len(p.Bufferers) > 0 {
 		uirender(p.Bufferers...)
