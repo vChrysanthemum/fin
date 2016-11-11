@@ -17,7 +17,7 @@ func (p *Page) renderBodyInputText(node *Node) (isFallthrough bool) {
 
 	p.pushWorkingNode(node)
 
-	p.renderingY = uiBuffer.Y + uiBuffer.Height
+	p.renderingY = uiBuffer.Block.Y + uiBuffer.Block.Height
 
 	return
 }

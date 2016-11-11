@@ -68,11 +68,12 @@ func (p *NodeTerminal) KeyPress(e termui.Event) {
 	// 禁止删除一行
 	if "C-8" == keyStr && (nil == p.CurrentLine || len(p.CurrentLine.Data) <= len(p.CommandPrefix)) {
 		Beep()
+		p.Editor.ResetCursor()
 		return
 	}
 
 	p.Editor.Write(keyStr)
-	uirender(p.Node.uiBuffer.(termui.Bufferer))
+	uiRender(p.Node.uiBuffer.(termui.Bufferer))
 }
 
 func (p *NodeTerminal) OnKeyPressEnter() {
@@ -107,23 +108,23 @@ func (p *NodeTerminal) WriteNewLine(line string) {
 func (p *NodeTerminal) FocusMode() {
 	p.Node.uiBuffer.(*editor.Editor).Border = true
 	p.Node.uiBuffer.(*editor.Editor).BorderFg = COLOR_FOCUS_MODE_BORDERFG
-	uirender(p.Node.uiBuffer.(termui.Bufferer))
+	uiRender(p.Node.uiBuffer.(termui.Bufferer))
 }
 
 func (p *NodeTerminal) UnFocusMode() {
 	p.Node.uiBuffer.(*editor.Editor).Border = p.Node.Border
 	p.Node.uiBuffer.(*editor.Editor).BorderFg = p.Node.BorderFg
-	uirender(p.Node.uiBuffer.(termui.Bufferer))
+	uiRender(p.Node.uiBuffer.(termui.Bufferer))
 }
 
 func (p *NodeTerminal) ActiveMode() {
 	p.Node.uiBuffer.(*editor.Editor).BorderFg = p.ActiveModeBorderColor
 	p.Node.uiBuffer.(*editor.Editor).ActiveMode()
-	uirender(p.Node.uiBuffer.(termui.Bufferer))
+	uiRender(p.Node.uiBuffer.(termui.Bufferer))
 }
 
 func (p *NodeTerminal) UnActiveMode() {
 	p.Node.uiBuffer.(*editor.Editor).BorderFg = p.Node.BorderFg
 	p.Node.uiBuffer.(*editor.Editor).UnActiveMode()
-	uirender(p.Node.uiBuffer.(termui.Bufferer))
+	uiRender(p.Node.uiBuffer.(termui.Bufferer))
 }

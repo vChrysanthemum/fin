@@ -114,5 +114,5 @@ func (p *Node) render() {
 	if nil == p.uiBuffer {
 		return
 	}
-	uirender(p.uiBuffer.(termui.Bufferer))
+	uiRender(p.uiBuffer.(termui.Bufferer))
 }

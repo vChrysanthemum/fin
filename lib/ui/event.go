@@ -81,19 +81,21 @@ func (p *Page) pushWorkingNode(node *Node) {
 }
 
 func (p *Node) QuitActiveMode() {
+	if nil != p.UnActiveMode {
+		p.UnActiveMode()
+	}
+
 	if nil != p.page.FocusNode {
 		nodeFocus := p.page.FocusNode.Value.(*Node)
 		if nil != nodeFocus.FocusMode {
 			nodeFocus.FocusMode()
 		}
 	}
+
 	p.page.ActiveNode = nil
 }
 
 func (p *Page) SetActiveNode(node *Node) {
-	if nil != p.ActiveNode && p.ActiveNode != node && nil != p.ActiveNode.ActiveMode {
-		p.ActiveNode.UnActiveMode()
-	}
 	p.ActiveNode = node
 	if nil != p.ActiveNode && nil != p.ActiveNode.ActiveMode {
 		p.ActiveNode.ActiveMode()

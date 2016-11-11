@@ -1,7 +1,6 @@
 package editor
 
 import (
-	"image"
 	"strings"
 
 	"github.com/gizak/termui"
@@ -19,18 +18,19 @@ type Editor struct {
 	TextBgColor       termui.Attribute
 	WrapLength        int // words wrap limit. Note it may not work properly with multi-width char
 	DisplayLinesRange [2]int
-	CursorPosition    image.Point
+	*CursorLocation
 }
 
 func NewEditor() *Editor {
-	return &Editor{
+	ret := &Editor{
 		Lines:             make([]*Line, 0),
 		Block:             *termui.NewBlock(),
 		TextFgColor:       termui.ThemeAttr("par.text.fg"),
 		TextBgColor:       termui.ThemeAttr("par.text.bg"),
 		DisplayLinesRange: [2]int{0, 1},
-		CursorPosition:    image.Point{-1, -1},
 	}
+	ret.CursorLocation = NewCursorLocation(&ret.Block)
+	return ret
 }
 
 func (p *Editor) Text() string {
@@ -45,11 +45,6 @@ func (p *Editor) Text() string {
 		printLines = append(printLines, string(line.Data))
 	}
 	return strings.Join(printLines, "\n")
-}
-
-func (p *Editor) RenewCursor() {
-
-	termbox.SetCursor(p.CursorPosition.X, p.CursorPosition.Y)
 }
 
 func (p *Editor) WriteNewLine(line string) {
@@ -98,7 +93,6 @@ func (p *Editor) Write(keyStr string) {
 
 func (p *Editor) Buffer() termui.Buffer {
 	buf := p.Block.Buffer()
-	p.RenewCursor()
 
 	fg, bg := p.TextFgColor, p.TextBgColor
 	cs := termui.DefaultTxBuilder.Build(p.Text(), fg, bg)
@@ -110,9 +104,10 @@ func (p *Editor) Buffer() termui.Buffer {
 		cs = termui.WrapTx(cs, p.WrapLength)
 	}
 
-	y, x, n := 0, 0, 0
+	finalX, finalY := 0, 0
+	y, x, n, w := 0, 0, 0, 0
 	for y < p.InnerArea.Dy() && n < len(cs) {
-		w := cs[n].Width()
+		w = cs[n].Width()
 		if cs[n].Ch == '\n' || x+w > p.InnerArea.Dx() {
 			y++
 			x = 0 // set x = 0
@@ -129,24 +124,31 @@ func (p *Editor) Buffer() termui.Buffer {
 			continue
 		}
 
-		buf.Set(p.InnerArea.Min.X+x, p.InnerArea.Min.Y+y, cs[n])
+		finalX = p.InnerArea.Min.X + x
+		finalY = p.InnerArea.Min.Y + y
+		buf.Set(finalX, finalY, cs[n])
 
 		n++
 		x += w
+	}
+
+	if true == p.CursorLocation.IsDisplay {
+		if finalX+w > p.InnerArea.Dx() {
+			p.CursorLocation.SetCursor(p.InnerArea.Min.X, finalY+1)
+		} else {
+			p.CursorLocation.SetCursor(finalX+w, finalY)
+		}
 	}
 
 	return buf
 }
 
 func (p *Editor) ActiveMode() {
-	if p.CursorPosition.X < 0 {
-		p.CursorPosition.X = p.InnerArea.Min.X
-	}
-	if p.CursorPosition.Y < 0 {
-		p.CursorPosition.Y = p.InnerArea.Min.Y
-	}
+	p.CursorLocation.IsDisplay = true
+	p.CursorLocation.InitLocationIfNeeded()
 }
 
 func (p *Editor) UnActiveMode() {
-	termbox.HideCursor()
+	p.CursorLocation.IsDisplay = false
+	termbox.SetCursor(-1, -1)
 }

@@ -25,7 +25,7 @@ func (p *Script) luaFuncWindowConfirm(L *lua.LState) int {
 
 	nodeSelectData := nodeSelect.Data.(*NodeSelect)
 
-	uirender(page.Bufferers...)
+	uiRender(page.Bufferers...)
 
 	p.page.SetActiveNode(nodeSelect)
 

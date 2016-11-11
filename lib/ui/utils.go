@@ -64,14 +64,6 @@ func (p *ClearScreenBuffer) RefreshArea() {
 	p.buf.SetArea(image.Rectangle{min, max})
 }
 
-func uirender(bs ...termui.Bufferer) {
-	termui.Render(bs...)
-}
-
-func uiclear() {
-	termui.Render(GClearScreenBuffer)
-}
-
 func maxint(data ...int) int {
 	max := data[0]
 	for _, v := range data {
@@ -84,4 +76,12 @@ func maxint(data ...int) int {
 
 func Beep() {
 	fmt.Println("\a")
+}
+
+func uiRender(bs ...termui.Bufferer) {
+	termui.Render(bs...)
+}
+
+func uiClear() {
+	termui.Render(GClearScreenBuffer)
 }

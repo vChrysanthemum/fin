@@ -85,10 +85,10 @@ func (p *Page) RemoveNode(node *Node) {
 }
 
 func (p *Page) Refresh() {
-	uiclear()
+	uiClear()
 
 	if len(p.Bufferers) > 0 {
-		uirender(p.Bufferers...)
+		uiRender(p.Bufferers...)
 	}
 	if nil != p.FocusNode {
 		p.SetActiveNode(p.FocusNode.Value.(*Node))
