@@ -1,6 +1,10 @@
 export pwd = $(shell sh -c 'pwd')
 
-all:clean test build
+all:clean test build_inn 
+
+install:
+	@./install.sh
+	@echo "success."
 
 clean:
 	rm -rf pkg/*
