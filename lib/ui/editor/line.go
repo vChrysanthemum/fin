@@ -1,13 +1,16 @@
 package editor
 
-import "unicode/utf8"
+import (
+	"math"
+	"unicode/utf8"
+
+	rw "github.com/mattn/go-runewidth"
+)
 
 type Line struct {
 	Data []byte
 	Next *Line
 	Prev *Line
-
-	offset int
 }
 
 func (p *Editor) InitNewLine() *Line {
@@ -26,6 +29,20 @@ func (p *Editor) InitNewLine() *Line {
 	}
 
 	p.LastLine = ret
+
+	p.DisplayLinesRange[1] += 1
+	maxHeight := p.InnerArea.Dy()
+	maxWidth := p.InnerArea.Dx()
+	height := 1
+	index := 0
+	for i := p.DisplayLinesRange[1] - 2; i >= 0; i-- {
+		height += int(math.Ceil(float64(rw.StringWidth(string(p.Lines[i].Data))) / float64(maxWidth)))
+		if height > maxHeight {
+			break
+		}
+		index = i
+	}
+	p.DisplayLinesRange[0] = index
 
 	return ret
 }

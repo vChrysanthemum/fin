@@ -43,7 +43,7 @@ func (p *NodeTerminal) KeyPress(e termui.Event) {
 	}
 
 	// 获取新的命令行
-	if "<enter>" == keyStr && len(p.WaitKeyPressEnterChans) > 0 {
+	if "<enter>" == keyStr {
 
 		if (len(p.CommandLines) == 0 && nil != p.Editor.CurrentLine) ||
 			(len(p.CommandLines) > 0 && p.CommandLines[len(p.CommandLines)-1] != p.Editor.CurrentLine) {
@@ -52,11 +52,14 @@ func (p *NodeTerminal) KeyPress(e termui.Event) {
 			p.CommandLines = append(p.CommandLines, p.NewCommand)
 		}
 
-		for _, c := range p.WaitKeyPressEnterChans {
-			c <- true
-			close(c)
+		if len(p.WaitKeyPressEnterChans) > 0 {
+			for _, c := range p.WaitKeyPressEnterChans {
+				c <- true
+				close(c)
+			}
+			p.WaitKeyPressEnterChans = make([]chan bool, 0)
 		}
-		p.WaitKeyPressEnterChans = make([]chan bool, 0)
+
 		p.Editor.WriteNewLine("")
 		return
 	}

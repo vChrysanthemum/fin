@@ -1,6 +1,10 @@
 package editor
 
-import "github.com/gizak/termui"
+import (
+	"strings"
+
+	"github.com/gizak/termui"
+)
 
 type Editor struct {
 	FirstLine, LastLine, CurrentLine *Line
@@ -9,26 +13,34 @@ type Editor struct {
 
 	termui.Block
 
-	TextFgColor termui.Attribute
-	TextBgColor termui.Attribute
-	WrapLength  int // words wrap limit. Note it may not work properly with multi-width char
+	TextFgColor       termui.Attribute
+	TextBgColor       termui.Attribute
+	WrapLength        int // words wrap limit. Note it may not work properly with multi-width char
+	DisplayLinesRange [2]int
 }
 
 func NewEditor() *Editor {
 	return &Editor{
-		Lines:       make([]*Line, 0),
-		Block:       *termui.NewBlock(),
-		TextFgColor: termui.ThemeAttr("par.text.fg"),
-		TextBgColor: termui.ThemeAttr("par.text.bg"),
+		Lines:             make([]*Line, 0),
+		Block:             *termui.NewBlock(),
+		TextFgColor:       termui.ThemeAttr("par.text.fg"),
+		TextBgColor:       termui.ThemeAttr("par.text.bg"),
+		DisplayLinesRange: [2]int{0, 1},
 	}
 }
 
 func (p *Editor) Text() string {
-	var ret string
-	for _, line := range p.Lines {
-		ret = ret + "\n" + string(line.Data)
+	var printLines []string
+	for k, line := range p.Lines {
+		if k < p.DisplayLinesRange[0] {
+			continue
+		}
+		if k >= p.DisplayLinesRange[1] {
+			continue
+		}
+		printLines = append(printLines, string(line.Data))
 	}
-	return ret
+	return strings.Join(printLines, "\n")
 }
 
 func (p *Editor) WriteNewLine(line string) {
