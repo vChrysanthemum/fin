@@ -4,7 +4,7 @@ import "github.com/gizak/termui"
 
 func (p *Page) registerHandles() {
 	termui.Handle("/sys/wnd/resize", func(e termui.Event) {
-		GClearScreenBuffer.RefreshArea()
+		p.Rerender()
 	})
 
 	termui.Handle("/sys/kbd/q", func(termui.Event) {
@@ -78,7 +78,6 @@ func (p *Page) registerHandles() {
 func (p *Page) pushWorkingNode(node *Node) {
 	p.WorkingNodes.PushBack(node)
 	p.FocusNode = p.WorkingNodes.Back()
-	p.NodeActiveAfterRender = node
 }
 
 func (p *Node) QuitActiveMode() {

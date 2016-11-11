@@ -19,13 +19,12 @@ type Page struct {
 	parseAgentMap  []*ParseAgent
 	renderAgentMap []*RenderAgent
 
-	doc                   *html.Node
-	parsingNodesStack     *list.List
-	FirstChildNode        *Node
-	NodeActiveAfterRender *Node
-	FocusNode             *list.Element
-	WorkingNodes          *list.List
-	ActiveNode            *Node
+	doc               *html.Node
+	parsingNodesStack *list.List
+	FirstChildNode    *Node
+	FocusNode         *list.Element
+	WorkingNodes      *list.List
+	ActiveNode        *Node
 
 	renderingX int
 	renderingY int
@@ -104,7 +103,7 @@ func (p *Page) Rerender() {
 func (p *Page) Serve() {
 	defer termui.Close()
 
-	uirender(p.Bufferers...)
+	p.Refresh()
 
 	p.registerHandles()
 	go p.script.Run()

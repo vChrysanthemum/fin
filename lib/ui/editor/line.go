@@ -44,6 +44,8 @@ func (p *Editor) InitNewLine() *Line {
 	}
 	p.DisplayLinesRange[0] = index
 
+	// p.CursorPosition.X = p.InnerArea.Min.X
+
 	return ret
 }
 

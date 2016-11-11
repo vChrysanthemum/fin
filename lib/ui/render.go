@@ -101,7 +101,6 @@ func (p *Page) normalRenderNodeBlock(node *Node) {
 
 func (p *Page) Clear() {
 	p.Bufferers = make([]termui.Bufferer, 0)
-	p.NodeActiveAfterRender = nil
 	p.FocusNode = nil
 	p.WorkingNodes = list.New()
 	p.ActiveNode = nil
@@ -116,10 +115,6 @@ func (p *Page) Render() error {
 	err := p.render(p.FirstChildNode)
 	if nil != err {
 		return err
-	}
-
-	if nil != p.NodeActiveAfterRender {
-		p.SetActiveNode(p.NodeActiveAfterRender)
 	}
 
 	return nil

@@ -118,10 +118,12 @@ func (p *NodeTerminal) UnFocusMode() {
 
 func (p *NodeTerminal) ActiveMode() {
 	p.Node.uiBuffer.(*editor.Editor).BorderFg = p.ActiveModeBorderColor
+	p.Node.uiBuffer.(*editor.Editor).ActiveMode()
 	uirender(p.Node.uiBuffer.(termui.Bufferer))
 }
 
 func (p *NodeTerminal) UnActiveMode() {
 	p.Node.uiBuffer.(*editor.Editor).BorderFg = p.Node.BorderFg
+	p.Node.uiBuffer.(*editor.Editor).UnActiveMode()
 	uirender(p.Node.uiBuffer.(termui.Bufferer))
 }

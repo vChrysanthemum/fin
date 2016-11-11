@@ -1,9 +1,11 @@
 package editor
 
 import (
+	"image"
 	"strings"
 
 	"github.com/gizak/termui"
+	termbox "github.com/nsf/termbox-go"
 )
 
 type Editor struct {
@@ -17,6 +19,7 @@ type Editor struct {
 	TextBgColor       termui.Attribute
 	WrapLength        int // words wrap limit. Note it may not work properly with multi-width char
 	DisplayLinesRange [2]int
+	CursorPosition    image.Point
 }
 
 func NewEditor() *Editor {
@@ -26,6 +29,7 @@ func NewEditor() *Editor {
 		TextFgColor:       termui.ThemeAttr("par.text.fg"),
 		TextBgColor:       termui.ThemeAttr("par.text.bg"),
 		DisplayLinesRange: [2]int{0, 1},
+		CursorPosition:    image.Point{-1, -1},
 	}
 }
 
@@ -41,6 +45,11 @@ func (p *Editor) Text() string {
 		printLines = append(printLines, string(line.Data))
 	}
 	return strings.Join(printLines, "\n")
+}
+
+func (p *Editor) RenewCursor() {
+
+	termbox.SetCursor(p.CursorPosition.X, p.CursorPosition.Y)
 }
 
 func (p *Editor) WriteNewLine(line string) {
@@ -89,6 +98,7 @@ func (p *Editor) Write(keyStr string) {
 
 func (p *Editor) Buffer() termui.Buffer {
 	buf := p.Block.Buffer()
+	p.RenewCursor()
 
 	fg, bg := p.TextFgColor, p.TextBgColor
 	cs := termui.DefaultTxBuilder.Build(p.Text(), fg, bg)
@@ -126,4 +136,17 @@ func (p *Editor) Buffer() termui.Buffer {
 	}
 
 	return buf
+}
+
+func (p *Editor) ActiveMode() {
+	if p.CursorPosition.X < 0 {
+		p.CursorPosition.X = p.InnerArea.Min.X
+	}
+	if p.CursorPosition.Y < 0 {
+		p.CursorPosition.Y = p.InnerArea.Min.Y
+	}
+}
+
+func (p *Editor) UnActiveMode() {
+	termbox.HideCursor()
 }
