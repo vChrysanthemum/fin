@@ -4,32 +4,34 @@
 </head>
 <body colorfg="blue">
   <script type="text/lua">
-result = WindowConfirm("是否确定开始使用");
+result = WindowConfirm("是否确定开始使用")
 if "confirm" == result then
   if "confirm" == WindowConfirm("是否使用输入框") then
-    Node("InputTextTest"):SetActive();
+    Node("InputTextTest"):SetActive()
   else 
-    Node("SelectTest"):SetActive();
+    Node("SelectTest"):SetActive()
   end
 end
-Node("ParResult"):SetText(result);
+Node("ParResult"):SetText(result)
 Node("InputTextTest"):OnKeyPressEnter(
   function(nodePointer)
     Node("ParResult0"):SetText(Node("InputTextTest"):GetValue())
-    Node("SelectTestChangeOptions"):SelectAppendOption("测试", "你好");
+    Node("SelectTestChangeOptions"):SelectAppendOption("测试", "你好")
     Node("InputTextTest"):Remove()
     if "confirm" == WindowConfirm("是否继续删除") then
       Node("SelectTestRemove"):Remove()
-      Node("SelectTestChangeOptions"):SelectClearOptions();
+      Node("SelectTestChangeOptions"):SelectClearOptions()
+      Node("GaugeTest"):GaugeSetPercent(30)
     end
   end
-);
+)
   </script>
   <par id="ParResult"  height=3>你好</par>
   <par id="ParResult0" height=3>你好</par>
   <par id="ParResult1" height=3>你好</par>
   <par id="ParResult2" height=3>你好</par>
   <par id="ParResult3" height=3>你好</par>
+  <gauge border=true borderlabel="测试" height=3 percent=80 id="GaugeTest"></gauge>
   <inputtext id="InputTextTest" height=3>
   </inputtext>
   <select id="SelectTestChangeOptions">

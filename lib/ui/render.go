@@ -23,6 +23,7 @@ func (p *Page) prepareRender() {
 		&RenderAgent{[]string{"body", "inputtext"}, p.renderBodyInputText},
 		&RenderAgent{[]string{"body", "canvas"}, p.renderBodyCanvas},
 		&RenderAgent{[]string{"body", "terminal"}, p.renderBodyTerminal},
+		&RenderAgent{[]string{"body", "gauge"}, p.renderBodyGauge},
 	}
 }
 

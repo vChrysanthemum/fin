@@ -76,6 +76,10 @@ function _Node.TerminalClearLines(self)
     return base.NodeTerminalClearLines(self.nodePointer)
 end
 
+function _Node.GaugeSetPercent(self, percent)
+    return base.NodeGaugeSetPercent(self.nodePointer, percent)
+end
+
 function WindowConfirm(title)
     content = string.format([[
     <table>
