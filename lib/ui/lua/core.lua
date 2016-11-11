@@ -64,8 +64,8 @@ function _Node.SelectClearOptions(self)
     return base.NodeSelectClearOptions(self.nodePointer)
 end
 
-function _Node.TerminalPopNewCommand(self)
-    return base.NodeTerminalPopNewCommand(self.nodePointer)
+function _Node.TerminalRegisterCommandHandle(self, callback)
+    return base.NodeTerminalRegisterCommandHandle(self.nodePointer, callback)
 end
 
 function _Node.TerminalWriteNewLine(self, line)

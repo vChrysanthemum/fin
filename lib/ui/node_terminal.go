@@ -9,6 +9,7 @@ import (
 type NodeTerminal struct {
 	*Node
 	*editor.Editor
+	CommandPrefix          string
 	NewCommand             *editor.Line
 	CommandLines           []*editor.Line
 	WaitKeyPressEnterChans []chan bool
@@ -18,6 +19,9 @@ func (p *Node) InitNodeTerminal() *NodeTerminal {
 	nodeTerminal := new(NodeTerminal)
 	nodeTerminal.Node = p
 	nodeTerminal.Editor = editor.NewEditor()
+	nodeTerminal.CommandPrefix = "> "
+	nodeTerminal.PrepareNewCommand()
+
 	p.Data = nodeTerminal
 	p.Border = false
 	p.BorderFg = COLOR_DEFAULT_BORDERFG
@@ -27,6 +31,7 @@ func (p *Node) InitNodeTerminal() *NodeTerminal {
 	p.UnFocusMode = nodeTerminal.UnFocusMode
 	p.ActiveMode = nodeTerminal.ActiveMode
 	p.UnActiveMode = nodeTerminal.UnActiveMode
+
 	return nodeTerminal
 }
 
@@ -52,10 +57,12 @@ func (p *NodeTerminal) KeyPress(e termui.Event) {
 			close(c)
 		}
 		p.WaitKeyPressEnterChans = make([]chan bool, 0)
+		p.Editor.WriteNewLine("")
+		return
 	}
 
 	// 禁止删除一行
-	if "C-8" == keyStr && (nil == p.CurrentLine || len(p.CurrentLine.Data) == 0) {
+	if "C-8" == keyStr && (nil == p.CurrentLine || len(p.CurrentLine.Data) <= len(p.CommandPrefix)) {
 		Beep()
 		return
 	}
@@ -70,6 +77,10 @@ func (p *NodeTerminal) OnKeyPressEnter() {
 	<-c
 }
 
+func (p *NodeTerminal) PrepareNewCommand() {
+	p.Editor.WriteNewLine(p.CommandPrefix)
+}
+
 func (p *NodeTerminal) PopNewCommand() (ret []byte) {
 	if nil == p.NewCommand {
 		return
@@ -77,7 +88,11 @@ func (p *NodeTerminal) PopNewCommand() (ret []byte) {
 
 	ret = p.NewCommand.Data
 	p.NewCommand = nil
-	return ret
+	if len(p.CommandPrefix) > 0 {
+		return ret[len(p.CommandPrefix):]
+	} else {
+		return ret
+	}
 }
 
 func (p *NodeTerminal) WriteNewLine(line string) {

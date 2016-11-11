@@ -25,21 +25,35 @@ func (p *Script) _getNodeTerminalPointerFromUserData(L *lua.LState, lu *lua.LUse
 	return nodeTerminal
 }
 
-func (p *Script) luaFuncNodeTerminalPopNewCommand(L *lua.LState) int {
-	if L.GetTop() < 1 {
-		L.Push(lua.LNil)
-		return 1
+func (p *Script) luaFuncNodeTerminalRegisterCommandHandle(L *lua.LState) int {
+	if L.GetTop() < 2 {
+		return 0
 	}
 
 	lu := L.ToUserData(1)
+	callback := L.ToFunction(2)
 	nodeTerminal := p._getNodeTerminalPointerFromUserData(L, lu)
 	if nil == nodeTerminal {
-		L.Push(lua.LNil)
-		return 1
+		return 0
 	}
 
-	L.Push(lua.LString(string(nodeTerminal.PopNewCommand())))
-	return 1
+	go func(_L *lua.LState, _node *Node, _callback *lua.LFunction) {
+		_node.OnKeyPressEnter()
+		_nodeTerminal := _node.Data.(*NodeTerminal)
+		luaNode := _L.NewUserData()
+		luaNode.Value = _node
+		if err := _L.CallByParam(lua.P{
+			Fn:      _callback,
+			NRet:    0,
+			Protect: true,
+		}, luaNode, lua.LString(_nodeTerminal.PopNewCommand())); err != nil {
+			panic(err)
+		}
+		_nodeTerminal.PrepareNewCommand()
+		_node.render()
+	}(L, nodeTerminal.Node, callback)
+
+	return 0
 }
 
 func (p *Script) luaFuncNodeTerminalWriteNewLine(L *lua.LState) int {

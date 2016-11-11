@@ -5,16 +5,15 @@
 <body colorfg="blue">
   <script type="text/lua">
   local NodeTerminalMain = Node("TerminalMain");
-  TerminalMainOnKeyPressEnter = function(nodePointer)
-    local command = Node(nodePointer):TerminalPopNewCommand()
+  TerminalMainRegisterCommandHandle = function(nodePointer, command)
     if command == "punch" then
       Log(command)
-      NodeTerminalMain:TerminalWriteNewLine("punch success.")
+      NodeTerminalMain:TerminalWriteNewLine("  punch success.")
       NodeTerminalMain:Render()
     end
-    NodeTerminalMain:OnKeyPressEnter(TerminalMainOnKeyPressEnter)
+    NodeTerminalMain:TerminalRegisterCommandHandle(TerminalMainRegisterCommandHandle)
   end
-  NodeTerminalMain:OnKeyPressEnter(TerminalMainOnKeyPressEnter)
+  NodeTerminalMain:TerminalRegisterCommandHandle(TerminalMainRegisterCommandHandle)
   </script>
   <terminal id="TerminalMain"></terminal>
 </body>

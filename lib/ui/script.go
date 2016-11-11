@@ -46,8 +46,8 @@ func (p *Page) prepareScript() {
 	script.luaState.SetField(luaBase, "NodeSelectClearOptions",
 		script.luaState.NewFunction(script.luaFuncNodeSelectClearOptions))
 
-	script.luaState.SetField(luaBase, "NodeTerminalPopNewCommand",
-		script.luaState.NewFunction(script.luaFuncNodeTerminalPopNewCommand))
+	script.luaState.SetField(luaBase, "NodeTerminalRegisterCommandHandle",
+		script.luaState.NewFunction(script.luaFuncNodeTerminalRegisterCommandHandle))
 	script.luaState.SetField(luaBase, "NodeTerminalWriteNewLine",
 		script.luaState.NewFunction(script.luaFuncNodeTerminalWriteNewLine))
 
