@@ -37,8 +37,10 @@ func (p *Page) prepareScript() {
 	script.luaState.SetField(luaBase, "NodeGetHtmlData", script.luaState.NewFunction(script.luaFuncNodeGetHtmlData))
 	script.luaState.SetField(luaBase, "NodeSetText", script.luaState.NewFunction(script.luaFuncNodeSetText))
 	script.luaState.SetField(luaBase, "NodeGetValue", script.luaState.NewFunction(script.luaFuncNodeGetValue))
-	script.luaState.SetField(luaBase, "NodeOnKeyPressEnter",
-		script.luaState.NewFunction(script.luaFuncNodeOnKeyPressEnter))
+	script.luaState.SetField(luaBase, "NodeRegisterKeyPressEnterHandler",
+		script.luaState.NewFunction(script.luaFuncNodeRegisterKeyPressEnterHandler))
+	script.luaState.SetField(luaBase, "NodeRemoveKeyPressEnterHandler",
+		script.luaState.NewFunction(script.luaFuncNodeRemoveKeyPressEnterHandler))
 	script.luaState.SetField(luaBase, "NodeRemove", script.luaState.NewFunction(script.luaFuncNodeRemove))
 
 	script.luaState.SetField(luaBase, "NodeCanvasSet", script.luaState.NewFunction(script.luaFuncNodeCanvasSet))
@@ -51,6 +53,8 @@ func (p *Page) prepareScript() {
 
 	script.luaState.SetField(luaBase, "NodeTerminalRegisterCommandHandle",
 		script.luaState.NewFunction(script.luaFuncNodeTerminalRegisterCommandHandle))
+	script.luaState.SetField(luaBase, "NodeTerminalRemoveCommandHandle",
+		script.luaState.NewFunction(script.luaFuncNodeTerminalRemoveCommandHandle))
 	script.luaState.SetField(luaBase, "NodeTerminalWriteNewLine",
 		script.luaState.NewFunction(script.luaFuncNodeTerminalWriteNewLine))
 	script.luaState.SetField(luaBase, "NodeTerminalClearLines",

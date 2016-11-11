@@ -13,15 +13,17 @@ if "confirm" == result then
   end
 end
 Node("ParResult"):SetText(result)
-Node("InputTextTest"):OnKeyPressEnter(
+InputTextTestEvent = Node("InputTextTest"):RegisterKeyPressEnterHandler(
   function(nodePointer)
     Node("ParResult0"):SetText(Node("InputTextTest"):GetValue())
     Node("SelectTestChangeOptions"):SelectAppendOption("测试", "你好")
-    Node("InputTextTest"):Remove()
     if "confirm" == WindowConfirm("是否继续删除") then
+      Node("InputTextTest"):Remove()
       Node("SelectTestRemove"):Remove()
       Node("SelectTestChangeOptions"):SelectClearOptions()
-      Node("GaugeTest"):GaugeSetPercent(30)
+      Node("GaugeTest"):GaugeSetPercent(30) 
+    else 
+      Node("InputTextTest"):RemoveKeyPressEnterHandler(InputTextTestEvent)
     end
   end
 )
@@ -32,8 +34,7 @@ Node("InputTextTest"):OnKeyPressEnter(
   <par id="ParResult2" height=3>你好</par>
   <par id="ParResult3" height=3>你好</par>
   <gauge border=true borderlabel="测试" height=3 percent=80 id="GaugeTest"></gauge>
-  <inputtext id="InputTextTest" height=3>
-  </inputtext>
+  <inputtext id="InputTextTest" height=2></inputtext>
   <select id="SelectTestChangeOptions">
     <option value="cancel">取消</option>
     <option value="confirm">确定</option>

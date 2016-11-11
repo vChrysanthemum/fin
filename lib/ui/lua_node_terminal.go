@@ -27,18 +27,21 @@ func (p *Script) _getNodeTerminalPointerFromUserData(L *lua.LState, lu *lua.LUse
 
 func (p *Script) luaFuncNodeTerminalRegisterCommandHandle(L *lua.LState) int {
 	if L.GetTop() < 2 {
-		return 0
+		L.Push(lua.LNil)
+		return 1
 	}
 
 	lu := L.ToUserData(1)
 	callback := L.ToFunction(2)
 	nodeTerminal := p._getNodeTerminalPointerFromUserData(L, lu)
 	if nil == nodeTerminal {
-		return 0
+		L.Push(lua.LNil)
+		return 1
 	}
 
-	go func(_L *lua.LState, _node *Node, _callback *lua.LFunction) {
-		_node.OnKeyPressEnter()
+	key := nodeTerminal.Node.RegisterKeyPressEnterHandler(func(_node *Node, args ...interface{}) {
+		_L := args[0].(*lua.LState)
+		_callback := args[1].(*lua.LFunction)
 		_nodeTerminal := _node.Data.(*NodeTerminal)
 		luaNode := _L.NewUserData()
 		luaNode.Value = _node
@@ -49,10 +52,27 @@ func (p *Script) luaFuncNodeTerminalRegisterCommandHandle(L *lua.LState) int {
 		}, luaNode, lua.LString(_nodeTerminal.PopNewCommand())); err != nil {
 			panic(err)
 		}
-		_nodeTerminal.PrepareNewCommand()
-		_node.uiRender()
-	}(L, nodeTerminal.Node, callback)
+	}, L, callback)
 
+	L.Push(lua.LString(key))
+	return 1
+}
+
+func (p *Script) luaFuncNodeTerminalRemoveCommandHandle(L *lua.LState) int {
+	if L.GetTop() < 2 {
+		L.Push(lua.LNil)
+		return 1
+	}
+
+	lu := L.ToUserData(1)
+	key := L.ToString(2)
+	nodeTerminal := p._getNodeTerminalPointerFromUserData(L, lu)
+	if nil == nodeTerminal {
+		L.Push(lua.LNil)
+		return 1
+	}
+
+	nodeTerminal.Node.RemoveKeyPressEnterHandler(key)
 	return 0
 }
 

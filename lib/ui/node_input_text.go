@@ -9,7 +9,6 @@ import (
 type NodeInputText struct {
 	*Node
 	*editor.Editor
-	WaitKeyPressEnterChans []chan bool
 }
 
 func (p *Node) InitNodeInputText() *NodeInputText {
@@ -21,12 +20,10 @@ func (p *Node) InitNodeInputText() *NodeInputText {
 	inputText.Editor.BorderLeft = false
 	inputText.Editor.BorderRight = false
 	inputText.Editor.BorderBottom = true
-	inputText.WaitKeyPressEnterChans = make([]chan bool, 0)
 	p.Border = true
 	p.Data = inputText
 	p.KeyPress = inputText.KeyPress
 	p.GetValue = inputText.GetValue
-	p.OnKeyPressEnter = inputText.OnKeyPressEnter
 	p.FocusMode = inputText.FocusMode
 	p.UnFocusMode = inputText.UnFocusMode
 	p.ActiveMode = inputText.ActiveMode
@@ -41,13 +38,12 @@ func (p *NodeInputText) KeyPress(e termui.Event) {
 		return
 	}
 
-	if "<enter>" == keyStr && len(p.WaitKeyPressEnterChans) > 0 {
-		p.Node.QuitActiveMode()
-		for _, c := range p.WaitKeyPressEnterChans {
-			c <- true
-			close(c)
+	if "<enter>" == keyStr {
+		if len(p.Node.KeyPressEnterHandlers) > 0 {
+			for _, v := range p.Node.KeyPressEnterHandlers {
+				v.Handler(p.Node, v.Args...)
+			}
 		}
-		p.WaitKeyPressEnterChans = make([]chan bool, 0)
 		return
 	}
 
@@ -61,12 +57,6 @@ func (p *NodeInputText) GetValue() string {
 	} else {
 		return ""
 	}
-}
-
-func (p *NodeInputText) OnKeyPressEnter() {
-	c := make(chan bool, 0)
-	p.WaitKeyPressEnterChans = append(p.WaitKeyPressEnterChans, c)
-	<-c
 }
 
 func (p *NodeInputText) FocusMode() {

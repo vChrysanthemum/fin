@@ -9,11 +9,10 @@ import (
 type NodeTerminal struct {
 	*Node
 	*editor.Editor
-	ActiveModeBorderColor  termui.Attribute
-	CommandPrefix          string
-	NewCommand             *editor.Line
-	CommandLines           []*editor.Line
-	WaitKeyPressEnterChans []chan bool
+	ActiveModeBorderColor termui.Attribute
+	CommandPrefix         string
+	NewCommand            *editor.Line
+	CommandLines          []*editor.Line
 }
 
 func (p *Node) InitNodeTerminal() *NodeTerminal {
@@ -27,7 +26,6 @@ func (p *Node) InitNodeTerminal() *NodeTerminal {
 	p.Data = nodeTerminal
 	p.Border = false
 	p.KeyPress = nodeTerminal.KeyPress
-	p.OnKeyPressEnter = nodeTerminal.OnKeyPressEnter
 	p.FocusMode = nodeTerminal.FocusMode
 	p.UnFocusMode = nodeTerminal.UnFocusMode
 	p.ActiveMode = nodeTerminal.ActiveMode
@@ -53,15 +51,16 @@ func (p *NodeTerminal) KeyPress(e termui.Event) {
 			p.CommandLines = append(p.CommandLines, p.NewCommand)
 		}
 
-		if len(p.WaitKeyPressEnterChans) > 0 {
-			for _, c := range p.WaitKeyPressEnterChans {
-				c <- true
-				close(c)
+		if len(p.Node.KeyPressEnterHandlers) > 0 {
+			p.Node.JobHanderLocker.RLock()
+			defer p.Node.JobHanderLocker.RUnlock()
+			for _, v := range p.Node.KeyPressEnterHandlers {
+				v.Handler(p.Node, v.Args...)
 			}
-			p.WaitKeyPressEnterChans = make([]chan bool, 0)
 		}
 
-		p.Editor.WriteNewLine("")
+		p.PrepareNewCommand()
+		p.Node.uiRender()
 		return
 	}
 
@@ -74,12 +73,6 @@ func (p *NodeTerminal) KeyPress(e termui.Event) {
 
 	p.Editor.Write(keyStr)
 	p.Node.uiRender()
-}
-
-func (p *NodeTerminal) OnKeyPressEnter() {
-	c := make(chan bool, 0)
-	p.WaitKeyPressEnterChans = append(p.WaitKeyPressEnterChans, c)
-	<-c
 }
 
 func (p *NodeTerminal) PrepareNewCommand() {

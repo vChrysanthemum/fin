@@ -96,6 +96,9 @@ func (p *Node) QuitActiveMode() {
 }
 
 func (p *Page) SetActiveNode(node *Node) {
+	if nil != p.ActiveNode && node != p.ActiveNode {
+		p.ActiveNode.UnActiveMode()
+	}
 	p.ActiveNode = node
 	if nil != p.ActiveNode && nil != p.ActiveNode.ActiveMode {
 		p.ActiveNode.ActiveMode()

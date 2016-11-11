@@ -13,18 +13,15 @@ type NodeSelect struct {
 	SelectedOptionIndex    int
 	Children               []NodeSelectOption
 	ChildrenMaxStringWidth int
-	WaitKeyPressEnterChans []chan bool
 }
 
 func (p *Node) InitNodeSelect() *NodeSelect {
 	nodeSelect := new(NodeSelect)
 	nodeSelect.Node = p
 	nodeSelect.Children = make([]NodeSelectOption, 0)
-	nodeSelect.WaitKeyPressEnterChans = make([]chan bool, 0)
 	p.Data = nodeSelect
 	p.KeyPress = nodeSelect.KeyPress
 	p.GetValue = nodeSelect.GetValue
-	p.OnKeyPressEnter = nodeSelect.OnKeyPressEnter
 	p.FocusMode = nodeSelect.FocusMode
 	p.UnFocusMode = nodeSelect.UnFocusMode
 	p.ActiveMode = nodeSelect.ActiveMode
@@ -76,16 +73,16 @@ func (p *NodeSelect) KeyPress(e termui.Event) {
 		return
 	}
 
-	if "<enter>" == keyStr && len(p.WaitKeyPressEnterChans) > 0 {
-		p.Node.QuitActiveMode()
-		for _, c := range p.WaitKeyPressEnterChans {
-			c <- true
-			close(c)
+	if "<enter>" == keyStr {
+		if len(p.Node.KeyPressEnterHandlers) > 0 {
+			p.Node.JobHanderLocker.RLock()
+			defer p.Node.JobHanderLocker.RUnlock()
+			for _, v := range p.Node.KeyPressEnterHandlers {
+				v.Handler(p.Node, v.Args...)
+			}
 		}
-		p.WaitKeyPressEnterChans = make([]chan bool, 0)
 		return
 	}
-
 }
 
 func (p *NodeSelect) GetValue() string {
@@ -106,12 +103,6 @@ func (p *NodeSelect) ClearOptions() {
 	p.SelectedOptionIndex = 0
 	p.Children = []NodeSelectOption{}
 	p.ChildrenMaxStringWidth = 0
-}
-
-func (p *NodeSelect) OnKeyPressEnter() {
-	c := make(chan bool, 0)
-	p.WaitKeyPressEnterChans = append(p.WaitKeyPressEnterChans, c)
-	<-c
 }
 
 func (p *NodeSelect) FocusMode() {

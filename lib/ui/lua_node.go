@@ -1,6 +1,10 @@
 package ui
 
-import lua "github.com/yuin/gopher-lua"
+import (
+	"log"
+
+	lua "github.com/yuin/gopher-lua"
+)
 
 func (p *Script) _getNodePointerFromUserData(L *lua.LState, lu *lua.LUserData) *Node {
 	if nil == lu || nil == lu.Value {
@@ -107,20 +111,23 @@ func (p *Script) luaFuncNodeGetValue(L *lua.LState) int {
 	return 1
 }
 
-func (p *Script) luaFuncNodeOnKeyPressEnter(L *lua.LState) int {
+func (p *Script) luaFuncNodeRegisterKeyPressEnterHandler(L *lua.LState) int {
 	if L.GetTop() < 2 {
-		return 0
+		L.Push(lua.LNil)
+		return 1
 	}
 
 	lu := L.ToUserData(1)
 	callback := L.ToFunction(2)
 	node := p._getNodePointerFromUserData(L, lu)
-	if nil == node || nil == node.OnKeyPressEnter {
-		return 0
+	if nil == node {
+		L.Push(lua.LNil)
+		return 1
 	}
 
-	go func(_L *lua.LState, _node *Node, _callback *lua.LFunction) {
-		_node.OnKeyPressEnter()
+	key := node.RegisterKeyPressEnterHandler(func(_node *Node, args ...interface{}) {
+		_L := args[0].(*lua.LState)
+		_callback := args[1].(*lua.LFunction)
 		luaNode := _L.NewUserData()
 		luaNode.Value = node
 		if err := _L.CallByParam(lua.P{
@@ -130,8 +137,26 @@ func (p *Script) luaFuncNodeOnKeyPressEnter(L *lua.LState) int {
 		}, luaNode); err != nil {
 			panic(err)
 		}
-	}(L, node, callback)
+	}, L, callback)
 
+	L.Push(lua.LString(key))
+	return 1
+}
+
+func (p *Script) luaFuncNodeRemoveKeyPressEnterHandler(L *lua.LState) int {
+	if L.GetTop() < 2 {
+		return 0
+	}
+
+	lu := L.ToUserData(1)
+	key := L.ToString(2)
+	node := p._getNodePointerFromUserData(L, lu)
+	if nil == node {
+		return 0
+	}
+
+	log.Println(key, node.HtmlData)
+	node.RemoveKeyPressEnterHandler(key)
 	return 0
 }
 

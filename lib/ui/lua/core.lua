@@ -36,8 +36,12 @@ function _Node.GetValue(self)
     return base.NodeGetValue(self.nodePointer)
 end
 
-function _Node.OnKeyPressEnter(self, callback)
-    return base.NodeOnKeyPressEnter(self.nodePointer, callback)
+function _Node.RegisterKeyPressEnterHandler(self, callback)
+    return base.NodeRegisterKeyPressEnterHandler(self.nodePointer, callback)
+end
+
+function _Node.RemoveKeyPressEnterHandler(self, key)
+    return base.NodeRemoveKeyPressEnterHandler(self.nodePointer, key)
 end
 
 function _Node.Remove(self)
@@ -62,6 +66,10 @@ end
 
 function _Node.TerminalRegisterCommandHandle(self, callback)
     return base.NodeTerminalRegisterCommandHandle(self.nodePointer, callback)
+end
+
+function _Node.TerminalRemoveCommandHandle(self, key)
+    return base.NodeTerminalRemoveCommandHandle(self.nodePointer, key)
 end
 
 function _Node.TerminalWriteNewLine(self, line)
