@@ -16,5 +16,12 @@ func (p *Page) parseBodyTerminal(parentNode *Node, htmlNode *html.Node) (ret *No
 	ret.Width = termui.TermWidth()
 	ret.Height = 10
 
+	for _, v := range htmlNode.Attr {
+		switch v.Key {
+		case "active_borderfg":
+			nodeTerminal.ActiveModeBorderColor = ColorToTermuiAttribute(v.Val, COLOR_ACTIVE_MODE_BORDERFG)
+		}
+	}
+
 	return
 }

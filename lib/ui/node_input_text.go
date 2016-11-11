@@ -23,7 +23,6 @@ func (p *Node) InitNodeInputText() *NodeInputText {
 	inputText.Editor.BorderBottom = true
 	inputText.WaitKeyPressEnterChans = make([]chan bool, 0)
 	p.Border = true
-	p.BorderFg = COLOR_DEFAULT_BORDERFG
 	p.Data = inputText
 	p.KeyPress = inputText.KeyPress
 	p.GetValue = inputText.GetValue

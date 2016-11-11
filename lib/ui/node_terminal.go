@@ -9,6 +9,7 @@ import (
 type NodeTerminal struct {
 	*Node
 	*editor.Editor
+	ActiveModeBorderColor  termui.Attribute
 	CommandPrefix          string
 	NewCommand             *editor.Line
 	CommandLines           []*editor.Line
@@ -19,12 +20,12 @@ func (p *Node) InitNodeTerminal() *NodeTerminal {
 	nodeTerminal := new(NodeTerminal)
 	nodeTerminal.Node = p
 	nodeTerminal.Editor = editor.NewEditor()
+	nodeTerminal.ActiveModeBorderColor = COLOR_ACTIVE_MODE_BORDERFG
 	nodeTerminal.CommandPrefix = "> "
 	nodeTerminal.PrepareNewCommand()
 
 	p.Data = nodeTerminal
 	p.Border = false
-	p.BorderFg = COLOR_DEFAULT_BORDERFG
 	p.KeyPress = nodeTerminal.KeyPress
 	p.OnKeyPressEnter = nodeTerminal.OnKeyPressEnter
 	p.FocusMode = nodeTerminal.FocusMode
@@ -116,7 +117,7 @@ func (p *NodeTerminal) UnFocusMode() {
 }
 
 func (p *NodeTerminal) ActiveMode() {
-	p.Node.uiBuffer.(*editor.Editor).BorderFg = COLOR_ACTIVE_MODE_BORDERFG
+	p.Node.uiBuffer.(*editor.Editor).BorderFg = p.ActiveModeBorderColor
 	uirender(p.Node.uiBuffer.(termui.Bufferer))
 }
 

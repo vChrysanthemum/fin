@@ -127,8 +127,12 @@ func (p *Page) parse(htmlNode *html.Node) *Node {
 				node.Id = v.Val
 			case "colorfg":
 				node.ColorFg = v.Val
+			case "borderlabelfg":
+				node.BorderLabelFg = ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_BORDER_LABEL_FG)
 			case "borderlabel":
 				node.BorderLabel = v.Val
+			case "borderfg":
+				node.BorderFg = ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_BORDER_FG)
 			case "border":
 				if "true" == v.Val {
 					node.Border = true

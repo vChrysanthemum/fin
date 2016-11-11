@@ -17,7 +17,6 @@ func (p *Node) InitNodeEditor() *NodeEditor {
 	nodeEditor.Editor = editor.NewEditor()
 	p.Data = nodeEditor
 	p.Border = false
-	p.BorderFg = COLOR_DEFAULT_BORDERFG
 	p.KeyPress = nodeEditor.KeyPress
 	p.FocusMode = nodeEditor.FocusMode
 	p.UnFocusMode = nodeEditor.UnFocusMode

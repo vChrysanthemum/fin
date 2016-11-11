@@ -37,13 +37,14 @@ type Node struct {
 	// 这里利用 Height Width 为-1时，则由 render阶段来计算
 	Width, Height int
 
-	ColorFg     string
-	ColorBg     string
-	BorderLabel string
-	Border      bool
-	BorderFg    termui.Attribute
-	HtmlData    string
-	Data        interface{}
+	ColorFg       string
+	ColorBg       string
+	BorderLabelFg termui.Attribute
+	BorderLabel   string
+	Border        bool
+	BorderFg      termui.Attribute
+	HtmlData      string
+	Data          interface{}
 
 	KeyPress     NodeKeyPress
 	FocusMode    NodeFocusMode
@@ -79,6 +80,8 @@ func (p *Page) newNode(htmlNode *html.Node) *Node {
 	ret.HtmlData = htmlNode.Data
 	ret.Width = 1
 	ret.Height = 1
+	ret.BorderLabelFg = COLOR_DEFAULT_BORDER_LABEL_FG
+	ret.BorderFg = COLOR_DEFAULT_BORDER_FG
 	return ret
 }
 

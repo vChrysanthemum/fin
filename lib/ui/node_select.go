@@ -33,7 +33,7 @@ func (p *Node) InitNodeSelect() *NodeSelect {
 	nodeSelect.SelectedOptionColorFg = COLOR_SELECTED_OPTION_COLORFG
 	nodeSelect.SelectedOptionColorBg = COLOR_SELECTED_OPTION_COLORBG
 	nodeSelect.Border = true
-	nodeSelect.BorderFg = COLOR_DEFAULT_BORDERFG
+	nodeSelect.BorderFg = COLOR_DEFAULT_BORDER_FG
 	nodeSelect.Width = -1
 	nodeSelect.Height = -1
 

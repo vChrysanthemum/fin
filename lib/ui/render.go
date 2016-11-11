@@ -89,6 +89,7 @@ func (p *Page) normalRenderNodeBlock(node *Node) {
 		return
 	}
 
+	node.uiBlock.BorderLabelFg = node.BorderLabelFg
 	node.uiBlock.BorderLabel = node.BorderLabel
 	node.uiBlock.Border = node.Border
 	node.uiBlock.BorderFg = node.BorderFg
