@@ -48,8 +48,8 @@ func (p *Page) prepareScript() {
 
 	script.luaState.SetField(luaBase, "NodeTerminalPopNewCommand",
 		script.luaState.NewFunction(script.luaFuncNodeTerminalPopNewCommand))
-	script.luaState.SetField(luaBase, "NodeTerminalWriteLine",
-		script.luaState.NewFunction(script.luaFuncNodeTerminalWriteLine))
+	script.luaState.SetField(luaBase, "NodeTerminalWriteNewLine",
+		script.luaState.NewFunction(script.luaFuncNodeTerminalWriteNewLine))
 
 	err = script.luaState.DoFile(filepath.Join(GlobalOption.LuaResBaseDir, "ui/core.lua"))
 	if nil != err {

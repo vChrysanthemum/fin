@@ -42,7 +42,7 @@ func (p *Script) luaFuncNodeTerminalPopNewCommand(L *lua.LState) int {
 	return 1
 }
 
-func (p *Script) luaFuncNodeTerminalWriteLine(L *lua.LState) int {
+func (p *Script) luaFuncNodeTerminalWriteNewLine(L *lua.LState) int {
 	if L.GetTop() < 2 {
 		return 0
 	}
@@ -53,6 +53,6 @@ func (p *Script) luaFuncNodeTerminalWriteLine(L *lua.LState) int {
 		return 0
 	}
 
-	nodeTerminal.WriteLine(L.ToString(2))
+	nodeTerminal.WriteNewLine(L.ToString(2))
 	return 1
 }

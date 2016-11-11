@@ -9,7 +9,7 @@
     local command = Node(nodePointer):TerminalPopNewCommand()
     if command == "punch" then
       Log(command)
-      NodeTerminalMain:TerminalWriteLine("punch success.")
+      NodeTerminalMain:TerminalWriteNewLine("punch success.")
       NodeTerminalMain:Render()
     end
     NodeTerminalMain:OnKeyPressEnter(TerminalMainOnKeyPressEnter)

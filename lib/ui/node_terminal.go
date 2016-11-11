@@ -80,8 +80,9 @@ func (p *NodeTerminal) PopNewCommand() (ret []byte) {
 	return ret
 }
 
-func (p *NodeTerminal) WriteLine(line string) {
-	p.Editor.WriteLine(line)
+func (p *NodeTerminal) WriteNewLine(line string) {
+	p.Editor.WriteNewLine(line)
+	p.Editor.CurrentLine = p.InitNewLine()
 }
 
 func (p *NodeTerminal) FocusMode() {

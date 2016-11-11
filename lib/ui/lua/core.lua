@@ -68,8 +68,8 @@ function _Node.TerminalPopNewCommand(self)
     return base.NodeTerminalPopNewCommand(self.nodePointer)
 end
 
-function _Node.TerminalWriteLine(self, line)
-    return base.NodeTerminalWriteLine(self.nodePointer, line)
+function _Node.TerminalWriteNewLine(self, line)
+    return base.NodeTerminalWriteNewLine(self.nodePointer, line)
 end
 
 function WindowConfirm(title)

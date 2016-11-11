@@ -31,7 +31,7 @@ func (p *Editor) Text() string {
 	return ret
 }
 
-func (p *Editor) WriteLine(line string) {
+func (p *Editor) WriteNewLine(line string) {
 	if 0 == len(p.Lines) {
 		p.CurrentLine = p.InitNewLine()
 	}
@@ -43,7 +43,6 @@ func (p *Editor) WriteLine(line string) {
 	}
 
 	p.CurrentLine.Data = []byte(line)
-	p.CurrentLine = p.InitNewLine()
 }
 
 func (p *Editor) Write(keyStr string) {
