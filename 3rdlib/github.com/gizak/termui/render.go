@@ -60,11 +60,13 @@ func Init() error {
 	DefaultWgtMgr = NewWgtMgr()
 	DefaultEvtStream.Hook(DefaultWgtMgr.WgtHandlersHook())
 
-	go func() {
-		for bs := range renderJobs {
-			render(bs...)
-		}
-	}()
+	/*
+		go func() {
+			for bs := range renderJobs {
+				render(bs...)
+			}
+		}()
+	*/
 
 	return nil
 }
@@ -164,5 +166,6 @@ var renderJobs chan []Bufferer
 
 func Render(bs ...Bufferer) {
 	//go func() { renderJobs <- bs }()
-	renderJobs <- bs
+	// renderJobs <- bs
+	render(bs...)
 }
