@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"inn/ui"
+	"in/ui"
 	"io/ioutil"
 	"log"
 	"os"

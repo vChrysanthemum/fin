@@ -1,6 +1,6 @@
 package ui
 
-import "inn/ui/canvas"
+import "in/ui/canvas"
 
 type NodeCanvas struct {
 	*Node

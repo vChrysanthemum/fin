@@ -29,16 +29,16 @@ then
     mkdir -p "$(pwd)/src"
 fi
 
-if [ ! -d "$(pwd)/src/inn/" ];
+if [ ! -d "$(pwd)/src/in/" ];
 then 
-    mkdir src/inn
+    mkdir src/in
 fi
 
 for folder in `ls ./lib/`
 do 
-    if [ ! -d "$(pwd)/src/inn/$folder" ];
+    if [ ! -d "$(pwd)/src/in/$folder" ];
     then
-        ln -s "$(pwd)/lib/$folder" "$(pwd)/src/inn/$folder"
+        ln -s "$(pwd)/lib/$folder" "$(pwd)/src/in/$folder"
     fi
 done
 

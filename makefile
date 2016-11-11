@@ -1,6 +1,6 @@
 export pwd = $(shell sh -c 'pwd')
 
-all:clean test build_inn 
+all:clean test build_in
 
 install:
 	@./install.sh
@@ -10,8 +10,8 @@ clean:
 	rm -rf pkg/*
 	rm -rf bin/*
 
-build_inn:
-	go build -tags deadlock -o ./bin/inn ./main 
+build_in:
+	go build -tags deadlock -o ./bin/in ./main 
 
 test_ui:
 	go test ./lib/ui -args ${pwd}
