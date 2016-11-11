@@ -15,7 +15,7 @@ type CursorLocation struct {
 
 func NewCursorLocation(parentBlock *termui.Block) *CursorLocation {
 	ret := &CursorLocation{
-		IsDisplay:   true,
+		IsDisplay:   false,
 		Location:    image.Point{X: -1, Y: -1},
 		ParentBlock: parentBlock,
 	}

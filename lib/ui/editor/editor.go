@@ -135,10 +135,12 @@ func (p *Editor) Buffer() termui.Buffer {
 	}
 
 	if true == p.CursorLocation.IsDisplay {
-		if finalX+w > p.InnerArea.Dx() {
-			p.CursorLocation.SetCursor(p.InnerArea.Min.X, finalY+1)
+		if 0 == len(cs) {
+			p.CursorLocation.ResetLocation()
 		} else {
-			p.CursorLocation.SetCursor(finalX+w, finalY)
+			finalX = p.InnerArea.Min.X + x
+			finalY = p.InnerArea.Min.Y + y
+			p.CursorLocation.SetCursor(finalX, finalY)
 		}
 	}
 
@@ -148,6 +150,7 @@ func (p *Editor) Buffer() termui.Buffer {
 func (p *Editor) ActiveMode() {
 	p.CursorLocation.IsDisplay = true
 	p.CursorLocation.InitLocationIfNeeded()
+	p.CursorLocation.ResetCursor()
 }
 
 func (p *Editor) UnActiveMode() {
