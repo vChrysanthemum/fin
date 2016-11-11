@@ -85,7 +85,7 @@ func (p *Node) QuitActiveMode() {
 	if nil != p.page.FocusNode {
 		nodeFocus := p.page.FocusNode.Value.(*Node)
 		if nil != nodeFocus.FocusMode {
-			nodeFocus.UnFocusMode()
+			nodeFocus.FocusMode()
 		}
 	}
 	p.page.ActiveNode = nil
