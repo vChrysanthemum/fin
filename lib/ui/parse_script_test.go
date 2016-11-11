@@ -5,7 +5,6 @@ import (
 	"inn/ui"
 	"log"
 	"os"
-	"path/filepath"
 	"strings"
 	"testing"
 
@@ -15,7 +14,7 @@ import (
 func TestParseHtmlScript(t *testing.T) {
 	log.SetFlags(log.Lshortfile | log.LstdFlags | log.Lmicroseconds)
 
-	ui.Init(ui.Option{LuaResBaseDir: filepath.Join(os.Args[1], "lua")})
+	ui.Init(ui.Option{ResBaseDir: os.Args[1]})
 	script := strings.Trim(`
 	function test()
 		print(Node("head"):GetHtmlData())

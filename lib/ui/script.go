@@ -24,7 +24,11 @@ func (p *Page) prepareScript() {
 
 	luaBase := script.luaState.NewTable()
 	script.luaState.SetGlobal("base", luaBase)
-	script.luaState.SetField(luaBase, "ResBaseDir", lua.LString(GlobalOption.LuaResBaseDir))
+
+	script.luaState.SetField(luaBase, "ResBaseDir", lua.LString(
+		filepath.Join(GlobalOption.ResBaseDir, "lua/"),
+	))
+
 	script.luaState.SetField(luaBase, "Log", script.luaState.NewFunction(script.LuaFuncLog))
 	script.luaState.SetField(luaBase, "WindowConfirm", script.luaState.NewFunction(script.luaFuncWindowConfirm))
 
@@ -56,7 +60,7 @@ func (p *Page) prepareScript() {
 	script.luaState.SetField(luaBase, "NodeGaugeSetPercent",
 		script.luaState.NewFunction(script.luaFuncNodeGaugeSetPercent))
 
-	err = script.luaState.DoFile(filepath.Join(GlobalOption.LuaResBaseDir, "ui/core.lua"))
+	err = script.luaState.DoFile(filepath.Join(GlobalOption.ResBaseDir, "lua/ui/core.lua"))
 	if nil != err {
 		panic(err)
 	}

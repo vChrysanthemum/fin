@@ -10,11 +10,11 @@ import (
 var GClearScreenBuffer *ClearScreenBuffer
 
 var GlobalOption = Option{
-	LuaResBaseDir: filepath.Join(os.Getenv("HOME"), ".in/lua/"),
+	ResBaseDir: filepath.Join(os.Getenv("HOME"), ".in"),
 }
 
 type Option struct {
-	LuaResBaseDir string
+	ResBaseDir string
 }
 
 func Init(option Option) {
