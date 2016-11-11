@@ -20,10 +20,6 @@ function Node(target)
     return ret
 end 
 
-function _Node.UIRender(self)
-    return base.NodeUIRender(self.nodePointer)
-end
-
 function _Node.SetActive(self)
     return base.NodeSetActive(self.nodePointer)
 end

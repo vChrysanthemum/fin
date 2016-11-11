@@ -62,7 +62,7 @@ func (p *NodeSelect) KeyPress(e termui.Event) {
 			p.SelectedOptionIndex = len(p.Children) - 1
 		}
 		p.Node.refreshUiBufferItems()
-		uiRender(p.Node.uiBuffer.(termui.Bufferer))
+		p.Node.uiRender()
 		return
 	}
 
@@ -72,7 +72,7 @@ func (p *NodeSelect) KeyPress(e termui.Event) {
 			p.SelectedOptionIndex = 0
 		}
 		p.Node.refreshUiBufferItems()
-		uiRender(p.Node.uiBuffer.(termui.Bufferer))
+		p.Node.uiRender()
 		return
 	}
 
@@ -117,21 +117,21 @@ func (p *NodeSelect) OnKeyPressEnter() {
 func (p *NodeSelect) FocusMode() {
 	p.Node.uiBuffer.(*termui.List).Border = true
 	p.Node.uiBuffer.(*termui.List).BorderFg = COLOR_FOCUS_MODE_BORDERFG
-	uiRender(p.Node.uiBuffer.(termui.Bufferer))
+	p.Node.uiRender()
 }
 
 func (p *NodeSelect) UnFocusMode() {
 	p.Node.uiBuffer.(*termui.List).Border = p.Node.Border
 	p.Node.uiBuffer.(*termui.List).BorderFg = p.Node.BorderFg
-	uiRender(p.Node.uiBuffer.(termui.Bufferer))
+	p.Node.uiRender()
 }
 
 func (p *NodeSelect) ActiveMode() {
 	p.Node.uiBuffer.(*termui.List).BorderFg = COLOR_ACTIVE_MODE_BORDERFG
-	uiRender(p.Node.uiBuffer.(termui.Bufferer))
+	p.Node.uiRender()
 }
 
 func (p *NodeSelect) UnActiveMode() {
 	p.Node.uiBuffer.(*termui.List).BorderFg = p.Node.BorderFg
-	uiRender(p.Node.uiBuffer.(termui.Bufferer))
+	p.Node.uiRender()
 }

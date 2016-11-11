@@ -68,6 +68,7 @@ func (p *Script) luaFuncNodeTerminalWriteNewLine(L *lua.LState) int {
 	}
 
 	nodeTerminal.WriteNewLine(L.ToString(2))
+	nodeTerminal.Node.uiRender()
 	return 1
 }
 
@@ -83,5 +84,6 @@ func (p *Script) luaFuncNodeTerminalClearLines(L *lua.LState) int {
 	}
 
 	nodeTerminal.ClearLines()
+	nodeTerminal.Node.uiRender()
 	return 0
 }

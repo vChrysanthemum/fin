@@ -52,7 +52,7 @@ func (p *NodeInputText) KeyPress(e termui.Event) {
 	}
 
 	p.Editor.Write(keyStr)
-	uiRender(p.Node.uiBuffer.(termui.Bufferer))
+	p.Node.uiRender()
 }
 
 func (p *NodeInputText) GetValue() string {
@@ -71,20 +71,20 @@ func (p *NodeInputText) OnKeyPressEnter() {
 
 func (p *NodeInputText) FocusMode() {
 	p.Node.uiBuffer.(*editor.Editor).BorderFg = COLOR_FOCUS_MODE_BORDERFG
-	uiRender(p.Node.uiBuffer.(termui.Bufferer))
+	p.Node.uiRender()
 }
 
 func (p *NodeInputText) UnFocusMode() {
 	p.Node.uiBuffer.(*editor.Editor).BorderFg = p.Node.BorderFg
-	uiRender(p.Node.uiBuffer.(termui.Bufferer))
+	p.Node.uiRender()
 }
 
 func (p *NodeInputText) ActiveMode() {
 	p.Node.uiBuffer.(*editor.Editor).BorderFg = COLOR_ACTIVE_MODE_BORDERFG
-	uiRender(p.Node.uiBuffer.(termui.Bufferer))
+	p.Node.uiRender()
 }
 
 func (p *NodeInputText) UnActiveMode() {
 	p.Node.uiBuffer.(*editor.Editor).BorderFg = p.Node.BorderFg
-	uiRender(p.Node.uiBuffer.(termui.Bufferer))
+	p.Node.uiRender()
 }

@@ -73,7 +73,7 @@ func (p *NodeTerminal) KeyPress(e termui.Event) {
 	}
 
 	p.Editor.Write(keyStr)
-	uiRender(p.Node.uiBuffer.(termui.Bufferer))
+	p.Node.uiRender()
 }
 
 func (p *NodeTerminal) OnKeyPressEnter() {
@@ -114,23 +114,23 @@ func (p *NodeTerminal) ClearLines() {
 func (p *NodeTerminal) FocusMode() {
 	p.Node.uiBuffer.(*editor.Editor).Border = true
 	p.Node.uiBuffer.(*editor.Editor).BorderFg = COLOR_FOCUS_MODE_BORDERFG
-	uiRender(p.Node.uiBuffer.(termui.Bufferer))
+	p.Node.uiRender()
 }
 
 func (p *NodeTerminal) UnFocusMode() {
 	p.Node.uiBuffer.(*editor.Editor).Border = p.Node.Border
 	p.Node.uiBuffer.(*editor.Editor).BorderFg = p.Node.BorderFg
-	uiRender(p.Node.uiBuffer.(termui.Bufferer))
+	p.Node.uiRender()
 }
 
 func (p *NodeTerminal) ActiveMode() {
 	p.Node.uiBuffer.(*editor.Editor).BorderFg = p.ActiveModeBorderColor
 	p.Node.uiBuffer.(*editor.Editor).ActiveMode()
-	uiRender(p.Node.uiBuffer.(termui.Bufferer))
+	p.Node.uiRender()
 }
 
 func (p *NodeTerminal) UnActiveMode() {
 	p.Node.uiBuffer.(*editor.Editor).BorderFg = p.Node.BorderFg
 	p.Node.uiBuffer.(*editor.Editor).UnActiveMode()
-	uiRender(p.Node.uiBuffer.(termui.Bufferer))
+	p.Node.uiRender()
 }

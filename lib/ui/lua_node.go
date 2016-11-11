@@ -40,22 +40,6 @@ func (p *Script) luaFuncGetNodePointer(L *lua.LState) int {
 	return 1
 }
 
-func (p *Script) luaFuncNodeUIRender(L *lua.LState) int {
-	if L.GetTop() < 1 {
-		return 0
-	}
-
-	lu := L.ToUserData(1)
-	node := p._getNodePointerFromUserData(L, lu)
-	if nil == node {
-		return 0
-	}
-
-	node.uiRender()
-
-	return 0
-}
-
 func (p *Script) luaFuncNodeSetActive(L *lua.LState) int {
 	if L.GetTop() < 1 {
 		return 0
