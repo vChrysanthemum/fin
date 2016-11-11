@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"github.com/gizak/termui"
 	rw "github.com/mattn/go-runewidth"
 	"golang.org/x/net/html"
 )
@@ -13,6 +14,8 @@ func (p *Page) parseBodySelect(parentNode *Node, htmlNode *html.Node) (ret *Node
 	nodeSelect := ret.InitNodeSelect()
 
 	ret.Data = nodeSelect
+
+	ret.uiBuffer = termui.NewList()
 
 	return
 }

@@ -11,8 +11,6 @@ func (p *Page) renderBodyInputText(node *Node) (isFallthrough bool) {
 
 	uiBuffer.TextFgColor = termui.ColorBlue
 
-	node.uiBuffer = uiBuffer
-
 	p.BufferersAppend(node, uiBuffer)
 
 	p.pushWorkingNode(node)

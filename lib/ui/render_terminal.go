@@ -16,8 +16,6 @@ func (p *Page) renderBodyTerminal(node *Node) (isFallthrough bool) {
 		uiBuffer.TextBgColor = ColorToTermuiAttribute(node.ColorBg, termui.ColorDefault)
 	}
 
-	node.uiBuffer = uiBuffer
-
 	p.BufferersAppend(node, uiBuffer)
 
 	p.pushWorkingNode(node)

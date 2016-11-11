@@ -4,14 +4,7 @@ import "github.com/gizak/termui"
 
 func (p *Page) renderBodyPar(node *Node) (isFallthrough bool) {
 	isFallthrough = false
-	nodePar := node.Data.(*NodePar)
-
-	var uiBuffer *termui.Par
-	if nil != node.uiBuffer {
-		uiBuffer = node.uiBuffer.(*termui.Par)
-	} else {
-		uiBuffer = termui.NewPar(nodePar.Text)
-	}
+	uiBuffer := node.uiBuffer.(*termui.Par)
 
 	node.uiBlock = &uiBuffer.Block
 	p.normalRenderNodeBlock(node)
@@ -31,8 +24,6 @@ func (p *Page) renderBodyPar(node *Node) (isFallthrough bool) {
 	if "" != node.ColorBg {
 		uiBuffer.TextBgColor = ColorToTermuiAttribute(node.ColorBg, termui.ColorDefault)
 	}
-
-	node.uiBuffer = uiBuffer
 
 	p.BufferersAppend(node, uiBuffer)
 

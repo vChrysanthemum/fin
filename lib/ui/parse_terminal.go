@@ -23,5 +23,7 @@ func (p *Page) parseBodyTerminal(parentNode *Node, htmlNode *html.Node) (ret *No
 		}
 	}
 
+	ret.uiBuffer = nodeTerminal.Editor
+
 	return
 }

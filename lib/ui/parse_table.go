@@ -15,6 +15,8 @@ func (p *Page) parseBodyTable(parentNode *Node, htmlNode *html.Node) (ret *Node,
 
 	ret.Data = nodeTable
 
+	ret.uiBuffer = nodeTable.Body
+
 	return
 }
 

@@ -27,12 +27,7 @@ func (p *Page) renderBodySelect(node *Node) (isFallthrough bool) {
 
 	nodeSelect := node.Data.(*NodeSelect)
 
-	var uiBuffer *termui.List
-	if nil != node.uiBuffer {
-		uiBuffer = node.uiBuffer.(*termui.List)
-	} else {
-		uiBuffer = termui.NewList()
-	}
+	uiBuffer := node.uiBuffer.(*termui.List)
 
 	node.uiBlock = &uiBuffer.Block
 	p.normalRenderNodeBlock(node)
@@ -57,8 +52,6 @@ func (p *Page) renderBodySelect(node *Node) (isFallthrough bool) {
 	} else {
 		uiBuffer.Height = maxint(node.Height, height)
 	}
-
-	node.uiBuffer = uiBuffer
 
 	nodeSelect.refreshUiBufferItems()
 

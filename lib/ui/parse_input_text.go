@@ -10,11 +10,13 @@ func (p *Page) parseBodyInputText(parentNode *Node, htmlNode *html.Node) (ret *N
 	parentNode.addChild(ret)
 	isFallthrough = true
 
-	inputText := ret.InitNodeInputText()
+	nodeInputText := ret.InitNodeInputText()
 
-	ret.Data = inputText
+	ret.Data = nodeInputText
 	ret.Width = termui.TermWidth()
 	ret.Height = 1
+
+	ret.uiBuffer = nodeInputText.Editor
 
 	return
 }

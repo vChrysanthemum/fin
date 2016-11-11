@@ -20,5 +20,7 @@ func (p *Page) parseBodyPar(parentNode *Node, htmlNode *html.Node) (ret *Node, i
 	ret.Width = termui.TermWidth()
 	ret.Height = -1
 
+	ret.uiBuffer = termui.NewPar(nodePar.Text)
+
 	return
 }

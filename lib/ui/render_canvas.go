@@ -16,8 +16,6 @@ func (p *Page) renderBodyCanvas(node *Node) (isFallthrough bool) {
 		uiBuffer.ItemBgColor = ColorToTermuiAttribute(node.ColorBg, termui.ColorDefault)
 	}
 
-	node.uiBuffer = uiBuffer
-
 	p.BufferersAppend(node, uiBuffer)
 
 	p.renderingY = uiBuffer.Y + uiBuffer.Height

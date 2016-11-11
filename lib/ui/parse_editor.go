@@ -16,5 +16,7 @@ func (p *Page) parseBodyEditor(parentNode *Node, htmlNode *html.Node) (ret *Node
 	ret.Width = termui.TermWidth()
 	ret.Height = 10
 
+	ret.uiBuffer = nodeEditor.Editor
+
 	return
 }
