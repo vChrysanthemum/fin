@@ -2,6 +2,7 @@ package editor
 
 import (
 	"strings"
+	"sync"
 
 	"github.com/gizak/termui"
 	termbox "github.com/nsf/termbox-go"
@@ -10,7 +11,8 @@ import (
 type Editor struct {
 	FirstLine, LastLine, CurrentLine *Line
 
-	Lines []*Line
+	LinesLocker sync.RWMutex
+	Lines       []*Line
 
 	termui.Block
 
@@ -23,7 +25,7 @@ type Editor struct {
 
 func NewEditor() *Editor {
 	ret := &Editor{
-		Lines:             make([]*Line, 0),
+		Lines:             []*Line{},
 		Block:             *termui.NewBlock(),
 		TextFgColor:       termui.ThemeAttr("par.text.fg"),
 		TextBgColor:       termui.ThemeAttr("par.text.bg"),

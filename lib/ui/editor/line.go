@@ -14,6 +14,9 @@ type Line struct {
 }
 
 func (p *Editor) InitNewLine() *Line {
+	p.LinesLocker.Lock()
+	defer p.LinesLocker.Unlock()
+
 	ret := &Line{
 		Data: make([]byte, 0),
 	}
@@ -50,6 +53,9 @@ func (p *Editor) InitNewLine() *Line {
 }
 
 func (p *Editor) RemoveLine(line *Line) {
+	p.LinesLocker.Lock()
+	defer p.LinesLocker.Unlock()
+
 	p.CurrentLine = line.Prev
 
 	if nil != line.Prev {
@@ -72,6 +78,18 @@ func (p *Editor) RemoveLine(line *Line) {
 			p.Lines = append(p.Lines[:k], p.Lines[k+1:]...)
 		}
 	}
+}
+
+func (p *Editor) ClearLines() {
+	p.LinesLocker.Lock()
+	defer p.LinesLocker.Unlock()
+
+	p.FirstLine = nil
+	p.LastLine = nil
+	p.CurrentLine = nil
+	p.Lines = []*Line{}
+	p.CursorLocation.ResetLocation()
+	p.DisplayLinesRange = [2]int{0, 1}
 }
 
 func (p *Line) Write(ch string) {

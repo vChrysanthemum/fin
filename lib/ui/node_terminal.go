@@ -105,6 +105,12 @@ func (p *NodeTerminal) WriteNewLine(line string) {
 	p.Editor.CurrentLine = p.InitNewLine()
 }
 
+func (p *NodeTerminal) ClearLines() {
+	p.NewCommand = nil
+	p.CommandLines = make([]*editor.Line, 0)
+	p.Editor.ClearLines()
+}
+
 func (p *NodeTerminal) FocusMode() {
 	p.Node.uiBuffer.(*editor.Editor).Border = true
 	p.Node.uiBuffer.(*editor.Editor).BorderFg = COLOR_FOCUS_MODE_BORDERFG

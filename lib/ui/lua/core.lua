@@ -72,6 +72,10 @@ function _Node.TerminalWriteNewLine(self, line)
     return base.NodeTerminalWriteNewLine(self.nodePointer, line)
 end
 
+function _Node.TerminalClearLines(self)
+    return base.NodeTerminalClearLines(self.nodePointer)
+end
+
 function WindowConfirm(title)
     content = string.format([[
     <table>

@@ -70,3 +70,18 @@ func (p *Script) luaFuncNodeTerminalWriteNewLine(L *lua.LState) int {
 	nodeTerminal.WriteNewLine(L.ToString(2))
 	return 1
 }
+
+func (p *Script) luaFuncNodeTerminalClearLines(L *lua.LState) int {
+	if L.GetTop() < 1 {
+		return 0
+	}
+
+	lu := L.ToUserData(1)
+	nodeTerminal := p._getNodeTerminalPointerFromUserData(L, lu)
+	if nil == nodeTerminal {
+		return 0
+	}
+
+	nodeTerminal.ClearLines()
+	return 0
+}

@@ -50,6 +50,8 @@ func (p *Page) prepareScript() {
 		script.luaState.NewFunction(script.luaFuncNodeTerminalRegisterCommandHandle))
 	script.luaState.SetField(luaBase, "NodeTerminalWriteNewLine",
 		script.luaState.NewFunction(script.luaFuncNodeTerminalWriteNewLine))
+	script.luaState.SetField(luaBase, "NodeTerminalClearLines",
+		script.luaState.NewFunction(script.luaFuncNodeTerminalClearLines))
 
 	err = script.luaState.DoFile(filepath.Join(GlobalOption.LuaResBaseDir, "ui/core.lua"))
 	if nil != err {
