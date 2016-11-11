@@ -11,11 +11,7 @@ func (p *Page) parseBodyTable(parentNode *Node, htmlNode *html.Node) (ret *Node,
 	parentNode.addChild(ret)
 	isFallthrough = true
 
-	nodeTable := ret.InitNodeTable()
-
-	ret.Data = nodeTable
-
-	ret.uiBuffer = nodeTable.Body
+	ret.InitNodeTable()
 
 	return
 }

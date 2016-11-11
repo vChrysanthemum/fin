@@ -6,7 +6,6 @@ func (p *Page) renderBodyInputText(node *Node) (isFallthrough bool) {
 	isFallthrough = false
 	uiBuffer := node.Data.(*NodeInputText).Editor
 
-	node.uiBlock = &uiBuffer.Block
 	p.normalRenderNodeBlock(node)
 
 	uiBuffer.TextFgColor = termui.ColorBlue

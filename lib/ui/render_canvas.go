@@ -6,7 +6,6 @@ func (p *Page) renderBodyCanvas(node *Node) (isFallthrough bool) {
 	isFallthrough = false
 	uiBuffer := node.Data.(*NodeCanvas).Canvas
 
-	node.uiBlock = &uiBuffer.Block
 	p.normalRenderNodeBlock(node)
 
 	if "" != node.ColorFg {

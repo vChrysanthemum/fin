@@ -29,10 +29,17 @@ func (p *Node) InitNodeSelect() *NodeSelect {
 
 	nodeSelect.SelectedOptionColorFg = COLOR_SELECTED_OPTION_COLORFG
 	nodeSelect.SelectedOptionColorBg = COLOR_SELECTED_OPTION_COLORBG
-	nodeSelect.Border = true
-	nodeSelect.BorderFg = COLOR_DEFAULT_BORDER_FG
-	nodeSelect.Width = -1
-	nodeSelect.Height = -1
+
+	p.Data = nodeSelect
+
+	uiBuffer := termui.NewList()
+	p.uiBuffer = uiBuffer
+	p.uiBlock = &uiBuffer.Block
+
+	uiBuffer.Border = true
+	uiBuffer.BorderFg = COLOR_DEFAULT_BORDER_FG
+	uiBuffer.Width = -1
+	uiBuffer.Height = -1
 
 	return nodeSelect
 }
@@ -106,23 +113,26 @@ func (p *NodeSelect) ClearOptions() {
 }
 
 func (p *NodeSelect) FocusMode() {
-	p.Node.uiBuffer.(*termui.List).Border = true
-	p.Node.uiBuffer.(*termui.List).BorderFg = COLOR_FOCUS_MODE_BORDERFG
+	p.Node.tmpBorder = p.Node.uiBlock.Border
+	p.Node.tmpBorderFg = p.Node.uiBlock.BorderFg
+	p.Node.uiBlock.Border = true
+	p.Node.uiBlock.BorderFg = COLOR_FOCUS_MODE_BORDERFG
 	p.Node.uiRender()
 }
 
 func (p *NodeSelect) UnFocusMode() {
-	p.Node.uiBuffer.(*termui.List).Border = p.Node.Border
-	p.Node.uiBuffer.(*termui.List).BorderFg = p.Node.BorderFg
+	p.Node.uiBlock.Border = p.Node.tmpBorder
+	p.Node.uiBlock.BorderFg = p.Node.tmpBorderFg
 	p.Node.uiRender()
 }
 
 func (p *NodeSelect) ActiveMode() {
-	p.Node.uiBuffer.(*termui.List).BorderFg = COLOR_ACTIVE_MODE_BORDERFG
+	p.Node.tmpBorderFg = p.Node.uiBlock.BorderFg
+	p.Node.uiBlock.BorderFg = COLOR_ACTIVE_MODE_BORDERFG
 	p.Node.uiRender()
 }
 
 func (p *NodeSelect) UnActiveMode() {
-	p.Node.uiBuffer.(*termui.List).BorderFg = p.Node.BorderFg
+	p.Node.uiBlock.BorderFg = p.Node.tmpBorderFg
 	p.Node.uiRender()
 }

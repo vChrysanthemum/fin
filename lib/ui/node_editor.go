@@ -15,13 +15,21 @@ func (p *Node) InitNodeEditor() *NodeEditor {
 	nodeEditor := new(NodeEditor)
 	nodeEditor.Node = p
 	nodeEditor.Editor = editor.NewEditor()
+
 	p.Data = nodeEditor
-	p.Border = false
 	p.KeyPress = nodeEditor.KeyPress
 	p.FocusMode = nodeEditor.FocusMode
 	p.UnFocusMode = nodeEditor.UnFocusMode
 	p.ActiveMode = nodeEditor.ActiveMode
 	p.UnActiveMode = nodeEditor.UnActiveMode
+
+	p.uiBuffer = nodeEditor.Editor
+	p.uiBlock = &nodeEditor.Editor.Block
+
+	p.uiBlock.Width = termui.TermWidth()
+	p.uiBlock.Height = 10
+	p.uiBlock.Border = false
+
 	return nodeEditor
 }
 
@@ -37,25 +45,28 @@ func (p *NodeEditor) KeyPress(e termui.Event) {
 }
 
 func (p *NodeEditor) FocusMode() {
-	p.Node.uiBuffer.(*editor.Editor).Border = true
-	p.Node.uiBuffer.(*editor.Editor).BorderFg = COLOR_FOCUS_MODE_BORDERFG
+	p.Node.tmpBorder = p.Node.uiBlock.Border
+	p.Node.tmpBorderFg = p.Node.uiBlock.BorderFg
+	p.Node.uiBlock.Border = true
+	p.Node.uiBlock.BorderFg = COLOR_FOCUS_MODE_BORDERFG
 	p.Node.uiRender()
 }
 
 func (p *NodeEditor) UnFocusMode() {
-	p.Node.uiBuffer.(*editor.Editor).Border = p.Node.Border
-	p.Node.uiBuffer.(*editor.Editor).BorderFg = p.Node.BorderFg
+	p.Node.uiBlock.Border = p.Node.tmpBorder
+	p.Node.uiBlock.BorderFg = p.Node.tmpBorderFg
 	p.Node.uiRender()
 }
 
 func (p *NodeEditor) ActiveMode() {
-	p.Node.uiBuffer.(*editor.Editor).BorderFg = COLOR_ACTIVE_MODE_BORDERFG
-	p.Node.uiBuffer.(*editor.Editor).ActiveMode()
+	p.Node.tmpBorderFg = p.Node.uiBlock.BorderFg
+	p.Node.uiBlock.BorderFg = COLOR_ACTIVE_MODE_BORDERFG
+	p.Editor.ActiveMode()
 	p.Node.uiRender()
 }
 
 func (p *NodeEditor) UnActiveMode() {
-	p.Node.uiBuffer.(*editor.Editor).BorderFg = p.Node.BorderFg
-	p.Node.uiBuffer.(*editor.Editor).UnActiveMode()
+	p.Node.uiBlock.BorderFg = p.Node.tmpBorderFg
+	p.Editor.UnActiveMode()
 	p.Node.uiRender()
 }

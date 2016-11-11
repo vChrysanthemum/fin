@@ -4,6 +4,7 @@ import (
 	"strconv"
 
 	"github.com/gizak/termui"
+
 	"golang.org/x/net/html"
 )
 
@@ -12,18 +13,9 @@ func (p *Page) parseBodyGauge(parentNode *Node, htmlNode *html.Node) (ret *Node,
 	parentNode.addChild(ret)
 	isFallthrough = false
 
-	nodeGauge := ret.InitNodeGauge()
+	ret.InitNodeGauge()
 
-	ret.Data = nodeGauge
-	ret.Width = termui.TermWidth()
-	ret.Height = 3
-
-	uiBuffer := termui.NewGauge()
-	ret.uiBuffer = uiBuffer
-
-	uiBuffer.BarColor = COLOR_DEFAULT_GAUGE_BARCOLOR
-	uiBuffer.PercentColor = COLOR_DEFAULT_GAUGE_PERCENTCOLOR
-	uiBuffer.PercentColorHighlighted = COLOR_DEFAULT_GAUGE_PERCENTCOLOR_HIGHLIGHTED
+	uiBuffer := ret.uiBuffer.(*termui.Gauge)
 
 	for _, v := range htmlNode.Attr {
 		switch v.Key {

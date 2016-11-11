@@ -29,28 +29,26 @@ func (p *Page) renderBodySelect(node *Node) (isFallthrough bool) {
 
 	uiBuffer := node.uiBuffer.(*termui.List)
 
-	node.uiBlock = &uiBuffer.Block
 	p.normalRenderNodeBlock(node)
 
-	if node.Width < 0 {
-		if true == node.Border {
-			node.Width = nodeSelect.ChildrenMaxStringWidth + 2
+	if node.uiBlock.Width < 0 {
+		if true == node.uiBlock.Border {
+			node.uiBlock.Width = nodeSelect.ChildrenMaxStringWidth + 2
 		} else {
-			node.Width = nodeSelect.ChildrenMaxStringWidth
+			node.uiBlock.Width = nodeSelect.ChildrenMaxStringWidth
 		}
 	}
-	uiBuffer.Width = node.Width
 
 	var height int
-	if true == node.Border {
+	if true == node.uiBlock.Border {
 		height = len(nodeSelect.Children) + 2
 	} else {
 		height = len(nodeSelect.Children)
 	}
-	if node.Height < 0 {
-		uiBuffer.Height = height
+	if node.uiBlock.Height < 0 {
+		node.uiBlock.Height = height
 	} else {
-		uiBuffer.Height = maxint(node.Height, height)
+		node.uiBlock.Height = maxint(node.uiBlock.Height, height)
 	}
 
 	nodeSelect.refreshUiBufferItems()

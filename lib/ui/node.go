@@ -31,22 +31,16 @@ type Node struct {
 	// 例: TableTrTd 将用到该字段
 	isShouldTermuiRenderChild bool
 
+	tmpBorder   bool
+	tmpBorderFg termui.Attribute
+	ColorFg     string
+	ColorBg     string
+
 	uiBuffer interface{}
 	uiBlock  *termui.Block
 
-	// TODO 重构代码
-	// 这里用了绕了个弯
-	// 这里利用 Height Width 为-1时，则由 render阶段来计算
-	Width, Height int
-
-	ColorFg       string
-	ColorBg       string
-	BorderLabelFg termui.Attribute
-	BorderLabel   string
-	Border        bool
-	BorderFg      termui.Attribute
-	HtmlData      string
-	Data          interface{}
+	HtmlData string
+	Data     interface{}
 
 	KeyPress     NodeKeyPress
 	FocusMode    NodeFocusMode
@@ -89,10 +83,6 @@ func (p *Page) newNode(htmlNode *html.Node) *Node {
 	ret := new(Node)
 	ret.page = p
 	ret.HtmlData = htmlNode.Data
-	ret.Width = 1
-	ret.Height = 1
-	ret.BorderLabelFg = COLOR_DEFAULT_BORDER_LABEL_FG
-	ret.BorderFg = COLOR_DEFAULT_BORDER_FG
 	ret.KeyPressEnterHandlers = make(map[string]NodeJob, 0)
 	return ret
 }

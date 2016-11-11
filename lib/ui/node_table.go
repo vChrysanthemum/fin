@@ -13,6 +13,10 @@ func (p *Node) InitNodeTable() *NodeTable {
 	nodeTable.Body.X = 0
 	nodeTable.Body.Y = 0
 	p.Data = nodeTable
+
+	p.uiBuffer = nodeTable.Body
+	p.uiBlock = nil
+
 	return nodeTable
 }
 

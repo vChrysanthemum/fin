@@ -12,6 +12,19 @@ func (p *Node) InitNodePar() *NodePar {
 	nodePar.Node = p
 	p.Data = nodePar
 	p.SetText = nodePar.SetText
+
+	p.Data = nodePar
+
+	uiBuffer := termui.NewPar(nodePar.Text)
+	p.uiBuffer = uiBuffer
+	p.uiBlock = &uiBuffer.Block
+
+	p.uiBlock.Border = false
+	p.uiBlock.Width = termui.TermWidth()
+	p.uiBlock.Height = -1
+
+	uiBuffer.TextFgColor = COLOR_DEFAULT_TEXT_COLOR_FG
+
 	return nodePar
 }
 

@@ -12,23 +12,30 @@ type NodeInputText struct {
 }
 
 func (p *Node) InitNodeInputText() *NodeInputText {
-	inputText := new(NodeInputText)
-	inputText.Node = p
-	inputText.Editor = editor.NewEditor()
-	inputText.Editor.Border = true
-	inputText.Editor.BorderTop = false
-	inputText.Editor.BorderLeft = false
-	inputText.Editor.BorderRight = false
-	inputText.Editor.BorderBottom = true
-	p.Border = true
-	p.Data = inputText
-	p.KeyPress = inputText.KeyPress
-	p.GetValue = inputText.GetValue
-	p.FocusMode = inputText.FocusMode
-	p.UnFocusMode = inputText.UnFocusMode
-	p.ActiveMode = inputText.ActiveMode
-	p.UnActiveMode = inputText.UnActiveMode
-	return inputText
+	nodeInputText := new(NodeInputText)
+	nodeInputText.Node = p
+	nodeInputText.Editor = editor.NewEditor()
+	nodeInputText.Editor.Border = true
+	nodeInputText.Editor.BorderTop = false
+	nodeInputText.Editor.BorderLeft = false
+	nodeInputText.Editor.BorderRight = false
+	nodeInputText.Editor.BorderBottom = true
+
+	p.Data = nodeInputText
+	p.KeyPress = nodeInputText.KeyPress
+	p.GetValue = nodeInputText.GetValue
+	p.FocusMode = nodeInputText.FocusMode
+	p.UnFocusMode = nodeInputText.UnFocusMode
+	p.ActiveMode = nodeInputText.ActiveMode
+	p.UnActiveMode = nodeInputText.UnActiveMode
+
+	p.uiBuffer = nodeInputText.Editor
+	p.uiBlock = &nodeInputText.Editor.Block
+
+	p.uiBlock.Width = termui.TermWidth()
+	p.uiBlock.Height = 1
+
+	return nodeInputText
 }
 
 func (p *NodeInputText) KeyPress(e termui.Event) {
@@ -60,21 +67,28 @@ func (p *NodeInputText) GetValue() string {
 }
 
 func (p *NodeInputText) FocusMode() {
-	p.Node.uiBuffer.(*editor.Editor).BorderFg = COLOR_FOCUS_MODE_BORDERFG
+	p.Node.tmpBorder = p.Node.uiBlock.Border
+	p.Node.tmpBorderFg = p.Node.uiBlock.BorderFg
+	p.Node.uiBlock.Border = true
+	p.Node.uiBlock.BorderFg = COLOR_FOCUS_MODE_BORDERFG
 	p.Node.uiRender()
 }
 
 func (p *NodeInputText) UnFocusMode() {
-	p.Node.uiBuffer.(*editor.Editor).BorderFg = p.Node.BorderFg
+	p.Node.uiBlock.Border = p.Node.tmpBorder
+	p.Node.uiBlock.BorderFg = p.Node.tmpBorderFg
 	p.Node.uiRender()
 }
 
 func (p *NodeInputText) ActiveMode() {
-	p.Node.uiBuffer.(*editor.Editor).BorderFg = COLOR_ACTIVE_MODE_BORDERFG
+	p.Node.tmpBorderFg = p.Node.uiBlock.BorderFg
+	p.Node.uiBlock.BorderFg = COLOR_ACTIVE_MODE_BORDERFG
+	p.Editor.ActiveMode()
 	p.Node.uiRender()
 }
 
 func (p *NodeInputText) UnActiveMode() {
-	p.Node.uiBuffer.(*editor.Editor).BorderFg = p.Node.BorderFg
+	p.Node.uiBlock.BorderFg = p.Node.tmpBorderFg
+	p.Editor.UnActiveMode()
 	p.Node.uiRender()
 }

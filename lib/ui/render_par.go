@@ -6,17 +6,15 @@ func (p *Page) renderBodyPar(node *Node) (isFallthrough bool) {
 	isFallthrough = false
 	uiBuffer := node.uiBuffer.(*termui.Par)
 
-	node.uiBlock = &uiBuffer.Block
 	p.normalRenderNodeBlock(node)
 
-	if node.Height < 0 {
-		if true == node.Border {
-			node.Height = 3
+	if node.uiBlock.Height < 0 {
+		if true == node.uiBlock.Border {
+			node.uiBlock.Height = 3
 		} else {
-			node.Height = 1
+			node.uiBlock.Height = 1
 		}
 	}
-	uiBuffer.Height = node.Height
 
 	if "" != node.ColorFg {
 		uiBuffer.TextFgColor = ColorToTermuiAttribute(node.ColorFg, termui.ColorDefault)

@@ -6,7 +6,6 @@ func (p *Page) renderBodyEditor(node *Node) (isFallthrough bool) {
 	isFallthrough = false
 	uiBuffer := node.Data.(*NodeEditor).Editor
 
-	node.uiBlock = &uiBuffer.Block
 	p.normalRenderNodeBlock(node)
 
 	if "" != node.ColorFg {

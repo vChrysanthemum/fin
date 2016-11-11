@@ -109,6 +109,55 @@ func (p *Page) parseToNode(htmlNode *html.Node) (ret *Node, isFallthrough bool) 
 	return
 }
 
+func (p *Page) ParseNodeAttribute(node *Node, attr []html.Attribute) {
+	// 公用的解析
+	for _, v := range attr {
+		switch v.Key {
+		case "id":
+			p.IdToNodeMap[v.Val] = node
+			node.Id = v.Val
+		case "colorfg":
+			node.ColorFg = v.Val
+		}
+	}
+
+	if nil != node.uiBlock {
+		node.uiBlock.BorderLabelFg = COLOR_DEFAULT_BORDER_LABEL_FG
+		node.uiBlock.BorderFg = COLOR_DEFAULT_BORDER_FG
+
+		for _, v := range attr {
+			switch v.Key {
+			case "borderlabelfg":
+				node.uiBlock.BorderLabelFg = ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_BORDER_LABEL_FG)
+			case "borderlabel":
+				node.uiBlock.BorderLabel = v.Val
+			case "borderfg":
+				node.uiBlock.BorderFg = ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_BORDER_FG)
+			case "border":
+				if "true" == v.Val {
+					node.uiBlock.Border = true
+				} else if "false" == v.Val {
+					node.uiBlock.Border = false
+				}
+			case "height":
+				node.uiBlock.Height, _ = strconv.Atoi(v.Val)
+				if node.uiBlock.Height < 0 {
+					node.uiBlock.Height = 0
+				}
+			case "width":
+				node.uiBlock.Width, _ = strconv.Atoi(v.Val)
+				if node.uiBlock.Width < 0 {
+					node.uiBlock.Width = 0
+				}
+			}
+		}
+	}
+
+	if nil != node.Parent && "" == node.ColorFg {
+		node.ColorFg = node.Parent.ColorFg
+	}
+}
+
 func (p *Page) parse(htmlNode *html.Node) *Node {
 	var (
 		childHtmlNode *html.Node
@@ -120,42 +169,7 @@ func (p *Page) parse(htmlNode *html.Node) *Node {
 	if nil != node {
 		p.pushParsingNodesStack(node)
 
-		// 公用的解析
-		for _, v := range htmlNode.Attr {
-			switch v.Key {
-			case "id":
-				p.IdToNodeMap[v.Val] = node
-				node.Id = v.Val
-			case "colorfg":
-				node.ColorFg = v.Val
-			case "borderlabelfg":
-				node.BorderLabelFg = ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_BORDER_LABEL_FG)
-			case "borderlabel":
-				node.BorderLabel = v.Val
-			case "borderfg":
-				node.BorderFg = ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_BORDER_FG)
-			case "border":
-				if "true" == v.Val {
-					node.Border = true
-				} else if "false" == v.Val {
-					node.Border = false
-				}
-			case "height":
-				node.Height, _ = strconv.Atoi(v.Val)
-				if node.Height < 0 {
-					node.Height = 0
-				}
-			case "width":
-				node.Width, _ = strconv.Atoi(v.Val)
-				if node.Width < 0 {
-					node.Width = 0
-				}
-			}
-		}
-
-		if nil != node.Parent && "" == node.ColorFg {
-			node.ColorFg = node.Parent.ColorFg
-		}
+		p.ParseNodeAttribute(node, htmlNode.Attr)
 	}
 
 	if true == isFallthrough {

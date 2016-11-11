@@ -10,6 +10,20 @@ func (p *Node) InitNodeGauge() *NodeGauge {
 	nodeGauge := new(NodeGauge)
 	nodeGauge.Node = p
 	p.Data = nodeGauge
+
+	p.Data = nodeGauge
+
+	uiBuffer := termui.NewGauge()
+	p.uiBuffer = uiBuffer
+	p.uiBlock = &uiBuffer.Block
+
+	p.uiBlock.Width = termui.TermWidth()
+	p.uiBlock.Height = 3
+
+	uiBuffer.BarColor = COLOR_DEFAULT_GAUGE_BARCOLOR
+	uiBuffer.PercentColor = COLOR_DEFAULT_GAUGE_PERCENTCOLOR
+	uiBuffer.PercentColorHighlighted = COLOR_DEFAULT_GAUGE_PERCENTCOLOR_HIGHLIGHTED
+
 	return nodeGauge
 }
 
