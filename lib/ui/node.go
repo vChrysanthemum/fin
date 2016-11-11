@@ -110,7 +110,7 @@ func (p *Node) addChild(child *Node) {
 	p.LastChild = child
 }
 
-func (p *Node) render() {
+func (p *Node) uiRender() {
 	if nil == p.uiBuffer {
 		return
 	}

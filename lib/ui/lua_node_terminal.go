@@ -50,7 +50,7 @@ func (p *Script) luaFuncNodeTerminalRegisterCommandHandle(L *lua.LState) int {
 			panic(err)
 		}
 		_nodeTerminal.PrepareNewCommand()
-		_node.render()
+		_node.uiRender()
 	}(L, nodeTerminal.Node, callback)
 
 	return 0

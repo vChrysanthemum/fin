@@ -40,7 +40,7 @@ func (p *Script) luaFuncGetNodePointer(L *lua.LState) int {
 	return 1
 }
 
-func (p *Script) luaFuncNodeRender(L *lua.LState) int {
+func (p *Script) luaFuncNodeUIRender(L *lua.LState) int {
 	if L.GetTop() < 1 {
 		return 0
 	}
@@ -51,7 +51,7 @@ func (p *Script) luaFuncNodeRender(L *lua.LState) int {
 		return 0
 	}
 
-	node.render()
+	node.uiRender()
 
 	return 0
 }
