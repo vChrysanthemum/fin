@@ -20,8 +20,6 @@ func (p *Page) renderBodyCanvas(node *Node) (isFallthrough bool) {
 
 	p.BufferersAppend(node, uiBuffer)
 
-	p.pushWorkingNode(node)
-
 	p.renderingY = uiBuffer.Y + uiBuffer.Height
 
 	return
