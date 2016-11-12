@@ -21,11 +21,6 @@ func (p *Node) InitNodeSelect() *NodeSelect {
 	nodeSelect.Children = make([]NodeSelectOption, 0)
 	p.Data = nodeSelect
 	p.KeyPress = nodeSelect.KeyPress
-	p.GetValue = nodeSelect.GetValue
-	p.FocusMode = nodeSelect.FocusMode
-	p.UnFocusMode = nodeSelect.UnFocusMode
-	p.ActiveMode = nodeSelect.ActiveMode
-	p.UnActiveMode = nodeSelect.UnActiveMode
 
 	nodeSelect.SelectedOptionColorFg = COLOR_SELECTED_OPTION_COLORFG
 	nodeSelect.SelectedOptionColorBg = COLOR_SELECTED_OPTION_COLORBG
@@ -92,7 +87,7 @@ func (p *NodeSelect) KeyPress(e termui.Event) {
 	}
 }
 
-func (p *NodeSelect) GetValue() string {
+func (p *NodeSelect) NodeDataGetValue() string {
 	nodeSelectOption := p.Children[p.SelectedOptionIndex]
 	return nodeSelectOption.Value
 }
@@ -112,7 +107,7 @@ func (p *NodeSelect) ClearOptions() {
 	p.ChildrenMaxStringWidth = 0
 }
 
-func (p *NodeSelect) FocusMode() {
+func (p *NodeSelect) NodeDataFocusMode() {
 	p.Node.isCalledFocusMode = true
 	p.Node.tmpFocusModeBorder = p.Node.uiBlock.Border
 	p.Node.tmpFocusModeBorderFg = p.Node.uiBlock.BorderFg
@@ -121,7 +116,7 @@ func (p *NodeSelect) FocusMode() {
 	p.Node.uiRender()
 }
 
-func (p *NodeSelect) UnFocusMode() {
+func (p *NodeSelect) NodeDataUnFocusMode() {
 	if true == p.Node.isCalledFocusMode {
 		p.Node.isCalledFocusMode = false
 		p.Node.uiBlock.Border = p.Node.tmpFocusModeBorder
@@ -130,14 +125,16 @@ func (p *NodeSelect) UnFocusMode() {
 	}
 }
 
-func (p *NodeSelect) ActiveMode() {
-	p.Node.isCalledActiveMode = true
-	p.Node.tmpActiveModeBorderFg = p.Node.uiBlock.BorderFg
-	p.Node.uiBlock.BorderFg = COLOR_ACTIVE_MODE_BORDERFG
+func (p *NodeSelect) NodeDataActiveMode() {
+	if false == p.Node.isCalledActiveMode {
+		p.Node.isCalledActiveMode = true
+		p.Node.tmpActiveModeBorderFg = p.Node.uiBlock.BorderFg
+		p.Node.uiBlock.BorderFg = COLOR_ACTIVE_MODE_BORDERFG
+	}
 	p.Node.uiRender()
 }
 
-func (p *NodeSelect) UnActiveMode() {
+func (p *NodeSelect) NodeDataUnActiveMode() {
 	if true == p.isCalledActiveMode {
 		p.Node.isCalledActiveMode = false
 		p.Node.uiBlock.BorderFg = p.Node.tmpActiveModeBorderFg

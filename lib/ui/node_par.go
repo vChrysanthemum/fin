@@ -14,7 +14,6 @@ func (p *Node) InitNodePar() *NodePar {
 	nodePar := new(NodePar)
 	nodePar.Node = p
 	p.Data = nodePar
-	p.SetText = nodePar.SetText
 
 	p.Data = nodePar
 
@@ -31,7 +30,7 @@ func (p *Node) InitNodePar() *NodePar {
 	return nodePar
 }
 
-func (p *NodePar) SetText(content string) (isNeedRerenderPage bool) {
+func (p *NodePar) NodeDataSetText(content string) (isNeedRerenderPage bool) {
 	uiBuffer := p.Node.uiBuffer.(*termui.Par)
 	uiBuffer.Text = content
 

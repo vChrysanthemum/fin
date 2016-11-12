@@ -26,10 +26,6 @@ func (p *Node) InitNodeTerminal() *NodeTerminal {
 
 	p.Data = nodeTerminal
 	p.KeyPress = nodeTerminal.KeyPress
-	p.FocusMode = nodeTerminal.FocusMode
-	p.UnFocusMode = nodeTerminal.UnFocusMode
-	p.ActiveMode = nodeTerminal.ActiveMode
-	p.UnActiveMode = nodeTerminal.UnActiveMode
 
 	p.uiBuffer = nodeTerminal.Editor
 	p.uiBlock = &nodeTerminal.Editor.Block
@@ -111,11 +107,11 @@ func (p *NodeTerminal) ClearLines() {
 	p.Editor.ClearLines()
 }
 
-func (p *NodeTerminal) afterRenderHandle() {
+func (p *NodeTerminal) NodeDataAfterRenderHandle() {
 	p.Editor.AfterRenderHandle()
 }
 
-func (p *NodeTerminal) FocusMode() {
+func (p *NodeTerminal) NodeDataFocusMode() {
 	p.Node.isCalledFocusMode = true
 	p.Node.tmpFocusModeBorder = p.Node.uiBlock.Border
 	p.Node.tmpFocusModeBorderFg = p.Node.uiBlock.BorderFg
@@ -124,7 +120,7 @@ func (p *NodeTerminal) FocusMode() {
 	p.Node.uiRender()
 }
 
-func (p *NodeTerminal) UnFocusMode() {
+func (p *NodeTerminal) NodeDataUnFocusMode() {
 	if true == p.Node.isCalledFocusMode {
 		p.Node.isCalledFocusMode = false
 		p.Node.uiBlock.Border = p.Node.tmpFocusModeBorder
@@ -133,15 +129,17 @@ func (p *NodeTerminal) UnFocusMode() {
 	}
 }
 
-func (p *NodeTerminal) ActiveMode() {
-	p.Node.isCalledActiveMode = true
-	p.Node.tmpActiveModeBorderFg = p.Node.uiBlock.BorderFg
-	p.Node.uiBlock.BorderFg = COLOR_ACTIVE_MODE_BORDERFG
+func (p *NodeTerminal) NodeDataActiveMode() {
+	if false == p.Node.isCalledActiveMode {
+		p.Node.isCalledActiveMode = true
+		p.Node.tmpActiveModeBorderFg = p.Node.uiBlock.BorderFg
+		p.Node.uiBlock.BorderFg = COLOR_ACTIVE_MODE_BORDERFG
+	}
 	p.Editor.ActiveMode()
 	p.Node.uiRender()
 }
 
-func (p *NodeTerminal) UnActiveMode() {
+func (p *NodeTerminal) NodeDataUnActiveMode() {
 	if true == p.isCalledActiveMode {
 		p.Node.isCalledActiveMode = false
 		p.Node.uiBlock.BorderFg = p.Node.tmpActiveModeBorderFg

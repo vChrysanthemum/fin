@@ -58,8 +58,8 @@ func (p *Page) DumpNodesHtmlData() {
 }
 
 func (p *Page) RemoveNode(node *Node) {
-	if nil != node.OnRemove {
-		node.OnRemove()
+	if nodeDataOnRemover, ok := node.Data.(NodeDataOnRemover); true == ok {
+		nodeDataOnRemover.NodeDataOnRemove()
 	}
 
 	delete(p.IdToNodeMap, node.Id)
@@ -87,14 +87,15 @@ func (p *Page) RemoveNode(node *Node) {
 
 func (p *Page) Refresh() {
 	if nil != p.FocusNode {
-		focusNode := p.FocusNode.Value.(*Node)
-		if nil != focusNode.UnFocusMode {
-			focusNode.UnFocusMode()
+		if nodeDataUnFocusModer, ok := p.FocusNode.Value.(*Node).Data.(NodeDataUnFocusModer); true == ok {
+			nodeDataUnFocusModer.NodeDataUnFocusMode()
 		}
 	}
 
-	if nil != p.ActiveNode && nil != p.ActiveNode.UnActiveMode {
-		p.ActiveNode.UnActiveMode()
+	if nil != p.ActiveNode {
+		if nodeDataUnActiveModer, ok := p.ActiveNode.Data.(NodeDataUnActiveModer); true == ok {
+			nodeDataUnActiveModer.NodeDataUnActiveMode()
+		}
 	}
 
 	uiClear()
@@ -114,8 +115,8 @@ func (p *Page) nodeAfterRenderHandle(node *Node) {
 		p.nodeAfterRenderHandle(childNode)
 	}
 
-	if nil != node.afterRenderHandle {
-		node.afterRenderHandle()
+	if nodeDataAfterRenderHandler, ok := node.Data.(NodeDataAfterRenderHandler); true == ok {
+		nodeDataAfterRenderHandler.NodeDataAfterRenderHandle()
 	}
 }
 

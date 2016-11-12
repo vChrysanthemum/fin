@@ -32,7 +32,7 @@ func (p *Script) luaFuncWindowConfirm(L *lua.LState) int {
 	nodeSelectData.DisableQuit = true
 	nodeSelect.WaitKeyPressEnter()
 
-	L.Push(lua.LString(nodeSelectData.GetValue()))
+	L.Push(lua.LString(nodeSelectData.NodeDataGetValue()))
 
 	page.Clear()
 

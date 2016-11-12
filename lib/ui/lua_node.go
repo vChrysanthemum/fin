@@ -116,8 +116,8 @@ func (p *Script) luaFuncNodeSetText(L *lua.LState) int {
 		return 0
 	}
 
-	if nil != node.SetText {
-		isNeedRerenderPage := node.SetText(text)
+	if nodeDataSetTexter, ok := node.Data.(NodeDataSetTexter); true == ok {
+		isNeedRerenderPage := nodeDataSetTexter.NodeDataSetText(text)
 		if true == isNeedRerenderPage {
 			p.page.Rerender()
 		} else {
@@ -135,12 +135,18 @@ func (p *Script) luaFuncNodeGetValue(L *lua.LState) int {
 
 	lu := L.ToUserData(1)
 	node := p._getNodePointerFromUserData(L, lu)
-	if nil == node || nil == node.GetValue {
+	if nil == node {
 		L.Push(lua.LNil)
 		return 1
 	}
 
-	L.Push(lua.LString(node.GetValue()))
+	nodeDataGetValuer, ok := node.Data.(NodeDataGetValuer)
+	if false == ok {
+		L.Push(lua.LNil)
+		return 1
+	}
+
+	L.Push(lua.LString(nodeDataGetValuer.NodeDataGetValue()))
 	return 1
 }
 

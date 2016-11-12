@@ -8,16 +8,41 @@ import (
 )
 
 type NodeKeyPress func(e termui.Event)
-type NodeFocusMode func()
-type NodeUnFocusMode func()
-type NodeActiveMode func()
-type NodeUnActiveMode func()
-type NodeGetValue func() string
-type NodeSetText func(content string) (isNeedRerenderPage bool)
-type NodeOnRemove func()
+
+type NodeDataGetValuer interface {
+	NodeDataGetValue() string
+}
+
+type NodeDataSetTexter interface {
+	NodeDataSetText(content string) (isNeedRerenderPage bool)
+}
+
+type NodeDataOnRemover interface {
+	NodeDataOnRemove()
+}
+
+type NodeDataFocusModer interface {
+	NodeDataFocusMode()
+}
+
+type NodeDataUnFocusModer interface {
+	NodeDataUnFocusMode()
+}
+
+type NodeDataActiveModer interface {
+	NodeDataActiveMode()
+}
+
+type NodeDataUnActiveModer interface {
+	NodeDataUnActiveMode()
+}
 
 type NodeDataParseAttributer interface {
 	NodeDataParseAttribute(attr []html.Attribute) (isUIChange, isNeedRerenderPage bool)
+}
+
+type NodeDataAfterRenderHandler interface {
+	NodeDataAfterRenderHandle()
 }
 
 type Node struct {
@@ -43,8 +68,6 @@ type Node struct {
 	tmpActiveModeBorder   bool
 	tmpActiveModeBorderFg termui.Attribute
 
-	afterRenderHandle func()
-
 	ColorFg string
 	ColorBg string
 
@@ -54,15 +77,7 @@ type Node struct {
 	HtmlData string
 	Data     interface{}
 
-	KeyPress     NodeKeyPress
-	FocusMode    NodeFocusMode
-	UnFocusMode  NodeUnFocusMode
-	ActiveMode   NodeActiveMode
-	UnActiveMode NodeUnActiveMode
-
-	SetText  NodeSetText
-	GetValue NodeGetValue
-	OnRemove NodeOnRemove
+	KeyPress NodeKeyPress
 
 	KeyPressEnterHandlers map[string]NodeJob
 	JobHanderLocker       sync.RWMutex
@@ -132,7 +147,7 @@ func (p *Node) uiRender() {
 		return
 	}
 	termui.Render(p.uiBuffer.(termui.Bufferer))
-	if nil != p.afterRenderHandle {
-		p.afterRenderHandle()
+	if nodeDataAfterRenderHandler, ok := p.Data.(NodeDataAfterRenderHandler); true == ok {
+		nodeDataAfterRenderHandler.NodeDataAfterRenderHandle()
 	}
 }

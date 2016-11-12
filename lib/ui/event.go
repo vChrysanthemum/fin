@@ -20,17 +20,14 @@ func (p *Page) registerHandles() {
 
 		keyStr := e.Data.(termui.EvtKbd).KeyStr
 
-		var nodeFocus *Node
-
 		// 切换ActiveNode
 		if "<tab>" == keyStr ||
 			"<up>" == keyStr || "<down>" == keyStr ||
 			"<left>" == keyStr || "<right>" == keyStr {
 
 			if nil != p.FocusNode {
-				nodeFocus = p.FocusNode.Value.(*Node)
-				if nil != nodeFocus.UnFocusMode {
-					nodeFocus.UnFocusMode()
+				if nodeDataUnFocusModer, ok := p.FocusNode.Value.(*Node).Data.(NodeDataUnFocusModer); true == ok {
+					nodeDataUnFocusModer.NodeDataUnFocusMode()
 				}
 			}
 
@@ -54,9 +51,8 @@ func (p *Page) registerHandles() {
 			}
 
 			if nil != p.FocusNode {
-				nodeFocus = p.FocusNode.Value.(*Node)
-				if nil != nodeFocus.FocusMode {
-					nodeFocus.FocusMode()
+				if nodeDataFocusModer, ok := p.FocusNode.Value.(*Node).Data.(NodeDataFocusModer); true == ok {
+					nodeDataFocusModer.NodeDataFocusMode()
 				}
 			}
 		}
@@ -64,9 +60,8 @@ func (p *Page) registerHandles() {
 		// 确认ActiveNode
 		if "<enter>" == keyStr {
 			if nil != p.FocusNode {
-				nodeFocus = p.FocusNode.Value.(*Node)
-				if nil != nodeFocus.FocusMode {
-					nodeFocus.UnFocusMode()
+				if nodeDataUnFocusModer, ok := p.FocusNode.Value.(*Node).Data.(NodeDataUnFocusModer); true == ok {
+					nodeDataUnFocusModer.NodeDataUnFocusMode()
 				}
 
 				p.SetActiveNode(p.FocusNode.Value.(*Node))
@@ -83,14 +78,13 @@ func (p *Page) pushWorkingNode(node *Node) {
 func (p *Node) QuitActiveMode() {
 	p.page.ActiveNodeAfterRerender = nil
 
-	if nil != p.UnActiveMode {
-		p.UnActiveMode()
+	if nodeDataUnActiveModer, ok := p.Data.(NodeDataUnActiveModer); true == ok {
+		nodeDataUnActiveModer.NodeDataUnActiveMode()
 	}
 
 	if nil != p.page.FocusNode {
-		nodeFocus := p.page.FocusNode.Value.(*Node)
-		if nil != nodeFocus.FocusMode {
-			nodeFocus.FocusMode()
+		if nodeDataFocusModer, ok := p.page.FocusNode.Value.(*Node).Data.(NodeDataFocusModer); true == ok {
+			nodeDataFocusModer.NodeDataFocusMode()
 		}
 	}
 
@@ -98,12 +92,16 @@ func (p *Node) QuitActiveMode() {
 }
 
 func (p *Page) SetActiveNode(node *Node) {
-	if nil != p.ActiveNode && nil != p.ActiveNode.UnActiveMode {
-		p.ActiveNode.UnActiveMode()
+	if nil != p.ActiveNode {
+		if nodeDataUnActiveModer, ok := p.ActiveNode.Data.(NodeDataUnActiveModer); true == ok {
+			nodeDataUnActiveModer.NodeDataUnActiveMode()
+		}
 	}
 	p.ActiveNodeAfterRerender = node
 	p.ActiveNode = node
-	if nil != p.ActiveNode && nil != p.ActiveNode.ActiveMode {
-		p.ActiveNode.ActiveMode()
+	if nil != p.ActiveNode {
+		if nodeDataActiveModer, ok := p.ActiveNode.Data.(NodeDataActiveModer); true == ok {
+			nodeDataActiveModer.NodeDataActiveMode()
+		}
 	}
 }
