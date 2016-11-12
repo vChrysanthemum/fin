@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"container/list"
 	"image"
 	. "in/ui/utils"
 	"sync"
@@ -54,6 +55,8 @@ type Node struct {
 	ChildrenCount int
 
 	Parent, FirstChild, LastChild, PrevSibling, NextSibling *Node
+
+	TopNode, BottomNode *list.Element
 
 	// 是否要渲染子节点
 	// 子节点将根据其父节点

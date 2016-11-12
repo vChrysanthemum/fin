@@ -125,6 +125,38 @@ func (p *Page) uiRender() {
 		return
 	}
 	termui.Render(p.Bufferers...)
+
+	var (
+		e, e2       *list.Element
+		node, node2 *Node
+	)
+	if p.WorkingNodes.Len() > 0 {
+		for e = p.WorkingNodes.Front(); e != nil; e = e.Next() {
+			node = e.Value.(*Node)
+			node.TopNode = nil
+			node.BottomNode = nil
+		}
+
+		for e = p.WorkingNodes.Front(); e != nil; e = e.Next() {
+			node = e.Value.(*Node)
+
+			for e2 = e.Next(); e2 != nil; e2 = e2.Next() {
+				node2 = e2.Value.(*Node)
+
+				if (node.uiBlock.InnerArea.Min.X <= node2.uiBlock.InnerArea.Min.X &&
+					node2.uiBlock.InnerArea.Min.X <= node.uiBlock.InnerArea.Max.X) ||
+					(node.uiBlock.InnerArea.Max.X <= node2.uiBlock.InnerArea.Min.X &&
+						node2.uiBlock.InnerArea.Max.X <= node.uiBlock.InnerArea.Max.X) ||
+					(node.uiBlock.InnerArea.Min.X <= node2.uiBlock.InnerArea.Min.X &&
+						node2.uiBlock.InnerArea.Max.X >= node.uiBlock.InnerArea.Max.X) {
+					node.BottomNode = e2
+					node2.TopNode = e
+				}
+			}
+		}
+
+	}
+
 	p.nodeAfterRenderHandle(p.FirstChildNode)
 }
 

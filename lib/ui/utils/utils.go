@@ -3,8 +3,6 @@ package utils
 import (
 	"fmt"
 	"image"
-	"log"
-	"runtime/debug"
 	"unicode/utf8"
 
 	"github.com/gizak/termui"
@@ -114,6 +112,5 @@ func CalculateTextLastPosition(text string, innerArea image.Rectangle) (resultX,
 }
 
 func UISetCursor(x, y int) {
-	log.Println(x, y, string(debug.Stack()))
 	termbox.SetCursor(x, y)
 }

@@ -41,16 +41,32 @@ func (p *Page) registerHandles() {
 			if nil == p.FocusNode {
 				p.FocusNode = p.WorkingNodes.Front()
 			} else {
-				if "<tab>" == keyStr || "<down>" == keyStr || "<right>" == keyStr {
+				node := p.FocusNode.Value.(*Node)
+				if "<tab>" == keyStr || "<right>" == keyStr {
 					if nil != p.FocusNode.Next() {
 						p.FocusNode = p.FocusNode.Next()
 					} else {
 						p.FocusNode = p.WorkingNodes.Front()
 					}
-				} else {
-					// "<up>" == keyStr || "<left>" == keyStr
+
+				} else if "<left>" == keyStr {
+					// "<left>" == keyStr
 					if nil != p.FocusNode.Prev() {
 						p.FocusNode = p.FocusNode.Prev()
+					} else {
+						p.FocusNode = p.WorkingNodes.Back()
+					}
+
+				} else if "<down>" == keyStr {
+					if nil != node.BottomNode {
+						p.FocusNode = node.BottomNode
+					} else {
+						p.FocusNode = p.WorkingNodes.Front()
+					}
+
+				} else if "<up>" == keyStr {
+					if nil != node.TopNode {
+						p.FocusNode = node.TopNode
 					} else {
 						p.FocusNode = p.WorkingNodes.Back()
 					}

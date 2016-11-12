@@ -71,6 +71,7 @@ func (p *NodeTerminal) KeyPress(e termui.Event) {
 	if "C-8" == keyStr && (nil == p.CurrentLine || len(p.CurrentLine.Data) <= len(p.CommandPrefix)) {
 		utils.Beep()
 		p.Editor.ResumeCursor()
+		p.Node.uiRender()
 		return
 	}
 
