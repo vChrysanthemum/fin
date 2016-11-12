@@ -16,10 +16,6 @@ func (p *Node) InitNodeInputText() *NodeInputText {
 	nodeInputText.Node = p
 	nodeInputText.Editor = editor.NewEditor()
 	nodeInputText.Editor.Border = true
-	nodeInputText.Editor.BorderTop = false
-	nodeInputText.Editor.BorderLeft = false
-	nodeInputText.Editor.BorderRight = false
-	nodeInputText.Editor.BorderBottom = true
 
 	p.Data = nodeInputText
 	p.KeyPress = nodeInputText.KeyPress
@@ -34,7 +30,7 @@ func (p *Node) InitNodeInputText() *NodeInputText {
 
 	p.isShouldCalculateWidth = false
 	p.isShouldCalculateHeight = false
-	p.uiBlock.Width = 16
+	p.uiBlock.Width = 6
 	p.uiBlock.Height = 3
 
 	p.afterRenderHandle = nodeInputText.afterRenderHandle
