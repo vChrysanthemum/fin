@@ -1,6 +1,12 @@
 package ui
 
-import "github.com/gizak/termui"
+import (
+	. "in/ui/utils"
+	"strconv"
+
+	"github.com/gizak/termui"
+	"golang.org/x/net/html"
+)
 
 type NodeGauge struct {
 	*Node
@@ -32,4 +38,25 @@ func (p *NodeGauge) SetPercent(percent int) {
 	uiBuffer := p.Node.uiBuffer.(*termui.Gauge)
 	uiBuffer.Percent = percent
 	p.Node.uiRender()
+}
+
+func (p *NodeGauge) ParseAttribute(attr []html.Attribute) (isNeedRerenderPage bool) {
+	isNeedRerenderPage = false
+	uiBuffer := p.Node.uiBuffer.(*termui.Gauge)
+
+	for _, v := range attr {
+		switch v.Key {
+		case "barcolor":
+			uiBuffer.BarColor = ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_GAUGE_BARCOLOR)
+		case "percentcolor":
+			uiBuffer.PercentColor = ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_GAUGE_PERCENTCOLOR)
+		case "percentcolor_highlighted":
+			uiBuffer.PercentColorHighlighted =
+				ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_GAUGE_PERCENTCOLOR_HIGHLIGHTED)
+		case "percent":
+			uiBuffer.Percent, _ = strconv.Atoi(v.Val)
+		}
+	}
+
+	return
 }
