@@ -16,6 +16,10 @@ type NodeGetValue func() string
 type NodeSetText func(content string) (isNeedRerenderPage bool)
 type NodeOnRemove func()
 
+type NodeDataParseAttributer interface {
+	NodeDataParseAttribute(attr []html.Attribute) (isUIChange, isNeedRerenderPage bool)
+}
+
 type Node struct {
 	Id   string
 	page *Page

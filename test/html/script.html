@@ -21,7 +21,7 @@ InputTextTestEvent = Node("InputTextTest"):RegisterKeyPressEnterHandler(
       Node("InputTextTest"):Remove()
       Node("SelectTestRemove"):Remove()
       Node("SelectTestChangeOptions"):SelectClearOptions()
-      Node("GaugeTest"):GaugeSetPercent(30) 
+      Node("GaugeTest"):SetAttribute("percent", "30") 
       Node("ParResult3"):SetAttribute("borderlabel", "测试")
       Node("ParResult3"):SetAttribute("border", "true")
       Node("ParResult3"):SetAttribute("borderfg", "yellow")
@@ -38,7 +38,7 @@ InputTextTestEvent = Node("InputTextTest"):RegisterKeyPressEnterHandler(
   <par id="ParResult2" height=3>你好</par>
   <par id="ParResult3" height=3>你好</par>
   <gauge border=true borderlabel="测试" height=3 percent=80 id="GaugeTest"></gauge>
-  <inputtext id="InputTextTest" height=2></inputtext>
+  <inputtext id="InputTextTest" height=3></inputtext>
   <select id="SelectTestChangeOptions">
     <option value="cancel">取消</option>
     <option value="confirm">确定</option>

@@ -11,12 +11,20 @@ func (p *Page) parseBodyTerminal(parentNode *Node, htmlNode *html.Node) (ret *No
 	parentNode.addChild(ret)
 	isFallthrough = true
 
-	nodeTerminal := ret.InitNodeTerminal()
+	ret.InitNodeTerminal()
 
-	for _, v := range htmlNode.Attr {
+	return
+}
+
+func (p *NodeTerminal) NodeDataParseAttribute(attr []html.Attribute) (isUIChange, isNeedRerenderPage bool) {
+	isUIChange = false
+	isNeedRerenderPage = false
+
+	for _, v := range attr {
 		switch v.Key {
 		case "active_borderfg":
-			nodeTerminal.ActiveModeBorderColor = ColorToTermuiAttribute(v.Val, COLOR_ACTIVE_MODE_BORDERFG)
+			isUIChange = true
+			p.ActiveModeBorderColor = ColorToTermuiAttribute(v.Val, COLOR_ACTIVE_MODE_BORDERFG)
 		}
 	}
 

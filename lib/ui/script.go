@@ -62,9 +62,6 @@ func (p *Page) prepareScript() {
 	script.luaState.SetField(luaBase, "NodeTerminalClearLines",
 		script.luaState.NewFunction(script.luaFuncNodeTerminalClearLines))
 
-	script.luaState.SetField(luaBase, "NodeGaugeSetPercent",
-		script.luaState.NewFunction(script.luaFuncNodeGaugeSetPercent))
-
 	err = script.luaState.DoFile(filepath.Join(GlobalOption.ResBaseDir, "lua/ui/core.lua"))
 	if nil != err {
 		panic(err)

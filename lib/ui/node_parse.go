@@ -34,15 +34,19 @@ func (p *Node) ParseAttribute(attr []html.Attribute) (isUIChange, isNeedRerender
 		case "border":
 			isUIChange = true
 			p.uiBlock.Border = StringToBool(v.Val, p.uiBlock.Border)
+
 		case "borderleft":
 			isUIChange = true
 			p.uiBlock.BorderLeft = StringToBool(v.Val, p.uiBlock.BorderLeft)
+
 		case "borderright":
 			isUIChange = true
 			p.uiBlock.BorderRight = StringToBool(v.Val, p.uiBlock.BorderRight)
+
 		case "bordertop":
 			isUIChange = true
 			p.uiBlock.BorderTop = StringToBool(v.Val, p.uiBlock.BorderTop)
+
 		case "borderbottom":
 			isUIChange = true
 			p.uiBlock.BorderBottom = StringToBool(v.Val, p.uiBlock.BorderBottom)
@@ -55,6 +59,7 @@ func (p *Node) ParseAttribute(attr []html.Attribute) (isUIChange, isNeedRerender
 				p.uiBlock.Height = 0
 			}
 			p.isShouldCalculateHeight = false
+
 		case "width":
 			isUIChange = true
 			isNeedRerenderPage = true
@@ -63,6 +68,16 @@ func (p *Node) ParseAttribute(attr []html.Attribute) (isUIChange, isNeedRerender
 				p.uiBlock.Width = 0
 			}
 			p.isShouldCalculateWidth = false
+		}
+	}
+
+	if nodeDataParseAttributer, ok := p.Data.(NodeDataParseAttributer); true == ok {
+		_isUIChange, _isNeedRerenderPage := nodeDataParseAttributer.NodeDataParseAttribute(attr)
+		if true == (isUIChange || _isUIChange) {
+			isUIChange = true
+		}
+		if true == (isNeedRerenderPage || _isNeedRerenderPage) {
+			isNeedRerenderPage = true
 		}
 	}
 

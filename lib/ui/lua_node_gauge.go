@@ -24,18 +24,3 @@ func (p *Script) _getNodeGaugePointerFromUserData(L *lua.LState, lu *lua.LUserDa
 
 	return nodeGauge
 }
-
-func (p *Script) luaFuncNodeGaugeSetPercent(L *lua.LState) int {
-	if L.GetTop() < 2 {
-		return 0
-	}
-
-	lu := L.ToUserData(1)
-	nodeGauge := p._getNodeGaugePointerFromUserData(L, lu)
-	if nil == nodeGauge {
-		return 0
-	}
-
-	nodeGauge.SetPercent(L.ToInt(2))
-	return 0
-}
