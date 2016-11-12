@@ -17,6 +17,15 @@ func FormatStringWithWidth(src string, width int) string {
 	return src
 }
 
+func StringToBool(str string, defaultVal bool) bool {
+	if "true" == str {
+		return true
+	} else if "false" == str {
+		return false
+	}
+	return defaultVal
+}
+
 func ColorToTermuiAttribute(color string, defaultColor termui.Attribute) termui.Attribute {
 	switch color {
 	case "black":

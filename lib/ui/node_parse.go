@@ -22,14 +22,21 @@ func (p *Node) ParseAttribute(attr []html.Attribute) (isNeedRerenderPage bool) {
 			p.uiBlock.BorderLabelFg = ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_BORDER_LABEL_FG)
 		case "borderlabel":
 			p.uiBlock.BorderLabel = v.Val
+
 		case "borderfg":
 			p.uiBlock.BorderFg = ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_BORDER_FG)
+
 		case "border":
-			if "true" == v.Val {
-				p.uiBlock.Border = true
-			} else if "false" == v.Val {
-				p.uiBlock.Border = false
-			}
+			p.uiBlock.Border = StringToBool(v.Val, p.uiBlock.Border)
+		case "borderleft":
+			p.uiBlock.BorderLeft = StringToBool(v.Val, p.uiBlock.BorderLeft)
+		case "borderright":
+			p.uiBlock.BorderRight = StringToBool(v.Val, p.uiBlock.BorderRight)
+		case "bordertop":
+			p.uiBlock.BorderTop = StringToBool(v.Val, p.uiBlock.BorderTop)
+		case "borderbottom":
+			p.uiBlock.BorderBottom = StringToBool(v.Val, p.uiBlock.BorderBottom)
+
 		case "height":
 			isNeedRerenderPage = true
 			p.uiBlock.Height, _ = strconv.Atoi(v.Val)
