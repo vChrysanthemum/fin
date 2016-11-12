@@ -1,10 +1,6 @@
 package ui
 
-import (
-	"in/ui/canvas"
-
-	"github.com/gizak/termui"
-)
+import "in/ui/canvas"
 
 type NodeCanvas struct {
 	*Node
@@ -21,7 +17,8 @@ func (p *Node) InitNodeCanvas() *NodeCanvas {
 	p.uiBuffer = nodeCanvas.Canvas
 	p.uiBlock = &nodeCanvas.Canvas.Block
 
-	p.uiBlock.Width = termui.TermWidth()
+	p.isShouldCalculateWidth = true
+	p.isShouldCalculateHeight = false
 	p.uiBlock.Height = 10
 
 	return nodeCanvas

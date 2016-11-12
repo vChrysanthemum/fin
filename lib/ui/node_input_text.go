@@ -32,8 +32,12 @@ func (p *Node) InitNodeInputText() *NodeInputText {
 	p.uiBuffer = nodeInputText.Editor
 	p.uiBlock = &nodeInputText.Editor.Block
 
-	p.uiBlock.Width = termui.TermWidth()
-	p.uiBlock.Height = 1
+	p.isShouldCalculateWidth = false
+	p.isShouldCalculateHeight = false
+	p.uiBlock.Width = 16
+	p.uiBlock.Height = 3
+
+	p.afterRenderHandle = nodeInputText.afterRenderHandle
 
 	return nodeInputText
 }
@@ -66,29 +70,41 @@ func (p *NodeInputText) GetValue() string {
 	}
 }
 
+func (p *NodeInputText) afterRenderHandle() {
+	p.Editor.AfterRenderHandle()
+}
+
 func (p *NodeInputText) FocusMode() {
-	p.Node.tmpBorder = p.Node.uiBlock.Border
-	p.Node.tmpBorderFg = p.Node.uiBlock.BorderFg
+	p.Node.isCalledFocusMode = true
+	p.Node.tmpFocusModeBorder = p.Node.uiBlock.Border
+	p.Node.tmpFocusModeBorderFg = p.Node.uiBlock.BorderFg
 	p.Node.uiBlock.Border = true
 	p.Node.uiBlock.BorderFg = COLOR_FOCUS_MODE_BORDERFG
 	p.Node.uiRender()
 }
 
 func (p *NodeInputText) UnFocusMode() {
-	p.Node.uiBlock.Border = p.Node.tmpBorder
-	p.Node.uiBlock.BorderFg = p.Node.tmpBorderFg
-	p.Node.uiRender()
+	if true == p.Node.isCalledFocusMode {
+		p.Node.isCalledFocusMode = false
+		p.Node.uiBlock.Border = p.Node.tmpFocusModeBorder
+		p.Node.uiBlock.BorderFg = p.Node.tmpFocusModeBorderFg
+		p.Node.uiRender()
+	}
 }
 
 func (p *NodeInputText) ActiveMode() {
-	p.Node.tmpBorderFg = p.Node.uiBlock.BorderFg
+	p.Node.isCalledActiveMode = true
+	p.Node.tmpActiveModeBorderFg = p.Node.uiBlock.BorderFg
 	p.Node.uiBlock.BorderFg = COLOR_ACTIVE_MODE_BORDERFG
 	p.Editor.ActiveMode()
 	p.Node.uiRender()
 }
 
 func (p *NodeInputText) UnActiveMode() {
-	p.Node.uiBlock.BorderFg = p.Node.tmpBorderFg
-	p.Editor.UnActiveMode()
-	p.Node.uiRender()
+	if true == p.isCalledActiveMode {
+		p.Node.isCalledActiveMode = false
+		p.Node.uiBlock.BorderFg = p.Node.tmpActiveModeBorderFg
+		p.Editor.UnActiveMode()
+		p.Node.uiRender()
+	}
 }

@@ -1,6 +1,7 @@
 package editor
 
 import (
+	. "in/ui/utils"
 	"strings"
 	"sync"
 
@@ -147,9 +148,14 @@ func (p *Editor) Buffer() termui.Buffer {
 	return buf
 }
 
+func (p *Editor) AfterRenderHandle() {
+	if true == p.CursorLocation.IsDisplay {
+		p.CursorLocation.SetCursor(CalculateTextLastPosition(p.Text(), p.InnerArea))
+	}
+}
+
 func (p *Editor) ActiveMode() {
 	p.CursorLocation.IsDisplay = true
-	p.CursorLocation.InitLocationIfNeeded()
 	p.CursorLocation.ResetCursor()
 }
 

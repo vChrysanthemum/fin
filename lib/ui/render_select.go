@@ -1,6 +1,10 @@
 package ui
 
-import "github.com/gizak/termui"
+import (
+	. "in/ui/utils"
+
+	"github.com/gizak/termui"
+)
 
 func (p *Node) refreshUiBufferItems() {
 	nodeSelect := p.Data.(*NodeSelect)
@@ -31,7 +35,7 @@ func (p *Page) renderBodySelect(node *Node) (isFallthrough bool) {
 
 	p.normalRenderNodeBlock(node)
 
-	if node.uiBlock.Width < 0 {
+	if true == node.isShouldCalculateWidth {
 		if true == node.uiBlock.Border {
 			node.uiBlock.Width = nodeSelect.ChildrenMaxStringWidth + 2
 		} else {
@@ -45,10 +49,10 @@ func (p *Page) renderBodySelect(node *Node) (isFallthrough bool) {
 	} else {
 		height = len(nodeSelect.Children)
 	}
-	if node.uiBlock.Height < 0 {
+	if true == node.isShouldCalculateHeight {
 		node.uiBlock.Height = height
 	} else {
-		node.uiBlock.Height = maxint(node.uiBlock.Height, height)
+		node.uiBlock.Height = MaxInt(node.uiBlock.Height, height)
 	}
 
 	nodeSelect.refreshUiBufferItems()

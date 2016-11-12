@@ -2,6 +2,7 @@ package ui
 
 import (
 	"in/ui/editor"
+	"in/ui/utils"
 
 	"github.com/gizak/termui"
 )
@@ -33,9 +34,9 @@ func (p *Node) InitNodeTerminal() *NodeTerminal {
 	p.uiBuffer = nodeTerminal.Editor
 	p.uiBlock = &nodeTerminal.Editor.Block
 
+	p.isShouldCalculateWidth = true
+	p.isShouldCalculateHeight = false
 	p.uiBlock.Border = false
-	p.uiBlock.Width = termui.TermWidth()
-	p.uiBlock.Height = 10
 
 	return nodeTerminal
 }
@@ -72,7 +73,7 @@ func (p *NodeTerminal) KeyPress(e termui.Event) {
 
 	// 禁止删除一行
 	if "C-8" == keyStr && (nil == p.CurrentLine || len(p.CurrentLine.Data) <= len(p.CommandPrefix)) {
-		Beep()
+		utils.Beep()
 		p.Editor.ResetCursor()
 		return
 	}
@@ -110,29 +111,41 @@ func (p *NodeTerminal) ClearLines() {
 	p.Editor.ClearLines()
 }
 
+func (p *NodeTerminal) afterRenderHandle() {
+	p.Editor.AfterRenderHandle()
+}
+
 func (p *NodeTerminal) FocusMode() {
-	p.Node.tmpBorder = p.Node.uiBlock.Border
-	p.Node.tmpBorderFg = p.Node.uiBlock.BorderFg
+	p.Node.isCalledFocusMode = true
+	p.Node.tmpFocusModeBorder = p.Node.uiBlock.Border
+	p.Node.tmpFocusModeBorderFg = p.Node.uiBlock.BorderFg
 	p.Node.uiBlock.Border = true
 	p.Node.uiBlock.BorderFg = COLOR_FOCUS_MODE_BORDERFG
 	p.Node.uiRender()
 }
 
 func (p *NodeTerminal) UnFocusMode() {
-	p.Node.uiBlock.Border = p.Node.tmpBorder
-	p.Node.uiBlock.BorderFg = p.Node.tmpBorderFg
-	p.Node.uiRender()
+	if true == p.Node.isCalledFocusMode {
+		p.Node.isCalledFocusMode = false
+		p.Node.uiBlock.Border = p.Node.tmpFocusModeBorder
+		p.Node.uiBlock.BorderFg = p.Node.tmpFocusModeBorderFg
+		p.Node.uiRender()
+	}
 }
 
 func (p *NodeTerminal) ActiveMode() {
-	p.Node.tmpBorderFg = p.Node.uiBlock.BorderFg
+	p.Node.isCalledActiveMode = true
+	p.Node.tmpActiveModeBorderFg = p.Node.uiBlock.BorderFg
 	p.Node.uiBlock.BorderFg = COLOR_ACTIVE_MODE_BORDERFG
 	p.Editor.ActiveMode()
 	p.Node.uiRender()
 }
 
 func (p *NodeTerminal) UnActiveMode() {
-	p.Node.uiBlock.BorderFg = p.Node.tmpBorderFg
-	p.Editor.UnActiveMode()
-	p.Node.uiRender()
+	if true == p.isCalledActiveMode {
+		p.Node.isCalledActiveMode = false
+		p.Node.uiBlock.BorderFg = p.Node.tmpActiveModeBorderFg
+		p.Editor.UnActiveMode()
+		p.Node.uiRender()
+	}
 }

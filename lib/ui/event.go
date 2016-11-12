@@ -81,6 +81,8 @@ func (p *Page) pushWorkingNode(node *Node) {
 }
 
 func (p *Node) QuitActiveMode() {
+	p.page.ActiveNodeAfterRerender = nil
+
 	if nil != p.UnActiveMode {
 		p.UnActiveMode()
 	}
@@ -96,9 +98,10 @@ func (p *Node) QuitActiveMode() {
 }
 
 func (p *Page) SetActiveNode(node *Node) {
-	if nil != p.ActiveNode && node != p.ActiveNode {
+	if nil != p.ActiveNode && nil != p.ActiveNode.UnActiveMode {
 		p.ActiveNode.UnActiveMode()
 	}
+	p.ActiveNodeAfterRerender = node
 	p.ActiveNode = node
 	if nil != p.ActiveNode && nil != p.ActiveNode.ActiveMode {
 		p.ActiveNode.ActiveMode()

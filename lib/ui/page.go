@@ -19,12 +19,13 @@ type Page struct {
 	parseAgentMap  []*ParseAgent
 	renderAgentMap []*RenderAgent
 
-	doc               *html.Node
-	parsingNodesStack *list.List
-	FirstChildNode    *Node
-	FocusNode         *list.Element
-	WorkingNodes      *list.List
-	ActiveNode        *Node
+	doc                     *html.Node
+	parsingNodesStack       *list.List
+	FirstChildNode          *Node
+	FocusNode               *list.Element
+	WorkingNodes            *list.List
+	ActiveNode              *Node
+	ActiveNodeAfterRerender *Node
 
 	renderingX int
 	renderingY int
@@ -85,14 +86,45 @@ func (p *Page) RemoveNode(node *Node) {
 }
 
 func (p *Page) Refresh() {
+	if nil != p.FocusNode {
+		focusNode := p.FocusNode.Value.(*Node)
+		if nil != focusNode.UnFocusMode {
+			focusNode.UnFocusMode()
+		}
+	}
+
+	if nil != p.ActiveNode && nil != p.ActiveNode.UnActiveMode {
+		p.ActiveNode.UnActiveMode()
+	}
+
 	uiClear()
 
-	if len(p.Bufferers) > 0 {
-		uiRender(p.Bufferers...)
-	}
-	if nil != p.FocusNode {
+	if nil != p.ActiveNodeAfterRerender {
+		p.SetActiveNode(p.ActiveNodeAfterRerender)
+		p.FocusNode = nil
+	} else if nil != p.FocusNode {
 		p.SetActiveNode(p.FocusNode.Value.(*Node))
 	}
+
+	p.uiRender()
+}
+
+func (p *Page) nodeAfterRenderHandle(node *Node) {
+	for childNode := node.FirstChild; childNode != nil; childNode = childNode.NextSibling {
+		p.nodeAfterRenderHandle(childNode)
+	}
+
+	if nil != node.afterRenderHandle {
+		node.afterRenderHandle()
+	}
+}
+
+func (p *Page) uiRender() {
+	if 0 == len(p.Bufferers) {
+		return
+	}
+	termui.Render(p.Bufferers...)
+	p.nodeAfterRenderHandle(p.FirstChildNode)
 }
 
 func (p *Page) Rerender() {
@@ -106,7 +138,9 @@ func (p *Page) Serve() {
 	p.Refresh()
 
 	p.registerHandles()
-	go p.script.Run()
+	go func() {
+		p.script.Run()
+	}()
 
 	termui.Loop()
 }

@@ -4,7 +4,6 @@ import (
 	"sync"
 
 	"github.com/gizak/termui"
-	uuid "github.com/satori/go.uuid"
 	"golang.org/x/net/html"
 )
 
@@ -14,7 +13,7 @@ type NodeUnFocusMode func()
 type NodeActiveMode func()
 type NodeUnActiveMode func()
 type NodeGetValue func() string
-type NodeSetText func(content string)
+type NodeSetText func(content string) (isNeedRerenderPage bool)
 type NodeOnRemove func()
 
 type Node struct {
@@ -30,11 +29,20 @@ type Node struct {
 	// Node.isShouldTermuiRenderChild 来决定是否 将 node.uiBuffer append 进 page.Bufferers
 	// 例: TableTrTd 将用到该字段
 	isShouldTermuiRenderChild bool
+	isShouldCalculateHeight   bool
+	isShouldCalculateWidth    bool
 
-	tmpBorder   bool
-	tmpBorderFg termui.Attribute
-	ColorFg     string
-	ColorBg     string
+	isCalledFocusMode     bool
+	tmpFocusModeBorder    bool
+	tmpFocusModeBorderFg  termui.Attribute
+	isCalledActiveMode    bool
+	tmpActiveModeBorder   bool
+	tmpActiveModeBorderFg termui.Attribute
+
+	afterRenderHandle func()
+
+	ColorFg string
+	ColorBg string
 
 	uiBuffer interface{}
 	uiBlock  *termui.Block
@@ -84,6 +92,9 @@ func (p *Page) newNode(htmlNode *html.Node) *Node {
 	ret.page = p
 	ret.HtmlData = htmlNode.Data
 	ret.KeyPressEnterHandlers = make(map[string]NodeJob, 0)
+
+	ret.isShouldCalculateHeight = true
+	ret.isShouldCalculateWidth = true
 	return ret
 }
 
@@ -116,34 +127,8 @@ func (p *Node) uiRender() {
 	if nil == p.uiBuffer {
 		return
 	}
-	uiRender(p.uiBuffer.(termui.Bufferer))
-}
-
-func (p *Node) RegisterKeyPressEnterHandler(handler NodeJobHandler, args ...interface{}) string {
-	p.JobHanderLocker.Lock()
-	defer p.JobHanderLocker.Unlock()
-
-	key := uuid.NewV4().String()
-	p.KeyPressEnterHandlers[key] = NodeJob{
-		Node:    p,
-		Handler: handler,
-		Args:    args,
+	termui.Render(p.uiBuffer.(termui.Bufferer))
+	if nil != p.afterRenderHandle {
+		p.afterRenderHandle()
 	}
-	return key
-}
-
-func (p *Node) RemoveKeyPressEnterHandler(key string) {
-	p.JobHanderLocker.Lock()
-	defer p.JobHanderLocker.Unlock()
-	delete(p.KeyPressEnterHandlers, key)
-}
-
-func (p *Node) WaitKeyPressEnter() {
-	c := make(chan bool, 0)
-	key := p.RegisterKeyPressEnterHandler(func(_node *Node, args ...interface{}) {
-		c := args[0].(chan bool)
-		c <- true
-	}, c)
-	<-c
-	p.RemoveKeyPressEnterHandler(key)
 }

@@ -38,3 +38,7 @@ func init() {
 	}
 
 }
+
+func uiClear() {
+	termui.Render(GClearScreenBuffer)
+}

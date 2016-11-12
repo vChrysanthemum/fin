@@ -20,6 +20,10 @@ function Node(target)
     return ret
 end 
 
+function _Node.SetAttribute(self, key, value)
+    return base.NodeSetAttribute(self.nodePointer, key, value)
+end
+
 function _Node.SetActive(self)
     return base.NodeSetActive(self.nodePointer)
 end

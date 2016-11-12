@@ -1,7 +1,6 @@
 package ui
 
 import (
-	"strconv"
 	"strings"
 
 	"golang.org/x/net/html"
@@ -121,37 +120,7 @@ func (p *Page) ParseNodeAttribute(node *Node, attr []html.Attribute) {
 		}
 	}
 
-	if nil != node.uiBlock {
-		node.uiBlock.BorderLabelFg = COLOR_DEFAULT_BORDER_LABEL_FG
-		node.uiBlock.BorderFg = COLOR_DEFAULT_BORDER_FG
-
-		for _, v := range attr {
-			switch v.Key {
-			case "borderlabelfg":
-				node.uiBlock.BorderLabelFg = ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_BORDER_LABEL_FG)
-			case "borderlabel":
-				node.uiBlock.BorderLabel = v.Val
-			case "borderfg":
-				node.uiBlock.BorderFg = ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_BORDER_FG)
-			case "border":
-				if "true" == v.Val {
-					node.uiBlock.Border = true
-				} else if "false" == v.Val {
-					node.uiBlock.Border = false
-				}
-			case "height":
-				node.uiBlock.Height, _ = strconv.Atoi(v.Val)
-				if node.uiBlock.Height < 0 {
-					node.uiBlock.Height = 0
-				}
-			case "width":
-				node.uiBlock.Width, _ = strconv.Atoi(v.Val)
-				if node.uiBlock.Width < 0 {
-					node.uiBlock.Width = 0
-				}
-			}
-		}
-	}
+	node.ParseAttribute(attr)
 
 	if nil != node.Parent && "" == node.ColorFg {
 		node.ColorFg = node.Parent.ColorFg

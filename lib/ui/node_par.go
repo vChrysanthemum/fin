@@ -1,10 +1,13 @@
 package ui
 
-import "github.com/gizak/termui"
+import (
+	. "in/ui/utils"
+
+	"github.com/gizak/termui"
+)
 
 type NodePar struct {
 	*Node
-	Text string
 }
 
 func (p *Node) InitNodePar() *NodePar {
@@ -15,22 +18,27 @@ func (p *Node) InitNodePar() *NodePar {
 
 	p.Data = nodePar
 
-	uiBuffer := termui.NewPar(nodePar.Text)
+	uiBuffer := termui.NewPar("")
 	p.uiBuffer = uiBuffer
 	p.uiBlock = &uiBuffer.Block
 
+	p.isShouldCalculateWidth = true
+	p.isShouldCalculateHeight = true
 	p.uiBlock.Border = false
-	p.uiBlock.Width = termui.TermWidth()
-	p.uiBlock.Height = -1
 
 	uiBuffer.TextFgColor = COLOR_DEFAULT_TEXT_COLOR_FG
 
 	return nodePar
 }
 
-func (p *NodePar) SetText(content string) {
-	p.Text = content
+func (p *NodePar) SetText(content string) (isNeedRerenderPage bool) {
 	uiBuffer := p.Node.uiBuffer.(*termui.Par)
-	uiBuffer.Text = p.Text
-	uiRender(uiBuffer)
+	uiBuffer.Text = content
+
+	height := CalculateTextHeight(content, uiBuffer.Width)
+
+	if height != uiBuffer.Height {
+		isNeedRerenderPage = true
+	}
+	return
 }

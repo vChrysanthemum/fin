@@ -17,7 +17,8 @@ func (p *Node) InitNodeGauge() *NodeGauge {
 	p.uiBuffer = uiBuffer
 	p.uiBlock = &uiBuffer.Block
 
-	p.uiBlock.Width = termui.TermWidth()
+	p.isShouldCalculateWidth = true
+	p.isShouldCalculateHeight = false
 	p.uiBlock.Height = 3
 
 	uiBuffer.BarColor = COLOR_DEFAULT_GAUGE_BARCOLOR
@@ -30,5 +31,5 @@ func (p *Node) InitNodeGauge() *NodeGauge {
 func (p *NodeGauge) SetPercent(percent int) {
 	uiBuffer := p.Node.uiBuffer.(*termui.Gauge)
 	uiBuffer.Percent = percent
-	uiRender(uiBuffer)
+	p.Node.uiRender()
 }

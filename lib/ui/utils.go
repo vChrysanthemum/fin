@@ -1,43 +1,10 @@
 package ui
 
 import (
-	"fmt"
 	"image"
 
 	"github.com/gizak/termui"
-	rw "github.com/mattn/go-runewidth"
 )
-
-func FormatStringWithWidth(src string, width int) string {
-	tail := width - rw.StringWidth(src)
-	if tail > 0 {
-		return src + string(make([]byte, tail))
-	}
-	return src
-}
-
-func ColorToTermuiAttribute(color string, defaultColor termui.Attribute) termui.Attribute {
-	switch color {
-	case "black":
-		return termui.ColorBlack
-	case "red":
-		return termui.ColorRed
-	case "green":
-		return termui.ColorGreen
-	case "yellow":
-		return termui.ColorYellow
-	case "blue":
-		return termui.ColorBlue
-	case "magenta":
-		return termui.ColorMagenta
-	case "cyan":
-		return termui.ColorCyan
-	case "white":
-		return termui.ColorWhite
-	}
-
-	return defaultColor
-}
 
 type ClearScreenBuffer struct {
 	buf termui.Buffer
@@ -62,26 +29,4 @@ func (p *ClearScreenBuffer) RefreshArea() {
 	min := image.Point{0, 0}
 	max := image.Point{termui.TermWidth() - 1, termui.TermHeight() - 1}
 	p.buf.SetArea(image.Rectangle{min, max})
-}
-
-func maxint(data ...int) int {
-	max := data[0]
-	for _, v := range data {
-		if v > max {
-			max = v
-		}
-	}
-	return max
-}
-
-func Beep() {
-	fmt.Println("\a")
-}
-
-func uiRender(bs ...termui.Bufferer) {
-	termui.Render(bs...)
-}
-
-func uiClear() {
-	termui.Render(GClearScreenBuffer)
 }

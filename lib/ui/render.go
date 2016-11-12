@@ -90,6 +90,10 @@ func (p *Page) normalRenderNodeBlock(node *Node) {
 		return
 	}
 
+	if true == node.isShouldCalculateWidth {
+		node.uiBlock.Width = termui.TermWidth()
+	}
+
 	node.uiBlock.X = p.renderingX
 	node.uiBlock.Y = p.renderingY
 }

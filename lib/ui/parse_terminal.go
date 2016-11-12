@@ -1,6 +1,10 @@
 package ui
 
-import "golang.org/x/net/html"
+import (
+	. "in/ui/utils"
+
+	"golang.org/x/net/html"
+)
 
 func (p *Page) parseBodyTerminal(parentNode *Node, htmlNode *html.Node) (ret *Node, isFallthrough bool) {
 	ret = p.newNode(htmlNode)

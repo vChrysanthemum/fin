@@ -1,6 +1,10 @@
 package ui
 
-import "github.com/gizak/termui"
+import (
+	. "in/ui/utils"
+
+	"github.com/gizak/termui"
+)
 
 func (p *Page) renderBodyPar(node *Node) (isFallthrough bool) {
 	isFallthrough = false
@@ -8,11 +12,11 @@ func (p *Page) renderBodyPar(node *Node) (isFallthrough bool) {
 
 	p.normalRenderNodeBlock(node)
 
-	if node.uiBlock.Height < 0 {
+	if true == node.isShouldCalculateHeight {
 		if true == node.uiBlock.Border {
-			node.uiBlock.Height = 3
+			node.uiBlock.Height = CalculateTextHeight(uiBuffer.Text, node.uiBlock.Width) + 2
 		} else {
-			node.uiBlock.Height = 1
+			node.uiBlock.Height = CalculateTextHeight(uiBuffer.Text, node.uiBlock.Width)
 		}
 	}
 

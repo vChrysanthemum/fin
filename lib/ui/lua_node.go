@@ -3,6 +3,8 @@ package ui
 import (
 	"log"
 
+	"golang.org/x/net/html"
+
 	lua "github.com/yuin/gopher-lua"
 )
 
@@ -44,6 +46,28 @@ func (p *Script) luaFuncGetNodePointer(L *lua.LState) int {
 	return 1
 }
 
+func (p *Script) luaFuncNodeSetAttribute(L *lua.LState) int {
+	if L.GetTop() < 3 {
+		return 0
+	}
+
+	lu := L.ToUserData(1)
+	node := p._getNodePointerFromUserData(L, lu)
+	if nil == node {
+		L.Push(lua.LNil)
+		return 0
+	}
+	isNeedRerenderPage := node.ParseAttribute([]html.Attribute{
+		html.Attribute{Key: L.ToString(2), Val: L.ToString(3)},
+	})
+	if true == isNeedRerenderPage {
+		p.page.Rerender()
+	} else {
+		node.uiRender()
+	}
+	return 0
+}
+
 func (p *Script) luaFuncNodeSetActive(L *lua.LState) int {
 	if L.GetTop() < 1 {
 		return 0
@@ -56,6 +80,7 @@ func (p *Script) luaFuncNodeSetActive(L *lua.LState) int {
 		return 0
 	}
 	p.page.SetActiveNode(node)
+	node.uiRender()
 	return 0
 }
 
@@ -89,7 +114,12 @@ func (p *Script) luaFuncNodeSetText(L *lua.LState) int {
 	}
 
 	if nil != node.SetText {
-		node.SetText(text)
+		isNeedRerenderPage := node.SetText(text)
+		if true == isNeedRerenderPage {
+			p.page.Rerender()
+		} else {
+			node.uiRender()
+		}
 	}
 
 	return 0

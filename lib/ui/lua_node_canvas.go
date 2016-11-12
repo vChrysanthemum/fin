@@ -1,6 +1,7 @@
 package ui
 
 import (
+	. "in/ui/utils"
 	"unicode/utf8"
 
 	"github.com/gizak/termui"
@@ -65,6 +66,6 @@ func (p *Script) luaFuncNodeCanvasDraw(L *lua.LState) int {
 	if nil == nodeCanvas {
 		return 0
 	}
-	uiRender(nodeCanvas.Canvas)
+	nodeCanvas.Node.uiRender()
 	return 0
 }

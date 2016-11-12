@@ -10,12 +10,11 @@ func (p *Page) parseBodyPar(parentNode *Node, htmlNode *html.Node) (ret *Node, i
 	parentNode.addChild(ret)
 	isFallthrough = false
 
-	nodePar := ret.InitNodePar()
-	uiBuffer := ret.uiBuffer.(*termui.Par)
+	ret.InitNodePar()
 
 	if nil != htmlNode.FirstChild {
-		nodePar.Text = htmlNode.FirstChild.Data
-		uiBuffer.Text = nodePar.Text
+		uiBuffer := ret.uiBuffer.(*termui.Par)
+		uiBuffer.Text = htmlNode.FirstChild.Data
 	}
 
 	return

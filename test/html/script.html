@@ -22,14 +22,18 @@ InputTextTestEvent = Node("InputTextTest"):RegisterKeyPressEnterHandler(
       Node("SelectTestRemove"):Remove()
       Node("SelectTestChangeOptions"):SelectClearOptions()
       Node("GaugeTest"):GaugeSetPercent(30) 
+      Node("ParResult3"):SetAttribute("borderlabel", "测试")
+      Node("ParResult3"):SetAttribute("border", "true")
+      Node("ParResult3"):SetAttribute("borderfg", "yellow")
+      Node("ParResult3"):SetAttribute("height", "6")
     else 
       Node("InputTextTest"):RemoveKeyPressEnterHandler(InputTextTestEvent)
     end
   end
 )
   </script>
-  <par id="ParResult"  height=3>你好</par>
-  <par id="ParResult0" height=3>你好</par>
+  <par id="ParResult"  width=12>你好co eaoubfoabfoabsodfuabsdfbasd</par>
+  <par id="ParResult0" width=12>你好sdfao;</par>
   <par id="ParResult1" height=3>你好</par>
   <par id="ParResult2" height=3>你好</par>
   <par id="ParResult3" height=3>你好</par>

@@ -1,6 +1,10 @@
 package ui
 
-import "github.com/gizak/termui"
+import (
+	. "in/ui/utils"
+
+	"github.com/gizak/termui"
+)
 
 func (p *Page) renderBodyEditor(node *Node) (isFallthrough bool) {
 	isFallthrough = false
@@ -14,8 +18,6 @@ func (p *Page) renderBodyEditor(node *Node) (isFallthrough bool) {
 	if "" != node.ColorBg {
 		uiBuffer.TextBgColor = ColorToTermuiAttribute(node.ColorBg, termui.ColorDefault)
 	}
-
-	node.uiBuffer = uiBuffer
 
 	p.BufferersAppend(node, uiBuffer)
 

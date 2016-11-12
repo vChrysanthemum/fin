@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"log"
 	"path/filepath"
 
 	lua "github.com/yuin/gopher-lua"
@@ -33,6 +34,7 @@ func (p *Page) prepareScript() {
 	script.luaState.SetField(luaBase, "WindowConfirm", script.luaState.NewFunction(script.luaFuncWindowConfirm))
 
 	script.luaState.SetField(luaBase, "GetNodePointer", script.luaState.NewFunction(script.luaFuncGetNodePointer))
+	script.luaState.SetField(luaBase, "NodeSetAttribute", script.luaState.NewFunction(script.luaFuncNodeSetAttribute))
 	script.luaState.SetField(luaBase, "NodeSetActive", script.luaState.NewFunction(script.luaFuncNodeSetActive))
 	script.luaState.SetField(luaBase, "NodeGetHtmlData", script.luaState.NewFunction(script.luaFuncNodeGetHtmlData))
 	script.luaState.SetField(luaBase, "NodeSetText", script.luaState.NewFunction(script.luaFuncNodeSetText))
@@ -89,6 +91,7 @@ func (p *Page) AppendScript(doc, docType string) {
 func (p *Script) Run() {
 	for _, doc := range p.luaDocs {
 		if err := p.luaState.DoString(doc); nil != err {
+			log.Println(err)
 			panic(err)
 		}
 	}

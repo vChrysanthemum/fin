@@ -27,15 +27,6 @@ func (p *CursorLocation) ResetLocation() {
 	p.Location.Y = p.ParentBlock.InnerArea.Min.Y
 }
 
-func (p *CursorLocation) InitLocationIfNeeded() {
-	if p.Location.X < 0 {
-		p.Location.X = p.ParentBlock.InnerArea.Min.X
-	}
-	if p.Location.Y < 0 {
-		p.Location.Y = p.ParentBlock.InnerArea.Min.Y
-	}
-}
-
 func (p *CursorLocation) SetCursor(x, y int) {
 	p.Location.X = x
 	p.Location.Y = y

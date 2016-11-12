@@ -1,6 +1,10 @@
 package ui
 
-import "github.com/gizak/termui"
+import (
+	. "in/ui/utils"
+
+	"github.com/gizak/termui"
+)
 
 func (p *Page) renderBodyCanvas(node *Node) (isFallthrough bool) {
 	isFallthrough = false
