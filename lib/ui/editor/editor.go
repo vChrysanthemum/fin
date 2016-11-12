@@ -6,7 +6,6 @@ import (
 	"sync"
 
 	"github.com/gizak/termui"
-	termbox "github.com/nsf/termbox-go"
 )
 
 type Editor struct {
@@ -156,10 +155,10 @@ func (p *Editor) AfterRenderHandle() {
 
 func (p *Editor) ActiveMode() {
 	p.CursorLocation.IsDisplay = true
-	p.CursorLocation.ResetCursor()
+	p.CursorLocation.ResumeCursor()
 }
 
 func (p *Editor) UnActiveMode() {
 	p.CursorLocation.IsDisplay = false
-	termbox.SetCursor(-1, -1)
+	UISetCursor(-1, -1)
 }

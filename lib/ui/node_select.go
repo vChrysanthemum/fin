@@ -108,12 +108,14 @@ func (p *NodeSelect) ClearOptions() {
 }
 
 func (p *NodeSelect) NodeDataFocusMode() {
-	p.Node.isCalledFocusMode = true
-	p.Node.tmpFocusModeBorder = p.Node.uiBlock.Border
-	p.Node.tmpFocusModeBorderFg = p.Node.uiBlock.BorderFg
-	p.Node.uiBlock.Border = true
-	p.Node.uiBlock.BorderFg = COLOR_FOCUS_MODE_BORDERFG
-	p.Node.uiRender()
+	if false == p.Node.isCalledFocusMode {
+		p.Node.isCalledFocusMode = true
+		p.Node.tmpFocusModeBorder = p.Node.uiBlock.Border
+		p.Node.tmpFocusModeBorderFg = p.Node.uiBlock.BorderFg
+		p.Node.uiBlock.Border = true
+		p.Node.uiBlock.BorderFg = COLOR_FOCUS_MODE_BORDERFG
+		p.Node.uiRender()
+	}
 }
 
 func (p *NodeSelect) NodeDataUnFocusMode() {
@@ -130,12 +132,12 @@ func (p *NodeSelect) NodeDataActiveMode() {
 		p.Node.isCalledActiveMode = true
 		p.Node.tmpActiveModeBorderFg = p.Node.uiBlock.BorderFg
 		p.Node.uiBlock.BorderFg = COLOR_ACTIVE_MODE_BORDERFG
+		p.Node.uiRender()
 	}
-	p.Node.uiRender()
 }
 
 func (p *NodeSelect) NodeDataUnActiveMode() {
-	if true == p.isCalledActiveMode {
+	if true == p.Node.isCalledActiveMode {
 		p.Node.isCalledActiveMode = false
 		p.Node.uiBlock.BorderFg = p.Node.tmpActiveModeBorderFg
 		p.Node.uiRender()

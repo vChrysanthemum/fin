@@ -32,7 +32,7 @@ func (p *Node) InitNodeTerminal() *NodeTerminal {
 
 	p.isShouldCalculateWidth = true
 	p.isShouldCalculateHeight = false
-	p.uiBlock.Border = false
+	p.uiBlock.Border = true
 
 	return nodeTerminal
 }
@@ -70,7 +70,7 @@ func (p *NodeTerminal) KeyPress(e termui.Event) {
 	// 禁止删除一行
 	if "C-8" == keyStr && (nil == p.CurrentLine || len(p.CurrentLine.Data) <= len(p.CommandPrefix)) {
 		utils.Beep()
-		p.Editor.ResetCursor()
+		p.Editor.ResumeCursor()
 		return
 	}
 
@@ -112,12 +112,14 @@ func (p *NodeTerminal) NodeDataAfterRenderHandle() {
 }
 
 func (p *NodeTerminal) NodeDataFocusMode() {
-	p.Node.isCalledFocusMode = true
-	p.Node.tmpFocusModeBorder = p.Node.uiBlock.Border
-	p.Node.tmpFocusModeBorderFg = p.Node.uiBlock.BorderFg
-	p.Node.uiBlock.Border = true
-	p.Node.uiBlock.BorderFg = COLOR_FOCUS_MODE_BORDERFG
-	p.Node.uiRender()
+	if false == p.Node.isCalledFocusMode {
+		p.Node.isCalledFocusMode = true
+		p.Node.tmpFocusModeBorder = p.Node.uiBlock.Border
+		p.Node.tmpFocusModeBorderFg = p.Node.uiBlock.BorderFg
+		p.Node.uiBlock.Border = true
+		p.Node.uiBlock.BorderFg = COLOR_FOCUS_MODE_BORDERFG
+		p.Node.uiRender()
+	}
 }
 
 func (p *NodeTerminal) NodeDataUnFocusMode() {
@@ -140,7 +142,7 @@ func (p *NodeTerminal) NodeDataActiveMode() {
 }
 
 func (p *NodeTerminal) NodeDataUnActiveMode() {
-	if true == p.isCalledActiveMode {
+	if true == p.Node.isCalledActiveMode {
 		p.Node.isCalledActiveMode = false
 		p.Node.uiBlock.BorderFg = p.Node.tmpActiveModeBorderFg
 		p.Editor.UnActiveMode()

@@ -4,11 +4,18 @@
 </head>
 <body colorfg="blue">
   <script type="text/lua">
-  local stage = Node("CanvasStage");
-  stage:CanvasSet(12, 5, "*", "blue", "white");
-  stage:CanvasDraw()
+  local radar = Node("CanvasRadar")
+  radar:CanvasSet(12, 3, "#", "green", "red")
+  radar:CanvasSet(48, 10, "#", "green", "")
+  radar:CanvasSet(16, 15, "#", "green", "")
+  radar:CanvasSet(75, 5, "#", "green", "")
+  radar:CanvasSet(56, 12, "#", "green", "")
+  radar:CanvasSet(44, 8, "*", "blue", "")
+  radar:CanvasDraw()
+
+  radar:SetCursor(2, 0)
   </script>
-  <canvas id="CanvasStage"></canvas>
-  <par height=3 width=20 border=true> shit </par>
+  <par height=3 border=true> shit </par>
+  <canvas height=28 width=80 borderfg=white id="CanvasRadar"></canvas>
 </body>
 </html>

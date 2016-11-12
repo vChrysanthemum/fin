@@ -40,6 +40,18 @@ function _Node.GetValue(self)
     return base.NodeGetValue(self.nodePointer)
 end
 
+function _Node.SetCursor(self, x, y)
+    return base.NodeSetCursor(self.nodePointer, x, y)
+end
+
+function _Node.ResumeCursor(self)
+    return base.NodeResumeCursor(self.nodePointer)
+end
+
+function _Node.HideCursor(self)
+    return base.NodeHideCursor(self.nodePointer)
+end
+
 function _Node.RegisterKeyPressEnterHandler(self, callback)
     return base.NodeRegisterKeyPressEnterHandler(self.nodePointer, callback)
 end

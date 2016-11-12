@@ -3,10 +3,13 @@ package utils
 import (
 	"fmt"
 	"image"
+	"log"
+	"runtime/debug"
 	"unicode/utf8"
 
 	"github.com/gizak/termui"
 	rw "github.com/mattn/go-runewidth"
+	termbox "github.com/nsf/termbox-go"
 )
 
 func FormatStringWithWidth(src string, width int) string {
@@ -108,4 +111,9 @@ func CalculateTextLastPosition(text string, innerArea image.Rectangle) (resultX,
 	resultY = innerArea.Min.Y + y
 
 	return
+}
+
+func UISetCursor(x, y int) {
+	log.Println(x, y, string(debug.Stack()))
+	termbox.SetCursor(x, y)
 }

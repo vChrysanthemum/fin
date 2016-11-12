@@ -1,8 +1,6 @@
 package ui
 
 import (
-	"log"
-
 	"golang.org/x/net/html"
 
 	lua "github.com/yuin/gopher-lua"
@@ -150,6 +148,54 @@ func (p *Script) luaFuncNodeGetValue(L *lua.LState) int {
 	return 1
 }
 
+func (p *Script) luaFuncNodeSetCursor(L *lua.LState) int {
+	if L.GetTop() < 3 {
+		return 0
+	}
+
+	lu := L.ToUserData(1)
+	node := p._getNodePointerFromUserData(L, lu)
+	if nil == node {
+		return 0
+	}
+
+	node.SetCursor(L.ToInt(2), L.ToInt(3))
+
+	return 0
+}
+
+func (p *Script) luaFuncNodeResumeCursor(L *lua.LState) int {
+	if L.GetTop() < 1 {
+		return 0
+	}
+
+	lu := L.ToUserData(1)
+	node := p._getNodePointerFromUserData(L, lu)
+	if nil == node {
+		return 0
+	}
+
+	node.ResumeCursor()
+
+	return 0
+}
+
+func (p *Script) luaFuncNodeHideCursor(L *lua.LState) int {
+	if L.GetTop() < 1 {
+		return 0
+	}
+
+	lu := L.ToUserData(1)
+	node := p._getNodePointerFromUserData(L, lu)
+	if nil == node {
+		return 0
+	}
+
+	node.HideCursor()
+
+	return 0
+}
+
 func (p *Script) luaFuncNodeRegisterKeyPressEnterHandler(L *lua.LState) int {
 	if L.GetTop() < 2 {
 		L.Push(lua.LNil)
@@ -194,7 +240,6 @@ func (p *Script) luaFuncNodeRemoveKeyPressEnterHandler(L *lua.LState) int {
 		return 0
 	}
 
-	log.Println(key, node.HtmlData)
 	node.RemoveKeyPressEnterHandler(key)
 	return 0
 }

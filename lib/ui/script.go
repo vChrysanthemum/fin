@@ -39,6 +39,9 @@ func (p *Page) prepareScript() {
 	script.luaState.SetField(luaBase, "NodeGetHtmlData", script.luaState.NewFunction(script.luaFuncNodeGetHtmlData))
 	script.luaState.SetField(luaBase, "NodeSetText", script.luaState.NewFunction(script.luaFuncNodeSetText))
 	script.luaState.SetField(luaBase, "NodeGetValue", script.luaState.NewFunction(script.luaFuncNodeGetValue))
+	script.luaState.SetField(luaBase, "NodeSetCursor", script.luaState.NewFunction(script.luaFuncNodeSetCursor))
+	script.luaState.SetField(luaBase, "NodeResumeCursor", script.luaState.NewFunction(script.luaFuncNodeResumeCursor))
+	script.luaState.SetField(luaBase, "NodeHideCursor", script.luaState.NewFunction(script.luaFuncNodeHideCursor))
 	script.luaState.SetField(luaBase, "NodeRegisterKeyPressEnterHandler",
 		script.luaState.NewFunction(script.luaFuncNodeRegisterKeyPressEnterHandler))
 	script.luaState.SetField(luaBase, "NodeRemoveKeyPressEnterHandler",

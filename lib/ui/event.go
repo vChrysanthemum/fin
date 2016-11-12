@@ -13,12 +13,19 @@ func (p *Page) registerHandles() {
 	})
 
 	termui.Handle("/sys/kbd", func(e termui.Event) {
-		if nil != p.ActiveNode && nil != p.ActiveNode.KeyPress {
-			p.ActiveNode.KeyPress(e)
+		keyStr := e.Data.(termui.EvtKbd).KeyStr
+
+		if nil != p.ActiveNode {
+			if nil != p.ActiveNode.KeyPress {
+				p.ActiveNode.KeyPress(e)
+				return
+			}
+			if "<escape>" == keyStr {
+				p.ActiveNode.QuitActiveMode()
+				return
+			}
 			return
 		}
-
-		keyStr := e.Data.(termui.EvtKbd).KeyStr
 
 		// 切换ActiveNode
 		if "<tab>" == keyStr ||

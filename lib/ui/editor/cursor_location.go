@@ -2,9 +2,9 @@ package editor
 
 import (
 	"image"
+	. "in/ui/utils"
 
 	"github.com/gizak/termui"
-	termbox "github.com/nsf/termbox-go"
 )
 
 type CursorLocation struct {
@@ -30,9 +30,9 @@ func (p *CursorLocation) ResetLocation() {
 func (p *CursorLocation) SetCursor(x, y int) {
 	p.Location.X = x
 	p.Location.Y = y
-	termbox.SetCursor(p.Location.X, p.Location.Y)
+	UISetCursor(p.Location.X, p.Location.Y)
 }
 
-func (p *CursorLocation) ResetCursor() {
-	termbox.SetCursor(p.Location.X, p.Location.Y)
+func (p *CursorLocation) ResumeCursor() {
+	UISetCursor(p.Location.X, p.Location.Y)
 }

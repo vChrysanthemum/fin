@@ -1,6 +1,8 @@
 package ui
 
 import (
+	"image"
+	. "in/ui/utils"
 	"sync"
 
 	"github.com/gizak/termui"
@@ -81,6 +83,8 @@ type Node struct {
 
 	KeyPressEnterHandlers map[string]NodeJob
 	JobHanderLocker       sync.RWMutex
+
+	CursorLocation image.Point
 }
 
 type NodeJobHandler func(node *Node, args ...interface{})
@@ -114,6 +118,8 @@ func (p *Page) newNode(htmlNode *html.Node) *Node {
 
 	ret.isShouldCalculateHeight = true
 	ret.isShouldCalculateWidth = true
+
+	ret.CursorLocation = image.Point{-1, -1}
 	return ret
 }
 
@@ -150,4 +156,20 @@ func (p *Node) uiRender() {
 	if nodeDataAfterRenderHandler, ok := p.Data.(NodeDataAfterRenderHandler); true == ok {
 		nodeDataAfterRenderHandler.NodeDataAfterRenderHandle()
 	}
+}
+
+func (p *Node) SetCursor(x, y int) {
+	p.CursorLocation.X = p.uiBlock.InnerArea.Min.X + x
+	p.CursorLocation.Y = p.uiBlock.InnerArea.Min.Y + y
+	p.uiRender()
+}
+
+func (p *Node) ResumeCursor() {
+	UISetCursor(p.CursorLocation.X, p.CursorLocation.Y)
+	p.uiRender()
+}
+
+func (p *Node) HideCursor() {
+	UISetCursor(-1, -1)
+	p.uiRender()
 }

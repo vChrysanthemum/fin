@@ -25,7 +25,7 @@ func (p *Node) InitNodeEditor() *NodeEditor {
 	p.isShouldCalculateWidth = true
 	p.isShouldCalculateHeight = false
 	p.uiBlock.Height = 10
-	p.uiBlock.Border = false
+	p.uiBlock.Border = true
 
 	return nodeEditor
 }
@@ -46,12 +46,14 @@ func (p *NodeEditor) NodeDataAfterRenderHandle() {
 }
 
 func (p *NodeEditor) NodeDataFocusMode() {
-	p.Node.isCalledFocusMode = true
-	p.Node.tmpFocusModeBorder = p.Node.uiBlock.Border
-	p.Node.tmpFocusModeBorderFg = p.Node.uiBlock.BorderFg
-	p.Node.uiBlock.Border = true
-	p.Node.uiBlock.BorderFg = COLOR_FOCUS_MODE_BORDERFG
-	p.Node.uiRender()
+	if false == p.Node.isCalledFocusMode {
+		p.Node.isCalledFocusMode = true
+		p.Node.tmpFocusModeBorder = p.Node.uiBlock.Border
+		p.Node.tmpFocusModeBorderFg = p.Node.uiBlock.BorderFg
+		p.Node.uiBlock.Border = true
+		p.Node.uiBlock.BorderFg = COLOR_FOCUS_MODE_BORDERFG
+		p.Node.uiRender()
+	}
 }
 
 func (p *NodeEditor) NodeDataUnFocusMode() {
@@ -74,7 +76,7 @@ func (p *NodeEditor) NodeDataActiveMode() {
 }
 
 func (p *NodeEditor) NodeDataUnActiveMode() {
-	if true == p.isCalledActiveMode {
+	if true == p.Node.isCalledActiveMode {
 		p.Node.isCalledActiveMode = false
 		p.Node.uiBlock.BorderFg = p.Node.tmpActiveModeBorderFg
 		p.Editor.UnActiveMode()
