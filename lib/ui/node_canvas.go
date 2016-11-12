@@ -23,3 +23,38 @@ func (p *Node) InitNodeCanvas() *NodeCanvas {
 
 	return nodeCanvas
 }
+
+func (p *NodeCanvas) NodeDataFocusMode() {
+	p.Node.isCalledFocusMode = true
+	p.Node.tmpFocusModeBorder = p.Node.uiBlock.Border
+	p.Node.tmpFocusModeBorderFg = p.Node.uiBlock.BorderFg
+	p.Node.uiBlock.Border = true
+	p.Node.uiBlock.BorderFg = COLOR_FOCUS_MODE_BORDERFG
+	p.Node.uiRender()
+}
+
+func (p *NodeCanvas) NodeDataUnFocusMode() {
+	if true == p.Node.isCalledFocusMode {
+		p.Node.isCalledFocusMode = false
+		p.Node.uiBlock.Border = p.Node.tmpFocusModeBorder
+		p.Node.uiBlock.BorderFg = p.Node.tmpFocusModeBorderFg
+		p.Node.uiRender()
+	}
+}
+
+func (p *NodeCanvas) NodeDataActiveMode() {
+	if false == p.Node.isCalledActiveMode {
+		p.Node.isCalledActiveMode = true
+		p.Node.tmpActiveModeBorderFg = p.Node.uiBlock.BorderFg
+		p.Node.uiBlock.BorderFg = COLOR_ACTIVE_MODE_BORDERFG
+	}
+	p.Node.uiRender()
+}
+
+func (p *NodeCanvas) NodeDataUnActiveMode() {
+	if true == p.isCalledActiveMode {
+		p.Node.isCalledActiveMode = false
+		p.Node.uiBlock.BorderFg = p.Node.tmpActiveModeBorderFg
+		p.Node.uiRender()
+	}
+}
