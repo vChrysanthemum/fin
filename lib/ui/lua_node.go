@@ -57,9 +57,12 @@ func (p *Script) luaFuncNodeSetAttribute(L *lua.LState) int {
 		L.Push(lua.LNil)
 		return 0
 	}
-	isNeedRerenderPage := node.ParseAttribute([]html.Attribute{
+	isUIChange, isNeedRerenderPage := node.ParseAttribute([]html.Attribute{
 		html.Attribute{Key: L.ToString(2), Val: L.ToString(3)},
 	})
+	if false == isUIChange {
+		return 0
+	}
 	if true == isNeedRerenderPage {
 		p.page.Rerender()
 	} else {
