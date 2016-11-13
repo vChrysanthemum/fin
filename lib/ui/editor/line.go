@@ -21,6 +21,7 @@ func (p *Editor) InitNewLine() *Line {
 		Data: make([]byte, 0),
 	}
 	p.Lines = append(p.Lines, ret)
+	p.DisplayLinesRange[1] = len(p.Lines) - 1
 
 	if nil == p.FirstLine {
 		p.FirstLine = ret
