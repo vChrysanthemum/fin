@@ -3,6 +3,7 @@ package ui
 import (
 	"container/list"
 	"log"
+	"sync"
 
 	"github.com/gizak/termui"
 	"golang.org/x/net/html"
@@ -29,6 +30,8 @@ type Page struct {
 
 	renderingX int
 	renderingY int
+
+	KeyPressEventLocker sync.RWMutex
 }
 
 func newPage() *Page {

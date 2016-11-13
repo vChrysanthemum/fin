@@ -13,6 +13,9 @@ func (p *Page) registerHandles() {
 	})
 
 	termui.Handle("/sys/kbd", func(e termui.Event) {
+		p.KeyPressEventLocker.Lock()
+		defer p.KeyPressEventLocker.Unlock()
+
 		keyStr := e.Data.(termui.EvtKbd).KeyStr
 
 		if nil != p.ActiveNode {
