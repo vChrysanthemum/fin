@@ -41,6 +41,8 @@ func (p *Page) renderBodySelect(node *Node) (isFallthrough bool) {
 		} else {
 			node.uiBlock.Width = nodeSelect.ChildrenMaxStringWidth
 		}
+		node.uiBlock.Width += node.uiBlock.PaddingLeft
+		node.uiBlock.Width += node.uiBlock.PaddingRight
 	}
 
 	var height int
@@ -49,11 +51,8 @@ func (p *Page) renderBodySelect(node *Node) (isFallthrough bool) {
 	} else {
 		height = len(nodeSelect.Children)
 	}
-	if true == node.isShouldCalculateHeight {
-		node.uiBlock.Height = height
-	} else {
-		node.uiBlock.Height = MaxInt(node.uiBlock.Height, height)
-	}
+	height += node.uiBlock.PaddingTop
+	height += node.uiBlock.PaddingBottom
 
 	nodeSelect.refreshUiBufferItems()
 

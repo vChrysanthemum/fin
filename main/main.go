@@ -20,7 +20,7 @@ func main() {
 		os.O_CREATE|os.O_RDWR|os.O_APPEND, 0777)
 	log.SetOutput(logFile)
 
-	content, _ := ioutil.ReadFile(filepath.Join(GlobalResBaseDir, "project/travller/main.html"))
+	content, _ := ioutil.ReadFile(filepath.Join(GlobalResBaseDir, "project/traveller/main.html"))
 	page, err := ui.Parse(string(content))
 	if nil != err {
 		panic(err)

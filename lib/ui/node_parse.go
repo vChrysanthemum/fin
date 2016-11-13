@@ -19,6 +19,22 @@ func (p *Node) ParseAttribute(attr []html.Attribute) (isUIChange, isNeedRerender
 
 	for _, v := range attr {
 		switch v.Key {
+		case "paddingtop":
+			isUIChange = true
+			p.uiBlock.PaddingTop, _ = strconv.Atoi(v.Val)
+
+		case "paddingbottom":
+			isUIChange = true
+			p.uiBlock.PaddingBottom, _ = strconv.Atoi(v.Val)
+
+		case "paddingleft":
+			isUIChange = true
+			p.uiBlock.PaddingLeft, _ = strconv.Atoi(v.Val)
+
+		case "paddingright":
+			isUIChange = true
+			p.uiBlock.PaddingRight, _ = strconv.Atoi(v.Val)
+
 		case "borderlabelfg":
 			isUIChange = true
 			p.uiBlock.BorderLabelFg = ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_BORDER_LABEL_FG)

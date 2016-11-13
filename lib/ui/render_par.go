@@ -18,6 +18,8 @@ func (p *Page) renderBodyPar(node *Node) (isFallthrough bool) {
 		} else {
 			node.uiBlock.Height = CalculateTextHeight(uiBuffer.Text, node.uiBlock.Width)
 		}
+		node.uiBlock.Height += node.uiBlock.PaddingTop
+		node.uiBlock.Height += node.uiBlock.PaddingBottom
 	}
 
 	if "" != node.ColorFg {
