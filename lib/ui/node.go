@@ -82,8 +82,8 @@ type Node struct {
 	HtmlData string
 	Data     interface{}
 
-	KeyPress NodeKeyPress
-
+	KeyPressHandlers      map[string]NodeJob
+	KeyPress              NodeKeyPress
 	KeyPressEnterHandlers map[string]NodeJob
 	JobHanderLocker       sync.RWMutex
 
@@ -117,6 +117,7 @@ func (p *Page) newNode(htmlNode *html.Node) *Node {
 	ret := new(Node)
 	ret.page = p
 	ret.HtmlData = htmlNode.Data
+	ret.KeyPressHandlers = make(map[string]NodeJob, 0)
 	ret.KeyPressEnterHandlers = make(map[string]NodeJob, 0)
 
 	ret.isShouldCalculateHeight = true
@@ -164,6 +165,7 @@ func (p *Node) uiRender() {
 func (p *Node) SetCursor(x, y int) {
 	p.CursorLocation.X = p.uiBlock.InnerArea.Min.X + x
 	p.CursorLocation.Y = p.uiBlock.InnerArea.Min.Y + y
+	UISetCursor(p.CursorLocation.X, p.CursorLocation.Y)
 	p.uiRender()
 }
 

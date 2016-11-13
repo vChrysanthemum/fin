@@ -34,18 +34,25 @@ func (p *Page) prepareScript() {
 	script.luaState.SetField(luaBase, "WindowConfirm", script.luaState.NewFunction(script.luaFuncWindowConfirm))
 
 	script.luaState.SetField(luaBase, "GetNodePointer", script.luaState.NewFunction(script.luaFuncGetNodePointer))
+
 	script.luaState.SetField(luaBase, "NodeSetAttribute", script.luaState.NewFunction(script.luaFuncNodeSetAttribute))
 	script.luaState.SetField(luaBase, "NodeSetActive", script.luaState.NewFunction(script.luaFuncNodeSetActive))
+
 	script.luaState.SetField(luaBase, "NodeGetHtmlData", script.luaState.NewFunction(script.luaFuncNodeGetHtmlData))
 	script.luaState.SetField(luaBase, "NodeSetText", script.luaState.NewFunction(script.luaFuncNodeSetText))
 	script.luaState.SetField(luaBase, "NodeGetValue", script.luaState.NewFunction(script.luaFuncNodeGetValue))
+
 	script.luaState.SetField(luaBase, "NodeSetCursor", script.luaState.NewFunction(script.luaFuncNodeSetCursor))
 	script.luaState.SetField(luaBase, "NodeResumeCursor", script.luaState.NewFunction(script.luaFuncNodeResumeCursor))
 	script.luaState.SetField(luaBase, "NodeHideCursor", script.luaState.NewFunction(script.luaFuncNodeHideCursor))
+
+	script.luaState.SetField(luaBase, "NodeRegisterKeyPressHandler",
+		script.luaState.NewFunction(script.luaFuncNodeRegisterKeyPressHandler))
 	script.luaState.SetField(luaBase, "NodeRegisterKeyPressEnterHandler",
 		script.luaState.NewFunction(script.luaFuncNodeRegisterKeyPressEnterHandler))
 	script.luaState.SetField(luaBase, "NodeRemoveKeyPressEnterHandler",
 		script.luaState.NewFunction(script.luaFuncNodeRemoveKeyPressEnterHandler))
+
 	script.luaState.SetField(luaBase, "NodeRemove", script.luaState.NewFunction(script.luaFuncNodeRemove))
 
 	script.luaState.SetField(luaBase, "NodeCanvasSet", script.luaState.NewFunction(script.luaFuncNodeCanvasSet))

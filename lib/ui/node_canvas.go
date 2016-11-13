@@ -51,7 +51,6 @@ func (p *NodeCanvas) NodeDataActiveMode() {
 		p.Node.tmpActiveModeBorderFg = p.Node.uiBlock.BorderFg
 		p.Node.uiBlock.BorderFg = COLOR_ACTIVE_MODE_BORDERFG
 		p.Node.ResumeCursor()
-		p.Node.uiRender()
 	}
 }
 
@@ -60,6 +59,5 @@ func (p *NodeCanvas) NodeDataUnActiveMode() {
 		p.Node.isCalledActiveMode = false
 		p.Node.uiBlock.BorderFg = p.Node.tmpActiveModeBorderFg
 		p.Node.HideCursor()
-		p.Node.uiRender()
 	}
 }

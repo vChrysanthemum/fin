@@ -18,12 +18,27 @@ func (p *Page) registerHandles() {
 		if nil != p.ActiveNode {
 			if nil != p.ActiveNode.KeyPress {
 				p.ActiveNode.KeyPress(e)
+			}
+
+			// p.ActiveNode.KeyPress后，p.ActiveNode有可能为nil
+			if nil == p.ActiveNode {
 				return
 			}
+
+			if len(p.ActiveNode.KeyPressHandlers) > 0 {
+				p.ActiveNode.JobHanderLocker.RLock()
+				for _, v := range p.ActiveNode.KeyPressHandlers {
+					v.Args = append(v.Args, e)
+					v.Handler(p.ActiveNode, v.Args...)
+				}
+				p.ActiveNode.JobHanderLocker.RUnlock()
+			}
+
 			if "<escape>" == keyStr {
 				p.ActiveNode.QuitActiveMode()
 				return
 			}
+
 			return
 		}
 

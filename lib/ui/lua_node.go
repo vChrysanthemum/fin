@@ -3,6 +3,7 @@ package ui
 import (
 	"golang.org/x/net/html"
 
+	"github.com/gizak/termui"
 	lua "github.com/yuin/gopher-lua"
 )
 
@@ -194,6 +195,39 @@ func (p *Script) luaFuncNodeHideCursor(L *lua.LState) int {
 	node.HideCursor()
 
 	return 0
+}
+
+func (p *Script) luaFuncNodeRegisterKeyPressHandler(L *lua.LState) int {
+	if L.GetTop() < 2 {
+		L.Push(lua.LNil)
+		return 1
+	}
+
+	lu := L.ToUserData(1)
+	callback := L.ToFunction(2)
+	node := p._getNodePointerFromUserData(L, lu)
+	if nil == node {
+		L.Push(lua.LNil)
+		return 1
+	}
+
+	key := node.RegisterKeyPressHandler(func(_node *Node, args ...interface{}) {
+		_L := args[0].(*lua.LState)
+		_callback := args[1].(*lua.LFunction)
+		luaNode := _L.NewUserData()
+		luaNode.Value = node
+		_e := args[2].(termui.Event)
+		if err := _L.CallByParam(lua.P{
+			Fn:      _callback,
+			NRet:    0,
+			Protect: true,
+		}, luaNode, lua.LString(_e.Data.(termui.EvtKbd).KeyStr)); err != nil {
+			panic(err)
+		}
+	}, L, callback)
+
+	L.Push(lua.LString(key))
+	return 1
 }
 
 func (p *Script) luaFuncNodeRegisterKeyPressEnterHandler(L *lua.LState) int {

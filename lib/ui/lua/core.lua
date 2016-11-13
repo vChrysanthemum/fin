@@ -52,6 +52,10 @@ function _Node.HideCursor(self)
     return base.NodeHideCursor(self.nodePointer)
 end
 
+function _Node.RegisterKeyPressHandler(self, callback)
+    return base.NodeRegisterKeyPressHandler(self.nodePointer, callback)
+end
+
 function _Node.RegisterKeyPressEnterHandler(self, callback)
     return base.NodeRegisterKeyPressEnterHandler(self.nodePointer, callback)
 end
