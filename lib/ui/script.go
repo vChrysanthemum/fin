@@ -11,11 +11,15 @@ type Script struct {
 	page     *Page
 	luaDocs  []string
 	luaState *lua.LState
+
+	CancelSigs map[string](chan bool)
 }
 
 func (p *Page) prepareScript() {
 	var err error
 	script := new(Script)
+
+	script.CancelSigs = make(map[string]chan bool, 0)
 
 	script.page = p
 
@@ -31,6 +35,11 @@ func (p *Page) prepareScript() {
 	))
 
 	script.luaState.SetField(luaBase, "Log", script.luaState.NewFunction(script.LuaFuncLog))
+
+	script.luaState.SetField(luaBase, "SetInterval", script.luaState.NewFunction(script.LuaFuncSetInterval))
+	script.luaState.SetField(luaBase, "SetTimeout", script.luaState.NewFunction(script.LuaFuncSetTimeout))
+	script.luaState.SetField(luaBase, "SendCancelSig", script.luaState.NewFunction(script.LuaFuncSendCancelSig))
+
 	script.luaState.SetField(luaBase, "WindowConfirm", script.luaState.NewFunction(script.luaFuncWindowConfirm))
 
 	script.luaState.SetField(luaBase, "GetNodePointer", script.luaState.NewFunction(script.luaFuncGetNodePointer))

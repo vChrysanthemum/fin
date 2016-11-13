@@ -1,6 +1,8 @@
 package ui
 
 import (
+	"log"
+
 	"golang.org/x/net/html"
 
 	"github.com/gizak/termui"
@@ -222,6 +224,7 @@ func (p *Script) luaFuncNodeRegisterKeyPressHandler(L *lua.LState) int {
 			NRet:    0,
 			Protect: true,
 		}, luaNode, lua.LString(_e.Data.(termui.EvtKbd).KeyStr)); err != nil {
+			log.Println(err)
 			panic(err)
 		}
 	}, L, callback)
@@ -254,6 +257,7 @@ func (p *Script) luaFuncNodeRegisterKeyPressEnterHandler(L *lua.LState) int {
 			NRet:    0,
 			Protect: true,
 		}, luaNode); err != nil {
+			log.Println(err)
 			panic(err)
 		}
 	}, L, callback)
