@@ -21,13 +21,13 @@ func (p *Node) InitNodeInputText() *NodeInputText {
 	p.KeyPress = nodeInputText.KeyPress
 
 	p.uiBuffer = nodeInputText.Editor
-	p.uiBlock = &nodeInputText.Editor.Block
+	p.UIBlock = &nodeInputText.Editor.Block
 
 	p.isShouldCalculateWidth = false
 	p.isShouldCalculateHeight = false
-	p.uiBlock.Width = 6
-	p.uiBlock.Height = 3
-	p.uiBlock.Border = true
+	p.UIBlock.Width = 6
+	p.UIBlock.Height = 3
+	p.UIBlock.Border = true
 
 	return nodeInputText
 }
@@ -67,10 +67,10 @@ func (p *NodeInputText) NodeDataAfterRenderHandle() {
 func (p *NodeInputText) NodeDataFocusMode() {
 	if false == p.Node.isCalledFocusMode {
 		p.Node.isCalledFocusMode = true
-		p.Node.tmpFocusModeBorder = p.Node.uiBlock.Border
-		p.Node.tmpFocusModeBorderFg = p.Node.uiBlock.BorderFg
-		p.Node.uiBlock.Border = true
-		p.Node.uiBlock.BorderFg = COLOR_FOCUS_MODE_BORDERFG
+		p.Node.tmpFocusModeBorder = p.Node.UIBlock.Border
+		p.Node.tmpFocusModeBorderFg = p.Node.UIBlock.BorderFg
+		p.Node.UIBlock.Border = true
+		p.Node.UIBlock.BorderFg = COLOR_FOCUS_MODE_BORDERFG
 		p.Node.uiRender()
 	}
 }
@@ -78,8 +78,8 @@ func (p *NodeInputText) NodeDataFocusMode() {
 func (p *NodeInputText) NodeDataUnFocusMode() {
 	if true == p.Node.isCalledFocusMode {
 		p.Node.isCalledFocusMode = false
-		p.Node.uiBlock.Border = p.Node.tmpFocusModeBorder
-		p.Node.uiBlock.BorderFg = p.Node.tmpFocusModeBorderFg
+		p.Node.UIBlock.Border = p.Node.tmpFocusModeBorder
+		p.Node.UIBlock.BorderFg = p.Node.tmpFocusModeBorderFg
 		p.Node.uiRender()
 	}
 }
@@ -87,8 +87,8 @@ func (p *NodeInputText) NodeDataUnFocusMode() {
 func (p *NodeInputText) NodeDataActiveMode() {
 	if false == p.Node.isCalledActiveMode {
 		p.Node.isCalledActiveMode = true
-		p.Node.tmpActiveModeBorderFg = p.Node.uiBlock.BorderFg
-		p.Node.uiBlock.BorderFg = COLOR_ACTIVE_MODE_BORDERFG
+		p.Node.tmpActiveModeBorderFg = p.Node.UIBlock.BorderFg
+		p.Node.UIBlock.BorderFg = COLOR_ACTIVE_MODE_BORDERFG
 	}
 	p.Editor.ActiveMode()
 	p.Node.uiRender()
@@ -97,7 +97,7 @@ func (p *NodeInputText) NodeDataActiveMode() {
 func (p *NodeInputText) NodeDataUnActiveMode() {
 	if true == p.Node.isCalledActiveMode {
 		p.Node.isCalledActiveMode = false
-		p.Node.uiBlock.BorderFg = p.Node.tmpActiveModeBorderFg
+		p.Node.UIBlock.BorderFg = p.Node.tmpActiveModeBorderFg
 		p.Editor.UnActiveMode()
 		p.Node.uiRender()
 	}

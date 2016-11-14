@@ -22,12 +22,6 @@ func Init(option Option) {
 }
 
 func init() {
-	err := termui.Init()
-	if err != nil {
-		panic(err)
-	}
-	GClearScreenBuffer = NewClearScreenBuffer()
-
 	termui.ColorMap = map[string]termui.Attribute{
 		"fg":           termui.ColorWhite,
 		"bg":           termui.ColorDefault,
@@ -37,6 +31,14 @@ func init() {
 		"par.label.bg": termui.ColorWhite,
 	}
 
+}
+
+func PrepareUI() {
+	err := termui.Init()
+	if err != nil {
+		panic(err)
+	}
+	GClearScreenBuffer = NewClearScreenBuffer()
 }
 
 func uiClear() {

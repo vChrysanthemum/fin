@@ -77,7 +77,7 @@ type Node struct {
 	ColorBg string
 
 	uiBuffer interface{}
-	uiBlock  *termui.Block
+	UIBlock  *termui.Block
 
 	HtmlData string
 	Data     interface{}
@@ -163,8 +163,8 @@ func (p *Node) uiRender() {
 }
 
 func (p *Node) SetCursor(x, y int) {
-	p.CursorLocation.X = p.uiBlock.InnerArea.Min.X + x
-	p.CursorLocation.Y = p.uiBlock.InnerArea.Min.Y + y
+	p.CursorLocation.X = p.UIBlock.InnerArea.Min.X + x
+	p.CursorLocation.Y = p.UIBlock.InnerArea.Min.Y + y
 	UISetCursor(p.CursorLocation.X, p.CursorLocation.Y)
 	p.uiRender()
 }

@@ -11,7 +11,9 @@ clean:
 	rm -rf bin/*
 
 build_in:
-	go build -tags deadlock -o ./bin/in ./main 
+	@find ./pkg -name in|xargs rm -rf
+	go install -tags deadlock ./src/main 
+	@mv bin/main bin/in
 
 test_ui:
 	go test ./lib/ui -args ${pwd}

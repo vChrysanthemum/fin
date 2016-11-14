@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"in/ui"
 	"io/ioutil"
 	"log"
@@ -20,12 +21,24 @@ func main() {
 		os.O_CREATE|os.O_RDWR|os.O_APPEND, 0777)
 	log.SetOutput(logFile)
 
-	content, _ := ioutil.ReadFile(filepath.Join(GlobalResBaseDir, "project/traveller/main.html"))
+	if len(os.Args) < 1 {
+		fmt.Println("Project name is needed.")
+		return
+	}
+
+	projectName := os.Args[1]
+	projectMainHtmlFilePath := filepath.Join(GlobalResBaseDir, "project/"+projectName+"/main.html")
+	if _, err := os.Stat(projectMainHtmlFilePath); os.IsNotExist(err) {
+		fmt.Println("Project is not existed.")
+		return
+	}
+
+	ui.PrepareUI()
+	content, _ := ioutil.ReadFile(projectMainHtmlFilePath)
 	page, err := ui.Parse(string(content))
 	if nil != err {
 		panic(err)
 	}
 	page.Render()
 	page.Serve()
-
 }

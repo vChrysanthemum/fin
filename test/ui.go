@@ -9,6 +9,7 @@ import (
 )
 
 func main() {
+	ui.PrepareUI()
 	target := os.Args[1]
 
 	log.SetFlags(log.Lshortfile | log.LstdFlags | log.Lmicroseconds)

@@ -17,11 +17,11 @@ func (p *Node) InitNodeGauge() *NodeGauge {
 
 	uiBuffer := termui.NewGauge()
 	p.uiBuffer = uiBuffer
-	p.uiBlock = &uiBuffer.Block
+	p.UIBlock = &uiBuffer.Block
 
 	p.isShouldCalculateWidth = true
 	p.isShouldCalculateHeight = false
-	p.uiBlock.Height = 3
+	p.UIBlock.Height = 3
 
 	uiBuffer.BarColor = COLOR_DEFAULT_GAUGE_BARCOLOR
 	uiBuffer.PercentColor = COLOR_DEFAULT_GAUGE_PERCENTCOLOR

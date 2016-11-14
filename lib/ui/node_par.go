@@ -19,11 +19,11 @@ func (p *Node) InitNodePar() *NodePar {
 
 	uiBuffer := termui.NewPar("")
 	p.uiBuffer = uiBuffer
-	p.uiBlock = &uiBuffer.Block
+	p.UIBlock = &uiBuffer.Block
 
 	p.isShouldCalculateWidth = true
 	p.isShouldCalculateHeight = true
-	p.uiBlock.Border = false
+	p.UIBlock.Border = false
 
 	uiBuffer.TextFgColor = COLOR_DEFAULT_TEXT_COLOR_FG
 

@@ -11,77 +11,77 @@ func (p *Node) ParseAttribute(attr []html.Attribute) (isUIChange, isNeedRerender
 	isUIChange = false
 	isNeedRerenderPage = false
 
-	if nil == p.uiBlock {
+	if nil == p.UIBlock {
 		return
 	}
-	p.uiBlock.BorderLabelFg = COLOR_DEFAULT_BORDER_LABEL_FG
-	p.uiBlock.BorderFg = COLOR_DEFAULT_BORDER_FG
+	p.UIBlock.BorderLabelFg = COLOR_DEFAULT_BORDER_LABEL_FG
+	p.UIBlock.BorderFg = COLOR_DEFAULT_BORDER_FG
 
 	for _, v := range attr {
 		switch v.Key {
 		case "paddingtop":
 			isUIChange = true
-			p.uiBlock.PaddingTop, _ = strconv.Atoi(v.Val)
+			p.UIBlock.PaddingTop, _ = strconv.Atoi(v.Val)
 
 		case "paddingbottom":
 			isUIChange = true
-			p.uiBlock.PaddingBottom, _ = strconv.Atoi(v.Val)
+			p.UIBlock.PaddingBottom, _ = strconv.Atoi(v.Val)
 
 		case "paddingleft":
 			isUIChange = true
-			p.uiBlock.PaddingLeft, _ = strconv.Atoi(v.Val)
+			p.UIBlock.PaddingLeft, _ = strconv.Atoi(v.Val)
 
 		case "paddingright":
 			isUIChange = true
-			p.uiBlock.PaddingRight, _ = strconv.Atoi(v.Val)
+			p.UIBlock.PaddingRight, _ = strconv.Atoi(v.Val)
 
 		case "borderlabelfg":
 			isUIChange = true
-			p.uiBlock.BorderLabelFg = ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_BORDER_LABEL_FG)
+			p.UIBlock.BorderLabelFg = ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_BORDER_LABEL_FG)
 
 		case "borderlabel":
 			isUIChange = true
-			p.uiBlock.BorderLabel = v.Val
+			p.UIBlock.BorderLabel = v.Val
 
 		case "borderfg":
 			isUIChange = true
-			p.uiBlock.BorderFg = ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_BORDER_FG)
+			p.UIBlock.BorderFg = ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_BORDER_FG)
 
 		case "border":
 			isUIChange = true
-			p.uiBlock.Border = StringToBool(v.Val, p.uiBlock.Border)
+			p.UIBlock.Border = StringToBool(v.Val, p.UIBlock.Border)
 
 		case "borderleft":
 			isUIChange = true
-			p.uiBlock.BorderLeft = StringToBool(v.Val, p.uiBlock.BorderLeft)
+			p.UIBlock.BorderLeft = StringToBool(v.Val, p.UIBlock.BorderLeft)
 
 		case "borderright":
 			isUIChange = true
-			p.uiBlock.BorderRight = StringToBool(v.Val, p.uiBlock.BorderRight)
+			p.UIBlock.BorderRight = StringToBool(v.Val, p.UIBlock.BorderRight)
 
 		case "bordertop":
 			isUIChange = true
-			p.uiBlock.BorderTop = StringToBool(v.Val, p.uiBlock.BorderTop)
+			p.UIBlock.BorderTop = StringToBool(v.Val, p.UIBlock.BorderTop)
 
 		case "borderbottom":
 			isUIChange = true
-			p.uiBlock.BorderBottom = StringToBool(v.Val, p.uiBlock.BorderBottom)
+			p.UIBlock.BorderBottom = StringToBool(v.Val, p.UIBlock.BorderBottom)
 
 		case "height":
 			isUIChange = true
 			isNeedRerenderPage = true
-			p.uiBlock.Height, _ = strconv.Atoi(v.Val)
-			if p.uiBlock.Height < 0 {
-				p.uiBlock.Height = 0
+			p.UIBlock.Height, _ = strconv.Atoi(v.Val)
+			if p.UIBlock.Height < 0 {
+				p.UIBlock.Height = 0
 			}
 			p.isShouldCalculateHeight = false
 
 		case "width":
 			isUIChange = true
 			isNeedRerenderPage = true
-			p.uiBlock.Width, _ = strconv.Atoi(v.Val)
-			if p.uiBlock.Width < 0 {
-				p.uiBlock.Width = 0
+			p.UIBlock.Width, _ = strconv.Atoi(v.Val)
+			if p.UIBlock.Width < 0 {
+				p.UIBlock.Width = 0
 			}
 			p.isShouldCalculateWidth = false
 		}

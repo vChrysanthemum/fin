@@ -29,7 +29,7 @@ func (p *Node) InitNodeSelect() *NodeSelect {
 
 	uiBuffer := termui.NewList()
 	p.uiBuffer = uiBuffer
-	p.uiBlock = &uiBuffer.Block
+	p.UIBlock = &uiBuffer.Block
 
 	p.isShouldCalculateWidth = true
 	p.isShouldCalculateHeight = true
@@ -110,10 +110,10 @@ func (p *NodeSelect) ClearOptions() {
 func (p *NodeSelect) NodeDataFocusMode() {
 	if false == p.Node.isCalledFocusMode {
 		p.Node.isCalledFocusMode = true
-		p.Node.tmpFocusModeBorder = p.Node.uiBlock.Border
-		p.Node.tmpFocusModeBorderFg = p.Node.uiBlock.BorderFg
-		p.Node.uiBlock.Border = true
-		p.Node.uiBlock.BorderFg = COLOR_FOCUS_MODE_BORDERFG
+		p.Node.tmpFocusModeBorder = p.Node.UIBlock.Border
+		p.Node.tmpFocusModeBorderFg = p.Node.UIBlock.BorderFg
+		p.Node.UIBlock.Border = true
+		p.Node.UIBlock.BorderFg = COLOR_FOCUS_MODE_BORDERFG
 		p.Node.uiRender()
 	}
 }
@@ -121,8 +121,8 @@ func (p *NodeSelect) NodeDataFocusMode() {
 func (p *NodeSelect) NodeDataUnFocusMode() {
 	if true == p.Node.isCalledFocusMode {
 		p.Node.isCalledFocusMode = false
-		p.Node.uiBlock.Border = p.Node.tmpFocusModeBorder
-		p.Node.uiBlock.BorderFg = p.Node.tmpFocusModeBorderFg
+		p.Node.UIBlock.Border = p.Node.tmpFocusModeBorder
+		p.Node.UIBlock.BorderFg = p.Node.tmpFocusModeBorderFg
 		p.Node.uiRender()
 	}
 }
@@ -130,8 +130,8 @@ func (p *NodeSelect) NodeDataUnFocusMode() {
 func (p *NodeSelect) NodeDataActiveMode() {
 	if false == p.Node.isCalledActiveMode {
 		p.Node.isCalledActiveMode = true
-		p.Node.tmpActiveModeBorderFg = p.Node.uiBlock.BorderFg
-		p.Node.uiBlock.BorderFg = COLOR_ACTIVE_MODE_BORDERFG
+		p.Node.tmpActiveModeBorderFg = p.Node.UIBlock.BorderFg
+		p.Node.UIBlock.BorderFg = COLOR_ACTIVE_MODE_BORDERFG
 		p.Node.uiRender()
 	}
 }
@@ -139,7 +139,7 @@ func (p *NodeSelect) NodeDataActiveMode() {
 func (p *NodeSelect) NodeDataUnActiveMode() {
 	if true == p.Node.isCalledActiveMode {
 		p.Node.isCalledActiveMode = false
-		p.Node.uiBlock.BorderFg = p.Node.tmpActiveModeBorderFg
+		p.Node.UIBlock.BorderFg = p.Node.tmpActiveModeBorderFg
 		p.Node.uiRender()
 	}
 }

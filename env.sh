@@ -29,6 +29,11 @@ then
     mkdir -p "$(pwd)/src"
 fi
 
+if [ ! -d "$(pwd)/src/main/" ];
+then 
+    ln -s "$(pwd)/main" "$(pwd)/src/main"
+fi
+
 if [ ! -d "$(pwd)/src/in/" ];
 then 
     mkdir src/in

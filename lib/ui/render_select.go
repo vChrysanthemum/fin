@@ -36,23 +36,23 @@ func (p *Page) renderBodySelect(node *Node) (isFallthrough bool) {
 	p.normalRenderNodeBlock(node)
 
 	if true == node.isShouldCalculateWidth {
-		if true == node.uiBlock.Border {
-			node.uiBlock.Width = nodeSelect.ChildrenMaxStringWidth + 2
+		if true == node.UIBlock.Border {
+			node.UIBlock.Width = nodeSelect.ChildrenMaxStringWidth + 2
 		} else {
-			node.uiBlock.Width = nodeSelect.ChildrenMaxStringWidth
+			node.UIBlock.Width = nodeSelect.ChildrenMaxStringWidth
 		}
-		node.uiBlock.Width += node.uiBlock.PaddingLeft
-		node.uiBlock.Width += node.uiBlock.PaddingRight
+		node.UIBlock.Width += node.UIBlock.PaddingLeft
+		node.UIBlock.Width += node.UIBlock.PaddingRight
 	}
 
 	var height int
-	if true == node.uiBlock.Border {
+	if true == node.UIBlock.Border {
 		height = len(nodeSelect.Children) + 2
 	} else {
 		height = len(nodeSelect.Children)
 	}
-	height += node.uiBlock.PaddingTop
-	height += node.uiBlock.PaddingBottom
+	height += node.UIBlock.PaddingTop
+	height += node.UIBlock.PaddingBottom
 
 	nodeSelect.refreshUiBufferItems()
 

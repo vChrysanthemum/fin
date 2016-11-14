@@ -54,7 +54,7 @@ func TestParseHtmlBodySelect(t *testing.T) {
 			return
 		}
 		if ul, ok := node.Data.(*ui.NodeSelect); true == ok {
-			assert.Equal(t, BorderLabel, node.BorderLabel)
+			assert.Equal(t, BorderLabel, node.UIBlock.BorderLabel)
 
 			for _, v := range ul.Children {
 				assert.Equal(t, title, v.Data)

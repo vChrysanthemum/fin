@@ -146,12 +146,12 @@ func (p *Page) uiRender() {
 			for e2 = e.Next(); e2 != nil; e2 = e2.Next() {
 				node2 = e2.Value.(*Node)
 
-				if (node.uiBlock.InnerArea.Min.X <= node2.uiBlock.InnerArea.Min.X &&
-					node2.uiBlock.InnerArea.Min.X <= node.uiBlock.InnerArea.Max.X) ||
-					(node.uiBlock.InnerArea.Max.X <= node2.uiBlock.InnerArea.Min.X &&
-						node2.uiBlock.InnerArea.Max.X <= node.uiBlock.InnerArea.Max.X) ||
-					(node.uiBlock.InnerArea.Min.X <= node2.uiBlock.InnerArea.Min.X &&
-						node2.uiBlock.InnerArea.Max.X >= node.uiBlock.InnerArea.Max.X) {
+				if (node.UIBlock.InnerArea.Min.X <= node2.UIBlock.InnerArea.Min.X &&
+					node2.UIBlock.InnerArea.Min.X <= node.UIBlock.InnerArea.Max.X) ||
+					(node.UIBlock.InnerArea.Max.X <= node2.UIBlock.InnerArea.Min.X &&
+						node2.UIBlock.InnerArea.Max.X <= node.UIBlock.InnerArea.Max.X) ||
+					(node.UIBlock.InnerArea.Min.X <= node2.UIBlock.InnerArea.Min.X &&
+						node2.UIBlock.InnerArea.Max.X >= node.UIBlock.InnerArea.Max.X) {
 					node.BottomNode = e2
 					node2.TopNode = e
 				}

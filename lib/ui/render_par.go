@@ -13,13 +13,13 @@ func (p *Page) renderBodyPar(node *Node) (isFallthrough bool) {
 	p.normalRenderNodeBlock(node)
 
 	if true == node.isShouldCalculateHeight {
-		if true == node.uiBlock.Border {
-			node.uiBlock.Height = CalculateTextHeight(uiBuffer.Text, node.uiBlock.Width) + 2
+		if true == node.UIBlock.Border {
+			node.UIBlock.Height = CalculateTextHeight(uiBuffer.Text, node.UIBlock.Width) + 2
 		} else {
-			node.uiBlock.Height = CalculateTextHeight(uiBuffer.Text, node.uiBlock.Width)
+			node.UIBlock.Height = CalculateTextHeight(uiBuffer.Text, node.UIBlock.Width)
 		}
-		node.uiBlock.Height += node.uiBlock.PaddingTop
-		node.uiBlock.Height += node.uiBlock.PaddingBottom
+		node.UIBlock.Height += node.UIBlock.PaddingTop
+		node.UIBlock.Height += node.UIBlock.PaddingBottom
 	}
 
 	if "" != node.ColorFg {

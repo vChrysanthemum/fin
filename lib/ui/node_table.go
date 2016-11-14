@@ -15,7 +15,7 @@ func (p *Node) InitNodeTable() *NodeTable {
 	p.Data = nodeTable
 
 	p.uiBuffer = nodeTable.Body
-	p.uiBlock = nil
+	p.UIBlock = nil
 
 	return nodeTable
 }

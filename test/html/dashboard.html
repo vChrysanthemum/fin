@@ -1,0 +1,44 @@
+<html>
+<head>
+  <title>test</title>
+</head>
+<body colorfg="blue">
+  <script type="text/lua">
+  local NodeTerminalMain = Node("TerminalMain")
+  TerminalMainCommandHandle = function(nodePointer, command)
+    if "punch" == command then
+      NodeTerminalMain:TerminalWriteNewLine("  punch success.")
+    elseif "clear" == command then
+      NodeTerminalMain:TerminalClearLines()
+    elseif "destory" == command then
+      NodeTerminalMain:TerminalRemoveCommandHandle(TerminalMainCommandEvent)
+    end
+  end
+  TerminalMainCommandEvent = NodeTerminalMain:TerminalRegisterCommandHandle(TerminalMainCommandHandle)
+  </script>
+  <table>
+     <tr>
+       <td cols=9>
+         <canvas height=20></canvas>
+       </td>
+       <td>
+         <par>测试 asldkfj</par>
+         <par>测试sd flk</par>
+         <select>
+           <option value="oi1">1l2ko</option>
+           <option value="3">ocawe</option>
+           <option value="5">ocube</option>
+           <option value="1">uo1i2j3</option>
+         </select>
+         <gauge border=true borderlabel="测试" height=3 percent=80></gauge>
+         <inputtext id="InputTextTest"></inputtext>
+       </td>
+     </tr>
+     <tr>
+       <td>
+          <terminal borderlabel=" 控制台 " border=true id="TerminalMain" height=8></terminal>
+       </td>
+     </tr>
+  </table>
+</body>
+</html>

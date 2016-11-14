@@ -86,16 +86,16 @@ func (p *Page) render(node *Node) error {
 }
 
 func (p *Page) normalRenderNodeBlock(node *Node) {
-	if nil == node.uiBlock {
+	if nil == node.UIBlock {
 		return
 	}
 
 	if true == node.isShouldCalculateWidth {
-		node.uiBlock.Width = termui.TermWidth()
+		node.UIBlock.Width = termui.TermWidth()
 	}
 
-	node.uiBlock.X = p.renderingX
-	node.uiBlock.Y = p.renderingY
+	node.UIBlock.X = p.renderingX
+	node.UIBlock.Y = p.renderingY
 }
 
 func (p *Page) Clear() {
