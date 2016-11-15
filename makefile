@@ -11,15 +11,17 @@ clean:
 	rm -rf bin/*
 
 build_in:
-	@find ./pkg -name in|xargs rm -rf
 	go install -tags deadlock ./src/main 
 	@mv bin/main bin/in
 
 test_ui:
 	go test ./lib/ui -args ${pwd}
 
+test_script:
+	go test ./lib/script -args ${pwd}
+
 versioning:
 	bash mkversion.sh 
 
 build_ui:
-	go build -o ./bin/ui ./test/ui.go
+	go install -tags deadlock ./src/ui

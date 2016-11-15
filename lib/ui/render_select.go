@@ -54,6 +54,10 @@ func (p *Page) renderBodySelect(node *Node) (isFallthrough bool) {
 	height += node.UIBlock.PaddingTop
 	height += node.UIBlock.PaddingBottom
 
+	if true == node.isShouldCalculateHeight {
+		node.UIBlock.Height = height
+	}
+
 	nodeSelect.refreshUiBufferItems()
 
 	p.BufferersAppend(node, uiBuffer)

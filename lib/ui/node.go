@@ -156,7 +156,7 @@ func (p *Node) uiRender() {
 	if nil == p.uiBuffer {
 		return
 	}
-	termui.Render(p.uiBuffer.(termui.Bufferer))
+	uiRender(p.uiBuffer.(termui.Bufferer))
 	if nodeDataAfterRenderHandler, ok := p.Data.(NodeDataAfterRenderHandler); true == ok {
 		nodeDataAfterRenderHandler.NodeDataAfterRenderHandle()
 	}

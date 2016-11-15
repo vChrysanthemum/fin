@@ -34,6 +34,12 @@ then
     ln -s "$(pwd)/main" "$(pwd)/src/main"
 fi
 
+if [ ! -d "$(pwd)/src/ui/" ];
+then 
+    mkdir -p "$(pwd)/src/ui"
+    ln -s "$(pwd)/test/ui.go" "$(pwd)/src/ui/ui.go"
+fi
+
 if [ ! -d "$(pwd)/src/in/" ];
 then 
     mkdir src/in

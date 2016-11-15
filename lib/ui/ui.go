@@ -3,11 +3,15 @@ package ui
 import (
 	"os"
 	"path/filepath"
+	"sync"
 
 	"github.com/gizak/termui"
 )
 
-var GClearScreenBuffer *ClearScreenBuffer
+var (
+	GClearScreenBuffer *ClearScreenBuffer
+	GUIRenderLocker    sync.RWMutex
+)
 
 var GlobalOption = Option{
 	ResBaseDir: filepath.Join(os.Getenv("HOME"), ".in"),
@@ -42,5 +46,11 @@ func PrepareUI() {
 }
 
 func uiClear() {
-	termui.Render(GClearScreenBuffer)
+	uiRender(GClearScreenBuffer)
+}
+
+func uiRender(bs ...termui.Bufferer) {
+	GUIRenderLocker.Lock()
+	defer GUIRenderLocker.Unlock()
+	termui.Render(bs...)
 }

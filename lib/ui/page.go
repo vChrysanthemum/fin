@@ -3,7 +3,6 @@ package ui
 import (
 	"container/list"
 	"log"
-	"sync"
 
 	"github.com/gizak/termui"
 	"golang.org/x/net/html"
@@ -16,9 +15,9 @@ type Page struct {
 
 	Bufferers []termui.Bufferer
 
-	script         *Script
 	parseAgentMap  []*ParseAgent
 	renderAgentMap []*RenderAgent
+	Script         *Script
 
 	doc                     *html.Node
 	parsingNodesStack       *list.List
@@ -30,8 +29,6 @@ type Page struct {
 
 	renderingX int
 	renderingY int
-
-	KeyPressEventLocker sync.RWMutex
 }
 
 func newPage() *Page {
@@ -127,7 +124,8 @@ func (p *Page) uiRender() {
 	if 0 == len(p.Bufferers) {
 		return
 	}
-	termui.Render(p.Bufferers...)
+
+	uiRender(p.Bufferers...)
 
 	var (
 		e, e2       *list.Element
@@ -175,7 +173,7 @@ func (p *Page) Serve() {
 
 	p.registerHandles()
 	go func() {
-		p.script.Run()
+		p.Script.Run()
 	}()
 
 	termui.Loop()

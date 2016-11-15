@@ -1,17 +1,23 @@
-function Log(...)
-    base.Log(unpack(arg))
-end
-
-function SetInterval(tm, callback)
-    return base.SetInterval(tm, callback)
-end
-
-function SetTimeout(tm, callback)
-    return base.SetTimeout(tm, callback)
-end
-
-function SendCancelSig(sig)
-    base.SendCancelSig(sig)
+function WindowConfirm(title)
+    content = string.format([[
+    <table>
+        <tr>
+            <td offset=4 cols=4><par height=6></par></td>
+        </tr>
+        <tr>
+            <td offset=4 cols=4><par>%s</par></td>
+        </tr>
+        <tr>
+            <td offset=5 cols=2>
+                <select id="SelectConfirm">
+                    <option value="cancel">取消</option>
+                    <option value="confirm">确定</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+    ]], title)
+    return base.WindowConfirm(content)
 end
 
 local _Node = {}
@@ -114,26 +120,4 @@ end
 
 function _Node.TerminalClearLines(self)
     return base.NodeTerminalClearLines(self.nodePointer)
-end
-
-function WindowConfirm(title)
-    content = string.format([[
-    <table>
-        <tr>
-            <td offset=4 cols=4><par height=6></par></td>
-        </tr>
-        <tr>
-            <td offset=4 cols=4><par>%s</par></td>
-        </tr>
-        <tr>
-            <td offset=5 cols=2>
-                <select id="SelectConfirm">
-                    <option value="cancel">取消</option>
-                    <option value="confirm">确定</option>
-                </select>
-            </td>
-        </tr>
-    </table>
-    ]], title)
-    return base.WindowConfirm(content)
 end

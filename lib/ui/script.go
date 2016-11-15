@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"in/script"
 	"log"
 	"path/filepath"
 
@@ -8,85 +9,86 @@ import (
 )
 
 type Script struct {
+	script.Script
 	page     *Page
 	luaDocs  []string
 	luaState *lua.LState
-
-	CancelSigs map[string](chan bool)
 }
 
 func (p *Page) prepareScript() {
 	var err error
-	script := new(Script)
+	s := new(Script)
 
-	script.CancelSigs = make(map[string]chan bool, 0)
+	s.CancelSigs = make(map[string]chan bool, 0)
 
-	script.page = p
+	s.page = p
 
-	script.luaDocs = make([]string, 0)
+	s.luaDocs = make([]string, 0)
 
-	script.luaState = lua.NewState()
+	s.luaState = lua.NewState()
 
-	luaBase := script.luaState.NewTable()
-	script.luaState.SetGlobal("base", luaBase)
+	luaBase := s.luaState.NewTable()
+	s.luaState.SetGlobal("base", luaBase)
 
-	script.luaState.SetField(luaBase, "ResBaseDir", lua.LString(
+	s.luaState.SetField(luaBase, "ResBaseDir", lua.LString(
 		filepath.Join(GlobalOption.ResBaseDir, "lua/"),
 	))
 
-	script.luaState.SetField(luaBase, "Log", script.luaState.NewFunction(script.LuaFuncLog))
+	s.Script.RegisterInLuaTable(s.luaState, luaBase)
 
-	script.luaState.SetField(luaBase, "SetInterval", script.luaState.NewFunction(script.LuaFuncSetInterval))
-	script.luaState.SetField(luaBase, "SetTimeout", script.luaState.NewFunction(script.LuaFuncSetTimeout))
-	script.luaState.SetField(luaBase, "SendCancelSig", script.luaState.NewFunction(script.LuaFuncSendCancelSig))
+	s.luaState.SetField(luaBase, "WindowConfirm", s.luaState.NewFunction(s.luaFuncWindowConfirm))
 
-	script.luaState.SetField(luaBase, "WindowConfirm", script.luaState.NewFunction(script.luaFuncWindowConfirm))
+	s.luaState.SetField(luaBase, "GetNodePointer", s.luaState.NewFunction(s.luaFuncGetNodePointer))
 
-	script.luaState.SetField(luaBase, "GetNodePointer", script.luaState.NewFunction(script.luaFuncGetNodePointer))
+	s.luaState.SetField(luaBase, "NodeSetAttribute", s.luaState.NewFunction(s.luaFuncNodeSetAttribute))
+	s.luaState.SetField(luaBase, "NodeSetActive", s.luaState.NewFunction(s.luaFuncNodeSetActive))
 
-	script.luaState.SetField(luaBase, "NodeSetAttribute", script.luaState.NewFunction(script.luaFuncNodeSetAttribute))
-	script.luaState.SetField(luaBase, "NodeSetActive", script.luaState.NewFunction(script.luaFuncNodeSetActive))
+	s.luaState.SetField(luaBase, "NodeGetHtmlData", s.luaState.NewFunction(s.luaFuncNodeGetHtmlData))
+	s.luaState.SetField(luaBase, "NodeSetText", s.luaState.NewFunction(s.luaFuncNodeSetText))
+	s.luaState.SetField(luaBase, "NodeGetValue", s.luaState.NewFunction(s.luaFuncNodeGetValue))
 
-	script.luaState.SetField(luaBase, "NodeGetHtmlData", script.luaState.NewFunction(script.luaFuncNodeGetHtmlData))
-	script.luaState.SetField(luaBase, "NodeSetText", script.luaState.NewFunction(script.luaFuncNodeSetText))
-	script.luaState.SetField(luaBase, "NodeGetValue", script.luaState.NewFunction(script.luaFuncNodeGetValue))
+	s.luaState.SetField(luaBase, "NodeSetCursor", s.luaState.NewFunction(s.luaFuncNodeSetCursor))
+	s.luaState.SetField(luaBase, "NodeResumeCursor", s.luaState.NewFunction(s.luaFuncNodeResumeCursor))
+	s.luaState.SetField(luaBase, "NodeHideCursor", s.luaState.NewFunction(s.luaFuncNodeHideCursor))
 
-	script.luaState.SetField(luaBase, "NodeSetCursor", script.luaState.NewFunction(script.luaFuncNodeSetCursor))
-	script.luaState.SetField(luaBase, "NodeResumeCursor", script.luaState.NewFunction(script.luaFuncNodeResumeCursor))
-	script.luaState.SetField(luaBase, "NodeHideCursor", script.luaState.NewFunction(script.luaFuncNodeHideCursor))
+	s.luaState.SetField(luaBase, "NodeRegisterKeyPressHandler",
+		s.luaState.NewFunction(s.luaFuncNodeRegisterKeyPressHandler))
+	s.luaState.SetField(luaBase, "NodeRegisterKeyPressEnterHandler",
+		s.luaState.NewFunction(s.luaFuncNodeRegisterKeyPressEnterHandler))
+	s.luaState.SetField(luaBase, "NodeRemoveKeyPressEnterHandler",
+		s.luaState.NewFunction(s.luaFuncNodeRemoveKeyPressEnterHandler))
 
-	script.luaState.SetField(luaBase, "NodeRegisterKeyPressHandler",
-		script.luaState.NewFunction(script.luaFuncNodeRegisterKeyPressHandler))
-	script.luaState.SetField(luaBase, "NodeRegisterKeyPressEnterHandler",
-		script.luaState.NewFunction(script.luaFuncNodeRegisterKeyPressEnterHandler))
-	script.luaState.SetField(luaBase, "NodeRemoveKeyPressEnterHandler",
-		script.luaState.NewFunction(script.luaFuncNodeRemoveKeyPressEnterHandler))
+	s.luaState.SetField(luaBase, "NodeRemove", s.luaState.NewFunction(s.luaFuncNodeRemove))
 
-	script.luaState.SetField(luaBase, "NodeRemove", script.luaState.NewFunction(script.luaFuncNodeRemove))
+	s.luaState.SetField(luaBase, "NodeCanvasSet", s.luaState.NewFunction(s.luaFuncNodeCanvasSet))
+	s.luaState.SetField(luaBase, "NodeCanvasDraw", s.luaState.NewFunction(s.luaFuncNodeCanvasDraw))
 
-	script.luaState.SetField(luaBase, "NodeCanvasSet", script.luaState.NewFunction(script.luaFuncNodeCanvasSet))
-	script.luaState.SetField(luaBase, "NodeCanvasDraw", script.luaState.NewFunction(script.luaFuncNodeCanvasDraw))
+	s.luaState.SetField(luaBase, "NodeSelectAppendOption",
+		s.luaState.NewFunction(s.luaFuncNodeSelectAppendOption))
+	s.luaState.SetField(luaBase, "NodeSelectClearOptions",
+		s.luaState.NewFunction(s.luaFuncNodeSelectClearOptions))
 
-	script.luaState.SetField(luaBase, "NodeSelectAppendOption",
-		script.luaState.NewFunction(script.luaFuncNodeSelectAppendOption))
-	script.luaState.SetField(luaBase, "NodeSelectClearOptions",
-		script.luaState.NewFunction(script.luaFuncNodeSelectClearOptions))
+	s.luaState.SetField(luaBase, "NodeTerminalRegisterCommandHandle",
+		s.luaState.NewFunction(s.luaFuncNodeTerminalRegisterCommandHandle))
+	s.luaState.SetField(luaBase, "NodeTerminalRemoveCommandHandle",
+		s.luaState.NewFunction(s.luaFuncNodeTerminalRemoveCommandHandle))
+	s.luaState.SetField(luaBase, "NodeTerminalWriteNewLine",
+		s.luaState.NewFunction(s.luaFuncNodeTerminalWriteNewLine))
+	s.luaState.SetField(luaBase, "NodeTerminalClearLines",
+		s.luaState.NewFunction(s.luaFuncNodeTerminalClearLines))
 
-	script.luaState.SetField(luaBase, "NodeTerminalRegisterCommandHandle",
-		script.luaState.NewFunction(script.luaFuncNodeTerminalRegisterCommandHandle))
-	script.luaState.SetField(luaBase, "NodeTerminalRemoveCommandHandle",
-		script.luaState.NewFunction(script.luaFuncNodeTerminalRemoveCommandHandle))
-	script.luaState.SetField(luaBase, "NodeTerminalWriteNewLine",
-		script.luaState.NewFunction(script.luaFuncNodeTerminalWriteNewLine))
-	script.luaState.SetField(luaBase, "NodeTerminalClearLines",
-		script.luaState.NewFunction(script.luaFuncNodeTerminalClearLines))
-
-	err = script.luaState.DoFile(filepath.Join(GlobalOption.ResBaseDir, "lua/ui/core.lua"))
+	err = s.luaState.DoFile(filepath.Join(GlobalOption.ResBaseDir, "lua/script/core.lua"))
 	if nil != err {
+		log.Println(err)
+		panic(err)
+	}
+	err = s.luaState.DoFile(filepath.Join(GlobalOption.ResBaseDir, "lua/ui/core.lua"))
+	if nil != err {
+		log.Println(err)
 		panic(err)
 	}
 
-	p.script = script
+	p.Script = s
 }
 
 func (p *Script) appendDoc(doc, docType string) {
@@ -97,11 +99,11 @@ func (p *Script) appendDoc(doc, docType string) {
 }
 
 func (p *Page) GetLuaDocs(index int) string {
-	return p.script.luaDocs[index]
+	return p.Script.luaDocs[index]
 }
 
 func (p *Page) AppendScript(doc, docType string) {
-	p.script.appendDoc(doc, docType)
+	p.Script.appendDoc(doc, docType)
 }
 
 func (p *Script) Run() {
