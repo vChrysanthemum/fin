@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"in/script"
 	"in/ui"
 	"io/ioutil"
 	"log"
@@ -27,7 +28,7 @@ func main() {
 	}
 
 	projectName := os.Args[1]
-	projectMainHtmlFilePath := filepath.Join(GlobalResBaseDir, "project/"+projectName+"/main.html")
+	projectMainHtmlFilePath := filepath.Join(GlobalResBaseDir, "project", projectName, "main.html")
 	if _, err := os.Stat(projectMainHtmlFilePath); os.IsNotExist(err) {
 		fmt.Println("Project is not existed.")
 		return
@@ -35,6 +36,9 @@ func main() {
 
 	ui.GlobalOption.ResBaseDir = GlobalResBaseDir
 	ui.GlobalOption.ProjectName = projectName
+
+	script.GlobalOption.ResBaseDir = GlobalResBaseDir
+
 	ui.PrepareUI()
 	content, _ := ioutil.ReadFile(projectMainHtmlFilePath)
 	page, err := ui.Parse(string(content))
