@@ -47,7 +47,7 @@ func (p *Script) luaFuncGetNodePointer(L *lua.LState) int {
 	return 1
 }
 
-func (p *Script) luaFuncNodeSetAttribute(L *lua.LState) int {
+func (p *Script) luaFuncNodeWidth(L *lua.LState) int {
 	if L.GetTop() < 3 {
 		return 0
 	}
@@ -56,6 +56,37 @@ func (p *Script) luaFuncNodeSetAttribute(L *lua.LState) int {
 	node := p._getNodePointerFromUserData(L, lu)
 	if nil == node {
 		L.Push(lua.LNil)
+		return 1
+	}
+
+	L.Push(lua.LNumber(node.UIBlock.Width))
+	return 1
+}
+
+func (p *Script) luaFuncNodeHeight(L *lua.LState) int {
+	if L.GetTop() < 3 {
+		return 0
+	}
+
+	lu := L.ToUserData(1)
+	node := p._getNodePointerFromUserData(L, lu)
+	if nil == node {
+		L.Push(lua.LNil)
+		return 1
+	}
+
+	L.Push(lua.LNumber(node.UIBlock.Height))
+	return 1
+}
+
+func (p *Script) luaFuncNodeSetAttribute(L *lua.LState) int {
+	if L.GetTop() < 3 {
+		return 0
+	}
+
+	lu := L.ToUserData(1)
+	node := p._getNodePointerFromUserData(L, lu)
+	if nil == node {
 		return 0
 	}
 	isUIChange, isNeedRerenderPage := node.ParseAttribute([]html.Attribute{
@@ -80,7 +111,6 @@ func (p *Script) luaFuncNodeSetActive(L *lua.LState) int {
 	lu := L.ToUserData(1)
 	node := p._getNodePointerFromUserData(L, lu)
 	if nil == node {
-		L.Push(lua.LNil)
 		return 0
 	}
 	p.page.SetActiveNode(node)
@@ -101,7 +131,6 @@ func (p *Script) luaFuncNodeGetHtmlData(L *lua.LState) int {
 	}
 
 	L.Push(lua.LString(node.HtmlData))
-
 	return 1
 }
 

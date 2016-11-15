@@ -48,7 +48,15 @@ function Node(target)
     local ret = setmetatable({}, _mtNode)
     ret.nodePointer = nodePointer
     return ret
-end 
+end
+
+function _Node.Width(self)
+    return base.NodeWidth(self.nodePointer)
+end
+
+function _Node.Height(self)
+    return base.NodeHeight(self.nodePointer)
+end
 
 function _Node.SetAttribute(self, key, value)
     return base.NodeSetAttribute(self.nodePointer, key, value)

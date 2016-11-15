@@ -42,6 +42,8 @@ func (p *Page) prepareScript() {
 
 	s.luaState.SetField(luaBase, "GetNodePointer", s.luaState.NewFunction(s.luaFuncGetNodePointer))
 
+	s.luaState.SetField(luaBase, "NodeWidth", s.luaState.NewFunction(s.luaFuncNodeWidth))
+	s.luaState.SetField(luaBase, "NodeHeight", s.luaState.NewFunction(s.luaFuncNodeHeight))
 	s.luaState.SetField(luaBase, "NodeSetAttribute", s.luaState.NewFunction(s.luaFuncNodeSetAttribute))
 	s.luaState.SetField(luaBase, "NodeSetActive", s.luaState.NewFunction(s.luaFuncNodeSetActive))
 
