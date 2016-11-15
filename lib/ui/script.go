@@ -36,6 +36,8 @@ func (p *Page) prepareScript() {
 
 	s.Script.RegisterInLuaTable(s.luaState, luaBase)
 
+	s.luaState.SetField(luaBase, "WindowWidth", s.luaState.NewFunction(s.luaFuncWindowWidth))
+	s.luaState.SetField(luaBase, "WindowHeight", s.luaState.NewFunction(s.luaFuncWindowHeight))
 	s.luaState.SetField(luaBase, "WindowConfirm", s.luaState.NewFunction(s.luaFuncWindowConfirm))
 
 	s.luaState.SetField(luaBase, "GetNodePointer", s.luaState.NewFunction(s.luaFuncGetNodePointer))

@@ -1,3 +1,11 @@
+function WindowWidth()
+  return base.WindowWidth()
+end
+
+function WindowHeight()
+  return base.WindowHeight()
+end
+
 function WindowConfirm(title)
     content = string.format([[
     <table>

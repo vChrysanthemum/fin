@@ -1,6 +1,19 @@
 package ui
 
-import lua "github.com/yuin/gopher-lua"
+import (
+	"github.com/gizak/termui"
+	lua "github.com/yuin/gopher-lua"
+)
+
+func (p *Script) luaFuncWindowWidth(L *lua.LState) int {
+	L.Push(lua.LNumber(termui.TermWidth()))
+	return 1
+}
+
+func (p *Script) luaFuncWindowHeight(L *lua.LState) int {
+	L.Push(lua.LNumber(termui.TermHeight()))
+	return 1
+}
 
 func (p *Script) luaFuncWindowConfirm(L *lua.LState) int {
 	if L.GetTop() < 1 {
