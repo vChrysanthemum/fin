@@ -48,7 +48,7 @@ func (p *Script) luaFuncGetNodePointer(L *lua.LState) int {
 }
 
 func (p *Script) luaFuncNodeWidth(L *lua.LState) int {
-	if L.GetTop() < 3 {
+	if L.GetTop() < 1 {
 		return 0
 	}
 
@@ -64,7 +64,7 @@ func (p *Script) luaFuncNodeWidth(L *lua.LState) int {
 }
 
 func (p *Script) luaFuncNodeHeight(L *lua.LState) int {
-	if L.GetTop() < 3 {
+	if L.GetTop() < 1 {
 		return 0
 	}
 

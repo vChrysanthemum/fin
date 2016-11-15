@@ -13,7 +13,7 @@ type ClearScreenBuffer struct {
 func NewClearScreenBuffer() *ClearScreenBuffer {
 	buf := termui.NewBuffer()
 	min := image.Point{0, 0}
-	max := image.Point{termui.TermWidth() - 1, termui.TermHeight() - 1}
+	max := image.Point{termui.TermWidth(), termui.TermHeight()}
 	buf.SetArea(image.Rectangle{min, max})
 	buf.Fill(' ', termui.ColorDefault, termui.ColorDefault)
 	return &ClearScreenBuffer{

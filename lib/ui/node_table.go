@@ -3,8 +3,7 @@ package ui
 import "github.com/gizak/termui"
 
 type NodeTable struct {
-	NodeTrList []NodeTableTr
-	Body       *termui.Grid
+	Body *termui.Grid
 }
 
 func (p *Node) InitNodeTable() *NodeTable {

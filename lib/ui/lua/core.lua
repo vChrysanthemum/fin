@@ -1,3 +1,7 @@
+function UIRerender()
+  return base.UIRerender()
+end
+
 function WindowWidth()
   return base.WindowWidth()
 end

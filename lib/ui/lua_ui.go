@@ -5,6 +5,12 @@ import (
 	lua "github.com/yuin/gopher-lua"
 )
 
+func (p *Script) luaFuncUIRerender(L *lua.LState) int {
+	p.page.SetActiveNode(nil)
+	p.page.Rerender()
+	return 0
+}
+
 func (p *Script) luaFuncWindowWidth(L *lua.LState) int {
 	L.Push(lua.LNumber(termui.TermWidth()))
 	return 1

@@ -33,6 +33,7 @@ func main() {
 		return
 	}
 
+	ui.GlobalOption.ResBaseDir = GlobalResBaseDir
 	ui.PrepareUI()
 	content, _ := ioutil.ReadFile(projectMainHtmlFilePath)
 	page, err := ui.Parse(string(content))

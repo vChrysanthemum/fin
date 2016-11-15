@@ -78,6 +78,8 @@ func (p *Page) renderBodyTable(node *Node) (isFallthrough bool) {
 
 	nodeTableData := node.Data.(*NodeTable)
 
+	nodeTableData.Body.Rows = []*termui.Row{}
+
 	uiRows = make([]*termui.Row, 0)
 	for nodeTr = node.FirstChild; nodeTr != nil; nodeTr = nodeTr.NextSibling {
 		uiCols = p._renderBodyTableOneRow(nodeTr)

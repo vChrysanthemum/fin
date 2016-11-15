@@ -4,26 +4,52 @@
 </head>
 <body colorfg="blue">
   <script type="text/lua">
-  local SpaceShip = {}
-  SpaceShip["LocationX"] = 0
-  SpaceShip["LocationY"] = 0
+  local _SpaceShip = {}
+  local _mtSpaceShip = {__index = _SpaceShip} 
 
-  LoopFunc = function()
-    Log("LoopFunc")
+  function _SpaceShip.Run(self)
   end
-  LoopFuncSig = SetInterval(1000, LoopFunc)
+
+  function InitSpaceShip()
+    local SpaceShip = setmetatable({}, _mtSpaceShip)
+
+    SpaceShip.LocationX = 0
+    SpaceShip.LocationY = 0
+    SpaceShip.SpeedX = 0
+    SpaceShip.SpeedY = 0
+
+    local Warehouse = {}
+    SpaceShip.Warehouse = Warehouse 
+
+    return SpaceShip
+  end
+
+  WorldLoop = function()
+  end 
+
+  local NodeRadar = Node("CanvasRadar")
+  local NodeTerminalMain = Node("TerminalMain")
+
+  NodeRadar:SetAttribute("height", tostring(WindowHeight()-NodeTerminalMain:Height()))
+  --[[
+
+  GUserSpaceShip = InitSpaceShip()
+  ]]
+  
+  --[[
+  WorldLoopSig = SetInterval(200, WorldLoop)
   SetTimeout(3000, function()
-    SendCancelSig(LoopFuncSig)
+    SendCancelSig(WorldLoopSig)
   end)
 
-  local radar = Node("CanvasRadar")
-  radar:CanvasSet(12, 3, "#", "green", "")
-  radar:CanvasSet(48, 10, "#", "green", "red")
-  radar:CanvasSet(16, 15, "#", "green", "")
-  radar:CanvasSet(75, 5, "#", "green", "")
-  radar:CanvasSet(56, 13, "#", "green", "")
-  radar:CanvasSet(44, 12, "*", "blue", "")
-  radar:CanvasDraw(12,3)
+  local NodeRadar = Node("CanvasRadar")
+  NodeRadar:CanvasSet(12, 3, "#", "green", "")
+  NodeRadar:CanvasSet(48, 10, "#", "green", "red")
+  NodeRadar:CanvasSet(16, 15, "#", "green", "")
+  NodeRadar:CanvasSet(75, 5, "#", "green", "")
+  NodeRadar:CanvasSet(56, 13, "#", "green", "")
+  NodeRadar:CanvasSet(44, 12, "*", "blue", "")
+  NodeRadar:CanvasDraw(12,3)
 
   RadarKeyPressHandler = function(nodePointer, keyStr)
     if "<left>" == keyStr then
@@ -35,12 +61,11 @@
     elseif "<down>" == keyStr then
       SpaceShip["LocationY"] = SpaceShip["LocationY"] + 1
     end
-    radar:SetCursor(SpaceShip["LocationX"], SpaceShip["LocationY"])
+    NodeRadar:SetCursor(SpaceShip["LocationX"], SpaceShip["LocationY"])
   end
 
-  RadarKeyPressEvent = radar:RegisterKeyPressHandler(RadarKeyPressHandler)
+  RadarKeyPressEvent = NodeRadar:RegisterKeyPressHandler(RadarKeyPressHandler)
 
-  local NodeTerminalMain = Node("TerminalMain")
   TerminalMainCommandHandle = function(nodePointer, command)
     if "punch" == command then
       NodeTerminalMain:TerminalWriteNewLine("  punch success.")
@@ -51,14 +76,15 @@
     end
   end
   TerminalMainCommandEvent = NodeTerminalMain:TerminalRegisterCommandHandle(TerminalMainCommandHandle)
+  ]]
   </script>
   <table>
      <tr>
        <td cols=9>
-         <canvas id="CanvasRadar" borderlabel=" 雷达 " height=28></canvas>
+         <canvas id="CanvasRadar" borderlabel=" 雷达 "></canvas>
        </td>
        <td>
-         <par border=true height=12>
+         <par border=true>
 未命名星球
 X: 95
 Y: 59 
@@ -84,6 +110,8 @@ Y: 59
          <par border=true borderlabel=" 鹦鹉螺号 ">
 X: 91
 Y: 61 
+速度X: 0.3/s
+速度Y: 0.3/s
 船员: 7
 飞行历时: 09:53
          </par>
