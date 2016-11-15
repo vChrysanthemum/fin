@@ -2,7 +2,6 @@ package ui
 
 import (
 	"in/script"
-	"log"
 	"path/filepath"
 
 	lua "github.com/yuin/gopher-lua"
@@ -90,12 +89,10 @@ func (p *Page) prepareScript() {
 
 	err = s.luaState.DoFile(filepath.Join(GlobalOption.ResBaseDir, "lua/script/core.lua"))
 	if nil != err {
-		log.Println(err)
 		panic(err)
 	}
 	err = s.luaState.DoFile(filepath.Join(GlobalOption.ResBaseDir, "lua/ui/core.lua"))
 	if nil != err {
-		log.Println(err)
 		panic(err)
 	}
 
@@ -125,7 +122,6 @@ func (p *Script) Run() {
 			err = p.luaState.DoString(doc.Data)
 		}
 		if nil != err {
-			log.Println(err)
 			panic(err)
 		}
 	}

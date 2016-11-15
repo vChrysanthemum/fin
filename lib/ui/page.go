@@ -2,7 +2,9 @@ package ui
 
 import (
 	"container/list"
+	"fmt"
 	"log"
+	"os"
 
 	"github.com/gizak/termui"
 	"golang.org/x/net/html"
@@ -29,6 +31,8 @@ type Page struct {
 
 	renderingX int
 	renderingY int
+
+	recoverVal interface{}
 }
 
 func newPage() *Page {
@@ -167,12 +171,26 @@ func (p *Page) Rerender() {
 }
 
 func (p *Page) Serve() {
-	defer termui.Close()
+	defer func() {
+		if r := recover(); nil != r {
+			log.Println(r)
+		}
+		termui.Close()
+		if nil != p.recoverVal {
+			fmt.Fprintln(os.Stderr, p.recoverVal)
+		}
+	}()
 
 	p.Refresh()
 
 	p.registerHandles()
 	go func() {
+		defer func() {
+			if r := recover(); nil != r {
+				termui.StopLoop()
+				p.recoverVal = r
+			}
+		}()
 		p.Script.Run()
 	}()
 
