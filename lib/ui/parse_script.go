@@ -6,19 +6,35 @@ func (p *Page) parseHtmlScript(parentNode *Node, htmlNode *html.Node) (ret *Node
 	ret = nil
 	isFallthrough = false
 
-	if nil == htmlNode.FirstChild {
-		return
-	}
-
-	doc := htmlNode.FirstChild.Data
 	docType := ""
 	for _, attr := range htmlNode.Attr {
-		if "type" == attr.Key {
+		switch attr.Key {
+		case "type":
 			docType = attr.Val
 		}
 	}
+	if "text/lua" != docType {
+		return
+	}
 
-	p.AppendScript(doc, docType)
+	isReadFromFile := false
+	for _, attr := range htmlNode.Attr {
+		switch attr.Key {
+		case "src":
+			isReadFromFile = true
+			p.AppendScript(ScriptDoc{
+				DataType: "file",
+				Data:     attr.Val,
+			})
+		}
+	}
+
+	if false == isReadFromFile && nil != htmlNode.FirstChild {
+		p.AppendScript(ScriptDoc{
+			DataType: "string",
+			Data:     htmlNode.FirstChild.Data,
+		})
+	}
 
 	return
 }

@@ -8,10 +8,15 @@ import (
 	lua "github.com/yuin/gopher-lua"
 )
 
+type ScriptDoc struct {
+	DataType string
+	Data     string
+}
+
 type Script struct {
 	script.Script
 	page     *Page
-	luaDocs  []string
+	luaDocs  []ScriptDoc
 	luaState *lua.LState
 }
 
@@ -23,7 +28,7 @@ func (p *Page) prepareScript() {
 
 	s.page = p
 
-	s.luaDocs = make([]string, 0)
+	s.luaDocs = make([]ScriptDoc, 0)
 
 	s.luaState = lua.NewState()
 
@@ -97,24 +102,29 @@ func (p *Page) prepareScript() {
 	p.Script = s
 }
 
-func (p *Script) appendDoc(doc, docType string) {
-	if "text/lua" != docType {
-		return
-	}
+func (p *Script) appendDoc(doc ScriptDoc) {
 	p.luaDocs = append(p.luaDocs, doc)
 }
 
-func (p *Page) GetLuaDocs(index int) string {
+func (p *Page) GetLuaDocs(index int) ScriptDoc {
 	return p.Script.luaDocs[index]
 }
 
-func (p *Page) AppendScript(doc, docType string) {
-	p.Script.appendDoc(doc, docType)
+func (p *Page) AppendScript(doc ScriptDoc) {
+	p.Script.appendDoc(doc)
 }
 
 func (p *Script) Run() {
+	var err error
 	for _, doc := range p.luaDocs {
-		if err := p.luaState.DoString(doc); nil != err {
+		switch doc.DataType {
+		case "file":
+			err = p.luaState.DoFile(
+				filepath.Join(GlobalOption.ResBaseDir, "project", GlobalOption.ProjectName, doc.Data))
+		case "string":
+			err = p.luaState.DoString(doc.Data)
+		}
+		if nil != err {
 			log.Println(err)
 			panic(err)
 		}

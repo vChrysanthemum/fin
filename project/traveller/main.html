@@ -3,81 +3,12 @@
   <title>traveller</title>
 </head>
 <body colorfg="blue">
-  <script type="text/lua">
-  local _SpaceShip = {}
-  local _mtSpaceShip = {__index = _SpaceShip} 
-
-  function _SpaceShip.Run(self)
-  end
-
-  function InitSpaceShip()
-    local SpaceShip = setmetatable({}, _mtSpaceShip)
-
-    SpaceShip.LocationX = 0
-    SpaceShip.LocationY = 0
-    SpaceShip.SpeedX = 0
-    SpaceShip.SpeedY = 0
-
-    local Warehouse = {}
-    SpaceShip.Warehouse = Warehouse 
-
-    return SpaceShip
-  end
-
-  WorldLoop = function()
-  end 
-
-  local NodeRadar = Node("CanvasRadar")
-  local NodeTerminalMain = Node("TerminalMain")
-
-  NodeRadar:SetAttribute("height", tostring(WindowHeight()-NodeTerminalMain:Height()))
-  --[[
-
-  GUserSpaceShip = InitSpaceShip()
-  ]]
-  
-  --[[
-  WorldLoopSig = SetInterval(200, WorldLoop)
-  SetTimeout(3000, function()
-    SendCancelSig(WorldLoopSig)
-  end)
-
-  local NodeRadar = Node("CanvasRadar")
-  NodeRadar:CanvasSet(12, 3, "#", "green", "")
-  NodeRadar:CanvasSet(48, 10, "#", "green", "red")
-  NodeRadar:CanvasSet(16, 15, "#", "green", "")
-  NodeRadar:CanvasSet(75, 5, "#", "green", "")
-  NodeRadar:CanvasSet(56, 13, "#", "green", "")
-  NodeRadar:CanvasSet(44, 12, "*", "blue", "")
-  NodeRadar:CanvasDraw(12,3)
-
-  RadarKeyPressHandler = function(nodePointer, keyStr)
-    if "<left>" == keyStr then
-      SpaceShip["LocationX"] = SpaceShip["LocationX"] - 1
-    elseif "<right>" == keyStr then
-      SpaceShip["LocationX"] = SpaceShip["LocationX"] + 1
-    elseif "<up>" == keyStr then
-      SpaceShip["LocationY"] = SpaceShip["LocationY"] - 1
-    elseif "<down>" == keyStr then
-      SpaceShip["LocationY"] = SpaceShip["LocationY"] + 1
-    end
-    NodeRadar:SetCursor(SpaceShip["LocationX"], SpaceShip["LocationY"])
-  end
-
-  RadarKeyPressEvent = NodeRadar:RegisterKeyPressHandler(RadarKeyPressHandler)
-
-  TerminalMainCommandHandle = function(nodePointer, command)
-    if "punch" == command then
-      NodeTerminalMain:TerminalWriteNewLine("  punch success.")
-    elseif "clear" == command then
-      NodeTerminalMain:TerminalClearLines()
-    elseif "destory" == command then
-      NodeTerminalMain:TerminalRemoveCommandHandle(TerminalMainCommandEvent)
-    end
-  end
-  TerminalMainCommandEvent = NodeTerminalMain:TerminalRegisterCommandHandle(TerminalMainCommandHandle)
-  ]]
-  </script>
+  <script type="text/lua" src="spaceship.lua"></script>
+  <script type="text/lua" src="radar.lua"></script>
+  <script type="text/lua" src="terminal.lua"></script>
+  <script type="text/lua" src="planet.lua"></script>
+  <script type="text/lua" src="world.lua"></script>
+  <script type="text/lua" src="main.lua"></script>
   <table>
      <tr>
        <td cols=9>

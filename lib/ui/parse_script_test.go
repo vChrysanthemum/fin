@@ -49,5 +49,5 @@ func TestParseHtmlScript(t *testing.T) {
 	page, err := ui.Parse(s)
 	assert.NotNil(t, page)
 	assert.Nil(t, err)
-	assert.Equal(t, page.GetLuaDocs(0), script)
+	assert.Equal(t, page.GetLuaDocs(0).Data, script)
 }

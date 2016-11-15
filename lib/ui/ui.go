@@ -14,11 +14,13 @@ var (
 )
 
 var GlobalOption = Option{
-	ResBaseDir: filepath.Join(os.Getenv("HOME"), ".in"),
+	ResBaseDir:  filepath.Join(os.Getenv("HOME"), ".in"),
+	ProjectName: "",
 }
 
 type Option struct {
-	ResBaseDir string
+	ResBaseDir  string
+	ProjectName string
 }
 
 func Init(option Option) {

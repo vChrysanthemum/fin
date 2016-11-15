@@ -34,6 +34,7 @@ func main() {
 	}
 
 	ui.GlobalOption.ResBaseDir = GlobalResBaseDir
+	ui.GlobalOption.ProjectName = projectName
 	ui.PrepareUI()
 	content, _ := ioutil.ReadFile(projectMainHtmlFilePath)
 	page, err := ui.Parse(string(content))
