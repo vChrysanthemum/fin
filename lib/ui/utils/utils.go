@@ -78,7 +78,7 @@ func CalculateTextHeight(text string, widthLimited int) (height int) {
 			continue
 		}
 
-		x += w
+		x += rw.RuneWidth(ch)
 	}
 
 	return
@@ -91,6 +91,7 @@ func CalculateTextLastPosition(text string, innerArea image.Rectangle) (resultX,
 	y, x, n, w := 0, 0, 0, 0
 	for y < innerArea.Dy() && n < len(buf) {
 		ch, w = utf8.DecodeRune(buf)
+		buf = buf[w:]
 		if ch == '\n' || x+w > innerArea.Dx() {
 			y++
 			x = 0 // set x = 0
@@ -101,8 +102,8 @@ func CalculateTextLastPosition(text string, innerArea image.Rectangle) (resultX,
 			continue
 		}
 
-		n++
-		x += w
+		n += w
+		x += rw.RuneWidth(ch)
 	}
 
 	resultX = innerArea.Min.X + x

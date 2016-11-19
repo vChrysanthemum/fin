@@ -25,6 +25,7 @@ func NewCursorLocation(parentBlock *termui.Block) *CursorLocation {
 func (p *CursorLocation) ResetLocation() {
 	p.Location.X = p.ParentBlock.InnerArea.Min.X
 	p.Location.Y = p.ParentBlock.InnerArea.Min.Y
+	UISetCursor(p.Location.X, p.Location.Y)
 }
 
 func (p *CursorLocation) SetCursor(x, y int) {

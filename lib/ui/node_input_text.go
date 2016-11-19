@@ -49,6 +49,12 @@ func (p *NodeInputText) KeyPress(e termui.Event) {
 		return
 	}
 
+	if "C-8" == keyStr {
+		if len(p.Editor.CurrentLine.Data) == 0 {
+			return
+		}
+	}
+
 	p.Editor.Write(keyStr)
 	p.Node.uiRender()
 }
