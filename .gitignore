@@ -6,3 +6,4 @@ log/
 *.pyc
 .idea/
 /lua/
+*.db

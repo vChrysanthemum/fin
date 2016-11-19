@@ -1,7 +1,7 @@
 local _Terminal = {}
 local _mtTerminal = {__index = _Terminal} 
 
-function InitTerminal()
+function NewTerminal()
   local Terminal = setmetatable({}, _mtTerminal)
   Terminal.CommandSig = NodeTerminalMain:TerminalRegisterCommandHandle(function(nodePointer, command)
     Terminal:ExecCommand(nodePointer, command)

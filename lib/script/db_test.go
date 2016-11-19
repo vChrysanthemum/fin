@@ -15,23 +15,26 @@ import (
 func TestDB(t *testing.T) {
 	log.SetFlags(log.Lshortfile | log.LstdFlags | log.Lmicroseconds)
 
-	dbpath := "/home/j/in/log/test.db"
+	dbpath := "test.db"
 	os.Remove(dbpath)
-	L := lua.NewState()
-	luaBase := L.NewTable()
-	L.SetGlobal("base", luaBase)
 
 	var (
 		err error
 		s   script.Script
 	)
-	s.RegisterInLuaTable(L, luaBase)
+
+	L := lua.NewState()
+	s.RegisterScript(L)
+	luaBase := L.NewTable()
+	L.SetGlobal("base", luaBase)
+	s.RegisterBaseTable(L, luaBase)
 
 	err = L.DoFile(filepath.Join(GlobalOption.ResBaseDir, "lua/script/core.lua"))
 	assert.Nil(t, err)
 
 	content := fmt.Sprintf(`
-	local db = OpenDB("%s")
+	local database = require("database")
+	local db = database.OpenDB("%s")
 	local dbRet = db:Exec([[
 		create table b_test (
 			test_id integer primary key not null,

@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	"sync"
 
+	luajson "github.com/layeh/gopher-json"
 	lua "github.com/yuin/gopher-lua"
 )
 
@@ -13,11 +14,13 @@ var (
 )
 
 var GlobalOption = Option{
-	ResBaseDir: filepath.Join(os.Getenv("HOME"), ".in"),
+	ResBaseDir:  filepath.Join(os.Getenv("HOME"), ".in"),
+	ProjectName: "",
 }
 
 type Option struct {
-	ResBaseDir string
+	ResBaseDir  string
+	ProjectName string
 }
 
 func Init(option Option) {
@@ -28,19 +31,27 @@ type Script struct {
 	CancelSigs map[string](chan bool)
 }
 
-func (p *Script) RegisterInLuaTable(L *lua.LState, table *lua.LTable) {
-	L.SetField(table, "Log", L.NewFunction(p.Log))
+func (p *Script) RegisterBaseTable(L *lua.LState, baseTable *lua.LTable) {
+	L.SetField(baseTable, "Log", L.NewFunction(p.Log))
 
-	L.SetField(table, "SetInterval", L.NewFunction(p.SetInterval))
-	L.SetField(table, "SetTimeout", L.NewFunction(p.SetTimeout))
-	L.SetField(table, "SendCancelSig", L.NewFunction(p.SendCancelSig))
+	L.SetField(baseTable, "ResBaseDir", lua.LString(
+		filepath.Join(GlobalOption.ResBaseDir),
+	))
 
-	L.SetField(table, "OpenDB", L.NewFunction(p.OpenDB))
-	L.SetField(table, "CloseDB", L.NewFunction(p.CloseDB))
-	L.SetField(table, "DBQuery", L.NewFunction(p.DBQuery))
-	L.SetField(table, "DBRowsNext", L.NewFunction(p.DBRowsNext))
-	L.SetField(table, "DBRowsClose", L.NewFunction(p.DBRowsClose))
-	L.SetField(table, "DBExec", L.NewFunction(p.DBExec))
-	L.SetField(table, "DBResultLastInsertId", L.NewFunction(p.DBResultLastInsertId))
-	L.SetField(table, "DBResultRowsAffected", L.NewFunction(p.DBResultRowsAffected))
+	L.SetField(baseTable, "SetInterval", L.NewFunction(p.SetInterval))
+	L.SetField(baseTable, "SetTimeout", L.NewFunction(p.SetTimeout))
+	L.SetField(baseTable, "SendCancelSig", L.NewFunction(p.SendCancelSig))
+
+	L.SetField(baseTable, "OpenDB", L.NewFunction(p.OpenDB))
+	L.SetField(baseTable, "CloseDB", L.NewFunction(p.CloseDB))
+	L.SetField(baseTable, "DBQuery", L.NewFunction(p.DBQuery))
+	L.SetField(baseTable, "DBRowsNext", L.NewFunction(p.DBRowsNext))
+	L.SetField(baseTable, "DBRowsClose", L.NewFunction(p.DBRowsClose))
+	L.SetField(baseTable, "DBExec", L.NewFunction(p.DBExec))
+	L.SetField(baseTable, "DBResultLastInsertId", L.NewFunction(p.DBResultLastInsertId))
+	L.SetField(baseTable, "DBResultRowsAffected", L.NewFunction(p.DBResultRowsAffected))
+}
+
+func (p *Script) RegisterScript(L *lua.LState) {
+	luajson.Preload(L)
 }

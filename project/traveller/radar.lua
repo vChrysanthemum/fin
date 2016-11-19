@@ -1,7 +1,7 @@
 local _Radar = {}
 local _mtRadar = {__index = _Radar} 
 
-function InitRadar()
+function NewRadar()
   local Radar = setmetatable({}, _mtRadar)
   Radar.KeyPressEnterChans = {}
   Radar.KeyPressSig = NodeRadar:RegisterKeyPressHandler(function(nodePointer, keyStr)

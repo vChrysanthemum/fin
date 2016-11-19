@@ -2,6 +2,7 @@ package script
 
 import (
 	"database/sql"
+	"path/filepath"
 
 	_ "github.com/mattn/go-sqlite3"
 	lua "github.com/yuin/gopher-lua"
@@ -52,7 +53,7 @@ func (p *Script) OpenDB(L *lua.LState) int {
 		return 1
 	}
 
-	dbpath := L.ToString(1)
+	dbpath := filepath.Join(GlobalOption.ResBaseDir, "project", GlobalOption.ProjectName, L.ToString(1))
 	db, err := sql.Open("sqlite3", dbpath)
 	if nil != err {
 		L.Push(lua.LString(err.Error()))

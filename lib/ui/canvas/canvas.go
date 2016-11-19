@@ -28,7 +28,11 @@ func (p *Canvas) Set(x, y int, cell *termui.Cell) {
 		}
 	}
 
-	p.Image[y][x] = *cell
+	if x < 0 || y < 0 || x >= p.Block.InnerArea.Dx() || y >= p.Block.InnerArea.Dy() {
+		return
+	} else {
+		p.Image[y][x] = *cell
+	}
 }
 
 // Buffer implements Bufferer interface.

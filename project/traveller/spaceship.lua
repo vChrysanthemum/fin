@@ -1,12 +1,10 @@
 local _SpaceShip = {}
 local _mtSpaceShip = {__index = _SpaceShip}
 
-function InitSpaceShip()
+function NewSpaceShip()
   local SpaceShip = setmetatable({}, _mtSpaceShip)
-  SpaceShip.LocationX = 0.0
-  SpaceShip.LocationY = 0.0
-  SpaceShip.SpeedX = 0.0
-  SpaceShip.SpeedY = 0.0
+  SpaceShip.Location = {X=0.0, Y=0.0}
+  SpaceShip.Speed = {X=0.0, Y=0.0}
   local Warehouse = {}
   SpaceShip.Warehouse = Warehouse 
 

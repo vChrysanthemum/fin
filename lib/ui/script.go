@@ -32,13 +32,12 @@ func (p *Page) prepareScript() {
 	s.luaState = lua.NewState()
 
 	luaBase := s.luaState.NewTable()
+
+	s.Script.RegisterScript(s.luaState)
+
 	s.luaState.SetGlobal("base", luaBase)
 
-	s.luaState.SetField(luaBase, "ResBaseDir", lua.LString(
-		filepath.Join(GlobalOption.ResBaseDir, "lua/"),
-	))
-
-	s.Script.RegisterInLuaTable(s.luaState, luaBase)
+	s.Script.RegisterBaseTable(s.luaState, luaBase)
 
 	s.luaState.SetField(luaBase, "UIRerender", s.luaState.NewFunction(s.luaFuncUIRerender))
 
