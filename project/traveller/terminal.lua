@@ -3,6 +3,8 @@ local _mtTerminal = {__index = _Terminal}
 
 function NewTerminal()
   local Terminal = setmetatable({}, _mtTerminal)
+  Terminal.CurrentCommand = ""
+
   Terminal.CommandSig = NodeTerminalMain:TerminalRegisterCommandHandle(function(nodePointer, command)
     Terminal:ExecCommand(nodePointer, command)
   end)

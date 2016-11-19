@@ -13,7 +13,6 @@ type NodePar struct {
 func (p *Node) InitNodePar() *NodePar {
 	nodePar := new(NodePar)
 	nodePar.Node = p
-	p.Data = nodePar
 
 	p.Data = nodePar
 
@@ -36,8 +35,12 @@ func (p *NodePar) NodeDataSetText(content string) (isNeedRerenderPage bool) {
 
 	height := CalculateTextHeight(content, uiBuffer.Width)
 
-	if height != uiBuffer.Height {
+	if height > uiBuffer.InnerArea.Dy() {
 		isNeedRerenderPage = true
 	}
 	return
+}
+
+func (p *NodePar) NodeDataGetValue() string {
+	return p.Node.uiBuffer.(*termui.Par).Text
 }

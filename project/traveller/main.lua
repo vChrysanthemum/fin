@@ -3,6 +3,7 @@ end
 
 NodeRadar = Node("CanvasRadar")
 NodeTerminalMain = Node("TerminalMain")
+NodeParInfo = Node("ParInfo")
 
 NodeRadar:SetAttribute("height", tostring(WindowHeight()-NodeTerminalMain:Height()))
 
@@ -16,7 +17,7 @@ function DisplayPlanet()
     GUserSpaceShip:SetPosition(-100, 100)
     planets = GWorld:GetPlanetsByRectangle(GUserSpaceShip.CenterRectangle)
     GRadar:DrawPlanets(planets, GUserSpaceShip.CenterRectangle)
-    NodeRadar:SetActive()
+    NodeTerminalMain:SetActive()
 end
 DisplayPlanet()
 

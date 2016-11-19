@@ -32,15 +32,11 @@ function _World.LoopEvent(self)
     end)
 end
 
-function _World.getPlanetsKey(self, block)
-    return tostring(block.X) .. ":" .. tostring(block.Y)
-end
-
 -- 生成指定区域内的星球
 -- 如果已存在则返回
 -- createBlockIndex 为区域索引 {X, Y}
 function _World.initAreaPlanets(self, createBlockIndex)
-    local key = self:getPlanetsKey(createBlockIndex)
+    local key = PointToStr(createBlockIndex)
 
     if CheckTableHasKey(self.Planets, key) then
         return
@@ -127,7 +123,7 @@ function _World.GetPlanetsByRectangle(self, rectangle)
         self:initAreaPlanets(block)
     end
     for _, block in pairs(blockIndexs) do
-        key = self:getPlanetsKey(block)
+        key = PointToStr(block)
         for _, planet in pairs(self.Planets[key]) do
 
             if rectangle.Min.X <= planet.Position.X and planet.Position.X <= rectangle.Max.X and 

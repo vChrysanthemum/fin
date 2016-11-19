@@ -1,5 +1,8 @@
+local RandomSeed = tonumber(tostring(os.time()):reverse():sub(1, 6))
+
 function RefreshRandomSeed()
-    math.randomseed(tonumber(tostring(os.time()):reverse():sub(1, 6)))
+    RandomSeed = RandomSeed + 1
+    math.randomseed(RandomSeed)
 end
 
 function dumpTable(table, deepth, result)
@@ -77,4 +80,8 @@ function GetIntPart(x)
     else 
         return math.ceil(x) - 1
     end
+end
+
+function PointToStr(point)
+    return tostring(point.X) .. ":" .. tostring(point.Y)
 end
