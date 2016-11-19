@@ -138,6 +138,13 @@ func (p *Page) SetActiveNode(node *Node) {
 	p.ActiveNodeAfterRerender = node
 	p.ActiveNode = node
 	if nil != p.ActiveNode {
+		if len(p.ActiveNode.LuaActiveModeHandlers) > 0 {
+			p.ActiveNode.JobHanderLocker.RLock()
+			for _, v := range p.ActiveNode.LuaActiveModeHandlers {
+				v.Handler(p.ActiveNode, v.Args...)
+			}
+			p.ActiveNode.JobHanderLocker.RUnlock()
+		}
 		if nodeDataActiveModer, ok := p.ActiveNode.Data.(NodeDataActiveModer); true == ok {
 			nodeDataActiveModer.NodeDataActiveMode()
 		}

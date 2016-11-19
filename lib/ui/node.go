@@ -120,6 +120,7 @@ func (p *Page) newNode(htmlNode *html.Node) *Node {
 	ret := new(Node)
 	ret.page = p
 	ret.HtmlData = htmlNode.Data
+	ret.LuaActiveModeHandlers = make(map[string]NodeJob, 0)
 	ret.KeyPressHandlers = make(map[string]NodeJob, 0)
 	ret.KeyPressEnterHandlers = make(map[string]NodeJob, 0)
 

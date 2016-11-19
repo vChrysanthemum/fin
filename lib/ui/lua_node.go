@@ -263,7 +263,7 @@ func (p *Script) luaFuncNodeRegisterLuaActiveModeHandler(L *lua.LState) int {
 		_L := args[0].(*lua.LState)
 		_callback := args[1].(*lua.LFunction)
 		luaNode := _L.NewUserData()
-		luaNode.Value = node
+		luaNode.Value = _node
 		if err := _L.CallByParam(lua.P{
 			Fn:      _callback,
 			NRet:    0,
@@ -273,6 +273,7 @@ func (p *Script) luaFuncNodeRegisterLuaActiveModeHandler(L *lua.LState) int {
 		}
 	}, L, callback)
 
+	L.Push(lua.LString(key))
 	L.Push(lua.LString(key))
 	return 1
 }
@@ -311,7 +312,7 @@ func (p *Script) luaFuncNodeRegisterKeyPressHandler(L *lua.LState) int {
 		_L := args[0].(*lua.LState)
 		_callback := args[1].(*lua.LFunction)
 		luaNode := _L.NewUserData()
-		luaNode.Value = node
+		luaNode.Value = _node
 		_e := args[2].(termui.Event)
 		if err := _L.CallByParam(lua.P{
 			Fn:      _callback,
@@ -344,7 +345,7 @@ func (p *Script) luaFuncNodeRegisterKeyPressEnterHandler(L *lua.LState) int {
 		_L := args[0].(*lua.LState)
 		_callback := args[1].(*lua.LFunction)
 		luaNode := _L.NewUserData()
-		luaNode.Value = node
+		luaNode.Value = _node
 		if err := _L.CallByParam(lua.P{
 			Fn:      _callback,
 			NRet:    0,

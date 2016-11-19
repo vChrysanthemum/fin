@@ -10,7 +10,14 @@ function NewRadar()
     Radar.KeyPressSig = NodeRadar:RegisterKeyPressHandler(function(nodePointer, keyStr)
         Radar:KeyPressHandle(nodePointer, keyStr)
     end)
+    Radar.ActiveModeSig = NodeRadar:RegisterLuaActiveModeHandler(function(nodePointer)
+        Radar:ActiveMode(nodePointer)
+    end)
     return Radar
+end
+
+function _Radar.ActiveMode(self, nodePointer)
+    self:renewCursor()
 end
 
 function _Radar.KeyPressHandle(self, nodePointer, keyStr)
