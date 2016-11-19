@@ -66,6 +66,9 @@ type Node struct {
 	isShouldCalculateHeight   bool
 	isShouldCalculateWidth    bool
 
+	isShouldHide  bool
+	HtmlAttribute map[string]html.Attribute
+
 	isCalledFocusMode     bool
 	tmpFocusModeBorder    bool
 	tmpFocusModeBorderFg  termui.Attribute
@@ -126,6 +129,8 @@ func (p *Page) newNode(htmlNode *html.Node) *Node {
 
 	ret.isShouldCalculateHeight = true
 	ret.isShouldCalculateWidth = true
+
+	ret.HtmlAttribute = make(map[string]html.Attribute)
 
 	ret.CursorLocation = image.Point{-1, -1}
 	return ret

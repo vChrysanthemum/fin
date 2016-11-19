@@ -52,6 +52,9 @@ func (p *Page) _renderBodyTableOneRow(nodeTr *Node) []*termui.Row {
 
 		nodeTdChildren = make([]termui.GridBufferer, 0)
 		for nodeTdChild = nodeTd.FirstChild; nodeTdChild != nil; nodeTdChild = nodeTdChild.NextSibling {
+			if true == nodeTdChild.isShouldHide {
+				continue
+			}
 
 			if _, ok = nodeTdChild.Data.(*NodeTableTr); true == ok {
 				nodeTdChildren = append(nodeTdChildren, termui.NewRow(p._renderBodyTableOneRow(nodeTdChild)...))

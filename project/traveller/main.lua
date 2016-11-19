@@ -4,13 +4,20 @@ end
 NodeRadar = Node("CanvasRadar")
 NodeTerminalMain = Node("TerminalMain")
 NodeParInfo = Node("ParInfo")
+NodeInputTextNamePlanet = Node("InputTextNamePlanet")
 
 NodeRadar:SetAttribute("height", tostring(WindowHeight()-NodeTerminalMain:Height()))
 
 GUserSpaceShip = NewSpaceShip()
 GRadar = NewRadar()
 GTerminal = NewTerminal()
-GWorld = NewWorld()
+GWorld = NewWorld() 
+
+NodeInputTextNamePlanet:RegisterKeyPressEnterHandler(function(nodePointer)
+  if nil ~= GRadar.FocusPlanet then
+    GRadar.FocusPlanet:SetName(Node(nodePointer):GetValue())
+  end
+end)
 
 local planets = {}
 function DisplayPlanet()

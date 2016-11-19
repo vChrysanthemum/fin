@@ -6,6 +6,7 @@ function NewRadar()
     Radar.ScreenPlanets = {}
     Radar.CursorScreenPosition = {X=GetIntPart(NodeRadar:Width()/2), Y=GetIntPart(NodeRadar:Height()/2)}
     Radar.KeyPressStrForMove = ""
+    Radar.FocusPlanet = nil
 
     Radar.KeyPressSig = NodeRadar:RegisterKeyPressHandler(function(nodePointer, keyStr)
         Radar:KeyPressHandle(nodePointer, keyStr)
@@ -22,30 +23,25 @@ end
 
 function _Radar.RefreshParInfo(self)
     local planet = self.ScreenPlanets[PointToStr(self.CursorScreenPosition)]
+    self.FocusPlanet = planet
     if nil ~= planet then
+        NodeInputTextNamePlanet:SetText(planet.Name)
         NodeParInfo:SetText(string.format([[
-%s
 X: %d
 Y: %d
-资源: %d]], planet.Name, planet.Position.X, planet.Position.Y, planet.Resource))
+资源: %d]], planet.Position.X, planet.Position.Y, planet.Resource))
         return
     end
 
+    -- 光标没有指向星球
     if "" ~= NodeParInfo:GetValue() then
+        NodeInputTextNamePlanet:SetText("")
         NodeParInfo:SetText("")
     end
 end
 
 function _Radar.KeyPressHandle(self, nodePointer, keyStr)
     if "<enter>" == keyStr then
-        for k, planet in pairs(self.ScreenPlanets) do
-            if planet.ScreenPosition.X == self.CursorScreenPosition.X and
-                planet.ScreenPosition.Y == self.CursorScreenPosition.Y then
-                if "confirm" == WindowConfirm("是否摧毁该星球") then
-                end
-            end
-        end
-        return
     end
 
     local movePosition = "no"

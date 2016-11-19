@@ -18,7 +18,23 @@ func (p *Node) ParseAttribute(attr []html.Attribute) (isUIChange, isNeedRerender
 	p.UIBlock.BorderFg = COLOR_DEFAULT_BORDER_FG
 
 	for _, v := range attr {
+		p.HtmlAttribute[v.Key] = v
 		switch v.Key {
+		case "ishide":
+			isUIChange = true
+			if "true" == v.Val {
+				if false == p.isShouldHide {
+					isNeedRerenderPage = true
+					p.isShouldHide = true
+				}
+				//} else if "false" == v.Val {
+			} else {
+				if true == p.isShouldHide {
+					isNeedRerenderPage = true
+					p.isShouldHide = false
+				}
+			}
+
 		case "paddingtop":
 			isUIChange = true
 			p.UIBlock.PaddingTop, _ = strconv.Atoi(v.Val)

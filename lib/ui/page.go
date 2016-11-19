@@ -153,7 +153,9 @@ func (p *Page) uiRender() {
 					(node.UIBlock.InnerArea.Max.X <= node2.UIBlock.InnerArea.Min.X &&
 						node2.UIBlock.InnerArea.Max.X <= node.UIBlock.InnerArea.Max.X) ||
 					(node.UIBlock.InnerArea.Min.X <= node2.UIBlock.InnerArea.Min.X &&
-						node2.UIBlock.InnerArea.Max.X >= node.UIBlock.InnerArea.Max.X) {
+						node2.UIBlock.InnerArea.Max.X >= node.UIBlock.InnerArea.Max.X) &&
+						(node2.UIBlock.InnerArea.Min.Y > node.UIBlock.InnerArea.Max.Y) {
+
 					node.BottomNode = e2
 					node2.TopNode = e
 					break

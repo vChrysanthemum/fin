@@ -77,6 +77,24 @@ func (p *Script) luaFuncNodeHeight(L *lua.LState) int {
 	return 1
 }
 
+func (p *Script) luaFuncNodeGetAttribute(L *lua.LState) int {
+	if L.GetTop() < 2 {
+		return 0
+	}
+
+	lu := L.ToUserData(1)
+	node := p._getNodePointerFromUserData(L, lu)
+	if nil == node {
+		return 0
+	}
+	if attr, ok := node.HtmlAttribute[L.ToString(2)]; true == ok {
+		L.Push(lua.LString(attr.Val))
+		return 1
+	} else {
+		return 0
+	}
+}
+
 func (p *Script) luaFuncNodeSetAttribute(L *lua.LState) int {
 	if L.GetTop() < 3 {
 		return 0

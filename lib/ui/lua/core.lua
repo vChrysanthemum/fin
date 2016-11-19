@@ -63,6 +63,10 @@ function _Node.Height(self)
     return base.NodeHeight(self.nodePointer)
 end
 
+function _Node.GetAttribute(self, key, value)
+    return base.NodeGetAttribute(self.nodePointer, key, value)
+end
+
 function _Node.SetAttribute(self, key, value)
     return base.NodeSetAttribute(self.nodePointer, key, value)
 end

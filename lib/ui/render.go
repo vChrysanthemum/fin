@@ -78,7 +78,7 @@ func (p *Page) render(node *Node) error {
 	}
 
 	renderAgent = p.fetchRenderAgentByNode(node)
-	if nil != renderAgent {
+	if nil != renderAgent && false == node.isShouldHide {
 		renderAgent.render(node)
 	}
 

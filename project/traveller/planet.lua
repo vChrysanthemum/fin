@@ -16,3 +16,8 @@ function _Planet.Initilize(self, position)
     RefreshRandomSeed()
     self.Resource = math.random(0,10000)
 end
+
+function _Planet.SetName(self, name)
+    self.Name = name
+    NodeRadar:SetActive()
+end

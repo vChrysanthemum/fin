@@ -15,6 +15,7 @@ func (p *Node) InitNodeInputText() *NodeInputText {
 	nodeInputText := new(NodeInputText)
 	nodeInputText.Node = p
 	nodeInputText.Editor = editor.NewEditor()
+	nodeInputText.Editor.CurrentLine = nodeInputText.Editor.InitNewLine()
 	nodeInputText.Editor.Border = true
 
 	p.Data = nodeInputText
@@ -58,6 +59,14 @@ func (p *NodeInputText) NodeDataGetValue() string {
 	} else {
 		return ""
 	}
+}
+
+func (p *NodeInputText) NodeDataSetText(content string) (isNeedRerenderPage bool) {
+	uiBuffer := p.Node.uiBuffer.(*editor.Editor)
+	if len(uiBuffer.Lines) > 0 {
+		uiBuffer.Lines[0].Data = []byte(content)
+	}
+	return
 }
 
 func (p *NodeInputText) NodeDataAfterRenderHandle() {

@@ -46,7 +46,8 @@ func (p *Page) registerHandles() {
 		// 切换ActiveNode
 		if "<tab>" == keyStr ||
 			"<up>" == keyStr || "<down>" == keyStr ||
-			"<left>" == keyStr || "<right>" == keyStr {
+			"<left>" == keyStr || "<right>" == keyStr ||
+			"h" == keyStr || "j" == keyStr || "k" == keyStr || "l" == keyStr {
 
 			if nil != p.FocusNode {
 				if nodeDataUnFocusModer, ok := p.FocusNode.Value.(*Node).Data.(NodeDataUnFocusModer); true == ok {
@@ -58,14 +59,14 @@ func (p *Page) registerHandles() {
 				p.FocusNode = p.WorkingNodes.Front()
 			} else {
 				node := p.FocusNode.Value.(*Node)
-				if "<tab>" == keyStr || "<right>" == keyStr {
+				if "<tab>" == keyStr || "<right>" == keyStr || "l" == keyStr {
 					if nil != p.FocusNode.Next() {
 						p.FocusNode = p.FocusNode.Next()
 					} else {
 						p.FocusNode = p.WorkingNodes.Front()
 					}
 
-				} else if "<left>" == keyStr {
+				} else if "<left>" == keyStr || "h" == keyStr {
 					// "<left>" == keyStr
 					if nil != p.FocusNode.Prev() {
 						p.FocusNode = p.FocusNode.Prev()
@@ -73,14 +74,14 @@ func (p *Page) registerHandles() {
 						p.FocusNode = p.WorkingNodes.Back()
 					}
 
-				} else if "<down>" == keyStr {
+				} else if "<down>" == keyStr || "j" == keyStr {
 					if nil != node.BottomNode {
 						p.FocusNode = node.BottomNode
 					} else {
 						p.FocusNode = p.WorkingNodes.Front()
 					}
 
-				} else if "<up>" == keyStr {
+				} else if "<up>" == keyStr || "k" == keyStr {
 					if nil != node.TopNode {
 						p.FocusNode = node.TopNode
 					} else {
