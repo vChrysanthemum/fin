@@ -58,18 +58,11 @@ func (p *NodeSelect) KeyPress(e termui.Event) {
 		return
 	}
 
-	var nodeSelectInnerHeight int
-	if true == p.Node.UIBlock.Border {
-		nodeSelectInnerHeight = p.Node.UIBlock.Height - 2
-	} else {
-		nodeSelectInnerHeight = p.Node.UIBlock.Height
-	}
-
 	if "<up>" == keyStr {
 		p.SelectedOptionIndex--
 		if p.SelectedOptionIndex < 0 {
 			p.SelectedOptionIndex = len(p.Children) - 1
-			p.DisplayLinesRange[0] = len(p.Children) - nodeSelectInnerHeight
+			p.DisplayLinesRange[0] = len(p.Children) - p.Node.UIBlock.InnerArea.Dy()
 			p.DisplayLinesRange[1] = len(p.Children)
 		} else {
 			if p.SelectedOptionIndex < p.DisplayLinesRange[0] {
@@ -87,7 +80,7 @@ func (p *NodeSelect) KeyPress(e termui.Event) {
 		if p.SelectedOptionIndex >= len(p.Children) {
 			p.SelectedOptionIndex = 0
 			p.DisplayLinesRange[0] = 0
-			p.DisplayLinesRange[1] = nodeSelectInnerHeight
+			p.DisplayLinesRange[1] = p.Node.UIBlock.InnerArea.Dy()
 		} else {
 			if p.SelectedOptionIndex >= p.DisplayLinesRange[1] {
 				p.DisplayLinesRange[1] = p.DisplayLinesRange[1] + 1

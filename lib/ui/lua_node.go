@@ -189,9 +189,28 @@ func (p *Script) luaFuncNodeSetCursor(L *lua.LState) int {
 		return 0
 	}
 
-	node.SetCursor(L.ToInt(2), L.ToInt(3))
+	relativeX := L.ToInt(2)
+	relativeY := L.ToInt(3)
+	maxWidth := node.UIBlock.InnerArea.Dx()
+	maxHeight := node.UIBlock.InnerArea.Dy()
 
-	return 0
+	if relativeX < 0 {
+		relativeX = 0
+	} else if relativeX > maxWidth-1 {
+		relativeX = maxWidth - 1
+	}
+	if relativeY < 0 {
+		relativeY = 0
+	} else if relativeY > maxHeight-1 {
+		relativeY = maxHeight - 1
+	}
+
+	node.SetCursor(relativeX+node.UIBlock.X, relativeY+node.UIBlock.Y)
+
+	L.Push(lua.LNumber(relativeX))
+	L.Push(lua.LNumber(relativeY))
+
+	return 2
 }
 
 func (p *Script) luaFuncNodeResumeCursor(L *lua.LState) int {

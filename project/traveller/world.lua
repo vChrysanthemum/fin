@@ -72,7 +72,7 @@ function _World.initAreaPlanets(self, createBlockIndex)
                 }
             }
             -- planetsPosition = {rectangle.Min, rectangle.Max}
-            planetsPosition = InitRandomPoints(math.random(0, 6), rectangle)
+            planetsPosition = InitRandomPoints(math.random(0, 8), rectangle)
 
             for _, planetPosition in pairs(planetsPosition) do
                 planet = NewPlanet()
@@ -89,6 +89,7 @@ function _World.initAreaPlanets(self, createBlockIndex)
 end
 
 -- 获取指定区域内的星球
+-- rectangle 宇宙位置
 function _World.GetPlanetsByRectangle(self, rectangle)
     local blockIndexs = {
         Min = {
@@ -138,34 +139,4 @@ function _World.GetPlanetsByRectangle(self, rectangle)
     end
 
     return planets
-end
-
--- 计算星球所在屏幕的位置
--- planets 为所需要计算屏幕位置的星球
--- rectangle 为指定宇宙位置
-function _World.CalculatePlanetScreenPosition(self, planets, rectangle)
-    local startPosition = {
-        X = rectangle.Min.X,
-        Y = rectangle.Min.Y
-    }
-    for k, _ in pairs(planets) do
-        planets[k].ScreenPosition.X = planets[k].Position.X - startPosition.X
-        planets[k].ScreenPosition.Y = planets[k].Position.Y - startPosition.Y
-    end
-end
-
--- 画指定区域内的的星球
-function _World.DrawPlanets(self, rectangle)
-    local planets = self:GetPlanetsByRectangle(rectangle)
-
-    self:CalculatePlanetScreenPosition(planets, rectangle)
-
-    for _, planet in pairs(planets) do
-        NodeRadar:CanvasSet(
-        planet.ScreenPosition.X,
-        planet.ScreenPosition.Y,
-        "*", "blue", "")
-    end
-
-    NodeRadar:CanvasDraw()
 end

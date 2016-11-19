@@ -11,25 +11,11 @@ GRadar = NewRadar()
 GTerminal = NewTerminal()
 GWorld = NewWorld()
 
-GUserSpaceShip.Location.X = -100
-GUserSpaceShip.Location.Y = -100
+local planets = {}
 function DisplayPlanet()
-  local width = NodeRadar:Width()
-  local height = NodeRadar:Height()
-  local x = GetIntPart(GUserSpaceShip.Location.X)
-  local y = GetIntPart(GUserSpaceShip.Location.Y)
-  local rectangle = {}
-
-  rectangle.Min = {
-    X = GetIntPart(x - width / 2),
-    Y = GetIntPart(x - height / 2)
-  }
-  rectangle.Max = {
-    X = rectangle.Min.X + width,
-    Y = rectangle.Min.Y + height,
-  }
-
-  GWorld:DrawPlanets(rectangle)
+    GUserSpaceShip:SetPosition(-100, 100)
+    planets = GWorld:GetPlanetsByRectangle(GUserSpaceShip.CenterRectangle)
+    GRadar:DrawPlanets(planets, GUserSpaceShip.CenterRectangle)
 end
 DisplayPlanet()
 
