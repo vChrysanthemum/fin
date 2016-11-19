@@ -13,6 +13,7 @@ type NodeSelect struct {
 	SelectedOptionIndex    int
 	Children               []NodeSelectOption
 	ChildrenMaxStringWidth int
+	DisplayLinesRange      [2]int
 }
 
 func (p *Node) InitNodeSelect() *NodeSelect {
@@ -24,6 +25,8 @@ func (p *Node) InitNodeSelect() *NodeSelect {
 
 	nodeSelect.SelectedOptionColorFg = COLOR_SELECTED_OPTION_COLORFG
 	nodeSelect.SelectedOptionColorBg = COLOR_SELECTED_OPTION_COLORBG
+
+	nodeSelect.DisplayLinesRange = [2]int{0, 0}
 
 	p.Data = nodeSelect
 
@@ -55,10 +58,24 @@ func (p *NodeSelect) KeyPress(e termui.Event) {
 		return
 	}
 
+	var nodeSelectInnerHeight int
+	if true == p.Node.UIBlock.Border {
+		nodeSelectInnerHeight = p.Node.UIBlock.Height - 2
+	} else {
+		nodeSelectInnerHeight = p.Node.UIBlock.Height
+	}
+
 	if "<up>" == keyStr {
 		p.SelectedOptionIndex--
 		if p.SelectedOptionIndex < 0 {
 			p.SelectedOptionIndex = len(p.Children) - 1
+			p.DisplayLinesRange[0] = len(p.Children) - nodeSelectInnerHeight
+			p.DisplayLinesRange[1] = len(p.Children)
+		} else {
+			if p.SelectedOptionIndex < p.DisplayLinesRange[0] {
+				p.DisplayLinesRange[0] = p.DisplayLinesRange[0] - 1
+				p.DisplayLinesRange[1] = p.DisplayLinesRange[1] - 1
+			}
 		}
 		p.Node.refreshUiBufferItems()
 		p.Node.uiRender()
@@ -69,6 +86,13 @@ func (p *NodeSelect) KeyPress(e termui.Event) {
 		p.SelectedOptionIndex += 1
 		if p.SelectedOptionIndex >= len(p.Children) {
 			p.SelectedOptionIndex = 0
+			p.DisplayLinesRange[0] = 0
+			p.DisplayLinesRange[1] = nodeSelectInnerHeight
+		} else {
+			if p.SelectedOptionIndex >= p.DisplayLinesRange[1] {
+				p.DisplayLinesRange[1] = p.DisplayLinesRange[1] + 1
+				p.DisplayLinesRange[0] = p.DisplayLinesRange[0] + 1
+			}
 		}
 		p.Node.refreshUiBufferItems()
 		p.Node.uiRender()

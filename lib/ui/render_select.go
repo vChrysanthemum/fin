@@ -12,6 +12,13 @@ func (p *Node) refreshUiBufferItems() {
 	items := make([]string, 0)
 	var str string
 	for index, nodeOption := range nodeSelect.Children {
+		if index < nodeSelect.DisplayLinesRange[0] {
+			continue
+		}
+		if index >= nodeSelect.DisplayLinesRange[1] {
+			continue
+		}
+
 		str = FormatStringWithWidth(nodeOption.Data, nodeSelect.ChildrenMaxStringWidth)
 		if index == nodeSelect.SelectedOptionIndex {
 			str = "[" + str + "]" +
@@ -54,8 +61,19 @@ func (p *Page) renderBodySelect(node *Node) (isFallthrough bool) {
 	height += node.UIBlock.PaddingTop
 	height += node.UIBlock.PaddingBottom
 
+	nodeSelect.DisplayLinesRange[0] = 0
+
 	if true == node.isShouldCalculateHeight {
 		node.UIBlock.Height = height
+		nodeSelect.DisplayLinesRange[1] = len(nodeSelect.Children)
+	} else {
+		if 0 == nodeSelect.SelectedOptionIndex {
+			if true == node.UIBlock.Border {
+				nodeSelect.DisplayLinesRange[1] = node.UIBlock.Height - 2
+			} else {
+				nodeSelect.DisplayLinesRange[1] = node.UIBlock.Height
+			}
+		}
 	}
 
 	nodeSelect.refreshUiBufferItems()
