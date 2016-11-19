@@ -7,6 +7,9 @@ function NewPlanet()
     Planet.Position = {}
     Planet.ScreenPosition = {}
     Planet.Resource = 0
+    Planet.Character = "*"
+    Planet.ColorFg = "blue"
+    Planet.ColorBg = ""
     return Planet
 end
 

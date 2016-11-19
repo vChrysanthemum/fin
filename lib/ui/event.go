@@ -95,10 +95,9 @@ func (p *Page) registerHandles() {
 					nodeDataFocusModer.NodeDataFocusMode()
 				}
 			}
-		}
 
-		// 确认ActiveNode
-		if "<enter>" == keyStr {
+		} else if "<enter>" == keyStr {
+			// 确认ActiveNode
 			if nil != p.FocusNode {
 				if nodeDataUnFocusModer, ok := p.FocusNode.Value.(*Node).Data.(NodeDataUnFocusModer); true == ok {
 					nodeDataUnFocusModer.NodeDataUnFocusMode()
@@ -141,11 +140,7 @@ func (p *Page) ClearActiveNode(node *Node) {
 }
 
 func (p *Page) SetActiveNode(node *Node) {
-	if nil != p.ActiveNode {
-		if nodeDataUnActiveModer, ok := p.ActiveNode.Data.(NodeDataUnActiveModer); true == ok {
-			nodeDataUnActiveModer.NodeDataUnActiveMode()
-		}
-	}
+	p.ClearActiveNode(node)
 	p.ActiveNodeAfterRerender = node
 	p.ActiveNode = node
 	if nil != p.ActiveNode {

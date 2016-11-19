@@ -22,9 +22,15 @@ function _Radar.ActiveMode(self, nodePointer)
 end
 
 function _Radar.RefreshParInfo(self)
+    if nil ~= self.FocusPlanet then
+        self.FocusPlanet.ColorFg = "blue"
+        self.FocusPlanet.ColorBg = ""
+    end
     local planet = self.ScreenPlanets[PointToStr(self.CursorScreenPosition)]
     self.FocusPlanet = planet
     if nil ~= planet then
+        self.FocusPlanet.ColorFg = "white"
+        self.FocusPlanet.ColorBg = "black"
         NodeInputTextNamePlanet:SetText(planet.Name)
         NodeParInfo:SetText(string.format([[
 X: %d
@@ -42,6 +48,8 @@ end
 
 function _Radar.KeyPressHandle(self, nodePointer, keyStr)
     if "<enter>" == keyStr then
+        if "" == GTerminal.CurrentCommand then
+        end
     end
 
     local movePosition = "no"
@@ -103,6 +111,7 @@ function _Radar.KeyPressHandle(self, nodePointer, keyStr)
     end
 
     self:RefreshParInfo()
+    self:DrawPlanets()
 end
 
 -- 计算星球所在屏幕的位置
@@ -116,7 +125,7 @@ end
 -- 更新 Radar 的 ScreenPlanets
 -- ScreenPlanets 新的屏幕上需要显示的 planets
 -- rectangle 屏幕上显示宇宙位置区域
-function _Radar.refreshScreenPlanets(self, planets, rectangle)
+function _Radar.RefreshScreenPlanets(self, planets, rectangle)
     local startPosition = {
         X = rectangle.Min.X,
         Y = rectangle.Min.Y
@@ -134,14 +143,12 @@ function _Radar.refreshScreenPlanets(self, planets, rectangle)
 end
 
 -- 画指定区域内的的星球
-function _Radar.DrawPlanets(self, planets, rectangle)
-    self:refreshScreenPlanets(planets, rectangle)
-
+function _Radar.DrawPlanets(self)
     for _, planet in pairs(self.ScreenPlanets) do
         NodeRadar:CanvasSet(
         planet.ScreenPosition.X,
         planet.ScreenPosition.Y,
-        "*", "blue", "")
+        planet.Character, planet.ColorFg, planet.ColorBg)
     end
 
     NodeRadar:CanvasDraw()
