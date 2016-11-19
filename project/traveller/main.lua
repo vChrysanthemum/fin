@@ -16,6 +16,7 @@ function DisplayPlanet()
     GUserSpaceShip:SetPosition(-100, 100)
     planets = GWorld:GetPlanetsByRectangle(GUserSpaceShip.CenterRectangle)
     GRadar:DrawPlanets(planets, GUserSpaceShip.CenterRectangle)
+    NodeRadar:SetActive()
 end
 DisplayPlanet()
 

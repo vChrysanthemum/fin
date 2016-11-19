@@ -44,8 +44,8 @@ func (p *Script) luaFuncWindowConfirm(L *lua.LState) int {
 
 	nodeSelectData := nodeSelect.Data.(*NodeSelect)
 
+	p.page.ClearActiveNode(nodeSelect)
 	page.uiRender()
-
 	p.page.SetActiveNode(nodeSelect)
 
 	nodeSelectData.DisableQuit = true

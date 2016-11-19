@@ -26,12 +26,13 @@ func (p *Page) registerHandles() {
 			}
 
 			if len(p.ActiveNode.KeyPressHandlers) > 0 {
-				p.ActiveNode.JobHanderLocker.RLock()
+				node := p.ActiveNode
+				node.JobHanderLocker.RLock()
 				for _, v := range p.ActiveNode.KeyPressHandlers {
 					v.Args = append(v.Args, e)
 					v.Handler(p.ActiveNode, v.Args...)
 				}
-				p.ActiveNode.JobHanderLocker.RUnlock()
+				node.JobHanderLocker.RUnlock()
 			}
 
 			if "<escape>" == keyStr {
@@ -129,6 +130,15 @@ func (p *Node) QuitActiveMode() {
 	p.page.ActiveNode = nil
 }
 
+func (p *Page) ClearActiveNode(node *Node) {
+	if nil != p.ActiveNode {
+		if nodeDataUnActiveModer, ok := p.ActiveNode.Data.(NodeDataUnActiveModer); true == ok {
+			nodeDataUnActiveModer.NodeDataUnActiveMode()
+		}
+	}
+	p.ActiveNode = nil
+}
+
 func (p *Page) SetActiveNode(node *Node) {
 	if nil != p.ActiveNode {
 		if nodeDataUnActiveModer, ok := p.ActiveNode.Data.(NodeDataUnActiveModer); true == ok {
@@ -139,11 +149,12 @@ func (p *Page) SetActiveNode(node *Node) {
 	p.ActiveNode = node
 	if nil != p.ActiveNode {
 		if len(p.ActiveNode.LuaActiveModeHandlers) > 0 {
-			p.ActiveNode.JobHanderLocker.RLock()
+			_node := p.ActiveNode
+			_node.JobHanderLocker.RLock()
 			for _, v := range p.ActiveNode.LuaActiveModeHandlers {
 				v.Handler(p.ActiveNode, v.Args...)
 			}
-			p.ActiveNode.JobHanderLocker.RUnlock()
+			_node.JobHanderLocker.RUnlock()
 		}
 		if nodeDataActiveModer, ok := p.ActiveNode.Data.(NodeDataActiveModer); true == ok {
 			nodeDataActiveModer.NodeDataActiveMode()

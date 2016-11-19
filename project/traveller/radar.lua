@@ -3,7 +3,6 @@ local _mtRadar = {__index = _Radar}
 
 function NewRadar()
     local Radar = setmetatable({}, _mtRadar)
-    Radar.KeyPressEnterChans = {}
     Radar.ScreenPlanets = {}
     Radar.CursorScreenPosition = {X=GetIntPart(NodeRadar:Width()/2), Y=GetIntPart(NodeRadar:Height()/2)}
 
@@ -22,8 +21,12 @@ end
 
 function _Radar.KeyPressHandle(self, nodePointer, keyStr)
     if "<enter>" == keyStr then
-        for k, ch in pairs(GRadar.KeyPressEnterChans) do
-            GRadar.KeyPressEnterChans[k]:send()
+        for k, planet in pairs(self.ScreenPlanets) do
+            if planet.ScreenPosition.X == self.CursorScreenPosition.X and
+                planet.ScreenPosition.Y == self.CursorScreenPosition.Y then
+                if "confirm" == WindowConfirm("是否摧毁该星球") then
+                end
+            end
         end
         return
     end

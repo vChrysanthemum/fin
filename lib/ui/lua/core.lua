@@ -17,11 +17,12 @@ function WindowConfirm(title)
             <td offset=4 cols=4><par height=6></par></td>
         </tr>
         <tr>
-            <td offset=4 cols=4><par>%s</par></td>
-        </tr>
-        <tr>
             <td offset=5 cols=2>
-                <select id="SelectConfirm">
+                <select id="SelectConfirm" borderlabel="%s">
+                <!--
+                paddingtop=1 paddingbottom=1
+                paddingleft=1 paddingright=1
+                -->
                     <option value="cancel">取消</option>
                     <option value="confirm">确定</option>
                 </select>
