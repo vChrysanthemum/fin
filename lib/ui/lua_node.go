@@ -245,6 +245,54 @@ func (p *Script) luaFuncNodeHideCursor(L *lua.LState) int {
 	return 0
 }
 
+func (p *Script) luaFuncNodeRegisterLuaActiveModeHandler(L *lua.LState) int {
+	if L.GetTop() < 2 {
+		L.Push(lua.LNil)
+		return 1
+	}
+
+	lu := L.ToUserData(1)
+	callback := L.ToFunction(2)
+	node := p._getNodePointerFromUserData(L, lu)
+	if nil == node {
+		L.Push(lua.LNil)
+		return 1
+	}
+
+	key := node.RegisterLuaActiveModeHandler(func(_node *Node, args ...interface{}) {
+		_L := args[0].(*lua.LState)
+		_callback := args[1].(*lua.LFunction)
+		luaNode := _L.NewUserData()
+		luaNode.Value = node
+		if err := _L.CallByParam(lua.P{
+			Fn:      _callback,
+			NRet:    0,
+			Protect: true,
+		}, luaNode); err != nil {
+			panic(err)
+		}
+	}, L, callback)
+
+	L.Push(lua.LString(key))
+	return 1
+}
+
+func (p *Script) luaFuncNodeRemoveLuaActiveModeHandler(L *lua.LState) int {
+	if L.GetTop() < 2 {
+		return 0
+	}
+
+	lu := L.ToUserData(1)
+	key := L.ToString(2)
+	node := p._getNodePointerFromUserData(L, lu)
+	if nil == node {
+		return 0
+	}
+
+	node.RemoveLuaActiveModeHandler(key)
+	return 0
+}
+
 func (p *Script) luaFuncNodeRegisterKeyPressHandler(L *lua.LState) int {
 	if L.GetTop() < 2 {
 		L.Push(lua.LNil)

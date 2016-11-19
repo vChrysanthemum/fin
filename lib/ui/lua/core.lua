@@ -94,6 +94,14 @@ function _Node.HideCursor(self)
     return base.NodeHideCursor(self.nodePointer)
 end
 
+function _Node.RegisterLuaActiveModeHandler(self, callback)
+    return base.NodeRegisterLuaActiveModeHandler(self.nodePointer, callback)
+end
+
+function _Node.RemoveLuaActiveModeHandler(self, key)
+    return base.NodeRemoveLuaActiveModeHandler(self.nodePointer, key)
+end
+
 function _Node.RegisterKeyPressHandler(self, callback)
     return base.NodeRegisterKeyPressHandler(self.nodePointer, callback)
 end

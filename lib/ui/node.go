@@ -73,6 +73,9 @@ type Node struct {
 	tmpActiveModeBorder   bool
 	tmpActiveModeBorderFg termui.Attribute
 
+	LuaActiveModeCallBack bool
+	LuaActiveModeHandlers map[string]NodeJob
+
 	ColorFg string
 	ColorBg string
 

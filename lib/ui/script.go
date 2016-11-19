@@ -60,6 +60,10 @@ func (p *Page) prepareScript() {
 	s.luaState.SetField(luaBase, "NodeResumeCursor", s.luaState.NewFunction(s.luaFuncNodeResumeCursor))
 	s.luaState.SetField(luaBase, "NodeHideCursor", s.luaState.NewFunction(s.luaFuncNodeHideCursor))
 
+	s.luaState.SetField(luaBase, "NodeRegisterLuaActiveModeHandler",
+		s.luaState.NewFunction(s.luaFuncNodeRegisterLuaActiveModeHandler))
+	s.luaState.SetField(luaBase, "NodeRemoveLuaActiveModeHandler",
+		s.luaState.NewFunction(s.luaFuncNodeRemoveLuaActiveModeHandler))
 	s.luaState.SetField(luaBase, "NodeRegisterKeyPressHandler",
 		s.luaState.NewFunction(s.luaFuncNodeRegisterKeyPressHandler))
 	s.luaState.SetField(luaBase, "NodeRegisterKeyPressEnterHandler",
