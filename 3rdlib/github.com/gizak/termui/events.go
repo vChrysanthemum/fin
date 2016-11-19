@@ -126,9 +126,9 @@ func hookTermboxEvt() {
 		e := termbox.PollEvent()
 
 		for _, c := range sysEvtChs {
-			go func(ch chan Event) {
-				ch <- crtTermboxEvt(e)
-			}(c)
+			c <- crtTermboxEvt(e)
+			//go func(ch chan Event) {
+			//}(c)
 		}
 	}
 }
@@ -221,6 +221,7 @@ func findMatch(mux map[string]func(Event), path string) string {
 	return pattern
 
 }
+
 // Remove all existing defined Handlers from the map
 func (es *EvtStream) ResetHandlers() {
 	for Path, _ := range es.Handlers {
@@ -243,16 +244,18 @@ func (es *EvtStream) Loop() {
 		case "/sig/stoploop":
 			return
 		}
-		go func(a Event) {
-			es.RLock()
-			defer es.RUnlock()
-			if pattern := es.match(a.Path); pattern != "" {
-				es.Handlers[pattern](a)
-			}
-		}(e)
+		es.RLock()
+		if pattern := es.match(e.Path); pattern != "" {
+			es.Handlers[pattern](e)
+		}
+		/*
+			go func(a Event) {
+			}(e)
+		*/
 		if es.hook != nil {
 			es.hook(e)
 		}
+		es.RUnlock()
 	}
 }
 
