@@ -1,26 +1,56 @@
+local json = require("json")
+
 local _Planet = {}
 local _mtPlanet = {__index = _Planet} 
 
 function NewPlanet()
     local Planet = setmetatable({}, _mtPlanet)
-    Planet.Name = "未命名星球"
-    Planet.Position = {}
+    Planet:Format({
+        PlanetId = nil,
+        Name = "未命名星球",
+        Position = {},
+        Resource = 0,
+        Character = "*",
+        ColorFg = "blue"
+    })
     Planet.ScreenPosition = {}
-    Planet.Resource = 0
-    Planet.Character = "*"
-    Planet.ColorFg = "blue"
     Planet.ColorBg = ""
     return Planet
 end
 
 -- 初始化星球
 function _Planet.Initilize(self, position)
-    self.Position = position
+    self.Info.Position = position
     RefreshRandomSeed()
-    self.Resource = math.random(0,10000)
+    self.Info.Resource = math.random(0,10000)
 end
 
 function _Planet.SetName(self, name)
-    self.Name = name
+    self.Info.Name = name
+    self:FlushToDB()
     NodeRadar:SetActive()
+end
+
+function _Planet.Format(self, planetInfo)
+    self.Info = {}
+    self.Info.PlanetId = planetInfo.PlanetId
+    self.Info.Name = planetInfo.Name
+    self.Info.Position = planetInfo.Position
+    self.Info.Resource = planetInfo.Resource
+    self.Info.Character = planetInfo.Character
+    self.Info.ColorFg = planetInfo.ColorFg
+end
+
+function _Planet.FlushToDB(self)
+    if "number" ~= type(self.Info.PlanetId) then
+        return nil
+    end
+
+    sql = string.format([[
+    update b_planet set data = '%s' where planet_id=%d
+    ]], DB:QuoteSQL(json.encode(self.Info)), self.Info.PlanetId)
+    local queryRet = DB:Exec(sql)
+    if "string" == type(queryRet) then
+        Log(queryRet)
+    end
 end

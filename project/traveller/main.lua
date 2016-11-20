@@ -11,7 +11,7 @@ NodeRadar:SetAttribute("height", tostring(WindowHeight()-NodeTerminalMain:Height
 GUserSpaceShip = NewSpaceShip()
 GRadar = NewRadar()
 GTerminal = NewTerminal()
-GWorld = NewWorld() 
+GWorld = NewWorld()
 
 NodeInputTextNamePlanet:RegisterKeyPressEnterHandler(function(nodePointer)
   if nil ~= GRadar.FocusPlanet then

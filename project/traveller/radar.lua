@@ -23,19 +23,17 @@ end
 
 function _Radar.RefreshParInfo(self)
     if nil ~= self.FocusPlanet then
-        self.FocusPlanet.ColorFg = "blue"
         self.FocusPlanet.ColorBg = ""
     end
     local planet = self.ScreenPlanets[PointToStr(self.CursorScreenPosition)]
     self.FocusPlanet = planet
     if nil ~= planet then
-        self.FocusPlanet.ColorFg = "white"
-        self.FocusPlanet.ColorBg = "black"
-        NodeInputTextNamePlanet:SetText(planet.Name)
+        self.FocusPlanet.ColorBg = "white"
+        NodeInputTextNamePlanet:SetText(planet.Info.Name)
         NodeParInfo:SetText(string.format([[
 X: %d
 Y: %d
-资源: %d]], planet.Position.X, planet.Position.Y, planet.Resource))
+资源: %d]], planet.Info.Position.X, planet.Info.Position.Y, planet.Info.Resource))
         return
     end
 
@@ -135,8 +133,8 @@ function _Radar.RefreshScreenPlanets(self, planets, rectangle)
         -- 计算星球所在屏幕的位置
         -- rectangle 为指定宇宙位置
         planet.ScreenPosition = {
-            X = planet.Position.X - startPosition.X,
-            Y = planet.Position.Y - startPosition.Y
+            X = planet.Info.Position.X - startPosition.X,
+            Y = planet.Info.Position.Y - startPosition.Y
         }
         self.ScreenPlanets[PointToStr(planet.ScreenPosition)] = planet
     end
@@ -148,7 +146,7 @@ function _Radar.DrawPlanets(self)
         NodeRadar:CanvasSet(
         planet.ScreenPosition.X,
         planet.ScreenPosition.Y,
-        planet.Character, planet.ColorFg, planet.ColorBg)
+        planet.Info.Character, planet.Info.ColorFg, planet.ColorBg)
     end
 
     NodeRadar:CanvasDraw()

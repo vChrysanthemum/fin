@@ -47,11 +47,40 @@ function _World.initAreaPlanets(self, createBlockIndex)
         Y = createBlockIndex.Y * self.CreateBlockHeight
     }
 
+    local planet = {}
+    local planets = {}
+    local sql
+    local queryRet = nil
+
+    sql = string.format([[
+    select created_at from b_planets_block where x=%d and y=%d limit 1
+    ]], createBlockStartPosition.X, createBlockStartPosition.Y)
+    local rows = DB:Query(sql)
+    local row = rows:FetchOne()
+    rows:Close()
+    if "table" == type(row) then
+        sql = string.format([[
+        select planet_id, data from b_planet where planets_block_x=%d and planets_block_y=%d
+        ]], createBlockStartPosition.X, createBlockStartPosition.Y)
+        rows = DB:Query(sql)
+        while true do
+            row = rows:FetchOne()
+            if "table" ~= type(row) then
+                break
+            end
+            planet = NewPlanet()
+            planet:Format(json.decode(row.data))
+            planet.Info.PlanetId = tonumber(row.planet_id)
+            table.insert(planets, planet)
+        end
+        rows:Close()
+        self.Planets[key] = planets
+        return
+    end
+
     RefreshRandomSeed()
     local i, columnIndex, rowIndex = 0, 0, 0
     local rectangle = {}
-    local planet = {}
-    local planets = {}
     local i = 0
     while columnIndex < self.WorkBlockColumns do
         rowIndex = 0
@@ -80,6 +109,18 @@ function _World.initAreaPlanets(self, createBlockIndex)
         end
         columnIndex = columnIndex + 1
     end
+
+    for k, planet in pairs(planets) do
+        sql = string.format([[
+        insert into b_planet (planets_block_x, planets_block_y, data) values(%d, %d, '%s')
+        ]], createBlockStartPosition.X, createBlockStartPosition.Y, DB:QuoteSQL(json.encode(planet.Info)))
+        queryRet = DB:Exec(sql)
+        planets[k].Info.PlanetId = queryRet:LastInsertId()
+    end
+    sql = string.format([[
+    insert into b_planets_block(x, y, created_at) values(%d, %d, %d)
+    ]], createBlockStartPosition.X, createBlockStartPosition.Y, TimeNow())
+    DB:Exec(sql)
 
     self.Planets[key] = planets
 end
@@ -126,8 +167,8 @@ function _World.GetPlanetsByRectangle(self, rectangle)
         key = PointToStr(block)
         for _, planet in pairs(self.Planets[key]) do
 
-            if rectangle.Min.X <= planet.Position.X and planet.Position.X <= rectangle.Max.X and 
-                rectangle.Min.Y <= planet.Position.Y and planet.Position.Y <= rectangle.Max.Y then
+            if rectangle.Min.X <= planet.Info.Position.X and planet.Info.Position.X <= rectangle.Max.X and 
+                rectangle.Min.Y <= planet.Info.Position.Y and planet.Info.Position.Y <= rectangle.Max.Y then
                 table.insert(planets, planet)
             end
 

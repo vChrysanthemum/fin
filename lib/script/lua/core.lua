@@ -15,3 +15,7 @@ end
 function SendCancelSig(sig)
     base.SendCancelSig(sig)
 end
+
+function TimeNow()
+    return os.time()
+end

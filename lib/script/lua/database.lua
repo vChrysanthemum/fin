@@ -31,11 +31,17 @@ function _DB.Exec(self, query)
     local dbResultPointer = base.DBExec(self.dbPointer, query)
     local retType = type(dbResultPointer)
     if "userdata" ~= retType then 
-        return ret
+        return dbResultPointer
     end
 
     local ret = setmetatable({}, _mtDBResult)
     ret.dbResultPointer = dbResultPointer
+    return ret
+end
+
+function _DB.QuoteSQL(self, sql)
+    local ret = string.gsub(sql, "\\", "\\\\")
+    ret = string.gsub(ret, "'", "\\'")
     return ret
 end
 
