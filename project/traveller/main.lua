@@ -5,16 +5,16 @@ NodeRadar = Node("CanvasRadar")
 NodeTerminalMain = Node("TerminalMain")
 NodeParInfo = Node("ParInfo")
 NodeInputTextNamePlanet = Node("InputTextNamePlanet")
-NodeParGUserSpaceShipStatus = Node("ParGUserSpaceShipStatus")
+NodeParGUserSpaceshipStatus = Node("ParGUserSpaceshipStatus")
 
 NodeRadar:SetAttribute("height", tostring(WindowHeight()-NodeTerminalMain:Height()))
 
-GUserSpaceShip = NewSpaceShip()
+GUserSpaceship = GetSpaceshipFromDB(1)
 GRadar = NewRadar()
 GTerminal = NewTerminal()
 GWorld = NewWorld()
 
-NodeParGUserSpaceShipStatus:SetAttribute("borderlabel", GUserSpaceShip.Info.Name)
+NodeParGUserSpaceshipStatus:SetAttribute("borderlabel", " " .. GUserSpaceship.Info.Name .. " ")
 
 NodeInputTextNamePlanet:RegisterKeyPressEnterHandler(function(nodePointer)
   if nil ~= GRadar.FocusTarget then
@@ -24,10 +24,10 @@ end)
 
 local planets = {}
 function Display()
-    GUserSpaceShip:SetPosition(-100, 100)
-    planets = GWorld:GetPlanetsByRectangle(GUserSpaceShip.CenterRectangle)
+    GUserSpaceship:SetPosition(-100, 100)
+    planets = GWorld:GetPlanetsByRectangle(GUserSpaceship.CenterRectangle)
 
-    GRadar:RefreshScreenPlanets(planets, GUserSpaceShip.CenterRectangle)
+    GRadar:RefreshScreenPlanets(planets, GUserSpaceship.CenterRectangle)
     GRadar:Draw()
 end
 Display()

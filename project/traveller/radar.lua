@@ -28,15 +28,15 @@ function _Radar.RefreshParInfo(self)
 
     self.FocusTarget = nil
 
-    if self.CursorScreenPosition.X == GUserSpaceShip.ScreenPosition.X and
-        self.CursorScreenPosition.Y == GUserSpaceShip.ScreenPosition.Y then
-        self.FocusTarget = GUserSpaceShip
+    if self.CursorScreenPosition.X == GUserSpaceship.ScreenPosition.X and
+        self.CursorScreenPosition.Y == GUserSpaceship.ScreenPosition.Y then
+        self.FocusTarget = GUserSpaceship
         self.FocusTarget.ColorBg = "white"
-        NodeInputTextNamePlanet:SetText(GUserSpaceShip.Info.Name)
+        NodeInputTextNamePlanet:SetText(GUserSpaceship.Info.Name)
         NodeInputTextNamePlanet:SetAttribute("borderlabel", "飞船")
         NodeParInfo:SetText(string.format([[
 X: %d
-Y: %d]], GUserSpaceShip.Info.Position.X, GUserSpaceShip.Info.Position.Y))
+Y: %d]], GUserSpaceship.Info.Position.X, GUserSpaceship.Info.Position.Y))
         return
     end
 
@@ -166,17 +166,17 @@ function _Radar.DrawPlanets(self)
 end
 
 -- 画出飞船
-function _Radar.DrawSpaceShip(self)
+function _Radar.DrawSpaceship(self)
     NodeRadar:CanvasSet(
-    GUserSpaceShip.ScreenPosition.X,
-    GUserSpaceShip.ScreenPosition.Y,
-    GUserSpaceShip.Info.Character, GUserSpaceShip.Info.ColorFg, GUserSpaceShip.ColorBg)
+    GUserSpaceship.ScreenPosition.X,
+    GUserSpaceship.ScreenPosition.Y,
+    GUserSpaceship.Info.Character, GUserSpaceship.Info.ColorFg, GUserSpaceship.ColorBg)
 end
 
 -- 画出飞船
 function _Radar.Draw(self)
     self:RefreshParInfo()
     self:DrawPlanets()
-    self:DrawSpaceShip()
+    self:DrawSpaceship()
     NodeRadar:CanvasDraw()
 end
