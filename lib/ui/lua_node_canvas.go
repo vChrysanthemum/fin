@@ -31,6 +31,30 @@ func (p *Script) _getNodeCanvasPointerFromUserData(L *lua.LState, lu *lua.LUserD
 	return nodeCanvas
 }
 
+func (p *Script) luaFuncNodeCanvasClean(L *lua.LState) int {
+	params := L.GetTop()
+	if params < 1 {
+		return 0
+	}
+
+	lu := L.ToUserData(1)
+	nodeCanvas := p._getNodeCanvasPointerFromUserData(L, lu)
+	nodeCanvas.Canvas.Clean()
+	return 0
+}
+
+func (p *Script) luaFuncNodeCanvasUnSet(L *lua.LState) int {
+	params := L.GetTop()
+	if params < 3 {
+		return 0
+	}
+
+	lu := L.ToUserData(1)
+	nodeCanvas := p._getNodeCanvasPointerFromUserData(L, lu)
+	nodeCanvas.Canvas.UnSet(L.ToInt(2), L.ToInt(3))
+	return 0
+}
+
 func (p *Script) luaFuncNodeCanvasSet(L *lua.LState) int {
 	params := L.GetTop()
 	if params < 4 {

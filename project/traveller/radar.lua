@@ -124,7 +124,7 @@ function _Radar.KeyPressHandle(self, nodePointer, keyStr)
 
     end
 
-    self:Draw()
+    self:DrawPlanets()
 end
 
 -- 计算星球所在屏幕的位置
@@ -157,6 +157,7 @@ end
 
 -- 画指定区域内的的星球
 function _Radar.DrawPlanets(self)
+    self:RefreshParInfo()
     for _, planet in pairs(self.ScreenPlanets) do
         NodeRadar:CanvasSet(
         planet.ScreenPosition.X,
@@ -165,18 +166,12 @@ function _Radar.DrawPlanets(self)
     end
 end
 
--- 画出飞船
+-- 画飞船
 function _Radar.DrawSpaceship(self)
+    self:RefreshParInfo()
     NodeRadar:CanvasSet(
     GUserSpaceship.ScreenPosition.X,
     GUserSpaceship.ScreenPosition.Y,
     GUserSpaceship.Info.Character, GUserSpaceship.Info.ColorFg, GUserSpaceship.ColorBg)
-end
-
--- 画出飞船
-function _Radar.Draw(self)
-    self:RefreshParInfo()
-    self:DrawPlanets()
-    self:DrawSpaceship()
-    NodeRadar:CanvasDraw()
+    GUserSpaceship:RefreshNodeParGUserSpaceshipStatus()
 end

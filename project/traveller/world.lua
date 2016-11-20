@@ -20,16 +20,27 @@ function NewWorld()
 end
 
 function _World.loopEvent(self)
+    GUserSpaceship:RunOneStep()
+
+    local planets = {}
+    planets = GWorld:GetPlanetsByRectangle(GUserSpaceship.CenterRectangle)
+    GRadar:RefreshScreenPlanets(planets, GUserSpaceship.CenterRectangle)
+    NodeRadar:CanvasClean()
+    GRadar:DrawSpaceship()
+    GRadar:DrawPlanets()
+    NodeRadar:CanvasDraw()
     return
 end
 
 function _World.LoopEvent(self)
     self.LoopEventSig = SetInterval(200, function()
-        World:loopEvent()
+        self:loopEvent()
     end)
+    --[[
     SetTimeout(3000, function()
-        SendCancelSig(World.LoopEventSig)
+        SendCancelSig(self.LoopEventSig)
     end)
+    ]]
 end
 
 -- 生成指定区域内的星球

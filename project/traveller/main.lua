@@ -10,6 +10,7 @@ NodeParGUserSpaceshipStatus = Node("ParGUserSpaceshipStatus")
 NodeRadar:SetAttribute("height", tostring(WindowHeight()-NodeTerminalMain:Height()))
 
 GUserSpaceship = GetSpaceshipFromDB(1)
+GUserSpaceship:RefreshNodeParGUserSpaceshipStatus()
 GRadar = NewRadar()
 GTerminal = NewTerminal()
 GWorld = NewWorld()
@@ -22,16 +23,8 @@ NodeInputTextNamePlanet:RegisterKeyPressEnterHandler(function(nodePointer)
   end
 end)
 
-local planets = {}
-function Display()
-    GUserSpaceship:SetPosition(-100, 100)
-    planets = GWorld:GetPlanetsByRectangle(GUserSpaceship.CenterRectangle)
-
-    GRadar:RefreshScreenPlanets(planets, GUserSpaceship.CenterRectangle)
-    GRadar:Draw()
-end
-Display()
 NodeTerminalMain:SetActive()
+GWorld:LoopEvent()
 
 --[[
 local NodeRadar = Node("CanvasRadar")

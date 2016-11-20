@@ -74,6 +74,8 @@ func (p *Page) prepareScript() {
 
 	s.luaState.SetField(luaBase, "NodeRemove", s.luaState.NewFunction(s.luaFuncNodeRemove))
 
+	s.luaState.SetField(luaBase, "NodeCanvasClean", s.luaState.NewFunction(s.luaFuncNodeCanvasClean))
+	s.luaState.SetField(luaBase, "NodeCanvasUnSet", s.luaState.NewFunction(s.luaFuncNodeCanvasUnSet))
 	s.luaState.SetField(luaBase, "NodeCanvasSet", s.luaState.NewFunction(s.luaFuncNodeCanvasSet))
 	s.luaState.SetField(luaBase, "NodeCanvasDraw", s.luaState.NewFunction(s.luaFuncNodeCanvasDraw))
 

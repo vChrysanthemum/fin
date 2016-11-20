@@ -26,8 +26,8 @@ function NewSpaceship()
     Spaceship:Format({
         SpaceshipId = nil,
         Name        = "鹦鹉螺号",
-        Position    = {X          = 0.0, Y = 0.0},
-        Speed       = {X          = 0.0, Y = 0.0},
+        Position    = {X = 0.0, Y = 0.0},
+        Speed       = {X = 0.0, Y = 0.0},
         Character   = "x",
         ColorFg     = "blue"
     })
@@ -38,11 +38,39 @@ function NewSpaceship()
     return Spaceship
 end
 
+function _Spaceship.SetSpeedX(self, speedx)
+    self.Info.Speed.X = speedx
+    self:FlushToDB()
+    self:RefreshNodeParGUserSpaceshipStatus()
+end
+
+function _Spaceship.SetSpeedY(self, speedy)
+    self.Info.Speed.Y = speedy
+    self:FlushToDB()
+    self:RefreshNodeParGUserSpaceshipStatus()
+end
+
 function _Spaceship.SetName(self, name)
     self.Info.Name = name
     self:FlushToDB()
     NodeParGUserSpaceshipStatus:SetAttribute("borderlabel", " " .. self.Info.Name .. " ")
+    self:RefreshNodeParGUserSpaceshipStatus()
     NodeRadar:SetActive()
+end
+
+function _Spaceship.RefreshNodeParGUserSpaceshipStatus(self)
+    NodeParGUserSpaceshipStatus:SetText(string.format([[
+X: %d
+Y: %d
+速度X: %f/s
+速度Y: %f/s
+船员: 7
+飞行历时: 09:53
+
+仓库:
+炮弹: 612
+时空跳跃者:3
+    ]], self.Info.Position.X, self.Info.Position.Y, self.Info.Speed.X, self.Info.Speed.Y))
 end
 
 -- 刷新飞船为中心的指定大小区域所在的宇宙位置
@@ -64,13 +92,6 @@ function _Spaceship.refreshCenterRectangle(self, rectangleWidth, rectangleHeight
     return rectangle
 end
 
--- 更新飞船位置
-function _Spaceship.SetPosition(self, positionX, positionY)
-    self.Info.Position.X = positionX
-    self.Info.Position.Y = positionY
-    self:refreshCenterRectangle(NodeRadar:Width(), NodeRadar:Height())
-end
-
 function _Spaceship.Format(self, spaceshipInfo)
     self.Info       = {
         SpaceshipId = spaceshipInfo.SpaceshipId,
@@ -80,6 +101,7 @@ function _Spaceship.Format(self, spaceshipInfo)
         Character   = spaceshipInfo.Character,
         ColorFg     = spaceshipInfo.ColorFg
     }
+    self:refreshCenterRectangle(NodeRadar:Width(), NodeRadar:Height())
 end
 
 function _Spaceship.FlushToDB(self)
@@ -94,4 +116,11 @@ function _Spaceship.FlushToDB(self)
     if "string" == type(queryRet) then
         Log(queryRet)
     end
+end
+
+-- 飞船飞行，改变 position
+function _Spaceship.RunOneStep(self)
+    self.Info.Position.X = self.Info.Position.X + self.Info.Speed.X
+    self.Info.Position.Y = self.Info.Position.Y + self.Info.Speed.Y
+    self:refreshCenterRectangle(NodeRadar:Width(), NodeRadar:Height())
 end

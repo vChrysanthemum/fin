@@ -148,9 +148,6 @@ func (p *Editor) Buffer() termui.Buffer {
 }
 
 func (p *Editor) AfterRenderHandle() {
-	if true == p.CursorLocation.IsDisplay {
-		p.CursorLocation.SetCursor(CalculateTextLastPosition(p.Text(), p.InnerArea))
-	}
 }
 
 func (p *Editor) ActiveMode() {

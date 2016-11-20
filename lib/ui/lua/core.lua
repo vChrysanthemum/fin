@@ -123,6 +123,14 @@ function _Node.Remove(self)
     return base.NodeRemove(self.nodePointer)
 end
 
+function _Node.CanvasClean(self)
+    return base.NodeCanvasClean(self.nodePointer)
+end
+
+function _Node.CanvasUnSet(self, x, y)
+    return base.NodeCanvasUnSet(self.nodePointer, x, y)
+end
+
 function _Node.CanvasSet(self, x, y, ch, fg, bg)
     return base.NodeCanvasSet(self.nodePointer, x, y, ch, fg, bg)
 end
