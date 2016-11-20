@@ -6,7 +6,7 @@ function NewRadar()
     Radar.ScreenPlanets = {}
     Radar.CursorScreenPosition = {X=GetIntPart(NodeRadar:Width()/2), Y=GetIntPart(NodeRadar:Height()/2)}
     Radar.KeyPressStrForMove = ""
-    Radar.FocusPlanet = nil
+    Radar.FocusPlanet= nil
 
     Radar.KeyPressSig = NodeRadar:RegisterKeyPressHandler(function(nodePointer, keyStr)
         Radar:KeyPressHandle(nodePointer, keyStr)
@@ -22,14 +22,30 @@ function _Radar.ActiveMode(self, nodePointer)
 end
 
 function _Radar.RefreshParInfo(self)
-    if nil ~= self.FocusPlanet then
-        self.FocusPlanet.ColorBg = ""
+    if nil ~= self.FocusTarget then
+        self.FocusTarget.ColorBg = ""
     end
+
+    self.FocusTarget = nil
+
+    if self.CursorScreenPosition.X == GUserSpaceShip.ScreenPosition.X and
+        self.CursorScreenPosition.Y == GUserSpaceShip.ScreenPosition.Y then
+        self.FocusTarget = GUserSpaceShip
+        self.FocusTarget.ColorBg = "white"
+        NodeInputTextNamePlanet:SetText(GUserSpaceShip.Info.Name)
+        NodeInputTextNamePlanet:SetAttribute("borderlabel", "飞船")
+        NodeParInfo:SetText(string.format([[
+X: %d
+Y: %d]], GUserSpaceShip.Info.Position.X, GUserSpaceShip.Info.Position.Y))
+        return
+    end
+
     local planet = self.ScreenPlanets[PointToStr(self.CursorScreenPosition)]
-    self.FocusPlanet = planet
     if nil ~= planet then
-        self.FocusPlanet.ColorBg = "white"
+        self.FocusTarget = planet
+        self.FocusTarget.ColorBg = "white"
         NodeInputTextNamePlanet:SetText(planet.Info.Name)
+        NodeInputTextNamePlanet:SetAttribute("borderlabel", "星球")
         NodeParInfo:SetText(string.format([[
 X: %d
 Y: %d
@@ -37,9 +53,9 @@ Y: %d
         return
     end
 
-    -- 光标没有指向星球
-    if "" ~= NodeParInfo:GetValue() then
+    if nil == self.FocusTarget then
         NodeInputTextNamePlanet:SetText("")
+        NodeInputTextNamePlanet:SetAttribute("borderlabel", "")
         NodeParInfo:SetText("")
     end
 end
@@ -108,8 +124,7 @@ function _Radar.KeyPressHandle(self, nodePointer, keyStr)
 
     end
 
-    self:RefreshParInfo()
-    self:DrawPlanets()
+    self:Draw()
 end
 
 -- 计算星球所在屏幕的位置
@@ -148,7 +163,20 @@ function _Radar.DrawPlanets(self)
         planet.ScreenPosition.Y,
         planet.Info.Character, planet.Info.ColorFg, planet.ColorBg)
     end
+end
 
-    NodeRadar:CanvasDraw()
+-- 画出飞船
+function _Radar.DrawSpaceShip(self)
+    NodeRadar:CanvasSet(
+    GUserSpaceShip.ScreenPosition.X,
+    GUserSpaceShip.ScreenPosition.Y,
+    GUserSpaceShip.Info.Character, GUserSpaceShip.Info.ColorFg, GUserSpaceShip.ColorBg)
+end
+
+-- 画出飞船
+function _Radar.Draw(self)
     self:RefreshParInfo()
+    self:DrawPlanets()
+    self:DrawSpaceShip()
+    NodeRadar:CanvasDraw()
 end

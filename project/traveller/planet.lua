@@ -6,15 +6,15 @@ local _mtPlanet = {__index = _Planet}
 function NewPlanet()
     local Planet = setmetatable({}, _mtPlanet)
     Planet:Format({
-        PlanetId = nil,
-        Name = "未命名星球",
-        Position = {},
-        Resource = 0,
+        PlanetId  = nil,
+        Name      = "未命名星球",
+        Position  = {},
+        Resource  = 0,
         Character = "*",
-        ColorFg = "blue"
+        ColorFg   = "blue"
     })
     Planet.ScreenPosition = {}
-    Planet.ColorBg = ""
+    Planet.ColorBg        = ""
     return Planet
 end
 
@@ -32,13 +32,14 @@ function _Planet.SetName(self, name)
 end
 
 function _Planet.Format(self, planetInfo)
-    self.Info = {}
-    self.Info.PlanetId = planetInfo.PlanetId
-    self.Info.Name = planetInfo.Name
-    self.Info.Position = planetInfo.Position
-    self.Info.Resource = planetInfo.Resource
-    self.Info.Character = planetInfo.Character
-    self.Info.ColorFg = planetInfo.ColorFg
+    self.Info = {
+        PlanetId  = planetInfo.PlanetId,
+        Name      = planetInfo.Name,
+        Position  = planetInfo.Position,
+        Resource  = planetInfo.Resource,
+        Character = planetInfo.Character,
+        ColorFg   = planetInfo.ColorFg,
+    }
 end
 
 function _Planet.FlushToDB(self)

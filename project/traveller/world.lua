@@ -4,18 +4,18 @@ local _World = {}
 local _mtWorld = {__index = _World} 
 
 function NewWorld()
-    local World = setmetatable({}, _mtWorld)
-    World.LoopEventSig = nil
-    World.WorkBlockWidth = 60
-    World.WorkBlockHeight = 20
-    World.WorkBlockSize = World.WorkBlockWidth * World.WorkBlockHeight
-    World.WorkBlocksCount = 20
-    World.WorkBlockColumns = 5
-    World.WorkBlockRows = World.WorkBlocksCount / World.WorkBlockColumns
-    World.CreateBlockSize = World.WorkBlockSize * World.WorkBlocksCount
-    World.CreateBlockWidth = World.WorkBlockWidth * World.WorkBlockColumns
+    local World             = setmetatable({}, _mtWorld)
+    World.LoopEventSig      = nil
+    World.WorkBlockWidth    = 60
+    World.WorkBlockHeight   = 20
+    World.WorkBlockSize     = World.WorkBlockWidth * World.WorkBlockHeight
+    World.WorkBlocksCount   = 20
+    World.WorkBlockColumns  = 5
+    World.WorkBlockRows     = World.WorkBlocksCount / World.WorkBlockColumns
+    World.CreateBlockSize   = World.WorkBlockSize * World.WorkBlocksCount
+    World.CreateBlockWidth  = World.WorkBlockWidth * World.WorkBlockColumns
     World.CreateBlockHeight = World.WorkBlockHeight * World.WorkBlockRows
-    World.Planets = {}
+    World.Planets           = {}
     return World
 end
 
