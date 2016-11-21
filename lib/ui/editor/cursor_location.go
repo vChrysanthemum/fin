@@ -2,7 +2,7 @@ package editor
 
 import (
 	"image"
-	. "in/ui/utils"
+	uiutils "in/ui/utils"
 
 	"github.com/gizak/termui"
 )
@@ -25,15 +25,15 @@ func NewCursorLocation(parentBlock *termui.Block) *CursorLocation {
 func (p *CursorLocation) ResetLocation() {
 	p.Location.X = p.ParentBlock.InnerArea.Min.X
 	p.Location.Y = p.ParentBlock.InnerArea.Min.Y
-	UISetCursor(p.Location.X, p.Location.Y)
+	uiutils.UISetCursor(p.Location.X, p.Location.Y)
 }
 
 func (p *CursorLocation) SetCursor(x, y int) {
 	p.Location.X = x
 	p.Location.Y = y
-	UISetCursor(p.Location.X, p.Location.Y)
+	uiutils.UISetCursor(p.Location.X, p.Location.Y)
 }
 
 func (p *CursorLocation) ResumeCursor() {
-	UISetCursor(p.Location.X, p.Location.Y)
+	uiutils.UISetCursor(p.Location.X, p.Location.Y)
 }

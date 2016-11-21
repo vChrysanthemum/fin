@@ -1,7 +1,7 @@
 package ui
 
 import (
-	. "in/ui/utils"
+	uiutils "in/ui/utils"
 
 	"github.com/gizak/termui"
 )
@@ -19,7 +19,7 @@ func (p *Node) refreshUiBufferItems() {
 			continue
 		}
 
-		str = FormatStringWithWidth(nodeOption.Data, nodeSelect.ChildrenMaxStringWidth)
+		str = uiutils.FormatStringWithWidth(nodeOption.Data, nodeSelect.ChildrenMaxStringWidth)
 		if index == nodeSelect.SelectedOptionIndex {
 			str = "[" + str + "]" +
 				"(fg-" + nodeSelect.SelectedOptionColorFg +

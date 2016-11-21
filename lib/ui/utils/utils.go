@@ -3,11 +3,16 @@ package utils
 import (
 	"fmt"
 	"image"
+	"sync"
 	"unicode/utf8"
 
 	"github.com/gizak/termui"
 	rw "github.com/mattn/go-runewidth"
 	termbox "github.com/nsf/termbox-go"
+)
+
+var (
+	GUIRenderLocker sync.RWMutex
 )
 
 func FormatStringWithWidth(src string, width int) string {
@@ -110,6 +115,12 @@ func CalculateTextLastPosition(text string, innerArea image.Rectangle) (resultX,
 	resultY = innerArea.Min.Y + y
 
 	return
+}
+
+func UIRender(bs ...termui.Bufferer) {
+	GUIRenderLocker.Lock()
+	termui.Render(bs...)
+	GUIRenderLocker.Unlock()
 }
 
 func UISetCursor(x, y int) {

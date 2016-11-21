@@ -3,14 +3,9 @@ package script
 import (
 	"os"
 	"path/filepath"
-	"sync"
 
 	luajson "github.com/layeh/gopher-json"
 	lua "github.com/yuin/gopher-lua"
-)
-
-var (
-	GUIRenderLocker sync.RWMutex
 )
 
 var GlobalOption = Option{
@@ -29,6 +24,12 @@ func Init(option Option) {
 
 type Script struct {
 	CancelSigs map[string](chan bool)
+}
+
+func NewScript() *Script {
+	ret := new(Script)
+	ret.CancelSigs = make(map[string](chan bool), 0)
+	return ret
 }
 
 func (p *Script) RegisterBaseTable(L *lua.LState, baseTable *lua.LTable) {

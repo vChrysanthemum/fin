@@ -1,6 +1,10 @@
 package ui
 
-import lua "github.com/yuin/gopher-lua"
+import (
+	"in/utils"
+
+	lua "github.com/yuin/gopher-lua"
+)
 
 func (p *Script) _getNodeSelectPointerFromUserData(L *lua.LState, lu *lua.LUserData) *NodeSelect {
 	if nil == lu || nil == lu.Value {
@@ -26,6 +30,7 @@ func (p *Script) _getNodeSelectPointerFromUserData(L *lua.LState, lu *lua.LUserD
 }
 
 func (p *Script) luaFuncNodeSelectAppendOption(L *lua.LState) int {
+	defer utils.RecoverPanic()
 	if L.GetTop() < 3 {
 		return 0
 	}
@@ -43,6 +48,7 @@ func (p *Script) luaFuncNodeSelectAppendOption(L *lua.LState) int {
 }
 
 func (p *Script) luaFuncNodeSelectClearOptions(L *lua.LState) int {
+	defer utils.RecoverPanic()
 	if L.GetTop() < 1 {
 		return 0
 	}

@@ -58,6 +58,7 @@ function _World.initAreaPlanets(self, createBlockIndex)
         Y = createBlockIndex.Y * self.CreateBlockHeight
     }
 
+    local k = 0
     local planet = {}
     local planets = {}
     local sql

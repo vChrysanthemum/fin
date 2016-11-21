@@ -2,9 +2,9 @@ package ui
 
 import (
 	"container/list"
-	"fmt"
+	uiutils "in/ui/utils"
 	"log"
-	"os"
+	"sync"
 
 	"github.com/gizak/termui"
 	"golang.org/x/net/html"
@@ -33,6 +33,8 @@ type Page struct {
 	renderingY int
 
 	recoverVal interface{}
+
+	KeyPressHandleLocker sync.RWMutex
 }
 
 func newPage() *Page {
@@ -129,7 +131,7 @@ func (p *Page) uiRender() {
 		return
 	}
 
-	uiRender(p.Bufferers...)
+	uiutils.UIRender(p.Bufferers...)
 
 	var (
 		e, e2       *list.Element
@@ -174,15 +176,20 @@ func (p *Page) Rerender() {
 }
 
 func (p *Page) Serve() {
-	defer func() {
-		if r := recover(); nil != r {
-			log.Println(r)
-		}
-		termui.Close()
-		if nil != p.recoverVal {
-			fmt.Fprintln(os.Stderr, p.recoverVal)
-		}
-	}()
+	/*
+		defer func() {
+			if r := recover(); nil != r {
+				//stacktrace := make([]byte, 8192)
+				//length := runtime.Stack(stacktrace, true)
+				//log.Println(string(stacktrace[:length]))
+				log.Println(r)
+			}
+			termui.Close()
+			if nil != p.recoverVal {
+				fmt.Fprintln(os.Stderr, p.recoverVal)
+			}
+		}()
+	*/
 
 	p.Refresh()
 

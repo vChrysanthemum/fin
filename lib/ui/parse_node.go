@@ -1,7 +1,7 @@
 package ui
 
 import (
-	. "in/ui/utils"
+	uiutils "in/ui/utils"
 	"strconv"
 
 	"golang.org/x/net/html"
@@ -53,7 +53,7 @@ func (p *Node) ParseAttribute(attr []html.Attribute) (isUIChange, isNeedRerender
 
 		case "borderlabelfg":
 			isUIChange = true
-			p.UIBlock.BorderLabelFg = ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_BORDER_LABEL_FG)
+			p.UIBlock.BorderLabelFg = uiutils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_BORDER_LABEL_FG)
 
 		case "borderlabel":
 			isUIChange = true
@@ -61,27 +61,27 @@ func (p *Node) ParseAttribute(attr []html.Attribute) (isUIChange, isNeedRerender
 
 		case "borderfg":
 			isUIChange = true
-			p.UIBlock.BorderFg = ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_BORDER_FG)
+			p.UIBlock.BorderFg = uiutils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_BORDER_FG)
 
 		case "border":
 			isUIChange = true
-			p.UIBlock.Border = StringToBool(v.Val, p.UIBlock.Border)
+			p.UIBlock.Border = uiutils.StringToBool(v.Val, p.UIBlock.Border)
 
 		case "borderleft":
 			isUIChange = true
-			p.UIBlock.BorderLeft = StringToBool(v.Val, p.UIBlock.BorderLeft)
+			p.UIBlock.BorderLeft = uiutils.StringToBool(v.Val, p.UIBlock.BorderLeft)
 
 		case "borderright":
 			isUIChange = true
-			p.UIBlock.BorderRight = StringToBool(v.Val, p.UIBlock.BorderRight)
+			p.UIBlock.BorderRight = uiutils.StringToBool(v.Val, p.UIBlock.BorderRight)
 
 		case "bordertop":
 			isUIChange = true
-			p.UIBlock.BorderTop = StringToBool(v.Val, p.UIBlock.BorderTop)
+			p.UIBlock.BorderTop = uiutils.StringToBool(v.Val, p.UIBlock.BorderTop)
 
 		case "borderbottom":
 			isUIChange = true
-			p.UIBlock.BorderBottom = StringToBool(v.Val, p.UIBlock.BorderBottom)
+			p.UIBlock.BorderBottom = uiutils.StringToBool(v.Val, p.UIBlock.BorderBottom)
 
 		case "height":
 			isUIChange = true

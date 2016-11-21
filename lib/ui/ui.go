@@ -1,16 +1,15 @@
 package ui
 
 import (
+	uiutils "in/ui/utils"
 	"os"
 	"path/filepath"
-	"sync"
 
 	"github.com/gizak/termui"
 )
 
 var (
 	GClearScreenBuffer *ClearScreenBuffer
-	GUIRenderLocker    sync.RWMutex
 )
 
 var GlobalOption = Option{
@@ -48,11 +47,5 @@ func PrepareUI() {
 }
 
 func uiClear() {
-	uiRender(GClearScreenBuffer)
-}
-
-func uiRender(bs ...termui.Bufferer) {
-	GUIRenderLocker.Lock()
-	defer GUIRenderLocker.Unlock()
-	termui.Render(bs...)
+	uiutils.UIRender(GClearScreenBuffer)
 }

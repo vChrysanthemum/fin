@@ -13,7 +13,7 @@ type ScriptDoc struct {
 }
 
 type Script struct {
-	script.Script
+	Script   *script.Script
 	page     *Page
 	luaDocs  []ScriptDoc
 	luaState *lua.LState
@@ -22,8 +22,7 @@ type Script struct {
 func (p *Page) prepareScript() {
 	var err error
 	s := new(Script)
-
-	s.CancelSigs = make(map[string]chan bool, 0)
+	s.Script = script.NewScript()
 
 	s.page = p
 

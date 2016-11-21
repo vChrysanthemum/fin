@@ -1,6 +1,10 @@
 package ui
 
-import lua "github.com/yuin/gopher-lua"
+import (
+	"in/utils"
+
+	lua "github.com/yuin/gopher-lua"
+)
 
 func (p *Script) _getNodeTerminalPointerFromUserData(L *lua.LState, lu *lua.LUserData) *NodeTerminal {
 	if nil == lu || nil == lu.Value {
@@ -26,6 +30,7 @@ func (p *Script) _getNodeTerminalPointerFromUserData(L *lua.LState, lu *lua.LUse
 }
 
 func (p *Script) luaFuncNodeTerminalRegisterCommandHandle(L *lua.LState) int {
+	defer utils.RecoverPanic()
 	if L.GetTop() < 2 {
 		L.Push(lua.LNil)
 		return 1
@@ -59,6 +64,7 @@ func (p *Script) luaFuncNodeTerminalRegisterCommandHandle(L *lua.LState) int {
 }
 
 func (p *Script) luaFuncNodeTerminalRemoveCommandHandle(L *lua.LState) int {
+	defer utils.RecoverPanic()
 	if L.GetTop() < 2 {
 		L.Push(lua.LNil)
 		return 1
@@ -77,6 +83,7 @@ func (p *Script) luaFuncNodeTerminalRemoveCommandHandle(L *lua.LState) int {
 }
 
 func (p *Script) luaFuncNodeTerminalWriteNewLine(L *lua.LState) int {
+	defer utils.RecoverPanic()
 	if L.GetTop() < 2 {
 		return 0
 	}
@@ -93,6 +100,7 @@ func (p *Script) luaFuncNodeTerminalWriteNewLine(L *lua.LState) int {
 }
 
 func (p *Script) luaFuncNodeTerminalClearLines(L *lua.LState) int {
+	defer utils.RecoverPanic()
 	if L.GetTop() < 1 {
 		return 0
 	}

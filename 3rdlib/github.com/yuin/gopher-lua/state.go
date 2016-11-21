@@ -6,7 +6,6 @@ package lua
 
 import (
 	"fmt"
-	"github.com/yuin/gopher-lua/parse"
 	"io"
 	"math"
 	"os"
@@ -14,6 +13,8 @@ import (
 	"strings"
 	"sync/atomic"
 	"time"
+
+	"github.com/yuin/gopher-lua/parse"
 )
 
 const MultRet = -1
@@ -1603,13 +1604,13 @@ func (ls *LState) Call(nargs, nret int) {
 
 func (ls *LState) PCall(nargs, nret int, errfunc *LFunction) (err error) {
 	err = nil
-	sp := ls.stack.Sp()
-	base := ls.reg.Top() - nargs - 1
-	oldpanic := ls.Panic
 	ls.Panic = panicWithoutTraceback
 	if errfunc != nil {
 		ls.hasErrorFunc = true
 	}
+	sp := ls.stack.Sp()
+	base := ls.reg.Top() - nargs - 1
+	oldpanic := ls.Panic
 	defer func() {
 		ls.Panic = oldpanic
 		ls.hasErrorFunc = false

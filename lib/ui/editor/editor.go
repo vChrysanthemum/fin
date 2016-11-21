@@ -1,7 +1,7 @@
 package editor
 
 import (
-	. "in/ui/utils"
+	uiutils "in/ui/utils"
 	"strings"
 	"sync"
 
@@ -157,5 +157,5 @@ func (p *Editor) ActiveMode() {
 
 func (p *Editor) UnActiveMode() {
 	p.CursorLocation.IsDisplay = false
-	UISetCursor(-1, -1)
+	uiutils.UISetCursor(-1, -1)
 }

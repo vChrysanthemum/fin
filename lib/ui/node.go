@@ -3,7 +3,7 @@ package ui
 import (
 	"container/list"
 	"image"
-	. "in/ui/utils"
+	uiutils "in/ui/utils"
 	"sync"
 
 	"github.com/gizak/termui"
@@ -165,7 +165,7 @@ func (p *Node) uiRender() {
 	if nil == p.uiBuffer {
 		return
 	}
-	uiRender(p.uiBuffer.(termui.Bufferer))
+	uiutils.UIRender(p.uiBuffer.(termui.Bufferer))
 	if nodeDataAfterRenderHandler, ok := p.Data.(NodeDataAfterRenderHandler); true == ok {
 		nodeDataAfterRenderHandler.NodeDataAfterRenderHandle()
 	}
@@ -174,16 +174,16 @@ func (p *Node) uiRender() {
 func (p *Node) SetCursor(x, y int) {
 	p.CursorLocation.X = p.UIBlock.InnerArea.Min.X + x
 	p.CursorLocation.Y = p.UIBlock.InnerArea.Min.Y + y
-	UISetCursor(p.CursorLocation.X, p.CursorLocation.Y)
+	uiutils.UISetCursor(p.CursorLocation.X, p.CursorLocation.Y)
 	p.uiRender()
 }
 
 func (p *Node) ResumeCursor() {
-	UISetCursor(p.CursorLocation.X, p.CursorLocation.Y)
+	uiutils.UISetCursor(p.CursorLocation.X, p.CursorLocation.Y)
 	p.uiRender()
 }
 
 func (p *Node) HideCursor() {
-	UISetCursor(-1, -1)
+	uiutils.UISetCursor(-1, -1)
 	p.uiRender()
 }

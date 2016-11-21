@@ -7,7 +7,10 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"os/signal"
 	"path/filepath"
+	"runtime"
+	"syscall"
 )
 
 var (
@@ -21,6 +24,16 @@ func main() {
 	logFile, _ := os.OpenFile(filepath.Join(GlobalResBaseDir, "in.log"),
 		os.O_CREATE|os.O_RDWR|os.O_APPEND, 0777)
 	log.SetOutput(logFile)
+
+	sigChan := make(chan os.Signal)
+	go func() {
+		stacktrace := make([]byte, 8192)
+		for _ = range sigChan {
+			length := runtime.Stack(stacktrace, true)
+			log.Println(string(stacktrace[:length]))
+		}
+	}()
+	signal.Notify(sigChan, syscall.SIGQUIT)
 
 	if len(os.Args) < 1 {
 		fmt.Println("Project name is needed.")

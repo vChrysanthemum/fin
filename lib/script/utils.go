@@ -1,6 +1,7 @@
 package script
 
 import (
+	"in/utils"
 	"log"
 	"time"
 
@@ -9,6 +10,7 @@ import (
 )
 
 func (p *Script) Log(L *lua.LState) int {
+	defer utils.RecoverPanic()
 	params := L.GetTop()
 	var contents []string
 	for i := 1; i <= params; i++ {
@@ -19,6 +21,7 @@ func (p *Script) Log(L *lua.LState) int {
 }
 
 func (p *Script) SetInterval(L *lua.LState) int {
+	defer utils.RecoverPanic()
 	if L.GetTop() < 2 {
 		return 0
 	}
@@ -56,6 +59,7 @@ func (p *Script) SetInterval(L *lua.LState) int {
 }
 
 func (p *Script) SetTimeout(L *lua.LState) int {
+	defer utils.RecoverPanic()
 	if L.GetTop() < 2 {
 		return 0
 	}
@@ -92,6 +96,7 @@ func (p *Script) SetTimeout(L *lua.LState) int {
 }
 
 func (p *Script) SendCancelSig(L *lua.LState) int {
+	defer utils.RecoverPanic()
 	if L.GetTop() < 1 {
 		return 0
 	}
@@ -104,4 +109,7 @@ func (p *Script) SendCancelSig(L *lua.LState) int {
 	cancel <- true
 	delete(p.CancelSigs, sigKey)
 	return 0
+}
+
+func (p *Script) LuaCallByParam(L *lua.LState) {
 }

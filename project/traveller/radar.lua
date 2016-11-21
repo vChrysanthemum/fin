@@ -9,10 +9,10 @@ function NewRadar()
     Radar.FocusPlanet= nil
 
     Radar.KeyPressSig = NodeRadar:RegisterKeyPressHandler(function(nodePointer, keyStr)
-        Radar:KeyPressHandle(nodePointer, keyStr)
+        GRadar:KeyPressHandle(nodePointer, keyStr)
     end)
     Radar.ActiveModeSig = NodeRadar:RegisterLuaActiveModeHandler(function(nodePointer)
-        Radar:ActiveMode(nodePointer)
+        GRadar:ActiveMode(nodePointer)
     end)
     return Radar
 end
@@ -158,6 +158,7 @@ end
 -- 画指定区域内的的星球
 function _Radar.DrawPlanets(self)
     self:RefreshParInfo()
+    local planet = {}
     for _, planet in pairs(self.ScreenPlanets) do
         NodeRadar:CanvasSet(
         planet.ScreenPosition.X,

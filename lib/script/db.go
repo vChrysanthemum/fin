@@ -2,6 +2,7 @@ package script
 
 import (
 	"database/sql"
+	"in/utils"
 	"path/filepath"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -48,6 +49,7 @@ func (p *Script) _getDBResultPointerFromUserData(L *lua.LState, lu *lua.LUserDat
 }
 
 func (p *Script) OpenDB(L *lua.LState) int {
+	defer utils.RecoverPanic()
 	if L.GetTop() < 1 {
 		L.Push(lua.LNil)
 		return 1
@@ -67,6 +69,7 @@ func (p *Script) OpenDB(L *lua.LState) int {
 }
 
 func (p *Script) CloseDB(L *lua.LState) int {
+	defer utils.RecoverPanic()
 	if L.GetTop() < 1 {
 		return 0
 	}
@@ -79,6 +82,7 @@ func (p *Script) CloseDB(L *lua.LState) int {
 }
 
 func (p *Script) DBQuery(L *lua.LState) int {
+	defer utils.RecoverPanic()
 	if L.GetTop() < 2 {
 		L.Push(lua.LNil)
 		return 1
@@ -104,6 +108,7 @@ func (p *Script) DBQuery(L *lua.LState) int {
 }
 
 func (p *Script) DBRowsNext(L *lua.LState) int {
+	defer utils.RecoverPanic()
 	if L.GetTop() < 1 {
 		L.Push(lua.LNil)
 		return 1
@@ -140,6 +145,7 @@ func (p *Script) DBRowsNext(L *lua.LState) int {
 }
 
 func (p *Script) DBRowsClose(L *lua.LState) int {
+	defer utils.RecoverPanic()
 	if L.GetTop() < 1 {
 		return 0
 	}
@@ -154,6 +160,7 @@ func (p *Script) DBRowsClose(L *lua.LState) int {
 }
 
 func (p *Script) DBExec(L *lua.LState) int {
+	defer utils.RecoverPanic()
 	if L.GetTop() < 2 {
 		L.Push(lua.LNil)
 		return 1
@@ -179,6 +186,7 @@ func (p *Script) DBExec(L *lua.LState) int {
 }
 
 func (p *Script) DBResultLastInsertId(L *lua.LState) int {
+	defer utils.RecoverPanic()
 	if L.GetTop() < 1 {
 		L.Push(lua.LNil)
 		return 1
@@ -200,6 +208,7 @@ func (p *Script) DBResultLastInsertId(L *lua.LState) int {
 }
 
 func (p *Script) DBResultRowsAffected(L *lua.LState) int {
+	defer utils.RecoverPanic()
 	if L.GetTop() < 1 {
 		L.Push(lua.LNil)
 		return 1

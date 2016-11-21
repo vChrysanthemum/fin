@@ -1,7 +1,8 @@
 package ui
 
 import (
-	. "in/ui/utils"
+	uiutils "in/ui/utils"
+	"in/utils"
 	"unicode/utf8"
 
 	"github.com/gizak/termui"
@@ -32,6 +33,7 @@ func (p *Script) _getNodeCanvasPointerFromUserData(L *lua.LState, lu *lua.LUserD
 }
 
 func (p *Script) luaFuncNodeCanvasClean(L *lua.LState) int {
+	defer utils.RecoverPanic()
 	params := L.GetTop()
 	if params < 1 {
 		return 0
@@ -44,6 +46,7 @@ func (p *Script) luaFuncNodeCanvasClean(L *lua.LState) int {
 }
 
 func (p *Script) luaFuncNodeCanvasUnSet(L *lua.LState) int {
+	defer utils.RecoverPanic()
 	params := L.GetTop()
 	if params < 3 {
 		return 0
@@ -56,6 +59,7 @@ func (p *Script) luaFuncNodeCanvasUnSet(L *lua.LState) int {
 }
 
 func (p *Script) luaFuncNodeCanvasSet(L *lua.LState) int {
+	defer utils.RecoverPanic()
 	params := L.GetTop()
 	if params < 4 {
 		return 0
@@ -71,16 +75,17 @@ func (p *Script) luaFuncNodeCanvasSet(L *lua.LState) int {
 	colorFg := termui.ColorDefault
 	colorBg := termui.ColorBlue
 	if params >= 5 {
-		colorFg = ColorToTermuiAttribute(L.ToString(5), termui.ColorBlue)
+		colorFg = uiutils.ColorToTermuiAttribute(L.ToString(5), termui.ColorBlue)
 	}
 	if params >= 6 {
-		colorBg = ColorToTermuiAttribute(L.ToString(6), termui.ColorDefault)
+		colorBg = uiutils.ColorToTermuiAttribute(L.ToString(6), termui.ColorDefault)
 	}
 	nodeCanvas.Canvas.Set(L.ToInt(2), L.ToInt(3), &termui.Cell{ch, colorFg, colorBg})
 	return 0
 }
 
 func (p *Script) luaFuncNodeCanvasDraw(L *lua.LState) int {
+	defer utils.RecoverPanic()
 	if L.GetTop() < 1 {
 		return 0
 	}
