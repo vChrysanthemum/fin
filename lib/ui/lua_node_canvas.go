@@ -2,7 +2,6 @@ package ui
 
 import (
 	uiutils "in/ui/utils"
-	"in/utils"
 	"unicode/utf8"
 
 	"github.com/gizak/termui"
@@ -33,7 +32,6 @@ func (p *Script) _getNodeCanvasPointerFromUserData(L *lua.LState, lu *lua.LUserD
 }
 
 func (p *Script) luaFuncNodeCanvasClean(L *lua.LState) int {
-	defer utils.RecoverPanic()
 	params := L.GetTop()
 	if params < 1 {
 		return 0
@@ -46,7 +44,6 @@ func (p *Script) luaFuncNodeCanvasClean(L *lua.LState) int {
 }
 
 func (p *Script) luaFuncNodeCanvasUnSet(L *lua.LState) int {
-	defer utils.RecoverPanic()
 	params := L.GetTop()
 	if params < 3 {
 		return 0
@@ -59,7 +56,6 @@ func (p *Script) luaFuncNodeCanvasUnSet(L *lua.LState) int {
 }
 
 func (p *Script) luaFuncNodeCanvasSet(L *lua.LState) int {
-	defer utils.RecoverPanic()
 	params := L.GetTop()
 	if params < 4 {
 		return 0
@@ -85,7 +81,6 @@ func (p *Script) luaFuncNodeCanvasSet(L *lua.LState) int {
 }
 
 func (p *Script) luaFuncNodeCanvasDraw(L *lua.LState) int {
-	defer utils.RecoverPanic()
 	if L.GetTop() < 1 {
 		return 0
 	}

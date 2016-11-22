@@ -1,4 +1,5 @@
 local json = require("json")
+local rwmutex = require("rwmutex")
 
 local _World = {}
 local _mtWorld = {__index = _World} 
@@ -16,6 +17,7 @@ function NewWorld()
     World.CreateBlockWidth  = World.WorkBlockWidth * World.WorkBlockColumns
     World.CreateBlockHeight = World.WorkBlockHeight * World.WorkBlockRows
     World.Planets           = {}
+    World.EventLocker       = rwmutex.NewRWMutex()
     return World
 end
 
@@ -34,7 +36,9 @@ end
 
 function _World.LoopEvent(self)
     self.LoopEventSig = SetInterval(200, function()
+        self.EventLocker:Lock()
         self:loopEvent()
+        self.EventLocker:Unlock()
     end)
     --[[
     SetTimeout(3000, function()

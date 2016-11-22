@@ -18,7 +18,9 @@ function NewRadar()
 end
 
 function _Radar.ActiveMode(self, nodePointer)
+    GWorld.EventLocker:Lock()
     self:renewCursor()
+    GWorld.EventLocker:Unlock()
 end
 
 function _Radar.RefreshParInfo(self)
@@ -61,6 +63,7 @@ Y: %d
 end
 
 function _Radar.KeyPressHandle(self, nodePointer, keyStr)
+    GWorld.EventLocker:Lock()
     if "<enter>" == keyStr then
         if "" == GTerminal.CurrentCommand then
         end
@@ -125,6 +128,7 @@ function _Radar.KeyPressHandle(self, nodePointer, keyStr)
     end
 
     self:DrawPlanets()
+    GWorld.EventLocker:Unlock()
 end
 
 -- 计算星球所在屏幕的位置

@@ -51,6 +51,10 @@ func (p *Script) RegisterBaseTable(L *lua.LState, baseTable *lua.LTable) {
 	L.SetField(baseTable, "DBExec", L.NewFunction(p.DBExec))
 	L.SetField(baseTable, "DBResultLastInsertId", L.NewFunction(p.DBResultLastInsertId))
 	L.SetField(baseTable, "DBResultRowsAffected", L.NewFunction(p.DBResultRowsAffected))
+
+	L.SetField(baseTable, "NewRWMutex", L.NewFunction(p.NewRWMutex))
+	L.SetField(baseTable, "RWMutexLock", L.NewFunction(p.RWMutexLock))
+	L.SetField(baseTable, "RWMutexUnlock", L.NewFunction(p.RWMutexUnlock))
 }
 
 func (p *Script) RegisterScript(L *lua.LState) {

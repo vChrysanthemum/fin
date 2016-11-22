@@ -1,33 +1,27 @@
 package ui
 
 import (
-	"in/utils"
-
 	"github.com/gizak/termui"
 	lua "github.com/yuin/gopher-lua"
 )
 
 func (p *Script) luaFuncUIRerender(L *lua.LState) int {
-	defer utils.RecoverPanic()
 	p.page.SetActiveNode(nil)
 	p.page.Rerender()
 	return 0
 }
 
 func (p *Script) luaFuncWindowWidth(L *lua.LState) int {
-	defer utils.RecoverPanic()
 	L.Push(lua.LNumber(termui.TermWidth()))
 	return 1
 }
 
 func (p *Script) luaFuncWindowHeight(L *lua.LState) int {
-	defer utils.RecoverPanic()
 	L.Push(lua.LNumber(termui.TermHeight()))
 	return 1
 }
 
 func (p *Script) luaFuncWindowConfirm(L *lua.LState) int {
-	defer utils.RecoverPanic()
 	if L.GetTop() < 1 {
 		return 0
 	}

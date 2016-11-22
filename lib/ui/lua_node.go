@@ -1,8 +1,6 @@
 package ui
 
 import (
-	"in/utils"
-
 	"golang.org/x/net/html"
 
 	"github.com/gizak/termui"
@@ -23,7 +21,6 @@ func (p *Script) _getNodePointerFromUserData(L *lua.LState, lu *lua.LUserData) *
 }
 
 func (p *Script) luaFuncGetNodePointer(L *lua.LState) int {
-	defer utils.RecoverPanic()
 	if L.GetTop() < 1 {
 		return 0
 	}
@@ -49,7 +46,6 @@ func (p *Script) luaFuncGetNodePointer(L *lua.LState) int {
 }
 
 func (p *Script) luaFuncNodeWidth(L *lua.LState) int {
-	defer utils.RecoverPanic()
 	if L.GetTop() < 1 {
 		return 0
 	}
@@ -66,7 +62,6 @@ func (p *Script) luaFuncNodeWidth(L *lua.LState) int {
 }
 
 func (p *Script) luaFuncNodeHeight(L *lua.LState) int {
-	defer utils.RecoverPanic()
 	if L.GetTop() < 1 {
 		return 0
 	}
@@ -83,7 +78,6 @@ func (p *Script) luaFuncNodeHeight(L *lua.LState) int {
 }
 
 func (p *Script) luaFuncNodeGetAttribute(L *lua.LState) int {
-	defer utils.RecoverPanic()
 	if L.GetTop() < 2 {
 		return 0
 	}
@@ -102,7 +96,6 @@ func (p *Script) luaFuncNodeGetAttribute(L *lua.LState) int {
 }
 
 func (p *Script) luaFuncNodeSetAttribute(L *lua.LState) int {
-	defer utils.RecoverPanic()
 	if L.GetTop() < 3 {
 		return 0
 	}
@@ -127,7 +120,6 @@ func (p *Script) luaFuncNodeSetAttribute(L *lua.LState) int {
 }
 
 func (p *Script) luaFuncNodeSetActive(L *lua.LState) int {
-	defer utils.RecoverPanic()
 	if L.GetTop() < 1 {
 		return 0
 	}
@@ -143,7 +135,6 @@ func (p *Script) luaFuncNodeSetActive(L *lua.LState) int {
 }
 
 func (p *Script) luaFuncNodeGetHtmlData(L *lua.LState) int {
-	defer utils.RecoverPanic()
 	if L.GetTop() < 1 {
 		return 0
 	}
@@ -160,7 +151,6 @@ func (p *Script) luaFuncNodeGetHtmlData(L *lua.LState) int {
 }
 
 func (p *Script) luaFuncNodeSetText(L *lua.LState) int {
-	defer utils.RecoverPanic()
 	if L.GetTop() < 2 {
 		return 0
 	}
@@ -185,7 +175,6 @@ func (p *Script) luaFuncNodeSetText(L *lua.LState) int {
 }
 
 func (p *Script) luaFuncNodeGetValue(L *lua.LState) int {
-	defer utils.RecoverPanic()
 	if L.GetTop() < 1 {
 		return 0
 	}
@@ -208,7 +197,6 @@ func (p *Script) luaFuncNodeGetValue(L *lua.LState) int {
 }
 
 func (p *Script) luaFuncNodeSetCursor(L *lua.LState) int {
-	defer utils.RecoverPanic()
 	if L.GetTop() < 3 {
 		return 0
 	}
@@ -244,7 +232,6 @@ func (p *Script) luaFuncNodeSetCursor(L *lua.LState) int {
 }
 
 func (p *Script) luaFuncNodeResumeCursor(L *lua.LState) int {
-	defer utils.RecoverPanic()
 	if L.GetTop() < 1 {
 		return 0
 	}
@@ -261,7 +248,6 @@ func (p *Script) luaFuncNodeResumeCursor(L *lua.LState) int {
 }
 
 func (p *Script) luaFuncNodeHideCursor(L *lua.LState) int {
-	defer utils.RecoverPanic()
 	if L.GetTop() < 1 {
 		return 0
 	}
@@ -278,7 +264,6 @@ func (p *Script) luaFuncNodeHideCursor(L *lua.LState) int {
 }
 
 func (p *Script) luaFuncNodeRegisterLuaActiveModeHandler(L *lua.LState) int {
-	defer utils.RecoverPanic()
 	if L.GetTop() < 2 {
 		L.Push(lua.LNil)
 		return 1
@@ -312,7 +297,6 @@ func (p *Script) luaFuncNodeRegisterLuaActiveModeHandler(L *lua.LState) int {
 }
 
 func (p *Script) luaFuncNodeRemoveLuaActiveModeHandler(L *lua.LState) int {
-	defer utils.RecoverPanic()
 	if L.GetTop() < 2 {
 		return 0
 	}
@@ -329,7 +313,6 @@ func (p *Script) luaFuncNodeRemoveLuaActiveModeHandler(L *lua.LState) int {
 }
 
 func (p *Script) luaFuncNodeRegisterKeyPressHandler(L *lua.LState) int {
-	defer utils.RecoverPanic()
 	if L.GetTop() < 2 {
 		L.Push(lua.LNil)
 		return 1
@@ -363,7 +346,6 @@ func (p *Script) luaFuncNodeRegisterKeyPressHandler(L *lua.LState) int {
 }
 
 func (p *Script) luaFuncNodeRegisterKeyPressEnterHandler(L *lua.LState) int {
-	defer utils.RecoverPanic()
 	if L.GetTop() < 2 {
 		L.Push(lua.LNil)
 		return 1
@@ -396,7 +378,6 @@ func (p *Script) luaFuncNodeRegisterKeyPressEnterHandler(L *lua.LState) int {
 }
 
 func (p *Script) luaFuncNodeRemoveKeyPressEnterHandler(L *lua.LState) int {
-	defer utils.RecoverPanic()
 	if L.GetTop() < 2 {
 		return 0
 	}
@@ -413,7 +394,6 @@ func (p *Script) luaFuncNodeRemoveKeyPressEnterHandler(L *lua.LState) int {
 }
 
 func (p *Script) luaFuncNodeRemove(L *lua.LState) int {
-	defer utils.RecoverPanic()
 	if L.GetTop() < 1 {
 		return 0
 	}
