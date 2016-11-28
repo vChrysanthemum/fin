@@ -6,6 +6,7 @@ NodeTerminalMain = Node("TerminalMain")
 NodeParInfo = Node("ParInfo")
 NodeInputTextNamePlanet = Node("InputTextNamePlanet")
 NodeParGUserSpaceshipStatus = Node("ParGUserSpaceshipStatus")
+NodeGaugeFuel = Node("GaugeFuel")
 
 NodeRadar:SetAttribute("height", tostring(WindowHeight()-NodeTerminalMain:Height()))
 
@@ -24,4 +25,5 @@ NodeInputTextNamePlanet:RegisterKeyPressEnterHandler(function(nodePointer)
 end)
 
 NodeTerminalMain:SetActive()
+GUserSpaceship:UpdateFuel(0)
 GWorld:LoopEvent()
