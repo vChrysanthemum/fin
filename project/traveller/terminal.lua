@@ -28,13 +28,13 @@ function _Terminal.ExecCommand(self, nodePointer, command)
         if "number" == type(tmp) then
             GUserSpaceship:SetSpeedY(tmp)
         end
+    elseif "clear" == command then
+        NodeTerminalMain:TerminalClearLines()
     end
         --GUserSpaceship.Info.Speed = tonumber(command[1])
     --[[
     if "punch" == command then
     NodeTerminalMain:TerminalWriteNewLine("  punch success.")
-    elseif "clear" == command then
-    NodeTerminalMain:TerminalClearLines()
     elseif "destory" == command then
     NodeTerminalMain:TerminalRemoveCommandHandle(self.CommandSig)
     end

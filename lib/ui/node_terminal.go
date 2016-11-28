@@ -10,10 +10,11 @@ import (
 type NodeTerminal struct {
 	*Node
 	*editor.Editor
-	ActiveModeBorderColor termui.Attribute
-	CommandPrefix         string
-	NewCommand            *editor.Line
-	CommandLines          []*editor.Line
+	ActiveModeBorderColor   termui.Attribute
+	CommandPrefix           string
+	NewCommand              *editor.Line
+	CommandLines            []*editor.Line
+	CurrentCommandLineIndex int
 }
 
 func (p *Node) InitNodeTerminal() *NodeTerminal {
@@ -52,6 +53,7 @@ func (p *NodeTerminal) KeyPress(e termui.Event) {
 
 			p.NewCommand = p.Editor.CurrentLine
 			p.CommandLines = append(p.CommandLines, p.NewCommand)
+			p.CurrentCommandLineIndex = len(p.CommandLines) - 1
 		}
 
 		if len(p.Node.KeyPressEnterHandlers) > 0 {
@@ -72,6 +74,30 @@ func (p *NodeTerminal) KeyPress(e termui.Event) {
 		utils.Beep()
 		p.Editor.ResumeCursor()
 		p.Node.uiRender()
+		return
+	}
+
+	if "<up>" == keyStr || "<down>" == keyStr {
+		if len(p.CommandLines) > 0 {
+			if "<up>" == keyStr {
+				p.CurrentCommandLineIndex -= 1
+				if p.CurrentCommandLineIndex <= 0 {
+					p.CurrentCommandLineIndex = 0
+				}
+			} else if "<down>" == keyStr {
+				p.CurrentCommandLineIndex += 1
+				if p.CurrentCommandLineIndex >= len(p.CommandLines) {
+					p.CurrentCommandLineIndex = len(p.CommandLines)
+				}
+			}
+
+			if len(p.CommandLines) == p.CurrentCommandLineIndex {
+				p.Editor.UpdateCurrentLineData(p.CommandPrefix)
+			} else {
+				p.Editor.UpdateCurrentLineData(string(p.CommandLines[p.CurrentCommandLineIndex].Data))
+			}
+			p.Node.uiRender()
+		}
 		return
 	}
 

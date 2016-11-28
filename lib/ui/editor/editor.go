@@ -49,6 +49,10 @@ func (p *Editor) Text() string {
 	return strings.Join(printLines, "\n")
 }
 
+func (p *Editor) UpdateCurrentLineData(line string) {
+	p.CurrentLine.Data = []byte(line)
+}
+
 func (p *Editor) WriteNewLine(line string) {
 	if 0 == len(p.Lines) {
 		p.CurrentLine = p.InitNewLine()
