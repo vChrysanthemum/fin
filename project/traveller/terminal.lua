@@ -14,9 +14,6 @@ end
 function _Terminal.ExecCommand(self, nodePointer, command)
     local tmp
     command = StringSplit(command, " ")
-    if TableLength(command) < 2 then
-        return nil
-    end
 
     if "speedx" == command[1] then
         tmp = tonumber(command[2])
@@ -28,7 +25,7 @@ function _Terminal.ExecCommand(self, nodePointer, command)
         if "number" == type(tmp) then
             GUserSpaceship:SetSpeedY(tmp)
         end
-    elseif "clear" == command then
+    elseif "clear" == command[1] then
         NodeTerminalMain:TerminalClearLines()
     end
         --GUserSpaceship.Info.Speed = tonumber(command[1])
