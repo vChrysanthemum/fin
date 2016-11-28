@@ -2,6 +2,7 @@ package ui
 
 import (
 	"in/script"
+	"log"
 	"path/filepath"
 
 	lua "github.com/yuin/gopher-lua"
@@ -130,4 +131,13 @@ func (p *Script) Run() {
 			panic(err)
 		}
 	}
+}
+
+func luaCallByParam(L *lua.LState, cp lua.P, args ...lua.LValue) error {
+	defer func() {
+		if rcv := recover(); nil != rcv {
+			log.Println(rcv)
+		}
+	}()
+	return L.CallByParam(cp, args...)
 }

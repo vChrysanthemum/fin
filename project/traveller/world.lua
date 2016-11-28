@@ -36,9 +36,7 @@ end
 
 function _World.LoopEvent(self)
     self.LoopEventSig = SetInterval(200, function()
-        self.EventLocker:Lock()
         self:loopEvent()
-        self.EventLocker:Unlock()
     end)
     --[[
     SetTimeout(3000, function()
