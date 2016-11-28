@@ -77,6 +77,10 @@ func (p *NodeTerminal) KeyPress(e termui.Event) {
 		return
 	}
 
+	if "<left>" == keyStr || "<right>" == keyStr {
+		return
+	}
+
 	if "<up>" == keyStr || "<down>" == keyStr {
 		if len(p.CommandLines) > 0 {
 			if "<up>" == keyStr {
