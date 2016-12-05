@@ -176,21 +176,6 @@ func (p *Page) Rerender() {
 }
 
 func (p *Page) Serve() {
-	/*
-		defer func() {
-			if r := recover(); nil != r {
-				//stacktrace := make([]byte, 8192)
-				//length := runtime.Stack(stacktrace, true)
-				//log.Println(string(stacktrace[:length]))
-				log.Println(r)
-			}
-			termui.Close()
-			if nil != p.recoverVal {
-				fmt.Fprintln(os.Stderr, p.recoverVal)
-			}
-		}()
-	*/
-
 	p.Refresh()
 
 	p.registerHandles()

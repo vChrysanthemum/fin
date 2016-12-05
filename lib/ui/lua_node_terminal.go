@@ -45,7 +45,7 @@ func (p *Script) luaFuncNodeTerminalRegisterCommandHandle(L *lua.LState) int {
 		_nodeTerminal := _node.Data.(*NodeTerminal)
 		luaNode := _L.NewUserData()
 		luaNode.Value = _node
-		if err := luaCallByParam(_L, lua.P{
+		if err := p.luaCallByParam(_L, lua.P{
 			Fn:      _callback,
 			NRet:    0,
 			Protect: true,

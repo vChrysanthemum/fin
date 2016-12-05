@@ -136,8 +136,10 @@ func (p *Script) Run() {
 	}
 }
 
-func luaCallByParam(L *lua.LState, cp lua.P, args ...lua.LValue) error {
+func (p *Script) luaCallByParam(L *lua.LState, cp lua.P, args ...lua.LValue) error {
+	p.LuaCallByParamLocker.Lock()
 	defer func() {
+		p.LuaCallByParamLocker.Unlock()
 		if rcv := recover(); nil != rcv {
 			log.Println(rcv)
 		}

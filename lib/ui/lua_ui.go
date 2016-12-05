@@ -59,7 +59,7 @@ func (p *Script) luaFuncWindowConfirm(L *lua.LState) int {
 		_key := args[4].(string)
 		luaNode := _L.NewUserData()
 		luaNode.Value = _node
-		if err := luaCallByParam(_L, lua.P{
+		if err := p.luaCallByParam(_L, lua.P{
 			Fn:      _callback,
 			NRet:    0,
 			Protect: true,
