@@ -4,31 +4,38 @@
 </head>
 <body colorfg="blue">
   <script type="text/lua">
-result = WindowConfirm("是否确定开始使用")
-if "confirm" == result then
-  if "confirm" == WindowConfirm("是否使用输入框") then
-    Node("InputTextTest"):SetActive()
-  else 
-    Node("SelectTestChangeOptions"):SetActive()
+WindowConfirm("是否确定开始使用", function(isConfirm)
+  Log(isConfirm)
+  if "confirm" == isConfirm then
+    WindowConfirm("是否使用输入框", function(isConfirm)
+      if "confirm" == isConfirm then
+        Node("InputTextTest"):SetActive()
+      else 
+        Node("SelectTestChangeOptions"):SetActive()
+      end
+    end)
   end
-end
+end)
+
 Node("ParResult"):SetText(result)
 InputTextTestEvent = Node("InputTextTest"):RegisterKeyPressEnterHandler(
   function(nodePointer)
     Node("ParResult0"):SetText(Node("InputTextTest"):GetValue())
     Node("SelectTestChangeOptions"):SelectAppendOption("测试", "你好")
-    if "confirm" == WindowConfirm("是否继续删除") then
-      Node("InputTextTest"):Remove()
-      Node("SelectTestRemove"):Remove()
-      Node("SelectTestChangeOptions"):SelectClearOptions()
-      Node("GaugeTest"):SetAttribute("percent", "30") 
-      Node("ParResult3"):SetAttribute("borderlabel", "测试")
-      Node("ParResult3"):SetAttribute("border", "true")
-      Node("ParResult3"):SetAttribute("borderfg", "yellow")
-      Node("ParResult3"):SetAttribute("height", "6")
-    else 
-      Node("InputTextTest"):RemoveKeyPressEnterHandler(InputTextTestEvent)
-    end
+    WindowConfirm("是否继续删除", function(isConfirm)
+      if "confirm" == isConfirm then
+        Node("InputTextTest"):Remove()
+        Node("SelectTestRemove"):Remove()
+        Node("SelectTestChangeOptions"):SelectClearOptions()
+        Node("GaugeTest"):SetAttribute("percent", "30") 
+        Node("ParResult3"):SetAttribute("borderlabel", "测试")
+        Node("ParResult3"):SetAttribute("border", "true")
+        Node("ParResult3"):SetAttribute("borderfg", "yellow")
+        Node("ParResult3"):SetAttribute("height", "6")
+      else 
+          Node("InputTextTest"):RemoveKeyPressEnterHandler(InputTextTestEvent)
+      end
+    end)
   end
 )
   </script>

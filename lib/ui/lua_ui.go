@@ -27,6 +27,7 @@ func (p *Script) luaFuncWindowConfirm(L *lua.LState) int {
 	}
 
 	content := L.ToString(1)
+	callback := L.ToFunction(2)
 	page, err := Parse(content)
 	if nil != err {
 		return 0
@@ -49,14 +50,32 @@ func (p *Script) luaFuncWindowConfirm(L *lua.LState) int {
 	p.page.SetActiveNode(nodeSelect)
 
 	nodeSelectData.DisableQuit = true
-	nodeSelect.WaitKeyPressEnter()
 
-	L.Push(lua.LString(nodeSelectData.NodeDataGetValue()))
+	key := nodeSelect.RegisterKeyPressEnterHandler(func(_node *Node, args ...interface{}) {
+		_L := args[0].(*lua.LState)
+		_callback := args[1].(*lua.LFunction)
+		_page := args[2].(*Page)
+		_mainPage := args[3].(*Page)
+		_key := args[4].(string)
+		luaNode := _L.NewUserData()
+		luaNode.Value = _node
+		if err := luaCallByParam(_L, lua.P{
+			Fn:      _callback,
+			NRet:    0,
+			Protect: true,
+		}, lua.LString(_node.Data.(*NodeSelect).NodeDataGetValue())); err != nil {
+			panic(err)
+		}
+		_page.Clear()
+		_mainPage.SetActiveNode(nil)
+		_mainPage.Rerender()
+		go _node.RemoveKeyPressEnterHandler(_key)
+	}, L, callback, page, p.page)
+	_job := nodeSelect.KeyPressEnterHandlers[key]
+	_job.Args = append(_job.Args, key)
+	nodeSelect.KeyPressEnterHandlers[key] = _job
 
-	page.Clear()
-
-	p.page.SetActiveNode(nil)
-	p.page.Rerender()
+	L.Push(lua.LString(key))
 
 	return 1
 }

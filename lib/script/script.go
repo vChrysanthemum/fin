@@ -3,6 +3,7 @@ package script
 import (
 	"os"
 	"path/filepath"
+	"sync"
 
 	luajson "github.com/layeh/gopher-json"
 	lua "github.com/yuin/gopher-lua"
@@ -23,12 +24,14 @@ func Init(option Option) {
 }
 
 type Script struct {
-	CancelSigs map[string](chan bool)
+	CancelSigs           map[string](chan bool)
+	LuaCallByParamLocker *sync.RWMutex
 }
 
-func NewScript() *Script {
+func NewScript(luaCallByParamLocker *sync.RWMutex) *Script {
 	ret := new(Script)
 	ret.CancelSigs = make(map[string](chan bool), 0)
+	ret.LuaCallByParamLocker = luaCallByParamLocker
 	return ret
 }
 

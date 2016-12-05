@@ -58,13 +58,3 @@ func (p *Node) RemoveKeyPressEnterHandler(key string) {
 	defer p.JobHanderLocker.Unlock()
 	delete(p.KeyPressEnterHandlers, key)
 }
-
-func (p *Node) WaitKeyPressEnter() {
-	c := make(chan bool, 0)
-	key := p.RegisterKeyPressEnterHandler(func(_node *Node, args ...interface{}) {
-		c := args[0].(chan bool)
-		c <- true
-	}, c)
-	<-c
-	p.RemoveKeyPressEnterHandler(key)
-}

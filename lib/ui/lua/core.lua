@@ -10,7 +10,7 @@ function WindowHeight()
   return base.WindowHeight()
 end
 
-function WindowConfirm(title)
+function WindowConfirm(title, callback)
     content = string.format([[
     <table>
         <tr>
@@ -30,7 +30,7 @@ function WindowConfirm(title)
         </tr>
     </table>
     ]], title)
-    return base.WindowConfirm(content)
+    return base.WindowConfirm(content, callback)
 end
 
 local _Node = {}

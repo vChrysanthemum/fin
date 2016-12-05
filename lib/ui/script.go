@@ -4,6 +4,7 @@ import (
 	"in/script"
 	"log"
 	"path/filepath"
+	"sync"
 
 	lua "github.com/yuin/gopher-lua"
 )
@@ -14,16 +15,18 @@ type ScriptDoc struct {
 }
 
 type Script struct {
-	Script   *script.Script
-	page     *Page
-	luaDocs  []ScriptDoc
-	luaState *lua.LState
+	Script               *script.Script
+	page                 *Page
+	luaDocs              []ScriptDoc
+	luaState             *lua.LState
+	LuaCallByParamLocker *sync.RWMutex
 }
 
 func (p *Page) prepareScript() {
 	var err error
 	s := new(Script)
-	s.Script = script.NewScript()
+	s.LuaCallByParamLocker = new(sync.RWMutex)
+	s.Script = script.NewScript(s.LuaCallByParamLocker)
 
 	s.page = p
 
