@@ -6,6 +6,7 @@ NodeTerminalMain = Node("TerminalMain")
 NodeParInfo = Node("ParInfo")
 NodeParGUserSpaceshipStatus = Node("ParGUserSpaceshipStatus")
 NodeGaugeFuel = Node("GaugeFuel")
+NodeGaugeLife = Node("GaugeLife")
 
 NodeRadar:SetAttribute("height", tostring(WindowHeight()-NodeTerminalMain:Height()))
 
@@ -19,4 +20,5 @@ NodeParGUserSpaceshipStatus:SetAttribute("borderlabel", " " .. GUserSpaceship.In
 
 NodeTerminalMain:SetActive()
 GUserSpaceship:UpdateFuel(0)
+GUserSpaceship:UpdateLife(0)
 GWorld:LoopEvent()

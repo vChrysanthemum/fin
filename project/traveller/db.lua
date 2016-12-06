@@ -31,7 +31,9 @@ local spaceship = {
     Speed     = {X = 0.06, Y = -0.06},
     Character = "x",
     ColorFg   = "blue",
-    StartAt   = TimeNow()
+    StartAt   = TimeNow(),
+    Life      = 86,
+    Fuel      = 100
 }
 sql = string.format([[
 insert into b_spaceship (spaceship_id, data) values (1, '%s');

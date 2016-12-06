@@ -16,7 +16,6 @@ function GetSpaceshipFromDB(spaceshipId)
     local spaceship = NewSpaceship()
     spaceship:Format(json.decode(row.data))
     spaceship.Info.SpaceshipId = spaceshipId
-    spaceship.Fuel = 100
     return spaceship
 end
 
@@ -31,7 +30,9 @@ function NewSpaceship()
         Speed       = {X = 0.0, Y = 0.0},
         Character   = "x",
         ColorFg     = "blue",
-        StartAt     = 0
+        StartAt     = 0,
+        Life        = 100,
+        Fuel        = 100
     })
     Spaceship.ColorBg   = ""
     local Warehouse     = {}
@@ -104,7 +105,9 @@ function _Spaceship.Format(self, spaceshipInfo)
         Speed       = spaceshipInfo.Speed,
         Character   = spaceshipInfo.Character,
         ColorFg     = spaceshipInfo.ColorFg,
-        StartAt     = spaceshipInfo.StartAt
+        StartAt     = spaceshipInfo.StartAt,
+        Fuel        = spaceshipInfo.Fuel,
+        Life        = spaceshipInfo.Life
     }
     self:refreshCenterRectangle(NodeRadar:Width(), NodeRadar:Height())
 end
@@ -131,19 +134,39 @@ function _Spaceship.RunOneStep(self)
 end
 
 function _Spaceship.UpdateFuel(self, number)
-    self.Fuel = self.Fuel + number
-    NodeGaugeFuel:SetAttribute("percent", tostring(self.Fuel))
-    if self.Fuel < 20 then
-        NodeGaugeFuel:SetAttribute("percentcolor_highlighted", "blue")
+    self.Info.Fuel = self.Info.Fuel + number
+    if self.Info.Fuel < 0 then
+        self.Info.Fuel = 0
+    end
+    NodeGaugeFuel:SetAttribute("percent", tostring(self.Info.Fuel))
+    if self.Info.Fuel < 20 then
+        NodeGaugeFuel:SetAttribute("percentcolor_highlighted", "black")
         NodeGaugeFuel:SetAttribute("barcolor", "red")
-    elseif self.Fuel < 50 then
+    elseif self.Info.Fuel < 80 then
         NodeGaugeFuel:SetAttribute("percentcolor_highlighted", "blue")
         NodeGaugeFuel:SetAttribute("barcolor", "yellow")
-    elseif self.Fuel < 80 then
-        NodeGaugeFuel:SetAttribute("percentcolor_highlighted", "blue")
-        NodeGaugeFuel:SetAttribute("barcolor", "green")
     else
         NodeGaugeFuel:SetAttribute("percentcolor_highlighted", "white")
         NodeGaugeFuel:SetAttribute("barcolor", "blue")
     end
+    self:FlushToDB()
+end
+
+function _Spaceship.UpdateLife(self, number)
+    self.Info.Life = self.Info.Life + number
+    if self.Info.Life < 0 then
+        self.Info.Life = 0
+    end
+    NodeGaugeLife:SetAttribute("percent", tostring(self.Info.Life))
+    if self.Info.Life < 20 then
+        NodeGaugeLife:SetAttribute("percentcolor_highlighted", "black")
+        NodeGaugeLife:SetAttribute("barcolor", "red")
+    elseif self.Info.Life < 80 then
+        NodeGaugeLife:SetAttribute("percentcolor_highlighted", "blue")
+        NodeGaugeLife:SetAttribute("barcolor", "yellow")
+    else
+        NodeGaugeLife:SetAttribute("percentcolor_highlighted", "black")
+        NodeGaugeLife:SetAttribute("barcolor", "green")
+    end
+    self:FlushToDB()
 end
