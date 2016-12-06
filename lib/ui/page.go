@@ -140,8 +140,9 @@ func (p *Page) uiRender() {
 	if p.WorkingNodes.Len() > 0 {
 		for e = p.WorkingNodes.Front(); e != nil; e = e.Next() {
 			node = e.Value.(*Node)
-			node.TopNode = nil
-			node.BottomNode = nil
+			node.FocusThisNode = e
+			node.FocusTopNode = nil
+			node.FocusBottomNode = nil
 		}
 
 		for e = p.WorkingNodes.Front(); e != nil; e = e.Next() {
@@ -158,8 +159,8 @@ func (p *Page) uiRender() {
 						node2.UIBlock.InnerArea.Max.X >= node.UIBlock.InnerArea.Max.X) &&
 						(node2.UIBlock.InnerArea.Min.Y > node.UIBlock.InnerArea.Max.Y) {
 
-					node.BottomNode = e2
-					node2.TopNode = e
+					node.FocusBottomNode = e2
+					node2.FocusTopNode = e
 					break
 				}
 			}

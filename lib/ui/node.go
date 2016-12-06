@@ -56,7 +56,7 @@ type Node struct {
 
 	Parent, FirstChild, LastChild, PrevSibling, NextSibling *Node
 
-	TopNode, BottomNode *list.Element
+	FocusTopNode, FocusBottomNode, FocusThisNode *list.Element
 
 	// 是否要渲染子节点
 	// 子节点将根据其父节点

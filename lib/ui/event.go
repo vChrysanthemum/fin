@@ -74,13 +74,13 @@ func (p *Page) registerHandles() {
 					}
 
 				} else if "<down>" == keyStr || "j" == keyStr {
-					if nil != node.BottomNode {
-						p.FocusNode = node.BottomNode
+					if nil != node.FocusBottomNode {
+						p.FocusNode = node.FocusBottomNode
 					}
 
 				} else if "<up>" == keyStr || "k" == keyStr {
-					if nil != node.TopNode {
-						p.FocusNode = node.TopNode
+					if nil != node.FocusTopNode {
+						p.FocusNode = node.FocusTopNode
 					}
 				}
 			}
@@ -115,6 +115,8 @@ func (p *Node) QuitActiveMode() {
 	if nodeDataUnActiveModer, ok := p.Data.(NodeDataUnActiveModer); true == ok {
 		nodeDataUnActiveModer.NodeDataUnActiveMode()
 	}
+
+	p.page.FocusNode = p.FocusThisNode
 
 	if nil != p.page.FocusNode {
 		if nodeDataFocusModer, ok := p.page.FocusNode.Value.(*Node).Data.(NodeDataFocusModer); true == ok {
