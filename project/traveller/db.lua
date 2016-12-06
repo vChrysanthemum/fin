@@ -25,16 +25,7 @@ data text
 ]]
 local ret = DB:Exec(sql)
 
-local spaceship = {
-    Name      = "鹦鹉螺号",
-    Position  = {X = 0.0, Y = 0.0},
-    Speed     = {X = 0.06, Y = -0.06},
-    Character = "x",
-    ColorFg   = "blue",
-    StartAt   = TimeNow(),
-    Life      = 86,
-    Fuel      = 100
-}
+local spaceship = NewSpaceshipInfo()
 sql = string.format([[
 insert into b_spaceship (spaceship_id, data) values (1, '%s');
 ]], json.encode(spaceship))

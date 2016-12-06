@@ -19,21 +19,27 @@ function GetSpaceshipFromDB(spaceshipId)
     return spaceship
 end
 
-function NewSpaceship()
-    local Spaceship           = setmetatable({}, _mtSpaceship)
-    Spaceship.ScreenPosition  = {X=GetIntPart(NodeRadar:Width()/2), Y=GetIntPart(NodeRadar:Height()/2)}
-    Spaceship.CenterRectangle = {}
-    Spaceship:Format({
+function NewSpaceshipInfo()
+    return {
         SpaceshipId = nil,
         Name        = "鹦鹉螺号",
         Position    = {X = 0.0, Y = 0.0},
         Speed       = {X = 0.0, Y = 0.0},
         Character   = "x",
         ColorFg     = "blue",
-        StartAt     = 0,
+        StartAt     = TimeNow(),
         Life        = 100,
-        Fuel        = 100
-    })
+        Fuel        = 100,
+        Missiles    = 12,
+        Jumpers     = 6,
+    }
+end
+
+function NewSpaceship()
+    local Spaceship           = setmetatable({}, _mtSpaceship)
+    Spaceship.ScreenPosition  = {X=GetIntPart(NodeRadar:Width()/2), Y=GetIntPart(NodeRadar:Height()/2)}
+    Spaceship.CenterRectangle = {}
+    Spaceship:Format(NewSpaceshipInfo())
     Spaceship.ColorBg   = ""
     local Warehouse     = {}
     Spaceship.Warehouse = Warehouse
@@ -69,13 +75,13 @@ X: %d
 Y: %d
 速度X: %f/s
 速度Y: %f/s
-船员: 7
-飞行历时: 09:53
+飞行历时: %d
 
 仓库:
-炮弹: 612
-时空跳跃者:3
-    ]], self.Info.Position.X, self.Info.Position.Y, self.Info.Speed.X, self.Info.Speed.Y))
+导弹: %d
+时空跳跃者: %d
+    ]], self.Info.Position.X, self.Info.Position.Y, self.Info.Speed.X, self.Info.Speed.Y, TimeNow() - self.Info.StartAt,
+    self.Info.Missiles, self.Info.Jumpers))
 end
 
 -- 刷新飞船为中心的指定大小区域所在的宇宙位置
@@ -107,7 +113,9 @@ function _Spaceship.Format(self, spaceshipInfo)
         ColorFg     = spaceshipInfo.ColorFg,
         StartAt     = spaceshipInfo.StartAt,
         Fuel        = spaceshipInfo.Fuel,
-        Life        = spaceshipInfo.Life
+        Life        = spaceshipInfo.Life,
+        Missiles    = spaceshipInfo.Missiles,
+        Jumpers     = spaceshipInfo.Jumpers,
     }
     self:refreshCenterRectangle(NodeRadar:Width(), NodeRadar:Height())
 end
