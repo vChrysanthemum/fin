@@ -105,6 +105,12 @@ func (p *NodeTerminal) KeyPress(e termui.Event) {
 		return
 	}
 
+	if "C-c" == keyStr {
+		p.Editor.UpdateCurrentLineData(p.CommandPrefix)
+		p.Node.uiRender()
+		return
+	}
+
 	p.Editor.Write(keyStr)
 	p.Node.uiRender()
 }
