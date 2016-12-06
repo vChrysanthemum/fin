@@ -65,30 +65,22 @@ func (p *Page) registerHandles() {
 				if "<tab>" == keyStr || "<right>" == keyStr || "l" == keyStr {
 					if nil != p.FocusNode.Next() {
 						p.FocusNode = p.FocusNode.Next()
-					} else {
-						p.FocusNode = p.WorkingNodes.Front()
 					}
 
 				} else if "<left>" == keyStr || "h" == keyStr {
 					// "<left>" == keyStr
 					if nil != p.FocusNode.Prev() {
 						p.FocusNode = p.FocusNode.Prev()
-					} else {
-						p.FocusNode = p.WorkingNodes.Back()
 					}
 
 				} else if "<down>" == keyStr || "j" == keyStr {
 					if nil != node.BottomNode {
 						p.FocusNode = node.BottomNode
-					} else {
-						p.FocusNode = p.WorkingNodes.Front()
 					}
 
 				} else if "<up>" == keyStr || "k" == keyStr {
 					if nil != node.TopNode {
 						p.FocusNode = node.TopNode
-					} else {
-						p.FocusNode = p.WorkingNodes.Back()
 					}
 				}
 			}
