@@ -32,11 +32,10 @@ function _Radar.RefreshParInfo(self)
         self.CursorScreenPosition.Y == GUserSpaceship.ScreenPosition.Y then
         self.FocusTarget = GUserSpaceship
         self.FocusTarget.ColorBg = "white"
-        NodeInputTextNamePlanet:SetText(GUserSpaceship.Info.Name)
-        NodeInputTextNamePlanet:SetAttribute("borderlabel", "飞船")
         NodeParInfo:SetText(string.format([[
+%s
 X: %d
-Y: %d]], GUserSpaceship.Info.Position.X, GUserSpaceship.Info.Position.Y))
+Y: %d]], GUserSpaceship.Info.Name, GUserSpaceship.Info.Position.X, GUserSpaceship.Info.Position.Y))
         return
     end
 
@@ -44,18 +43,15 @@ Y: %d]], GUserSpaceship.Info.Position.X, GUserSpaceship.Info.Position.Y))
     if nil ~= planet then
         self.FocusTarget = planet
         self.FocusTarget.ColorBg = "white"
-        NodeInputTextNamePlanet:SetText(planet.Info.Name)
-        NodeInputTextNamePlanet:SetAttribute("borderlabel", "星球")
         NodeParInfo:SetText(string.format([[
+%s
 X: %d
 Y: %d
-资源: %d]], planet.Info.Position.X, planet.Info.Position.Y, planet.Info.Resource))
+资源: %d]], planet.Info.Name, planet.Info.Position.X, planet.Info.Position.Y, planet.Info.Resource))
         return
     end
 
     if nil == self.FocusTarget then
-        NodeInputTextNamePlanet:SetText("")
-        NodeInputTextNamePlanet:SetAttribute("borderlabel", "")
         NodeParInfo:SetText("")
     end
 end

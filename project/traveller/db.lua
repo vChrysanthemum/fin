@@ -28,9 +28,10 @@ local ret = DB:Exec(sql)
 local spaceship = {
     Name      = "鹦鹉螺号",
     Position  = {X = 0.0, Y = 0.0},
-    Speed     = {X = 0.02, Y = 0.03},
+    Speed     = {X = 0.06, Y = -0.06},
     Character = "x",
-    ColorFg   = "blue"
+    ColorFg   = "blue",
+    StartAt   = TimeNow()
 }
 sql = string.format([[
 insert into b_spaceship (spaceship_id, data) values (1, '%s');

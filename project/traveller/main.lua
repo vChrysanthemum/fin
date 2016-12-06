@@ -4,7 +4,6 @@ end
 NodeRadar = Node("CanvasRadar")
 NodeTerminalMain = Node("TerminalMain")
 NodeParInfo = Node("ParInfo")
-NodeInputTextNamePlanet = Node("InputTextNamePlanet")
 NodeParGUserSpaceshipStatus = Node("ParGUserSpaceshipStatus")
 NodeGaugeFuel = Node("GaugeFuel")
 
@@ -17,12 +16,6 @@ GTerminal = NewTerminal()
 GWorld = NewWorld()
 
 NodeParGUserSpaceshipStatus:SetAttribute("borderlabel", " " .. GUserSpaceship.Info.Name .. " ")
-
-NodeInputTextNamePlanet:RegisterKeyPressEnterHandler(function(nodePointer)
-  if nil ~= GRadar.FocusTarget then
-    GRadar.FocusTarget:SetName(Node(nodePointer):GetValue())
-  end
-end)
 
 NodeTerminalMain:SetActive()
 GUserSpaceship:UpdateFuel(0)

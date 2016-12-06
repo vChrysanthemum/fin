@@ -30,7 +30,8 @@ function NewSpaceship()
         Position    = {X = 0.0, Y = 0.0},
         Speed       = {X = 0.0, Y = 0.0},
         Character   = "x",
-        ColorFg     = "blue"
+        ColorFg     = "blue",
+        StartAt     = 0
     })
     Spaceship.ColorBg   = ""
     local Warehouse     = {}
@@ -102,7 +103,8 @@ function _Spaceship.Format(self, spaceshipInfo)
         Position    = spaceshipInfo.Position,
         Speed       = spaceshipInfo.Speed,
         Character   = spaceshipInfo.Character,
-        ColorFg     = spaceshipInfo.ColorFg
+        ColorFg     = spaceshipInfo.ColorFg,
+        StartAt     = spaceshipInfo.StartAt
     }
     self:refreshCenterRectangle(NodeRadar:Width(), NodeRadar:Height())
 end
