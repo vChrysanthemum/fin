@@ -94,3 +94,19 @@ function GetIntPart(x)
         return math.ceil(x) - 1
     end
 end
+
+string.lpad = function(str, len, char)
+    if len <= #str then
+        return str
+    end
+    if char == nil then char = ' ' end
+    return string.rep(char, len - #str) .. str
+end
+
+string.rpad = function(str, len, char)
+    if len <= #str then
+        return str
+    end
+    if char == nil then char = ' ' end
+    return str .. string.rep(char, len - #str)
+end

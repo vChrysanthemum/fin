@@ -22,17 +22,20 @@ end
 function _Planet.Initilize(self, position)
     self.Info.Position = position
     RefreshRandomSeed()
-    local a, b
+    local a, b, multiplyNumber
+
+    multiplyNumber = 1
     if position.X < 0 then
-        a = string.format("a%d", position.X*-1)
-    else
-        a = string.format("b%d", position.X)
+        multiplyNumber = -1
     end
+    a = "a" .. string.lpad(tostring(position.X*multiplyNumber), 3, '0')
+
+    multiplyNumber = 1
     if position.Y < 0 then
-        b = string.format("a%d", position.Y*-1)
-    else
-        b = string.format("b%d", position.Y)
+        multiplyNumber = -1
     end
+    b = "b" .. string.lpad(tostring(position.Y*multiplyNumber), 3, '0')
+
     self.Info.Name = a .. b
     self.Info.Resource = math.random(0,10000)
 end
