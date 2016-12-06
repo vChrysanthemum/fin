@@ -28,7 +28,7 @@ function NewSpaceshipInfo()
         Character   = "x",
         ColorFg     = "blue",
         StartAt     = TimeNow(),
-        Life        = 100,
+        Life        = 82,
         Fuel        = 100,
         Missiles    = 12,
         Jumpers     = 6,
