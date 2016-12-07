@@ -28,6 +28,8 @@ func (p *Page) renderBodyTabpane(node *Node) {
 	uiBuffer := node.uiBuffer.(*extra.Tabpane)
 
 	p.normalRenderNodeBlock(node)
+	node.UIBlock.X = 0
+	node.UIBlock.Y = 0
 
 	nodeTabpaneData.Tabs = []extra.Tab{}
 	for nodeTab := node.FirstChild; nodeTab != nil; nodeTab = nodeTab.NextSibling {
@@ -45,6 +47,5 @@ func (p *Page) renderBodyTabpane(node *Node) {
 }
 
 func (p *Page) renderBodyTabpaneTab(node *Node) {
-	uiBuffer := node.Parent.uiBuffer.(*extra.Tabpane)
-	p.renderingY = uiBuffer.Y
+	p.renderingY = 0
 }

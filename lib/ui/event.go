@@ -62,7 +62,14 @@ func (p *Page) registerHandles() {
 				p.FocusNode = p.WorkingNodes.Front()
 			} else {
 				node := p.FocusNode.Value.(*Node)
-				if "<tab>" == keyStr || "<right>" == keyStr || "l" == keyStr {
+				if "<tab>" == keyStr {
+					if nil != p.FocusNode.Next() {
+						p.FocusNode = p.FocusNode.Next()
+					} else {
+						p.FocusNode = p.WorkingNodes.Front()
+					}
+
+				} else if "<right>" == keyStr || "l" == keyStr {
 					if nil != p.FocusNode.Next() {
 						p.FocusNode = p.FocusNode.Next()
 					}
