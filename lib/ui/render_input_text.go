@@ -2,8 +2,7 @@ package ui
 
 import "github.com/gizak/termui"
 
-func (p *Page) renderBodyInputText(node *Node) (isFallthrough bool) {
-	isFallthrough = false
+func (p *Page) renderBodyInputText(node *Node) {
 	uiBuffer := node.Data.(*NodeInputText).Editor
 
 	p.normalRenderNodeBlock(node)

@@ -6,8 +6,7 @@ import (
 	"github.com/gizak/termui"
 )
 
-func (p *Page) renderBodyEditor(node *Node) (isFallthrough bool) {
-	isFallthrough = false
+func (p *Page) renderBodyEditor(node *Node) {
 	uiBuffer := node.Data.(*NodeEditor).Editor
 
 	p.normalRenderNodeBlock(node)

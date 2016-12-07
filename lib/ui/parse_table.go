@@ -21,9 +21,7 @@ func (p *Page) parseBodyTableTr(parentNode *Node, htmlNode *html.Node) (ret *Nod
 	parentNode.addChild(ret)
 	isFallthrough = true
 
-	nodeTableTr := ret.InitNodeTableTr()
-
-	ret.Data = nodeTableTr
+	ret.InitNodeTableTr()
 
 	return
 }
@@ -52,7 +50,6 @@ func (p *Page) parseBodyTableTrTd(parentNode *Node, htmlNode *html.Node) (ret *N
 	}
 
 	ret.isShouldTermuiRenderChild = true
-	ret.Data = nodeTableTrTd
 
 	return
 }

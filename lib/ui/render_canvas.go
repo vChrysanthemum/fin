@@ -1,7 +1,6 @@
 package ui
 
-func (p *Page) renderBodyCanvas(node *Node) (isFallthrough bool) {
-	isFallthrough = false
+func (p *Page) renderBodyCanvas(node *Node) {
 	uiBuffer := node.Data.(*NodeCanvas).Canvas
 
 	p.normalRenderNodeBlock(node)

@@ -19,9 +19,7 @@ func (p *Page) parseBody(parentNode *Node, htmlNode *html.Node) (ret *Node, isFa
 
 	ret.ColorFg = COLOR_BODY_DEFAULT_COLORFG
 
-	nodeBody := ret.InitNodeBody()
-
-	ret.Data = nodeBody
+	ret.InitNodeBody()
 
 	return
 }
@@ -31,9 +29,7 @@ func (p *Page) parseBodyDiv(parentNode *Node, htmlNode *html.Node) (ret *Node, i
 	parentNode.addChild(ret)
 	isFallthrough = true
 
-	nodeDiv := ret.InitNodeDiv()
-
-	ret.Data = nodeDiv
+	ret.InitNodeDiv()
 
 	return
 }

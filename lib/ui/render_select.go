@@ -33,9 +33,7 @@ func (p *Node) refreshUiBufferItems() {
 	p.uiBuffer.(*termui.List).Items = items
 }
 
-func (p *Page) renderBodySelect(node *Node) (isFallthrough bool) {
-	isFallthrough = false
-
+func (p *Page) renderBodySelect(node *Node) {
 	nodeSelect := node.Data.(*NodeSelect)
 
 	uiBuffer := node.uiBuffer.(*termui.List)

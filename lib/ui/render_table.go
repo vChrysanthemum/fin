@@ -70,9 +70,7 @@ func (p *Page) _renderBodyTableOneRow(nodeTr *Node) []*termui.Row {
 	return uiCols
 }
 
-func (p *Page) renderBodyTable(node *Node) (isFallthrough bool) {
-	isFallthrough = false
-
+func (p *Page) renderBodyTable(node *Node) {
 	var (
 		nodeTr *Node
 		uiCols []*termui.Row

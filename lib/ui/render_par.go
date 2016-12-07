@@ -6,8 +6,7 @@ import (
 	"github.com/gizak/termui"
 )
 
-func (p *Page) renderBodyPar(node *Node) (isFallthrough bool) {
-	isFallthrough = false
+func (p *Page) renderBodyPar(node *Node) {
 	uiBuffer := node.uiBuffer.(*termui.Par)
 
 	p.normalRenderNodeBlock(node)

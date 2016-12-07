@@ -6,8 +6,7 @@ import (
 	"github.com/gizak/termui"
 )
 
-func (p *Page) renderBodyTerminal(node *Node) (isFallthrough bool) {
-	isFallthrough = false
+func (p *Page) renderBodyTerminal(node *Node) {
 	uiBuffer := node.Data.(*NodeTerminal).Editor
 
 	p.normalRenderNodeBlock(node)

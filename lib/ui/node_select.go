@@ -6,7 +6,6 @@ import (
 )
 
 type NodeSelect struct {
-	DisableQuit bool
 	*Node
 	SelectedOptionColorFg  string
 	SelectedOptionColorBg  string
@@ -14,6 +13,7 @@ type NodeSelect struct {
 	Children               []NodeSelectOption
 	ChildrenMaxStringWidth int
 	DisplayLinesRange      [2]int
+	DisableQuit            bool
 }
 
 func (p *Node) InitNodeSelect() *NodeSelect {

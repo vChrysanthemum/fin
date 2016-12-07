@@ -6,7 +6,7 @@ import (
 	"github.com/gizak/termui"
 )
 
-type RenderExecFunc func(node *Node) (isFallthrough bool)
+type RenderExecFunc func(node *Node)
 
 type RenderAgent struct {
 	path   []string
@@ -24,6 +24,8 @@ func (p *Page) prepareRender() {
 		&RenderAgent{[]string{"body", "canvas"}, p.renderBodyCanvas},
 		&RenderAgent{[]string{"body", "terminal"}, p.renderBodyTerminal},
 		&RenderAgent{[]string{"body", "gauge"}, p.renderBodyGauge},
+		&RenderAgent{[]string{"body", "tabpane"}, p.renderBodyTabpane},
+		&RenderAgent{[]string{"body", "tabpane", "tab"}, p.renderBodyTabpaneTab},
 	}
 }
 
@@ -83,19 +85,6 @@ func (p *Page) render(node *Node) error {
 	}
 
 	return nil
-}
-
-func (p *Page) normalRenderNodeBlock(node *Node) {
-	if nil == node.UIBlock {
-		return
-	}
-
-	if true == node.isShouldCalculateWidth {
-		node.UIBlock.Width = termui.TermWidth()
-	}
-
-	node.UIBlock.X = p.renderingX
-	node.UIBlock.Y = p.renderingY
 }
 
 func (p *Page) Clear() {
