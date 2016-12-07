@@ -11,6 +11,10 @@ function RefreshRandomSeed()
     math.randomseed(RandomSeed)
 end
 
+function Sleep(tm)
+    return base.Sleep(tm)
+end
+
 function SetInterval(tm, callback)
     return base.SetInterval(tm, callback)
 end

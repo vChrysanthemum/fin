@@ -21,7 +21,8 @@ func (p *Page) parseBodyTabpaneTab(parentNode *Node, htmlNode *html.Node) (ret *
 	parentNode.addChild(ret)
 	isFallthrough = true
 
-	nodeTabpaneTab := ret.InitNodeTabpaneTab()
+	ret.InitNodeTabpaneTab()
+	nodeTabpaneTab := ret.Data.(*NodeTabpaneTab)
 
 	for _, attr := range htmlNode.Attr {
 		switch attr.Key {

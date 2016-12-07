@@ -162,3 +162,7 @@ end
 function _Node.TerminalClearLines(self)
     return base.NodeTerminalClearLines(self.nodePointer)
 end
+
+function _Node.ModalShow(self)
+    return base.NodeModalShow(self.nodePointer)
+end

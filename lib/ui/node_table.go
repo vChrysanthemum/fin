@@ -6,7 +6,7 @@ type NodeTable struct {
 	Body *termui.Grid
 }
 
-func (p *Node) InitNodeTable() *NodeTable {
+func (p *Node) InitNodeTable() {
 	nodeTable := new(NodeTable)
 	nodeTable.Body = termui.NewGrid()
 	nodeTable.Body.X = 0
@@ -16,15 +16,15 @@ func (p *Node) InitNodeTable() *NodeTable {
 	p.uiBuffer = nodeTable.Body
 	p.UIBlock = nil
 
-	return nodeTable
+	return
 }
 
 type NodeTableTr struct{}
 
-func (p *Node) InitNodeTableTr() *NodeTableTr {
+func (p *Node) InitNodeTableTr() {
 	nodeTableTr := new(NodeTableTr)
 	p.Data = nodeTableTr
-	return nodeTableTr
+	return
 }
 
 type NodeTableTrTd struct {
@@ -32,8 +32,8 @@ type NodeTableTrTd struct {
 	Offset int
 }
 
-func (p *Node) InitNodeTableTrTd() *NodeTableTrTd {
+func (p *Node) InitNodeTableTrTd() {
 	nodeTableTrTd := new(NodeTableTrTd)
 	p.Data = nodeTableTrTd
-	return nodeTableTrTd
+	return
 }

@@ -96,6 +96,9 @@ func (p *Page) prepareScript() {
 	s.luaState.SetField(luaBase, "NodeTerminalClearLines",
 		s.luaState.NewFunction(s.luaFuncNodeTerminalClearLines))
 
+	s.luaState.SetField(luaBase, "NodeModalShow",
+		s.luaState.NewFunction(s.luaFuncNodeModalShow))
+
 	err = s.luaState.DoFile(filepath.Join(GlobalOption.ResBaseDir, "lua/script/core.lua"))
 	if nil != err {
 		panic(err)

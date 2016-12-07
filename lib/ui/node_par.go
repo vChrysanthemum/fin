@@ -10,7 +10,7 @@ type NodePar struct {
 	*Node
 }
 
-func (p *Node) InitNodePar() *NodePar {
+func (p *Node) InitNodePar() {
 	nodePar := new(NodePar)
 	nodePar.Node = p
 
@@ -26,7 +26,7 @@ func (p *Node) InitNodePar() *NodePar {
 
 	uiBuffer.TextFgColor = COLOR_DEFAULT_TEXT_COLOR_FG
 
-	return nodePar
+	return
 }
 
 func (p *NodePar) NodeDataSetText(content string) (isNeedRerenderPage bool) {

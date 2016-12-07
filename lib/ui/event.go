@@ -14,6 +14,10 @@ func (p *Page) registerHandles() {
 	})
 
 	termui.Handle("/sys/kbd", func(e termui.Event) {
+		if nil != p.CurrentModal {
+			return
+		}
+
 		p.KeyPressHandleLocker.Lock()
 		defer p.KeyPressHandleLocker.Unlock()
 		keyStr := e.Data.(termui.EvtKbd).KeyStr
@@ -134,7 +138,7 @@ func (p *Node) QuitActiveMode() {
 	p.page.ActiveNode = nil
 }
 
-func (p *Page) ClearActiveNode(node *Node) {
+func (p *Page) ClearActiveNode() {
 	if nil != p.ActiveNode {
 		if nodeDataUnActiveModer, ok := p.ActiveNode.Data.(NodeDataUnActiveModer); true == ok {
 			nodeDataUnActiveModer.NodeDataUnActiveMode()
@@ -144,7 +148,7 @@ func (p *Page) ClearActiveNode(node *Node) {
 }
 
 func (p *Page) SetActiveNode(node *Node) {
-	p.ClearActiveNode(node)
+	p.ClearActiveNode()
 	p.ActiveNodeAfterRerender = node
 	p.ActiveNode = node
 	if nil != p.ActiveNode {

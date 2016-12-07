@@ -1,7 +1,11 @@
 package ui
 
 import (
+	"bufio"
 	"image"
+	"io/ioutil"
+	"os"
+	"path/filepath"
 
 	"github.com/gizak/termui"
 )
@@ -29,4 +33,15 @@ func (p *ClearScreenBuffer) RefreshArea() {
 	min := image.Point{0, 0}
 	max := image.Point{termui.TermWidth() - 1, termui.TermHeight() - 1}
 	p.buf.SetArea(image.Rectangle{min, max})
+}
+
+func GetFileContent(path string) ([]byte, error) {
+	path = filepath.Join(GlobalOption.ResBaseDir, "project", GlobalOption.ProjectName, path)
+	file, err := os.Open(path)
+	defer file.Close()
+	if err != nil {
+		return nil, err
+	}
+
+	return ioutil.ReadAll(bufio.NewReader(file))
 }

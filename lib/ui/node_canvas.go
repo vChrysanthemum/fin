@@ -7,7 +7,7 @@ type NodeCanvas struct {
 	*canvas.Canvas
 }
 
-func (p *Node) InitNodeCanvas() *NodeCanvas {
+func (p *Node) InitNodeCanvas() {
 	nodeCanvas := new(NodeCanvas)
 	nodeCanvas.Node = p
 	nodeCanvas.Canvas = canvas.NewCanvas()
@@ -22,7 +22,7 @@ func (p *Node) InitNodeCanvas() *NodeCanvas {
 	p.UIBlock.Height = 10
 	p.UIBlock.Border = true
 
-	return nodeCanvas
+	return
 }
 
 func (p *NodeCanvas) NodeDataFocusMode() {

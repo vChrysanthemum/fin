@@ -8,7 +8,7 @@ type NodeGauge struct {
 	*Node
 }
 
-func (p *Node) InitNodeGauge() *NodeGauge {
+func (p *Node) InitNodeGauge() {
 	nodeGauge := new(NodeGauge)
 	nodeGauge.Node = p
 	p.Data = nodeGauge
@@ -27,5 +27,5 @@ func (p *Node) InitNodeGauge() *NodeGauge {
 	uiBuffer.PercentColor = COLOR_DEFAULT_GAUGE_PERCENTCOLOR
 	uiBuffer.PercentColorHighlighted = COLOR_DEFAULT_GAUGE_PERCENTCOLOR_HIGHLIGHTED
 
-	return nodeGauge
+	return
 }

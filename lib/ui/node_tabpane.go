@@ -10,7 +10,7 @@ type NodeTabpane struct {
 	Tabs []extra.Tab
 }
 
-func (p *Node) InitNodeTabpane() *NodeTabpane {
+func (p *Node) InitNodeTabpane() {
 	nodeTabpane := new(NodeTabpane)
 	nodeTabpane.Node = p
 	p.Data = nodeTabpane
@@ -22,18 +22,18 @@ func (p *Node) InitNodeTabpane() *NodeTabpane {
 
 	uiBuffer.Width = 30
 
-	return nodeTabpane
+	return
 }
 
 type NodeTabpaneTab struct {
 	Tab *extra.Tab
 }
 
-func (p *Node) InitNodeTabpaneTab() *NodeTabpaneTab {
+func (p *Node) InitNodeTabpaneTab() {
 	nodeTabpaneTab := new(NodeTabpaneTab)
 	nodeTabpaneTab.Tab = extra.NewTab("")
 	p.Data = nodeTabpaneTab
-	return nodeTabpaneTab
+	return
 }
 
 func (p *NodeTabpane) KeyPress(e termui.Event) {

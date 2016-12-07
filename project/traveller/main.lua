@@ -7,6 +7,7 @@ NodeParInfo = Node("ParInfo")
 NodeParGUserSpaceshipStatus = Node("ParGUserSpaceshipStatus")
 NodeGaugeFuel = Node("GaugeFuel")
 NodeGaugeLife = Node("GaugeLife")
+NodeModalPlanet = Node("ModalPlanet")
 
 NodeRadar:SetAttribute("height", tostring(WindowHeight()-NodeTerminalMain:Height()))
 

@@ -42,6 +42,7 @@ func (p *Script) RegisterBaseTable(L *lua.LState, baseTable *lua.LTable) {
 		filepath.Join(GlobalOption.ResBaseDir),
 	))
 
+	L.SetField(baseTable, "Sleep", L.NewFunction(p.Sleep))
 	L.SetField(baseTable, "SetInterval", L.NewFunction(p.SetInterval))
 	L.SetField(baseTable, "SetTimeout", L.NewFunction(p.SetTimeout))
 	L.SetField(baseTable, "SendCancelSig", L.NewFunction(p.SendCancelSig))

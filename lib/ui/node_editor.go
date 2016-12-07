@@ -11,7 +11,7 @@ type NodeEditor struct {
 	*editor.Editor
 }
 
-func (p *Node) InitNodeEditor() *NodeEditor {
+func (p *Node) InitNodeEditor() {
 	nodeEditor := new(NodeEditor)
 	nodeEditor.Node = p
 	nodeEditor.Editor = editor.NewEditor()
@@ -27,7 +27,7 @@ func (p *Node) InitNodeEditor() *NodeEditor {
 	p.UIBlock.Height = 10
 	p.UIBlock.Border = true
 
-	return nodeEditor
+	return
 }
 
 func (p *NodeEditor) KeyPress(e termui.Event) {

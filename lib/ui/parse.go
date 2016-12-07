@@ -35,6 +35,7 @@ func (p *Page) prepareParse() {
 		&ParseAgent{[]string{"body", "gauge"}, p.parseBodyGauge},
 		&ParseAgent{[]string{"body", "tabpane"}, p.parseBodyTabpane},
 		&ParseAgent{[]string{"body", "tabpane", "tab"}, p.parseBodyTabpaneTab},
+		&ParseAgent{[]string{"body", "modal"}, p.parseBodyModal},
 	}
 }
 

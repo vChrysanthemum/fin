@@ -16,7 +16,7 @@ type NodeSelect struct {
 	DisableQuit            bool
 }
 
-func (p *Node) InitNodeSelect() *NodeSelect {
+func (p *Node) InitNodeSelect() {
 	nodeSelect := new(NodeSelect)
 	nodeSelect.Node = p
 	nodeSelect.Children = make([]NodeSelectOption, 0)
@@ -39,7 +39,7 @@ func (p *Node) InitNodeSelect() *NodeSelect {
 	uiBuffer.Border = true
 	uiBuffer.BorderFg = COLOR_DEFAULT_BORDER_FG
 
-	return nodeSelect
+	return
 }
 
 type NodeSelectOption struct {

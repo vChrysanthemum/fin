@@ -20,6 +20,8 @@ type Page struct {
 	parseAgentMap  []*ParseAgent
 	renderAgentMap []*RenderAgent
 	Script         *Script
+	Modals         map[string]*NodeModal
+	CurrentModal   *NodeModal
 
 	doc                     *html.Node
 	parsingNodesStack       *list.List
@@ -46,6 +48,7 @@ func newPage() *Page {
 	ret.WorkingNodes = list.New()
 
 	ret.prepareScript()
+	ret.prepareModals()
 	ret.prepareParse()
 	ret.prepareRender()
 

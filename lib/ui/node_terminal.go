@@ -17,7 +17,7 @@ type NodeTerminal struct {
 	CurrentCommandLineIndex int
 }
 
-func (p *Node) InitNodeTerminal() *NodeTerminal {
+func (p *Node) InitNodeTerminal() {
 	nodeTerminal := new(NodeTerminal)
 	nodeTerminal.Node = p
 	nodeTerminal.Editor = editor.NewEditor()
@@ -35,7 +35,7 @@ func (p *Node) InitNodeTerminal() *NodeTerminal {
 	p.isShouldCalculateHeight = false
 	p.UIBlock.Border = true
 
-	return nodeTerminal
+	return
 }
 
 func (p *NodeTerminal) KeyPress(e termui.Event) {

@@ -31,7 +31,8 @@ func (p *Page) parseBodyTableTrTd(parentNode *Node, htmlNode *html.Node) (ret *N
 	parentNode.addChild(ret)
 	isFallthrough = true
 
-	nodeTableTrTd := ret.InitNodeTableTrTd()
+	ret.InitNodeTableTrTd()
+	nodeTableTrTd := ret.Data.(*NodeTableTrTd)
 
 	for _, attr := range htmlNode.Attr {
 		switch attr.Key {

@@ -18,12 +18,28 @@ func (p *Script) Log(L *lua.LState) int {
 	return 0
 }
 
+func (p *Script) Sleep(L *lua.LState) int {
+	if L.GetTop() < 1 {
+		return 0
+	}
+
+	tm := L.ToInt(1)
+	if tm < 0 {
+		tm = 0
+	}
+	time.Sleep(time.Duration(tm) * time.Millisecond)
+	return 0
+}
+
 func (p *Script) SetInterval(L *lua.LState) int {
 	if L.GetTop() < 2 {
 		return 0
 	}
 
 	tm := L.ToInt(1)
+	if tm < 0 {
+		tm = 0
+	}
 	callback := L.ToFunction(2)
 
 	sigKey := uuid.NewV4().String()
@@ -34,7 +50,7 @@ func (p *Script) SetInterval(L *lua.LState) int {
 		for {
 			select {
 			case <-_cancel:
-				goto END
+				return
 
 			default:
 				time.Sleep(time.Duration(_tm) * time.Millisecond)
@@ -48,7 +64,6 @@ func (p *Script) SetInterval(L *lua.LState) int {
 				}
 			}
 		}
-	END:
 	}(cancel, tm, L, callback)
 
 	L.Push(lua.LString(sigKey))
@@ -61,6 +76,9 @@ func (p *Script) SetTimeout(L *lua.LState) int {
 	}
 
 	tm := L.ToInt(1)
+	if tm < 0 {
+		tm = 0
+	}
 	callback := L.ToFunction(2)
 
 	sigKey := uuid.NewV4().String()
@@ -99,7 +117,7 @@ func (p *Script) SendCancelSig(L *lua.LState) int {
 	if false == ok {
 		return 0
 	}
-	close(cancel)
+	cancel <- true
 	delete(p.CancelSigs, sigKey)
 	return 0
 }

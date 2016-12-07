@@ -38,11 +38,10 @@ function _World.LoopEvent(self)
     self.LoopEventSig = SetInterval(200, function()
         self:loopEvent()
     end)
-    --[[
-    SetTimeout(3000, function()
-        SendCancelSig(self.LoopEventSig)
-    end)
-    ]]
+
+    Sleep(3000)
+    SendCancelSig(GWorld.LoopEventSig)
+    NodeModalPlanet:ModalShow()
 end
 
 -- 生成指定区域内的星球

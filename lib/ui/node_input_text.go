@@ -11,7 +11,7 @@ type NodeInputText struct {
 	*editor.Editor
 }
 
-func (p *Node) InitNodeInputText() *NodeInputText {
+func (p *Node) InitNodeInputText() {
 	nodeInputText := new(NodeInputText)
 	nodeInputText.Node = p
 	nodeInputText.Editor = editor.NewEditor()
@@ -30,7 +30,7 @@ func (p *Node) InitNodeInputText() *NodeInputText {
 	p.UIBlock.Height = 3
 	p.UIBlock.Border = true
 
-	return nodeInputText
+	return
 }
 
 func (p *NodeInputText) KeyPress(e termui.Event) {
