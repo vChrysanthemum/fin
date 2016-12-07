@@ -70,7 +70,7 @@ func (p *Script) SetTimeout(L *lua.LState) int {
 	go func(_cancel chan bool, _tm int, _sigKey string, _L *lua.LState, _callback *lua.LFunction) {
 		select {
 		case <-_cancel:
-			goto END
+			return
 
 		default:
 			time.Sleep(time.Duration(_tm) * time.Millisecond)
@@ -83,8 +83,6 @@ func (p *Script) SetTimeout(L *lua.LState) int {
 				panic(err)
 			}
 		}
-	END:
-		delete(p.CancelSigs, _sigKey)
 	}(cancel, tm, sigKey, L, callback)
 
 	L.Push(lua.LString(sigKey))
@@ -101,7 +99,7 @@ func (p *Script) SendCancelSig(L *lua.LState) int {
 	if false == ok {
 		return 0
 	}
-	cancel <- true
+	close(cancel)
 	delete(p.CancelSigs, sigKey)
 	return 0
 }
