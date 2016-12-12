@@ -111,6 +111,10 @@ function _Node.RegisterKeyPressHandler(self, callback)
     return base.NodeRegisterKeyPressHandler(self.nodePointer, callback)
 end
 
+function _Node.RemoveKeyPressHandler(self, key)
+    return base.NodeRemoveKeyPressEnterHandler(self.nodePointer, key)
+end
+
 function _Node.RegisterKeyPressEnterHandler(self, callback)
     return base.NodeRegisterKeyPressEnterHandler(self.nodePointer, callback)
 end

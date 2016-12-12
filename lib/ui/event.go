@@ -2,9 +2,9 @@ package ui
 
 import "github.com/gizak/termui"
 
-func (p *Page) registerHandles() {
+func registerHandles() {
 	termui.Handle("/sys/wnd/resize", func(e termui.Event) {
-		p.Rerender()
+		GCurrentRenderPage.Rerender()
 	})
 
 	termui.Handle("/sys/kbd/q", func(termui.Event) {
@@ -14,36 +14,33 @@ func (p *Page) registerHandles() {
 	})
 
 	termui.Handle("/sys/kbd", func(e termui.Event) {
-		if nil != p.CurrentModal {
+		if nil != GCurrentRenderPage.CurrentModal {
 			return
 		}
 
-		p.KeyPressHandleLocker.Lock()
-		defer p.KeyPressHandleLocker.Unlock()
+		GCurrentRenderPage.KeyPressHandleLocker.Lock()
+		defer GCurrentRenderPage.KeyPressHandleLocker.Unlock()
 		keyStr := e.Data.(termui.EvtKbd).KeyStr
 
-		if nil != p.ActiveNode {
-			if nil != p.ActiveNode.KeyPress {
-				p.ActiveNode.KeyPress(e)
+		if nil != GCurrentRenderPage.ActiveNode {
+			if nil != GCurrentRenderPage.ActiveNode.KeyPress {
+				GCurrentRenderPage.ActiveNode.KeyPress(e)
 			}
 
-			// p.ActiveNode.KeyPress后，p.ActiveNode有可能为nil
-			if nil == p.ActiveNode {
+			// GCurrentRenderPage.ActiveNode.KeyPress后，GCurrentRenderPage.ActiveNode有可能为nil
+			if nil == GCurrentRenderPage.ActiveNode {
 				return
 			}
 
-			if len(p.ActiveNode.KeyPressHandlers) > 0 {
-				node := p.ActiveNode
-				node.JobHanderLocker.RLock()
-				for _, v := range p.ActiveNode.KeyPressHandlers {
+			if len(GCurrentRenderPage.ActiveNode.KeyPressHandlers) > 0 {
+				for _, v := range GCurrentRenderPage.ActiveNode.KeyPressHandlers {
 					v.Args = append(v.Args, e)
-					v.Handler(p.ActiveNode, v.Args...)
+					v.Handler(GCurrentRenderPage.ActiveNode, v.Args...)
 				}
-				node.JobHanderLocker.RUnlock()
 			}
 
 			if "<escape>" == keyStr {
-				p.ActiveNode.QuitActiveMode()
+				GCurrentRenderPage.ActiveNode.QuitActiveMode()
 				return
 			}
 
@@ -56,60 +53,63 @@ func (p *Page) registerHandles() {
 			"<left>" == keyStr || "<right>" == keyStr ||
 			"h" == keyStr || "j" == keyStr || "k" == keyStr || "l" == keyStr {
 
-			if nil != p.FocusNode {
-				if nodeDataUnFocusModer, ok := p.FocusNode.Value.(*Node).Data.(NodeDataUnFocusModer); true == ok {
+			if nil != GCurrentRenderPage.FocusNode {
+				nodeDataUnFocusModer, ok := GCurrentRenderPage.FocusNode.Value.(*Node).Data.(NodeDataUnFocusModer)
+				if true == ok {
 					nodeDataUnFocusModer.NodeDataUnFocusMode()
 				}
 			}
 
-			if nil == p.FocusNode {
-				p.FocusNode = p.WorkingNodes.Front()
+			if nil == GCurrentRenderPage.FocusNode {
+				GCurrentRenderPage.FocusNode = GCurrentRenderPage.WorkingNodes.Front()
 			} else {
-				node := p.FocusNode.Value.(*Node)
+				node := GCurrentRenderPage.FocusNode.Value.(*Node)
 				if "<tab>" == keyStr {
-					if nil != p.FocusNode.Next() {
-						p.FocusNode = p.FocusNode.Next()
+					if nil != GCurrentRenderPage.FocusNode.Next() {
+						GCurrentRenderPage.FocusNode = GCurrentRenderPage.FocusNode.Next()
 					} else {
-						p.FocusNode = p.WorkingNodes.Front()
+						GCurrentRenderPage.FocusNode = GCurrentRenderPage.WorkingNodes.Front()
 					}
 
 				} else if "<right>" == keyStr || "l" == keyStr {
-					if nil != p.FocusNode.Next() {
-						p.FocusNode = p.FocusNode.Next()
+					if nil != GCurrentRenderPage.FocusNode.Next() {
+						GCurrentRenderPage.FocusNode = GCurrentRenderPage.FocusNode.Next()
 					}
 
 				} else if "<left>" == keyStr || "h" == keyStr {
 					// "<left>" == keyStr
-					if nil != p.FocusNode.Prev() {
-						p.FocusNode = p.FocusNode.Prev()
+					if nil != GCurrentRenderPage.FocusNode.Prev() {
+						GCurrentRenderPage.FocusNode = GCurrentRenderPage.FocusNode.Prev()
 					}
 
 				} else if "<down>" == keyStr || "j" == keyStr {
 					if nil != node.FocusBottomNode {
-						p.FocusNode = node.FocusBottomNode
+						GCurrentRenderPage.FocusNode = node.FocusBottomNode
 					}
 
 				} else if "<up>" == keyStr || "k" == keyStr {
 					if nil != node.FocusTopNode {
-						p.FocusNode = node.FocusTopNode
+						GCurrentRenderPage.FocusNode = node.FocusTopNode
 					}
 				}
 			}
 
-			if nil != p.FocusNode {
-				if nodeDataFocusModer, ok := p.FocusNode.Value.(*Node).Data.(NodeDataFocusModer); true == ok {
+			if nil != GCurrentRenderPage.FocusNode {
+				nodeDataFocusModer, ok := GCurrentRenderPage.FocusNode.Value.(*Node).Data.(NodeDataFocusModer)
+				if true == ok {
 					nodeDataFocusModer.NodeDataFocusMode()
 				}
 			}
 
 		} else if "<enter>" == keyStr {
 			// 确认ActiveNode
-			if nil != p.FocusNode {
-				if nodeDataUnFocusModer, ok := p.FocusNode.Value.(*Node).Data.(NodeDataUnFocusModer); true == ok {
+			if nil != GCurrentRenderPage.FocusNode {
+				nodeDataUnFocusModer, ok := GCurrentRenderPage.FocusNode.Value.(*Node).Data.(NodeDataUnFocusModer)
+				if true == ok {
 					nodeDataUnFocusModer.NodeDataUnFocusMode()
 				}
 
-				p.SetActiveNode(p.FocusNode.Value.(*Node))
+				GCurrentRenderPage.SetActiveNode(GCurrentRenderPage.FocusNode.Value.(*Node))
 			}
 		}
 	})
@@ -153,12 +153,9 @@ func (p *Page) SetActiveNode(node *Node) {
 	p.ActiveNode = node
 	if nil != p.ActiveNode {
 		if len(p.ActiveNode.LuaActiveModeHandlers) > 0 {
-			_node := p.ActiveNode
-			_node.JobHanderLocker.RLock()
 			for _, v := range p.ActiveNode.LuaActiveModeHandlers {
 				v.Handler(p.ActiveNode, v.Args...)
 			}
-			_node.JobHanderLocker.RUnlock()
 		}
 		if nodeDataActiveModer, ok := p.ActiveNode.Data.(NodeDataActiveModer); true == ok {
 			nodeDataActiveModer.NodeDataActiveMode()

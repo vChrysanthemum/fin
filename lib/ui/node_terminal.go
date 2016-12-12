@@ -57,8 +57,6 @@ func (p *NodeTerminal) KeyPress(e termui.Event) {
 		}
 
 		if len(p.Node.KeyPressEnterHandlers) > 0 {
-			p.Node.JobHanderLocker.RLock()
-			defer p.Node.JobHanderLocker.RUnlock()
 			for _, v := range p.Node.KeyPressEnterHandlers {
 				v.Handler(p.Node, v.Args...)
 			}

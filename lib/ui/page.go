@@ -130,6 +130,7 @@ func (p *Page) nodeAfterRenderHandle(node *Node) {
 }
 
 func (p *Page) uiRender() {
+	GCurrentRenderPage = p
 	if 0 == len(p.Bufferers) {
 		return
 	}
@@ -182,7 +183,6 @@ func (p *Page) Rerender() {
 func (p *Page) Serve() {
 	p.Refresh()
 
-	p.registerHandles()
 	go func() {
 		defer func() {
 			if r := recover(); nil != r {

@@ -9,6 +9,7 @@ import (
 )
 
 var (
+	GCurrentRenderPage *Page
 	GClearScreenBuffer *ClearScreenBuffer
 )
 
@@ -44,6 +45,7 @@ func PrepareUI() {
 		panic(err)
 	}
 	GClearScreenBuffer = NewClearScreenBuffer()
+	registerHandles()
 }
 
 func uiClear() {

@@ -345,6 +345,22 @@ func (p *Script) luaFuncNodeRegisterKeyPressHandler(L *lua.LState) int {
 	return 1
 }
 
+func (p *Script) luaFuncNodeRemoveKeyPressHandler(L *lua.LState) int {
+	if L.GetTop() < 2 {
+		return 0
+	}
+
+	lu := L.ToUserData(1)
+	key := L.ToString(2)
+	node := p._getNodePointerFromUserData(L, lu)
+	if nil == node {
+		return 0
+	}
+
+	node.RemoveKeyPressHandler(key)
+	return 0
+}
+
 func (p *Script) luaFuncNodeRegisterKeyPressEnterHandler(L *lua.LState) int {
 	if L.GetTop() < 2 {
 		L.Push(lua.LNil)

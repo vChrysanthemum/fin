@@ -1,3 +1,10 @@
+<script type="text/lua">
+NodeSelectConfirm = Node("SelectConfirm")
+NodeSelectConfirmKeyPressEnterKey = NodeSelectConfirm:RegisterKeyPressEnterHandler(function(nodePointer)
+  Log(NodeSelectConfirm:GetValue())
+  NodeSelectConfirm:RemoveKeyPressEnterHandler(NodeSelectConfirmKeyPressEnterKey)
+end)
+</script>
 <table>
 <tr>
   <td offset=4 cols=4><par height=6></par></td>
@@ -8,6 +15,10 @@
       <option value="cancel">取消</option>
       <option value="confirm">确定</option>
     </select>
+    <gauge id="GaugeProgress" Percent="100" border=false height=1 paddingleft=1 paddingright=1
+                              PercentColor="blue" 
+                              percentcolor_highlighted="black" BarColor="green">
+    </gauge>
   </td>
 </tr>
 </table>

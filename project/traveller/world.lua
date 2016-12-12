@@ -39,7 +39,7 @@ function _World.LoopEvent(self)
         self:loopEvent()
     end)
 
-    Sleep(3000)
+    Sleep(1000)
     SendCancelSig(GWorld.LoopEventSig)
     NodeModalPlanet:ModalShow()
 end

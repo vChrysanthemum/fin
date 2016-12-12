@@ -4,7 +4,6 @@ import (
 	"container/list"
 	"image"
 	uiutils "in/ui/utils"
-	"sync"
 
 	"github.com/gizak/termui"
 	"golang.org/x/net/html"
@@ -91,7 +90,6 @@ type Node struct {
 	KeyPressHandlers      map[string]NodeJob
 	KeyPress              NodeKeyPress
 	KeyPressEnterHandlers map[string]NodeJob
-	JobHanderLocker       sync.RWMutex
 
 	CursorLocation image.Point
 }

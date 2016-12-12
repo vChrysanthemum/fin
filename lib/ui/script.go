@@ -70,6 +70,8 @@ func (p *Page) prepareScript() {
 		s.luaState.NewFunction(s.luaFuncNodeRemoveLuaActiveModeHandler))
 	s.luaState.SetField(luaBase, "NodeRegisterKeyPressHandler",
 		s.luaState.NewFunction(s.luaFuncNodeRegisterKeyPressHandler))
+	s.luaState.SetField(luaBase, "NodeRemoveKeyPressHandler",
+		s.luaState.NewFunction(s.luaFuncNodeRemoveKeyPressHandler))
 	s.luaState.SetField(luaBase, "NodeRegisterKeyPressEnterHandler",
 		s.luaState.NewFunction(s.luaFuncNodeRegisterKeyPressEnterHandler))
 	s.luaState.SetField(luaBase, "NodeRemoveKeyPressEnterHandler",
