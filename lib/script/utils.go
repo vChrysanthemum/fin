@@ -85,7 +85,9 @@ func (p *Script) SetTimeout(L *lua.LState) int {
 	cancel := make(chan bool, 0)
 	p.CancelSigs[sigKey] = cancel
 
-	go func(_cancel chan bool, _tm int, _sigKey string, _L *lua.LState, _callback *lua.LFunction) {
+	go func(_script *Script, _cancel chan bool,
+		_tm int, _sigKey string, _L *lua.LState, _callback *lua.LFunction) {
+
 		select {
 		case <-_cancel:
 			return
@@ -100,8 +102,11 @@ func (p *Script) SetTimeout(L *lua.LState) int {
 				log.Println(err)
 				panic(err)
 			}
+			delete(_script.CancelSigs, _sigKey)
+			close(_cancel)
+			return
 		}
-	}(cancel, tm, sigKey, L, callback)
+	}(p, cancel, tm, sigKey, L, callback)
 
 	L.Push(lua.LString(sigKey))
 	return 1
