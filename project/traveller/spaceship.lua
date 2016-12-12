@@ -13,9 +13,12 @@ function GetSpaceshipFromDB(spaceshipId)
     if "table" ~= type(row) then
         return nil
     end
+
     local spaceship = NewSpaceship()
     spaceship:Format(json.decode(row.data))
     spaceship.Info.SpaceshipId = spaceshipId
+    spaceship.IsLanding = false
+
     return spaceship
 end
 
@@ -177,4 +180,8 @@ function _Spaceship.UpdateLife(self, number)
         NodeGaugeLife:SetAttribute("barcolor", "green")
     end
     self:FlushToDB()
+end
+
+function _Spaceship.Landing(self, number)
+    self.IsLanding = true
 end

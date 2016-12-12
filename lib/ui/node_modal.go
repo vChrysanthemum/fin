@@ -7,6 +7,7 @@ type NodeModal struct {
 func (p *Page) prepareModals() {
 	p.Modals = make(map[string]*NodeModal)
 }
+
 func (p *Node) InitNodeModal(content string) error {
 	nodeModal := new(NodeModal)
 	p.Data = nodeModal

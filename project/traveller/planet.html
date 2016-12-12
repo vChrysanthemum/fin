@@ -5,7 +5,7 @@ NodeSelectConfirmKeyPressEnterKey = NodeSelectConfirm:RegisterKeyPressEnterHandl
   ModalClose()
   local ret = MainPageDoString([[
   GWorld.LoopEventSig = SetInterval(200, function()
-      GWorld:loopEvent()
+      GWorld:Resume()
   end)
   ]])
 end)

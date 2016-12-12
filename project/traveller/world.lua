@@ -18,10 +18,23 @@ function NewWorld()
     World.CreateBlockHeight = World.WorkBlockHeight * World.WorkBlockRows
     World.Planets           = {}
     World.EventLocker       = rwmutex.NewRWMutex()
+
+    World.isShouldMove = true
     return World
 end
 
 function _World.loopEvent(self)
+    if GUserSpaceship.IsLanding then
+        GUserSpaceship.IsLanding = false
+        NodeModalPlanet:ModalShow()
+        self:Stop()
+        return
+    end
+
+    if false == self.isShouldMove then
+        return
+    end
+
     GUserSpaceship:RunOneStep()
 
     local planets = {}
@@ -34,14 +47,18 @@ function _World.loopEvent(self)
     return
 end
 
+function _World.Stop(self)
+    self.isShouldMove = false
+end
+
+function _World.Resume(self)
+    self.isShouldMove = true
+end
+
 function _World.LoopEvent(self)
     self.LoopEventSig = SetInterval(200, function()
         self:loopEvent()
     end)
-
-    Sleep(1000)
-    SendCancelSig(GWorld.LoopEventSig)
-    NodeModalPlanet:ModalShow()
 end
 
 -- 生成指定区域内的星球
