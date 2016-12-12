@@ -22,5 +22,7 @@ func (p *Node) InitNodeModal(content string) error {
 		return err
 	}
 
+	nodeModal.page.MainPage = p.page
+
 	return nil
 }

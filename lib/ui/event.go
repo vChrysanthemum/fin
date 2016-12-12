@@ -14,10 +14,6 @@ func registerHandles() {
 	})
 
 	termui.Handle("/sys/kbd", func(e termui.Event) {
-		if nil != GCurrentRenderPage.CurrentModal {
-			return
-		}
-
 		GCurrentRenderPage.KeyPressHandleLocker.Lock()
 		defer GCurrentRenderPage.KeyPressHandleLocker.Unlock()
 		keyStr := e.Data.(termui.EvtKbd).KeyStr

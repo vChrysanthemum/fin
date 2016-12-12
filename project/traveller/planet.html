@@ -1,8 +1,8 @@
 <script type="text/lua">
 NodeSelectConfirm = Node("SelectConfirm")
 NodeSelectConfirmKeyPressEnterKey = NodeSelectConfirm:RegisterKeyPressEnterHandler(function(nodePointer)
-  Log(NodeSelectConfirm:GetValue())
   NodeSelectConfirm:RemoveKeyPressEnterHandler(NodeSelectConfirmKeyPressEnterKey)
+  ModalClose()
 end)
 </script>
 <table>

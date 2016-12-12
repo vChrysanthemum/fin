@@ -45,3 +45,15 @@ func (p *Script) luaFuncNodeModalShow(L *lua.LState) int {
 
 	return 0
 }
+
+func (p *Script) luaFuncModalClose(L *lua.LState) int {
+	if nil == p.page.MainPage {
+		return 0
+	}
+
+	p.page.ClearActiveNode()
+	uiClear()
+	p.page.MainPage.Refresh()
+
+	return 0
+}

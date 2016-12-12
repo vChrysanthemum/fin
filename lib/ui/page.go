@@ -11,6 +11,10 @@ import (
 )
 
 type Page struct {
+	// 当该 page 为 Modal 类型时，则存在该值
+	// MainPage 用于表示 Modal 所属 Page
+	MainPage *Page
+
 	Title string
 
 	IdToNodeMap map[string]*Node

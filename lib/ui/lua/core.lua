@@ -170,3 +170,7 @@ end
 function _Node.ModalShow(self)
     return base.NodeModalShow(self.nodePointer)
 end
+
+function ModalClose()
+    return base.ModalClose()
+end

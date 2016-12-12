@@ -100,6 +100,8 @@ func (p *Page) prepareScript() {
 
 	s.luaState.SetField(luaBase, "NodeModalShow",
 		s.luaState.NewFunction(s.luaFuncNodeModalShow))
+	s.luaState.SetField(luaBase, "ModalClose",
+		s.luaState.NewFunction(s.luaFuncModalClose))
 
 	err = s.luaState.DoFile(filepath.Join(GlobalOption.ResBaseDir, "lua/script/core.lua"))
 	if nil != err {
