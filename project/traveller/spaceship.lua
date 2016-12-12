@@ -71,8 +71,8 @@ end
 
 function _Spaceship.RefreshNodeParGUserSpaceshipStatus(self)
     NodeParGUserSpaceshipStatus:SetText(string.format([[
-X: %d
-Y: %d
+X: %f
+Y: %f
 速度X: %f/s
 速度Y: %f/s
 飞行历时: %d

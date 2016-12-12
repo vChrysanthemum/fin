@@ -25,6 +25,30 @@ func (p *Script) _getNodeModalPointerFromUserData(L *lua.LState, lu *lua.LUserDa
 	return nodeModal
 }
 
+func (p *Script) luaFuncNodeModalDoString(L *lua.LState) int {
+	if L.GetTop() < 2 {
+		return 0
+	}
+
+	lu := L.ToUserData(1)
+	nodeModal := p._getNodeModalPointerFromUserData(L, lu)
+	if nil == nodeModal {
+		return 0
+	}
+
+	callback := L.ToString(2)
+
+	script := nodeModal.page.Script
+	err := script.luaState.DoString(callback)
+
+	if nil != err {
+		L.Push(lua.LString(err.Error()))
+		return 1
+	} else {
+		return 0
+	}
+}
+
 func (p *Script) luaFuncNodeModalShow(L *lua.LState) int {
 	if L.GetTop() < 1 {
 		return 0
@@ -56,4 +80,26 @@ func (p *Script) luaFuncModalClose(L *lua.LState) int {
 	p.page.MainPage.Refresh()
 
 	return 0
+}
+
+func (p *Script) luaFuncMainPageDoString(L *lua.LState) int {
+	if nil == p.page.MainPage {
+		return 0
+	}
+
+	if L.GetTop() < 1 {
+		return 0
+	}
+
+	callback := L.ToString(1)
+
+	script := p.page.MainPage.Script
+	err := script.luaState.DoString(callback)
+
+	if nil != err {
+		L.Push(lua.LString(err.Error()))
+		return 1
+	} else {
+		return 0
+	}
 }

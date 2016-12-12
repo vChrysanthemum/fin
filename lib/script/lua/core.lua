@@ -47,33 +47,45 @@ function dumpTable(table, deepth, result)
     local i = 0
 
     if "table" == type(table) then
+        result = result .. "{\n"
+
         for k, v in pairs(table) do
             i = 0; while i < deepth do result = result .. "  "; i=i+1; end
 
-            result = result .. "[" .. tostring(k) .. "] => "
+            result = result ..  tostring(k) .. " = "
             if "table" == type(v) then
-                result = result .. "{\n"
                 result = dumpTable(v, deepth+1, result)
-                i = 0; while i < deepth do result = result .. "  "; i=i+1; end
-                result = result .. "}"
+            elseif "string" == type(v) then
+                result = result .. "\"" .. tostring(v) .. "\",\n"
             else
-                result = result .. tostring(v)
+                result = result .. tostring(v) .. ",\n"
             end
-
-            result = result .. "\n"
         end
+
+        i = 0; while i < deepth-1 do result = result .. "  "; i=i+1; end
+        result = result .. "},\n"
 
     else
         i = 0; while i < deepth do result = result .. "  "; i=i+1; end
 
-        result = result .. tostring(table) .. "\n"
+        if "string" == type(table) then
+            result = result .. "\"" .. tostring(table) .. "\","
+        else
+            result = result .. tostring(table) .. ","
+        end
     end
 
     return result
 end
 
 function DumpTable(table)
-    return dumpTable(table, 0, "\n")
+    local result = dumpTable(table, 1, "")
+    if ",\n" == string.sub(result, -2, -1) then
+        result = string.sub(result, 0, -3) .. ";\n"
+    else
+        result = result .. ";\n"
+    end
+    return result
 end
 
 function CheckTableHasKey(table, key)

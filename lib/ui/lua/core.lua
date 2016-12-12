@@ -167,10 +167,18 @@ function _Node.TerminalClearLines(self)
     return base.NodeTerminalClearLines(self.nodePointer)
 end
 
+function _Node.ModalDoString(self, callback)
+    return base.NodeModalDoString(self.nodePointer, callback)
+end
+
 function _Node.ModalShow(self)
     return base.NodeModalShow(self.nodePointer)
 end
 
 function ModalClose()
     return base.ModalClose()
+end
+
+function MainPageDoString(callback)
+    return base.MainPageDoString(callback)
 end

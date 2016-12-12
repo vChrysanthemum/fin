@@ -3,6 +3,11 @@ NodeSelectConfirm = Node("SelectConfirm")
 NodeSelectConfirmKeyPressEnterKey = NodeSelectConfirm:RegisterKeyPressEnterHandler(function(nodePointer)
   NodeSelectConfirm:RemoveKeyPressEnterHandler(NodeSelectConfirmKeyPressEnterKey)
   ModalClose()
+  local ret = MainPageDoString([[
+  GWorld.LoopEventSig = SetInterval(200, function()
+      GWorld:loopEvent()
+  end)
+  ]])
 end)
 </script>
 <table>
