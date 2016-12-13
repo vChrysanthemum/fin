@@ -41,10 +41,6 @@ func (p *NodeEditor) KeyPress(e termui.Event) {
 	p.Node.uiRender()
 }
 
-func (p *NodeEditor) NodeDataAfterRenderHandle() {
-	p.Editor.AfterRenderHandle()
-}
-
 func (p *NodeEditor) NodeDataFocusMode() {
 	if false == p.Node.isCalledFocusMode {
 		p.Node.isCalledFocusMode = true

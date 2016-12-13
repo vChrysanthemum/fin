@@ -43,8 +43,8 @@ type NodeDataParseAttributer interface {
 	NodeDataParseAttribute(attr []html.Attribute) (isUIChange, isNeedRerenderPage bool)
 }
 
-type NodeDataAfterRenderHandler interface {
-	NodeDataAfterRenderHandle()
+type NodeDataAfterUIRenderHandler interface {
+	NodeDataAfterUIRenderHandle()
 }
 
 type Node struct {
@@ -164,8 +164,8 @@ func (p *Node) uiRender() {
 		return
 	}
 	uiutils.UIRender(p.uiBuffer.(termui.Bufferer))
-	if nodeDataAfterRenderHandler, ok := p.Data.(NodeDataAfterRenderHandler); true == ok {
-		nodeDataAfterRenderHandler.NodeDataAfterRenderHandle()
+	if nodeDataAfterUIRenderHandler, ok := p.Data.(NodeDataAfterUIRenderHandler); true == ok {
+		nodeDataAfterUIRenderHandler.NodeDataAfterUIRenderHandle()
 	}
 }
 

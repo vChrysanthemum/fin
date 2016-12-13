@@ -183,5 +183,6 @@ function _Spaceship.UpdateLife(self, number)
 end
 
 function _Spaceship.Landing(self, number)
-    self.IsLanding = true
+    GWorld:Stop()
+    NodeModalPlanet:ModalShow()
 end

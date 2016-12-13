@@ -87,6 +87,7 @@ func (p *Page) render(node *Node) error {
 	return nil
 }
 
+// 清空 page 中所有元素，但不清空屏幕
 func (p *Page) Clear() {
 	p.Bufferers = make([]termui.Bufferer, 0)
 	p.FocusNode = nil
@@ -97,6 +98,12 @@ func (p *Page) Clear() {
 	p.renderingY = 0
 }
 
+// 计算 page 中所有元素的布局
+func (p *Page) layout() error {
+	return nil
+}
+
+// 渲染 page 中所有元素，但不输出到屏幕
 func (p *Page) Render() error {
 	p.Clear()
 

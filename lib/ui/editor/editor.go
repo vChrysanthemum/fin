@@ -151,9 +151,6 @@ func (p *Editor) Buffer() termui.Buffer {
 	return buf
 }
 
-func (p *Editor) AfterRenderHandle() {
-}
-
 func (p *Editor) ActiveMode() {
 	p.CursorLocation.IsDisplay = true
 	p.CursorLocation.ResumeCursor()

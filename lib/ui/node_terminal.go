@@ -142,10 +142,6 @@ func (p *NodeTerminal) ClearLines() {
 	p.Editor.ClearLines()
 }
 
-func (p *NodeTerminal) NodeDataAfterRenderHandle() {
-	p.Editor.AfterRenderHandle()
-}
-
 func (p *NodeTerminal) NodeDataFocusMode() {
 	if false == p.Node.isCalledFocusMode {
 		p.Node.isCalledFocusMode = true

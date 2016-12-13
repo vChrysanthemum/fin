@@ -24,13 +24,6 @@ function NewWorld()
 end
 
 function _World.loopEvent(self)
-    if GUserSpaceship.IsLanding then
-        GUserSpaceship.IsLanding = false
-        NodeModalPlanet:ModalShow()
-        self:Stop()
-        return
-    end
-
     if false == self.isShouldMove then
         return
     end

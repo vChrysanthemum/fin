@@ -98,7 +98,24 @@ func (p *Page) RemoveNode(node *Node) {
 	p.Rerender()
 }
 
-func (p *Page) Refresh() {
+func (p *Page) nodeAfterUIRenderHandle(node *Node) {
+	for childNode := node.FirstChild; childNode != nil; childNode = childNode.NextSibling {
+		p.nodeAfterUIRenderHandle(childNode)
+	}
+
+	if nodeDataAfterUIRenderHandler, ok := node.Data.(NodeDataAfterUIRenderHandler); true == ok {
+		nodeDataAfterUIRenderHandler.NodeDataAfterUIRenderHandle()
+	}
+}
+
+// 将 page 上的内容渲染到屏幕上
+// 并更新 FocusNode / ActiveNode / WorkingNodes内元素之间方向关系
+func (p *Page) uiRender() {
+	GCurrentRenderPage = p
+	if 0 == len(p.Bufferers) {
+		return
+	}
+
 	if nil != p.FocusNode {
 		if nodeDataUnFocusModer, ok := p.FocusNode.Value.(*Node).Data.(NodeDataUnFocusModer); true == ok {
 			nodeDataUnFocusModer.NodeDataUnFocusMode()
@@ -111,35 +128,12 @@ func (p *Page) Refresh() {
 		}
 	}
 
-	uiClear()
-
 	if nil != p.ActiveNodeAfterRerender {
 		p.SetActiveNode(p.ActiveNodeAfterRerender)
 		p.FocusNode = nil
 	} else if nil != p.FocusNode {
 		p.SetActiveNode(p.FocusNode.Value.(*Node))
 	}
-
-	p.uiRender()
-}
-
-func (p *Page) nodeAfterRenderHandle(node *Node) {
-	for childNode := node.FirstChild; childNode != nil; childNode = childNode.NextSibling {
-		p.nodeAfterRenderHandle(childNode)
-	}
-
-	if nodeDataAfterRenderHandler, ok := node.Data.(NodeDataAfterRenderHandler); true == ok {
-		nodeDataAfterRenderHandler.NodeDataAfterRenderHandle()
-	}
-}
-
-func (p *Page) uiRender() {
-	GCurrentRenderPage = p
-	if 0 == len(p.Bufferers) {
-		return
-	}
-
-	uiutils.UIRender(p.Bufferers...)
 
 	var (
 		e, e2       *list.Element
@@ -173,12 +167,21 @@ func (p *Page) uiRender() {
 				}
 			}
 		}
-
 	}
 
-	p.nodeAfterRenderHandle(p.FirstChildNode)
+	uiutils.UIRender(p.Bufferers...)
+
+	p.nodeAfterUIRenderHandle(p.FirstChildNode)
 }
 
+// 刷新 page 内容到屏幕
+// 包括刷新 page 上 focus/active 元素
+func (p *Page) Refresh() {
+	uiClear()
+	p.uiRender()
+}
+
+// 重新渲染 page 并刷新内容到屏幕
 func (p *Page) Rerender() {
 	p.Render()
 	p.Refresh()

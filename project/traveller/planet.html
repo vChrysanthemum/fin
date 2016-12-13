@@ -4,8 +4,9 @@ NodeSelectConfirmKeyPressEnterKey = NodeSelectConfirm:RegisterKeyPressEnterHandl
   NodeSelectConfirm:RemoveKeyPressEnterHandler(NodeSelectConfirmKeyPressEnterKey)
   ModalClose()
   local ret = MainPageDoString([[
-  GWorld.LoopEventSig = SetInterval(200, function()
+  GWorld.LoopEventSig = SetTimeout(200, function()
       GWorld:Resume()
+      Log("fuck you")
   end)
   ]])
 end)

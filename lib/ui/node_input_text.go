@@ -75,10 +75,6 @@ func (p *NodeInputText) NodeDataSetText(content string) (isNeedRerenderPage bool
 	return
 }
 
-func (p *NodeInputText) NodeDataAfterRenderHandle() {
-	p.Editor.AfterRenderHandle()
-}
-
 func (p *NodeInputText) NodeDataFocusMode() {
 	if false == p.Node.isCalledFocusMode {
 		p.Node.isCalledFocusMode = true
