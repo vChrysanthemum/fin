@@ -122,7 +122,7 @@ func (p *Script) SendCancelSig(L *lua.LState) int {
 	if false == ok {
 		return 0
 	}
-	cancel <- true
+	close(cancel)
 	delete(p.CancelSigs, sigKey)
 	return 0
 }
