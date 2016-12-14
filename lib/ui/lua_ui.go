@@ -43,13 +43,13 @@ func (p *Script) luaFuncWindowConfirm(L *lua.LState) int {
 		return 0
 	}
 
-	nodeSelectData := nodeSelect.Data.(*NodeSelect)
+	nodeDataSelect := nodeSelect.Data.(*NodeSelect)
 
 	p.page.ClearActiveNode()
 	page.uiRender()
 	p.page.SetActiveNode(nodeSelect)
 
-	nodeSelectData.DisableQuit = true
+	nodeDataSelect.DisableQuit = true
 
 	key := nodeSelect.RegisterKeyPressEnterHandler(func(_node *Node, args ...interface{}) {
 		_L := args[0].(*lua.LState)

@@ -5,7 +5,7 @@ import "github.com/gizak/termui"
 func (p *Page) _renderBodyTableOneRow(nodeTr *Node) []*termui.Row {
 	var (
 		nodeTd         *Node
-		nodeTdData     *NodeTableTrTd
+		nodeDataTd     *NodeTableTrTd
 		nodeTdChild    *Node
 		nodeTdChildren []termui.GridBufferer
 		uiCols         []*termui.Row
@@ -19,15 +19,15 @@ func (p *Page) _renderBodyTableOneRow(nodeTr *Node) []*termui.Row {
 	_cols = 0
 	needCalculateColNodeTdList = make([]*NodeTableTrTd, 0)
 	for nodeTd = nodeTr.FirstChild; nodeTd != nil; nodeTd = nodeTd.NextSibling {
-		nodeTdData, ok = nodeTd.Data.(*NodeTableTrTd)
+		nodeDataTd, ok = nodeTd.Data.(*NodeTableTrTd)
 		if false == ok {
 			continue
 		}
 
-		if 0 == nodeTdData.Cols {
-			needCalculateColNodeTdList = append(needCalculateColNodeTdList, nodeTdData)
+		if 0 == nodeDataTd.Cols {
+			needCalculateColNodeTdList = append(needCalculateColNodeTdList, nodeDataTd)
 		} else {
-			_cols += nodeTdData.Cols
+			_cols += nodeDataTd.Cols
 		}
 	}
 
@@ -37,15 +37,15 @@ func (p *Page) _renderBodyTableOneRow(nodeTr *Node) []*termui.Row {
 			_cols = 1
 		}
 
-		for _, nodeTdData = range needCalculateColNodeTdList {
-			nodeTdData.Cols = _cols
+		for _, nodeDataTd = range needCalculateColNodeTdList {
+			nodeDataTd.Cols = _cols
 		}
 	}
 
 	// 渲染 BodyTableTrTd
 	uiCols = make([]*termui.Row, 0)
 	for nodeTd = nodeTr.FirstChild; nodeTd != nil; nodeTd = nodeTd.NextSibling {
-		nodeTdData, ok = nodeTd.Data.(*NodeTableTrTd)
+		nodeDataTd, ok = nodeTd.Data.(*NodeTableTrTd)
 		if false == ok {
 			continue
 		}
@@ -63,7 +63,7 @@ func (p *Page) _renderBodyTableOneRow(nodeTr *Node) []*termui.Row {
 			}
 		}
 		if len(nodeTdChildren) > 0 {
-			uiCols = append(uiCols, termui.NewCol(nodeTdData.Cols, nodeTdData.Offset, nodeTdChildren...))
+			uiCols = append(uiCols, termui.NewCol(nodeDataTd.Cols, nodeDataTd.Offset, nodeTdChildren...))
 		}
 	}
 
@@ -77,9 +77,9 @@ func (p *Page) renderBodyTable(node *Node) {
 		uiRows []*termui.Row
 	)
 
-	nodeTableData := node.Data.(*NodeTable)
+	nodeDataTable := node.Data.(*NodeTable)
 
-	nodeTableData.Body.Rows = []*termui.Row{}
+	nodeDataTable.Body.Rows = []*termui.Row{}
 
 	uiRows = make([]*termui.Row, 0)
 	for nodeTr = node.FirstChild; nodeTr != nil; nodeTr = nodeTr.NextSibling {
@@ -88,12 +88,11 @@ func (p *Page) renderBodyTable(node *Node) {
 		uiRows = append(uiRows, termui.NewRow(uiCols...))
 	}
 
-	nodeTableData.Body.BgColor = termui.ThemeAttr("bg")
-	nodeTableData.Body.Width = termui.TermWidth()
-	nodeTableData.Body.AddRows(uiRows...)
-	nodeTableData.Body.Align()
+	nodeDataTable.Body.BgColor = termui.ThemeAttr("bg")
+	nodeDataTable.Body.Width = termui.TermWidth()
+	nodeDataTable.Body.AddRows(uiRows...)
 
-	p.BufferersAppend(node, nodeTableData.Body)
+	p.BufferersAppend(node, nodeDataTable.Body)
 
 	return
 }

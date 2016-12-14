@@ -22,7 +22,5 @@ func (p *Page) renderBodyEditor(node *Node) {
 
 	p.pushWorkingNode(node)
 
-	p.renderingY = uiBuffer.Block.Y + uiBuffer.Block.Height
-
 	return
 }

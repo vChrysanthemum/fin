@@ -9,7 +9,5 @@ func (p *Page) renderBodyGauge(node *Node) {
 
 	p.BufferersAppend(node, uiBuffer)
 
-	p.renderingY = uiBuffer.Y + uiBuffer.Height
-
 	return
 }

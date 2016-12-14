@@ -7,23 +7,23 @@ import (
 
 func (p *Page) _renderBodyTabpaneOneTab(nodeTab *Node) {
 	var (
-		nodeTabData  *NodeTabpaneTab
+		nodeDataTab  *NodeTabpaneTab
 		nodeTabChild *Node
 	)
 
-	nodeTabData = nodeTab.Data.(*NodeTabpaneTab)
+	nodeDataTab = nodeTab.Data.(*NodeTabpaneTab)
 
 	for nodeTabChild = nodeTab.FirstChild; nodeTabChild != nil; nodeTabChild = nodeTabChild.NextSibling {
 		if true == nodeTabChild.isShouldHide {
 			continue
 		}
 
-		nodeTabData.Tab.AddBlocks(nodeTabChild.uiBuffer.(termui.Bufferer))
+		nodeDataTab.Tab.AddBlocks(nodeTabChild.uiBuffer.(termui.Bufferer))
 	}
 }
 
 func (p *Page) renderBodyTabpane(node *Node) {
-	nodeTabpaneData := node.Data.(*NodeTabpane)
+	nodeDataTabpane := node.Data.(*NodeTabpane)
 
 	uiBuffer := node.uiBuffer.(*extra.Tabpane)
 
@@ -31,21 +31,17 @@ func (p *Page) renderBodyTabpane(node *Node) {
 	node.UIBlock.X = 0
 	node.UIBlock.Y = 0
 
-	nodeTabpaneData.Tabs = []extra.Tab{}
+	nodeDataTabpane.Tabs = []extra.Tab{}
 	for nodeTab := node.FirstChild; nodeTab != nil; nodeTab = nodeTab.NextSibling {
 		p._renderBodyTabpaneOneTab(nodeTab)
-		nodeTabpaneData.Tabs = append(nodeTabpaneData.Tabs, *(nodeTab.Data.(*NodeTabpaneTab).Tab))
+		nodeDataTabpane.Tabs = append(nodeDataTabpane.Tabs, *(nodeTab.Data.(*NodeTabpaneTab).Tab))
 	}
 
-	uiBuffer.SetTabs(nodeTabpaneData.Tabs...)
+	uiBuffer.SetTabs(nodeDataTabpane.Tabs...)
 
 	p.BufferersAppend(node, node.uiBuffer.(termui.Bufferer))
 
 	p.pushWorkingNode(node)
 
 	return
-}
-
-func (p *Page) renderBodyTabpaneTab(node *Node) {
-	p.renderingY = 0
 }

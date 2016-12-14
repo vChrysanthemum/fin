@@ -9,7 +9,5 @@ func (p *Page) renderBodyCanvas(node *Node) {
 
 	p.pushWorkingNode(node)
 
-	p.renderingY = uiBuffer.Y + uiBuffer.Height
-
 	return
 }

@@ -25,14 +25,6 @@ func (p *Page) prepareRender() {
 		&RenderAgent{[]string{"body", "terminal"}, p.renderBodyTerminal},
 		&RenderAgent{[]string{"body", "gauge"}, p.renderBodyGauge},
 		&RenderAgent{[]string{"body", "tabpane"}, p.renderBodyTabpane},
-		&RenderAgent{[]string{"body", "tabpane", "tab"}, p.renderBodyTabpaneTab},
-	}
-}
-
-func (p *Page) BufferersAppend(node *Node, buffer termui.Bufferer) {
-	if nil != node && true == node.Parent.isShouldTermuiRenderChild {
-	} else {
-		p.Bufferers = append(p.Bufferers, buffer)
 	}
 }
 
@@ -87,22 +79,6 @@ func (p *Page) render(node *Node) error {
 	return nil
 }
 
-// 清空 page 中所有元素，但不清空屏幕
-func (p *Page) Clear() {
-	p.Bufferers = make([]termui.Bufferer, 0)
-	p.FocusNode = nil
-	p.WorkingNodes = list.New()
-	p.ActiveNode = nil
-
-	p.renderingX = 0
-	p.renderingY = 0
-}
-
-// 计算 page 中所有元素的布局
-func (p *Page) layout() error {
-	return nil
-}
-
 // 渲染 page 中所有元素，但不输出到屏幕
 func (p *Page) Render() error {
 	p.Clear()
@@ -112,5 +88,25 @@ func (p *Page) Render() error {
 		return err
 	}
 
+	err = p.Layout()
+	if nil != err {
+		return err
+	}
+
 	return nil
+}
+
+// 清空 page 中所有元素，但不清空屏幕
+func (p *Page) Clear() {
+	p.Bufferers = make([]termui.Bufferer, 0)
+	p.FocusNode = nil
+	p.WorkingNodes = list.New()
+	p.ActiveNode = nil
+}
+
+func (p *Page) BufferersAppend(node *Node, buffer termui.Bufferer) {
+	if nil != node && true == node.Parent.isShouldTermuiRenderChild {
+	} else {
+		p.Bufferers = append(p.Bufferers, buffer)
+	}
 }

@@ -23,6 +23,7 @@ type Page struct {
 
 	parseAgentMap  []*ParseAgent
 	renderAgentMap []*RenderAgent
+	layoutAgentMap []*LayoutAgent
 	Script         *Script
 	Modals         map[string]*NodeModal
 	CurrentModal   *NodeModal
@@ -35,8 +36,8 @@ type Page struct {
 	ActiveNode              *Node
 	ActiveNodeAfterRerender *Node
 
-	renderingX int
-	renderingY int
+	layoutingX int
+	layoutingY int
 
 	recoverVal interface{}
 
@@ -55,6 +56,7 @@ func newPage() *Page {
 	ret.prepareModals()
 	ret.prepareParse()
 	ret.prepareRender()
+	ret.prepareLayout()
 
 	return ret
 }

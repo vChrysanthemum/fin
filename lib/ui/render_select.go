@@ -80,7 +80,5 @@ func (p *Page) renderBodySelect(node *Node) {
 
 	p.pushWorkingNode(node)
 
-	p.renderingY = uiBuffer.Y + uiBuffer.Height
-
 	return
 }
