@@ -23,6 +23,7 @@ func (p *Node) InitNodeInputText() {
 
 	p.uiBuffer = nodeInputText.Editor
 	p.UIBlock = &nodeInputText.Editor.Block
+	p.Display = &p.UIBlock.Display
 
 	p.isShouldCalculateWidth = false
 	p.isShouldCalculateHeight = false

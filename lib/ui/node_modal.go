@@ -12,6 +12,10 @@ func (p *Node) InitNodeModal(content string) error {
 	nodeModal := new(NodeModal)
 	p.Data = nodeModal
 
+	p.UIBlock = nil
+	p.Display = new(bool)
+	*p.Display = true
+
 	page, err := Parse(content)
 	if nil != err {
 		return err

@@ -21,6 +21,7 @@ func (p *Node) InitNodeEditor() {
 
 	p.uiBuffer = nodeEditor.Editor
 	p.UIBlock = &nodeEditor.Editor.Block
+	p.Display = &p.UIBlock.Display
 
 	p.isShouldCalculateWidth = true
 	p.isShouldCalculateHeight = false

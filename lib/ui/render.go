@@ -25,6 +25,7 @@ func (p *Page) prepareRender() {
 		&RenderAgent{[]string{"body", "terminal"}, p.renderBodyTerminal},
 		&RenderAgent{[]string{"body", "gauge"}, p.renderBodyGauge},
 		&RenderAgent{[]string{"body", "tabpane"}, p.renderBodyTabpane},
+		&RenderAgent{[]string{"body", "modal"}, p.renderBodyModal},
 	}
 }
 
@@ -72,8 +73,10 @@ func (p *Page) render(node *Node) error {
 	}
 
 	renderAgent = p.fetchRenderAgentByNode(node)
-	if nil != renderAgent && false == node.isShouldHide {
-		renderAgent.render(node)
+	if true == *node.Display {
+		if nil != renderAgent {
+			renderAgent.render(node)
+		}
 	}
 
 	return nil

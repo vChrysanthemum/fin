@@ -15,6 +15,8 @@ func (p *Node) InitNodeTable() {
 
 	p.uiBuffer = nodeTable.Body
 	p.UIBlock = nil
+	p.Display = new(bool)
+	*p.Display = true
 
 	return
 }
@@ -24,6 +26,9 @@ type NodeTableTr struct{}
 func (p *Node) InitNodeTableTr() {
 	nodeTableTr := new(NodeTableTr)
 	p.Data = nodeTableTr
+	p.UIBlock = nil
+	p.Display = new(bool)
+	*p.Display = true
 	return
 }
 
@@ -35,5 +40,8 @@ type NodeTableTrTd struct {
 func (p *Node) InitNodeTableTrTd() {
 	nodeTableTrTd := new(NodeTableTrTd)
 	p.Data = nodeTableTrTd
+	p.UIBlock = nil
+	p.Display = new(bool)
+	*p.Display = true
 	return
 }

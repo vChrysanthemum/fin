@@ -30,6 +30,7 @@ func (p *Node) InitNodeTerminal() {
 
 	p.uiBuffer = nodeTerminal.Editor
 	p.UIBlock = &nodeTerminal.Editor.Block
+	p.Display = &p.UIBlock.Display
 
 	p.isShouldCalculateWidth = true
 	p.isShouldCalculateHeight = false

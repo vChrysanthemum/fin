@@ -220,6 +220,14 @@ func (b *Block) SetY(y int) {
 	b.Y = y
 }
 
+func (b *Block) GetX() int {
+	return b.X
+}
+
+func (b *Block) GetY() int {
+	return b.Y
+}
+
 // SetWidth implements GridBuffer interface, it sets block's width.
 func (b *Block) SetWidth(w int) {
 	b.Width = w

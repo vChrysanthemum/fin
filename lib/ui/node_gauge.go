@@ -18,6 +18,7 @@ func (p *Node) InitNodeGauge() {
 	uiBuffer := termui.NewGauge()
 	p.uiBuffer = uiBuffer
 	p.UIBlock = &uiBuffer.Block
+	p.Display = &p.UIBlock.Display
 
 	p.isShouldCalculateWidth = true
 	p.isShouldCalculateHeight = false

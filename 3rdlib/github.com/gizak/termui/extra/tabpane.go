@@ -67,25 +67,33 @@ func (tp *Tabpane) SetTabs(tabs ...Tab) {
 	tp.posTabText[len(tabs)] = off - 1 //total length of Tab's text
 }
 
-func (tp *Tabpane) SetActiveLeft() {
+// 向左移动 ActiveTab
+// return:
+//			bool  是否还能继续右移
+func (tp *Tabpane) SetActiveLeft() bool {
 	if tp.activeTabIndex == 0 {
-		return
+		return false
 	}
 	tp.activeTabIndex -= 1
 	if tp.posTabText[tp.activeTabIndex] < tp.offTabText {
 		tp.offTabText = tp.posTabText[tp.activeTabIndex]
 	}
+	return true
 }
 
-func (tp *Tabpane) SetActiveRight() {
+// 向右移动 ActiveTab
+// return:
+//			bool  是否还能继续右移
+func (tp *Tabpane) SetActiveRight() bool {
 	if tp.activeTabIndex == len(tp.Tabs)-1 {
-		return
+		return false
 	}
 	tp.activeTabIndex += 1
 	endOffset := tp.posTabText[tp.activeTabIndex] + tp.Tabs[tp.activeTabIndex].RuneLen
 	if endOffset+tp.offTabText > tp.InnerWidth() {
 		tp.offTabText = endOffset - tp.InnerWidth()
 	}
+	return true
 }
 
 // Checks if left and right tabs are fully visible
@@ -109,7 +117,7 @@ func (tp *Tabpane) fitsWidth() bool {
 	return tp.InnerWidth() >= tp.posTabText[len(tp.Tabs)]
 }
 
-func (tp *Tabpane) align() {
+func (tp *Tabpane) Align() {
 	if !tp.fitsWidth() && !tp.Border {
 		tp.PaddingLeft += 1
 		tp.PaddingRight += 1
@@ -181,7 +189,7 @@ func (tp *Tabpane) Buffer() Buffer {
 	buf := tp.Block.Buffer()
 	ps := []point{}
 
-	tp.align()
+	tp.Align()
 	if tp.InnerHeight() <= 0 || tp.InnerWidth() <= 0 {
 		return NewBuffer()
 	}
@@ -250,9 +258,11 @@ func (tp *Tabpane) Buffer() Buffer {
 		//draw tab content below the Tabpane
 		if i == tp.activeTabIndex {
 			blockPoints := buf2pt(tab.Buffer())
-			for i := 0; i < len(blockPoints); i++ {
-				blockPoints[i].Y += tp.Height + tp.Y
-			}
+			/*
+				for i := 0; i < len(blockPoints); i++ {
+					blockPoints[i].Y += tp.Height + tp.Y
+				}
+			*/
 			ps = append(ps, blockPoints...)
 		}
 	}

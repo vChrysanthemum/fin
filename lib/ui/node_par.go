@@ -19,6 +19,7 @@ func (p *Node) InitNodePar() {
 	uiBuffer := termui.NewPar("")
 	p.uiBuffer = uiBuffer
 	p.UIBlock = &uiBuffer.Block
+	p.Display = &p.UIBlock.Display
 
 	p.isShouldCalculateWidth = true
 	p.isShouldCalculateHeight = true

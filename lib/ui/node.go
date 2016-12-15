@@ -65,7 +65,6 @@ type Node struct {
 	isShouldCalculateHeight   bool
 	isShouldCalculateWidth    bool
 
-	isShouldHide  bool
 	HtmlAttribute map[string]html.Attribute
 
 	isCalledFocusMode     bool
@@ -83,6 +82,7 @@ type Node struct {
 
 	uiBuffer interface{}
 	UIBlock  *termui.Block
+	Display  *bool
 
 	HtmlData string
 	Data     interface{}
@@ -106,6 +106,9 @@ type NodeBody struct{}
 func (p *Node) InitNodeBody() *NodeBody {
 	nodeBody := new(NodeBody)
 	p.Data = nodeBody
+	p.UIBlock = nil
+	p.Display = new(bool)
+	*p.Display = true
 	return nodeBody
 }
 

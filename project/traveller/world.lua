@@ -20,11 +20,16 @@ function NewWorld()
     World.EventLocker       = rwmutex.NewRWMutex()
 
     World.isShouldMove = true
+    World.afterStopCallback = nil
     return World
 end
 
 function _World.loopEvent(self)
-    if false == self.isShouldMove then
+    if false == self.isShouldMove then 
+        if nil ~= self.afterStopCallback then
+            self.afterStopCallback()
+            self.afterStopCallback = nil
+        end
         return
     end
 
@@ -40,8 +45,9 @@ function _World.loopEvent(self)
     return
 end
 
-function _World.Stop(self)
+function _World.Stop(self, afterStopCallback)
     self.isShouldMove = false
+    self.afterStopCallback = afterStopCallback
 end
 
 function _World.Resume(self)

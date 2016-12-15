@@ -16,6 +16,7 @@ func (p *Node) InitNodeCanvas() {
 
 	p.uiBuffer = nodeCanvas.Canvas
 	p.UIBlock = &nodeCanvas.Canvas.Block
+	p.Display = &p.UIBlock.Display
 
 	p.isShouldCalculateWidth = true
 	p.isShouldCalculateHeight = false

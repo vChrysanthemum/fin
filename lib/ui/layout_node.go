@@ -8,5 +8,9 @@ func (p *Page) normalLayoutNodeBlock(node *Node) {
 	node.UIBlock.X = p.layoutingX
 	node.UIBlock.Y = p.layoutingY
 
+	if nil != node.UIBlock {
+		node.UIBlock.Align()
+	}
+
 	p.layoutingY = node.UIBlock.Y + node.UIBlock.Height
 }

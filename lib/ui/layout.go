@@ -1,6 +1,6 @@
 package ui
 
-type LayoutExecFunc func(node *Node)
+type LayoutExecFunc func(node *Node) (isFallthrough bool)
 
 type LayoutAgent struct {
 	path   []string
@@ -11,9 +11,7 @@ func (p *Page) prepareLayout() {
 	p.layoutAgentMap = []*LayoutAgent{
 		&LayoutAgent{[]string{"body", "table"}, p.layoutBodyTable},
 		&LayoutAgent{[]string{"body", "tabpane"}, p.layoutBodyTabpane},
-		/*
-			&LayoutAgent{[]string{"body", "tabpane", "tab"}, p.layoutBodyTabpaneTab},
-		*/
+		&LayoutAgent{[]string{"body", "tabpane", "tab"}, p.layoutBodyTabpaneTab},
 	}
 }
 
@@ -52,21 +50,25 @@ func (p *Page) fetchLayoutAgentByNode(node *Node) (ret *LayoutAgent) {
 
 func (p *Page) layout(node *Node) error {
 	var (
-		layoutAgent *LayoutAgent
-		child       *Node
+		layoutAgent   *LayoutAgent
+		child         *Node
+		isFallthrough bool
 	)
 
-	for child = node.FirstChild; child != nil; child = child.NextSibling {
-		p.layout(child)
-	}
-
 	layoutAgent = p.fetchLayoutAgentByNode(node)
-	if false == node.isShouldHide {
+	if true == *node.Display {
 		if nil != layoutAgent {
-			layoutAgent.layout(node)
+			isFallthrough = layoutAgent.layout(node)
+			if false == isFallthrough {
+				return nil
+			}
 		} else {
 			p.normalLayoutNodeBlock(node)
 		}
+	}
+
+	for child = node.FirstChild; child != nil; child = child.NextSibling {
+		p.layout(child)
 	}
 
 	return nil

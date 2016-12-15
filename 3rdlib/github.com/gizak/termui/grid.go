@@ -11,6 +11,8 @@ type GridBufferer interface {
 	SetWidth(int)
 	SetX(int)
 	SetY(int)
+	GetX() int
+	GetY() int
 }
 
 // Row builds a layout tree
@@ -148,6 +150,14 @@ func (r *Row) SetY(y int) {
 	if r.Widget != nil {
 		r.Widget.SetY(y)
 	}
+}
+
+func (r *Row) GetX() int {
+	return r.X
+}
+
+func (r *Row) GetY() int {
+	return r.Y
 }
 
 // SetWidth implements GridBufferer interface.

@@ -20,19 +20,12 @@ func (p *Node) ParseAttribute(attr []html.Attribute) (isUIChange, isNeedRerender
 	for _, v := range attr {
 		p.HtmlAttribute[v.Key] = v
 		switch v.Key {
-		case "ishide":
+		case "display":
 			isUIChange = true
-			if "true" == v.Val {
-				if false == p.isShouldHide {
-					isNeedRerenderPage = true
-					p.isShouldHide = true
-				}
-				//} else if "false" == v.Val {
+			if "none" == v.Val {
+				*p.Display = false
 			} else {
-				if true == p.isShouldHide {
-					isNeedRerenderPage = true
-					p.isShouldHide = false
-				}
+				*p.Display = true
 			}
 
 		case "paddingtop":

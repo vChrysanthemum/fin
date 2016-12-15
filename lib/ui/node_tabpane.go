@@ -19,6 +19,7 @@ func (p *Node) InitNodeTabpane() {
 	uiBuffer := extra.NewTabpane()
 	p.uiBuffer = uiBuffer
 	p.UIBlock = &uiBuffer.Block
+	p.Display = &p.UIBlock.Display
 
 	uiBuffer.Width = 30
 
@@ -26,13 +27,19 @@ func (p *Node) InitNodeTabpane() {
 }
 
 type NodeTabpaneTab struct {
-	Tab *extra.Tab
+	Tab           *extra.Tab
+	ContentHeight int
 }
 
 func (p *Node) InitNodeTabpaneTab() {
 	nodeTabpaneTab := new(NodeTabpaneTab)
 	nodeTabpaneTab.Tab = extra.NewTab("")
 	p.Data = nodeTabpaneTab
+
+	p.UIBlock = nil
+	p.Display = new(bool)
+	*p.Display = true
+
 	return
 }
 
@@ -50,14 +57,16 @@ func (p *NodeTabpane) KeyPress(e termui.Event) {
 	}
 
 	if "<left>" == keyStr {
-		uiBuffer.SetActiveLeft()
-		p.page.Rerender()
+		if true == uiBuffer.SetActiveLeft() {
+			p.page.Rerender()
+		}
 		return
 	}
 
 	if "<right>" == keyStr {
-		uiBuffer.SetActiveRight()
-		p.page.Rerender()
+		if true == uiBuffer.SetActiveRight() {
+			p.page.Rerender()
+		}
 		return
 	}
 }

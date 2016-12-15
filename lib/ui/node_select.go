@@ -33,6 +33,7 @@ func (p *Node) InitNodeSelect() {
 	uiBuffer := termui.NewList()
 	p.uiBuffer = uiBuffer
 	p.UIBlock = &uiBuffer.Block
+	p.Display = &p.UIBlock.Display
 
 	p.isShouldCalculateWidth = true
 	p.isShouldCalculateHeight = true

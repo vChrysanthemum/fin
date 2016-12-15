@@ -100,9 +100,9 @@ func (p *Page) RemoveNode(node *Node) {
 	p.Rerender()
 }
 
-func (p *Page) nodeAfterUIRenderHandle(node *Node) {
+func (p *Page) _nodeAfterUIRenderHandle(node *Node) {
 	for childNode := node.FirstChild; childNode != nil; childNode = childNode.NextSibling {
-		p.nodeAfterUIRenderHandle(childNode)
+		p._nodeAfterUIRenderHandle(childNode)
 	}
 
 	if nodeDataAfterUIRenderHandler, ok := node.Data.(NodeDataAfterUIRenderHandler); true == ok {
@@ -110,26 +110,35 @@ func (p *Page) nodeAfterUIRenderHandle(node *Node) {
 	}
 }
 
+func (p *Page) nodeAfterUIRenderHandle() {
+	p._nodeAfterUIRenderHandle(p.FirstChildNode)
+}
+
 // 将 page 上的内容渲染到屏幕上
-// 并更新 FocusNode / ActiveNode / WorkingNodes内元素之间方向关系
-func (p *Page) uiRender() {
+// 更新 FocusNode
+// 更新 ActiveNode
+// 更新 FocusNode / ActiveNode / WorkingNodes内元素之间方向关系
+func (p *Page) uiRender() error {
 	GCurrentRenderPage = p
 	if 0 == len(p.Bufferers) {
-		return
+		return nil
 	}
 
+	// 更新 FocusNode
 	if nil != p.FocusNode {
 		if nodeDataUnFocusModer, ok := p.FocusNode.Value.(*Node).Data.(NodeDataUnFocusModer); true == ok {
 			nodeDataUnFocusModer.NodeDataUnFocusMode()
 		}
 	}
 
+	// 更新 ActiveNode
 	if nil != p.ActiveNode {
 		if nodeDataUnActiveModer, ok := p.ActiveNode.Data.(NodeDataUnActiveModer); true == ok {
 			nodeDataUnActiveModer.NodeDataUnActiveMode()
 		}
 	}
 
+	// 更新 FocusNode / ActiveNode / WorkingNodes内元素之间方向关系
 	if nil != p.ActiveNodeAfterRerender {
 		p.SetActiveNode(p.ActiveNodeAfterRerender)
 		p.FocusNode = nil
@@ -152,19 +161,29 @@ func (p *Page) uiRender() {
 		for e = p.WorkingNodes.Front(); e != nil; e = e.Next() {
 			node = e.Value.(*Node)
 
-			for e2 = e.Next(); e2 != nil; e2 = e2.Next() {
+			for e2 = p.WorkingNodes.Front(); e2 != nil; e2 = e2.Next() {
 				node2 = e2.Value.(*Node)
 
-				if (node.UIBlock.InnerArea.Min.X <= node2.UIBlock.InnerArea.Min.X &&
-					node2.UIBlock.InnerArea.Min.X <= node.UIBlock.InnerArea.Max.X) ||
-					(node.UIBlock.InnerArea.Max.X <= node2.UIBlock.InnerArea.Min.X &&
-						node2.UIBlock.InnerArea.Max.X <= node.UIBlock.InnerArea.Max.X) ||
-					(node.UIBlock.InnerArea.Min.X <= node2.UIBlock.InnerArea.Min.X &&
-						node2.UIBlock.InnerArea.Max.X >= node.UIBlock.InnerArea.Max.X) &&
-						(node2.UIBlock.InnerArea.Min.Y > node.UIBlock.InnerArea.Max.Y) {
+				if node == node2 {
+					continue
+				}
 
-					node.FocusBottomNode = e2
+				if ((node.UIBlock.InnerArea.Min.X <= node2.UIBlock.InnerArea.Min.X &&
+					node2.UIBlock.InnerArea.Min.X <= node.UIBlock.InnerArea.Max.X) ||
+
+					(node.UIBlock.InnerArea.Min.X <= node2.UIBlock.InnerArea.Min.X &&
+						node2.UIBlock.InnerArea.Min.X <= node.UIBlock.InnerArea.Max.X) ||
+
+					(node.UIBlock.InnerArea.Max.X <= node2.UIBlock.InnerArea.Max.X &&
+						node2.UIBlock.InnerArea.Max.X <= node.UIBlock.InnerArea.Max.X) ||
+
+					(node.UIBlock.InnerArea.Min.X >= node2.UIBlock.InnerArea.Min.X &&
+						node.UIBlock.InnerArea.Max.X <= node2.UIBlock.InnerArea.Max.X)) &&
+
+					(node2.UIBlock.Y > node.UIBlock.Y) {
+
 					node2.FocusTopNode = e
+					node.FocusBottomNode = e2
 					break
 				}
 			}
@@ -173,7 +192,9 @@ func (p *Page) uiRender() {
 
 	uiutils.UIRender(p.Bufferers...)
 
-	p.nodeAfterUIRenderHandle(p.FirstChildNode)
+	p.nodeAfterUIRenderHandle()
+
+	return nil
 }
 
 // 刷新 page 内容到屏幕

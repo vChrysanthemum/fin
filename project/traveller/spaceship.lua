@@ -17,7 +17,6 @@ function GetSpaceshipFromDB(spaceshipId)
     local spaceship = NewSpaceship()
     spaceship:Format(json.decode(row.data))
     spaceship.Info.SpaceshipId = spaceshipId
-    spaceship.IsLanding = false
 
     return spaceship
 end
@@ -183,6 +182,7 @@ function _Spaceship.UpdateLife(self, number)
 end
 
 function _Spaceship.Landing(self, number)
-    GWorld:Stop()
-    NodeModalPlanet:ModalShow()
+    GWorld:Stop(function()
+        NodeModalPlanet:ModalShow()
+    end)
 end

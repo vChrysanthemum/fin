@@ -14,7 +14,7 @@ func (p *Page) _renderBodyTabpaneOneTab(nodeTab *Node) {
 	nodeDataTab = nodeTab.Data.(*NodeTabpaneTab)
 
 	for nodeTabChild = nodeTab.FirstChild; nodeTabChild != nil; nodeTabChild = nodeTabChild.NextSibling {
-		if true == nodeTabChild.isShouldHide {
+		if false == *nodeTabChild.Display {
 			continue
 		}
 
