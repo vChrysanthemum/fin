@@ -4,6 +4,7 @@ end
 NodeRadar = Node("CanvasRadar")
 NodeTerminalMain = Node("TerminalMain")
 NodeParInfo = Node("ParInfo")
+NodeParNewestMsg = Node("ParNewestMsg")
 NodeParGUserSpaceshipStatus = Node("ParGUserSpaceshipStatus")
 NodeGaugeFuel = Node("GaugeFuel")
 NodeGaugeLife = Node("GaugeLife")

@@ -134,7 +134,7 @@ function _Terminal.StartEnvPlanet(self, position)
     end
 
     self:ScreenInfoMsg(string.format("连接 星球 %s ...", PointToStr(position)))
-    local planet = GRadar.ScreenPlanets[PointToStr(GRadar:GlobalPositionToScreenPosition(position))]
+    local planet = GRadar:GetPlanetOnScreenByPosition(position)
     if nil == planet then
         self:ScreenErrMsg(string.format("无法连接星球 %s", PointToStr(position)))
         return
@@ -157,15 +157,15 @@ function _Terminal.ExecCommandPlanet(self, nodePointer, command)
         self.ConnentingPlanet:SetName(commandArr[2])
         NodeTerminalMain:TerminalSetCommandPrefix(string.format("%s> ", self.ConnentingPlanet.Info.Name))
 
-    elseif "login" == commandArr[1] then
-        self:LoginPlanet()
+    elseif "detail" == commandArr[1] then
+        self:ShowPlanetDetail()
 
     else
         self:ScreenErrMsg(string.format("%s %s", self.ErrCommandNotExists, command))
     end
 end
 
-function _Terminal.LoginPlanet(self)
+function _Terminal.ShowPlanetDetail(self)
     GWorld:Stop(function()
         NodeModalPlanet:ModalShow()
     end)

@@ -21,6 +21,8 @@ function NewWorld()
 
     World.isShouldMove = true
     World.afterStopCallback = nil
+    World.LeavePlanetSpeed = 0.3
+
     return World
 end
 
@@ -33,11 +35,8 @@ function _World.loopEvent(self)
         return
     end
 
-    GUserSpaceship:RunOneStep()
+    GUserSpaceship:LoopEvent()
 
-    local planets = {}
-    planets = GWorld:GetPlanetsByRectangle(GUserSpaceship.CenterRectangle)
-    GRadar:RefreshScreenPlanets(planets, GUserSpaceship.CenterRectangle)
     NodeRadar:CanvasClean()
     GRadar:DrawSpaceship()
     GRadar:DrawPlanets()

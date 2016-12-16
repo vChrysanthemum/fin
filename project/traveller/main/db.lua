@@ -29,4 +29,4 @@ local spaceship = NewSpaceshipInfo()
 sql = string.format([[
 insert into b_spaceship (spaceship_id, data) values (1, '%s');
 ]], json.encode(spaceship))
-DB:Exec(sql)
+ret = DB:Exec(sql)
