@@ -114,3 +114,17 @@ func (p *Script) luaFuncNodeTerminalClearLines(L *lua.LState) int {
 	nodeTerminal.Node.uiRender()
 	return 0
 }
+
+func (p *Script) luaFuncNodeTerminalClearCommandHistory(L *lua.LState) int {
+	if L.GetTop() < 1 {
+		return 0
+	}
+
+	nodeTerminal := p._getNodeTerminalPointerFromUserData(L, L.ToUserData(1))
+	if nil == nodeTerminal {
+		return 0
+	}
+
+	nodeTerminal.ClearCommandHistory()
+	return 0
+}

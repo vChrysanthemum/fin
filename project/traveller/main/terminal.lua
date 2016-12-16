@@ -43,6 +43,10 @@ function _Terminal.ExecCommand(self, nodePointer, command)
         NodeTerminalMain:TerminalClearLines()
         return
 
+    elseif "clearhistory" == commandArr[1] then
+        NodeTerminalMain:TerminalClearCommandHistory()
+        return
+
     elseif "quit" == commandArr[1] then
         Quit()
     end

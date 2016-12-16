@@ -171,6 +171,10 @@ function _Node.TerminalClearLines(self)
     return base.NodeTerminalClearLines(self.nodePointer)
 end
 
+function _Node.TerminalClearCommandHistory(self)
+    return base.NodeTerminalClearCommandHistory(self.nodePointer)
+end
+
 function _Node.ModalDoString(self, callback)
     return base.NodeModalDoString(self.nodePointer, callback)
 end

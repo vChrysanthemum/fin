@@ -140,8 +140,11 @@ func (p *NodeTerminal) WriteNewLine(line string) {
 
 func (p *NodeTerminal) ClearLines() {
 	p.NewCommand = nil
-	p.CommandHistory = make([]string, 0)
 	p.Editor.ClearLines()
+}
+
+func (p *NodeTerminal) ClearCommandHistory() {
+	p.CommandHistory = make([]string, 0)
 }
 
 func (p *NodeTerminal) NodeDataFocusMode() {
