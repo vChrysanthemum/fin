@@ -193,3 +193,19 @@ function _Spaceship.Landing(self, number)
         NodeModalPlanet:ModalShow()
     end)
 end
+
+-- spaceship tools
+
+function _Spaceship.JumperRun(self, position)
+    if self.Info.Jumpers <= 0 then
+        return "没有可用跳跃者"
+    end
+
+    self.Info.Position.X = position.X
+    self.Info.Position.Y = position.Y
+    self:refreshCenterRectangle(NodeRadar:Width(), NodeRadar:Height())
+    self.Info.Jumpers = self.Info.Jumpers - 1
+    self:FlushToDB()
+
+    return nil
+end

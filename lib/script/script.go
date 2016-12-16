@@ -36,6 +36,7 @@ func NewScript(luaCallByParamLocker *sync.RWMutex) *Script {
 }
 
 func (p *Script) RegisterBaseTable(L *lua.LState, baseTable *lua.LTable) {
+	L.SetField(baseTable, "Quit", L.NewFunction(p.Quit))
 	L.SetField(baseTable, "Log", L.NewFunction(p.Log))
 
 	L.SetField(baseTable, "ResBaseDir", lua.LString(

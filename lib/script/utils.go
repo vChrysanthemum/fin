@@ -4,9 +4,17 @@ import (
 	"log"
 	"time"
 
+	"github.com/gizak/termui"
 	uuid "github.com/satori/go.uuid"
 	lua "github.com/yuin/gopher-lua"
 )
+
+func (p *Script) Quit(L *lua.LState) int {
+	termui.DefaultEvtStream.ResetHandlers()
+	termui.StopLoop()
+	termui.Close()
+	return 0
+}
 
 func (p *Script) Log(L *lua.LState) int {
 	params := L.GetTop()

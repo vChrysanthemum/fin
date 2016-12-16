@@ -7,12 +7,6 @@ func registerHandles() {
 		GCurrentRenderPage.Rerender()
 	})
 
-	termui.Handle("/sys/kbd/q", func(termui.Event) {
-		termui.DefaultEvtStream.ResetHandlers()
-		termui.StopLoop()
-		termui.Close()
-	})
-
 	termui.Handle("/sys/kbd", func(e termui.Event) {
 		GCurrentRenderPage.KeyPressHandleLocker.Lock()
 		defer GCurrentRenderPage.KeyPressHandleLocker.Unlock()

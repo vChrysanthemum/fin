@@ -1,5 +1,9 @@
 package.path = package.path .. ";" .. base.ResBaseDir .. "/lua/script/?.lua;"
 
+function Quit()
+    base.Quit()
+end
+
 function Log(...)
     base.Log(unpack(arg))
 end

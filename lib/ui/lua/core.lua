@@ -151,6 +151,10 @@ function _Node.SelectClearOptions(self)
     return base.NodeSelectClearOptions(self.nodePointer)
 end
 
+function _Node.TerminalSetCommandPrefix(self, commandPrefix)
+    return base.NodeTerminalSetCommandPrefix(self.nodePointer, commandPrefix)
+end
+
 function _Node.TerminalRegisterCommandHandle(self, callback)
     return base.NodeTerminalRegisterCommandHandle(self.nodePointer, callback)
 end

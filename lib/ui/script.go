@@ -89,6 +89,8 @@ func (p *Page) prepareScript() {
 	s.luaState.SetField(luaBase, "NodeSelectClearOptions",
 		s.luaState.NewFunction(s.luaFuncNodeSelectClearOptions))
 
+	s.luaState.SetField(luaBase, "NodeTerminalSetCommandPrefix",
+		s.luaState.NewFunction(s.luaFuncNodeTerminalSetCommandPrefix))
 	s.luaState.SetField(luaBase, "NodeTerminalRegisterCommandHandle",
 		s.luaState.NewFunction(s.luaFuncNodeTerminalRegisterCommandHandle))
 	s.luaState.SetField(luaBase, "NodeTerminalRemoveCommandHandle",

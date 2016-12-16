@@ -25,15 +25,25 @@ func (p *Script) _getNodeTerminalPointerFromUserData(L *lua.LState, lu *lua.LUse
 	return nodeTerminal
 }
 
+func (p *Script) luaFuncNodeTerminalSetCommandPrefix(L *lua.LState) int {
+	if L.GetTop() < 2 {
+		L.Push(lua.LNil)
+		return 1
+	}
+
+	nodeTerminal := p._getNodeTerminalPointerFromUserData(L, L.ToUserData(1))
+	nodeTerminal.CommandPrefix = L.ToString(2)
+	return 0
+}
+
 func (p *Script) luaFuncNodeTerminalRegisterCommandHandle(L *lua.LState) int {
 	if L.GetTop() < 2 {
 		L.Push(lua.LNil)
 		return 1
 	}
 
-	lu := L.ToUserData(1)
+	nodeTerminal := p._getNodeTerminalPointerFromUserData(L, L.ToUserData(1))
 	callback := L.ToFunction(2)
-	nodeTerminal := p._getNodeTerminalPointerFromUserData(L, lu)
 	if nil == nodeTerminal {
 		L.Push(lua.LNil)
 		return 1
@@ -64,9 +74,8 @@ func (p *Script) luaFuncNodeTerminalRemoveCommandHandle(L *lua.LState) int {
 		return 1
 	}
 
-	lu := L.ToUserData(1)
+	nodeTerminal := p._getNodeTerminalPointerFromUserData(L, L.ToUserData(1))
 	key := L.ToString(2)
-	nodeTerminal := p._getNodeTerminalPointerFromUserData(L, lu)
 	if nil == nodeTerminal {
 		L.Push(lua.LNil)
 		return 1
@@ -81,8 +90,7 @@ func (p *Script) luaFuncNodeTerminalWriteNewLine(L *lua.LState) int {
 		return 0
 	}
 
-	lu := L.ToUserData(1)
-	nodeTerminal := p._getNodeTerminalPointerFromUserData(L, lu)
+	nodeTerminal := p._getNodeTerminalPointerFromUserData(L, L.ToUserData(1))
 	if nil == nodeTerminal {
 		return 0
 	}
@@ -97,8 +105,7 @@ func (p *Script) luaFuncNodeTerminalClearLines(L *lua.LState) int {
 		return 0
 	}
 
-	lu := L.ToUserData(1)
-	nodeTerminal := p._getNodeTerminalPointerFromUserData(L, lu)
+	nodeTerminal := p._getNodeTerminalPointerFromUserData(L, L.ToUserData(1))
 	if nil == nodeTerminal {
 		return 0
 	}

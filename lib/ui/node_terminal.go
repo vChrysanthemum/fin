@@ -13,7 +13,7 @@ type NodeTerminal struct {
 	ActiveModeBorderColor   termui.Attribute
 	CommandPrefix           string
 	NewCommand              *editor.Line
-	CommandLines            []*editor.Line
+	CommandHistory          []string
 	CurrentCommandLineIndex int
 }
 
@@ -51,12 +51,13 @@ func (p *NodeTerminal) KeyPress(e termui.Event) {
 	// 获取新的命令行
 	if "<enter>" == keyStr {
 
-		if (len(p.CommandLines) == 0 && nil != p.Editor.CurrentLine) ||
-			(len(p.CommandLines) > 0 && p.CommandLines[len(p.CommandLines)-1] != p.Editor.CurrentLine) {
+		if (len(p.CommandHistory) == 0 && nil != p.Editor.CurrentLine) ||
+			(len(p.CommandHistory) > 0 &&
+				p.CommandHistory[len(p.CommandHistory)-1] != string(p.Editor.CurrentLine.Data[len(p.CommandPrefix):])) {
 
 			p.NewCommand = p.Editor.CurrentLine
-			p.CommandLines = append(p.CommandLines, p.NewCommand)
-			p.CurrentCommandLineIndex = len(p.CommandLines) - 1
+			p.CommandHistory = append(p.CommandHistory, string(p.NewCommand.Data[len(p.CommandPrefix):]))
+			p.CurrentCommandLineIndex = len(p.CommandHistory) - 1
 		}
 
 		if len(p.Node.KeyPressEnterHandlers) > 0 {
@@ -83,7 +84,13 @@ func (p *NodeTerminal) KeyPress(e termui.Event) {
 	}
 
 	if "<up>" == keyStr || "<down>" == keyStr {
-		if len(p.CommandLines) > 0 {
+		if len(p.CommandHistory) > 0 {
+			if len(p.CommandHistory) == p.CurrentCommandLineIndex {
+				p.Editor.UpdateCurrentLineData(p.CommandPrefix)
+			} else {
+				p.Editor.UpdateCurrentLineData(p.CommandPrefix + p.CommandHistory[p.CurrentCommandLineIndex])
+			}
+
 			if "<up>" == keyStr {
 				p.CurrentCommandLineIndex -= 1
 				if p.CurrentCommandLineIndex <= 0 {
@@ -91,16 +98,11 @@ func (p *NodeTerminal) KeyPress(e termui.Event) {
 				}
 			} else if "<down>" == keyStr {
 				p.CurrentCommandLineIndex += 1
-				if p.CurrentCommandLineIndex >= len(p.CommandLines) {
-					p.CurrentCommandLineIndex = len(p.CommandLines)
+				if p.CurrentCommandLineIndex >= len(p.CommandHistory) {
+					p.CurrentCommandLineIndex = len(p.CommandHistory)
 				}
 			}
 
-			if len(p.CommandLines) == p.CurrentCommandLineIndex {
-				p.Editor.UpdateCurrentLineData(p.CommandPrefix)
-			} else {
-				p.Editor.UpdateCurrentLineData(string(p.CommandLines[p.CurrentCommandLineIndex].Data))
-			}
 			p.Node.uiRender()
 		}
 		return
@@ -141,7 +143,7 @@ func (p *NodeTerminal) WriteNewLine(line string) {
 
 func (p *NodeTerminal) ClearLines() {
 	p.NewCommand = nil
-	p.CommandLines = make([]*editor.Line, 0)
+	p.CommandHistory = make([]string, 0)
 	p.Editor.ClearLines()
 }
 
