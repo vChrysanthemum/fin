@@ -173,7 +173,9 @@ func (p *Page) uiRender() error {
 					continue
 				}
 
-				if node == node2 {
+				if node == node2 ||
+					nil != node.FocusBottomNode ||
+					nil != node2.FocusTopNode {
 					continue
 				}
 
@@ -191,8 +193,8 @@ func (p *Page) uiRender() error {
 
 					(node2.UIBlock.Y > node.UIBlock.Y) {
 
-					node2.FocusTopNode = e
 					node.FocusBottomNode = e2
+					node2.FocusTopNode = e
 					break
 				}
 			}
