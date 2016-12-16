@@ -45,3 +45,35 @@ func GetFileContent(path string) ([]byte, error) {
 
 	return ioutil.ReadAll(bufio.NewReader(file))
 }
+
+func IsVimKeyPressUp(keyStr string) bool {
+	if "k" == keyStr || "<up>" == keyStr {
+		return true
+	} else {
+		return false
+	}
+}
+
+func IsVimKeyPressDown(keyStr string) bool {
+	if "j" == keyStr || "<down>" == keyStr {
+		return true
+	} else {
+		return false
+	}
+}
+
+func IsVimKeyPressLeft(keyStr string) bool {
+	if "h" == keyStr || "<left>" == keyStr {
+		return true
+	} else {
+		return false
+	}
+}
+
+func IsVimKeyPressRight(keyStr string) bool {
+	if "l" == keyStr || "<right>" == keyStr {
+		return true
+	} else {
+		return false
+	}
+}
