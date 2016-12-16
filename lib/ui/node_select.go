@@ -62,36 +62,30 @@ func (p *NodeSelect) KeyPress(e termui.Event) {
 	}
 
 	if true == IsVimKeyPressUp(keyStr) {
-		p.SelectedOptionIndex--
-		if p.SelectedOptionIndex < 0 {
-			p.SelectedOptionIndex = len(p.Children) - 1
-			p.DisplayLinesRange[0] = len(p.Children) - p.Node.UIBlock.InnerArea.Dy()
-			p.DisplayLinesRange[1] = len(p.Children)
+		if p.SelectedOptionIndex-1 < 0 {
 		} else {
+			p.SelectedOptionIndex--
 			if p.SelectedOptionIndex < p.DisplayLinesRange[0] {
 				p.DisplayLinesRange[0] = p.DisplayLinesRange[0] - 1
 				p.DisplayLinesRange[1] = p.DisplayLinesRange[1] - 1
 			}
+			p.Node.refreshUiBufferItems()
+			p.Node.uiRender()
 		}
-		p.Node.refreshUiBufferItems()
-		p.Node.uiRender()
 		return
 	}
 
 	if true == IsVimKeyPressDown(keyStr) {
-		p.SelectedOptionIndex += 1
-		if p.SelectedOptionIndex >= len(p.Children) {
-			p.SelectedOptionIndex = 0
-			p.DisplayLinesRange[0] = 0
-			p.DisplayLinesRange[1] = p.Node.UIBlock.InnerArea.Dy()
+		if p.SelectedOptionIndex+1 >= len(p.Children) {
 		} else {
+			p.SelectedOptionIndex++
 			if p.SelectedOptionIndex >= p.DisplayLinesRange[1] {
 				p.DisplayLinesRange[1] = p.DisplayLinesRange[1] + 1
 				p.DisplayLinesRange[0] = p.DisplayLinesRange[0] + 1
 			}
+			p.Node.refreshUiBufferItems()
+			p.Node.uiRender()
 		}
-		p.Node.refreshUiBufferItems()
-		p.Node.uiRender()
 		return
 	}
 
