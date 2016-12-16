@@ -151,6 +151,7 @@ function _Terminal.ExecCommandPlanet(self, nodePointer, command)
 
     elseif "rename" == commandArr[1] then
         self.ConnentingPlanet:SetName(commandArr[2])
+        NodeTerminalMain:TerminalSetCommandPrefix(string.format("%s> ", self.ConnentingPlanet.Info.Name))
 
     elseif "login" == commandArr[1] then
         self:LoginPlanet()
