@@ -46,6 +46,8 @@ function NewSpaceship()
     local Warehouse     = {}
     Spaceship.Warehouse = Warehouse
 
+    Spaceship.lastFlushToDBForRunOneStepAt = 0
+
     return Spaceship
 end
 
@@ -141,6 +143,11 @@ function _Spaceship.RunOneStep(self)
     self.Info.Position.X = self.Info.Position.X + self.Info.Speed.X
     self.Info.Position.Y = self.Info.Position.Y + self.Info.Speed.Y
     self:refreshCenterRectangle(NodeRadar:Width(), NodeRadar:Height())
+
+    if TimeNow() - self.lastFlushToDBForRunOneStepAt > 3 then
+        self:FlushToDB()
+    end
+    self.lastFlushToDBForRunOneStepAt = TimeNow()
 end
 
 function _Spaceship.UpdateFuel(self, number)
