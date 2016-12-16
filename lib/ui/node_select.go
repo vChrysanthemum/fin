@@ -61,7 +61,7 @@ func (p *NodeSelect) KeyPress(e termui.Event) {
 		return
 	}
 
-	if "<up>" == keyStr {
+	if true == IsVimKeyPressUp(keyStr) {
 		p.SelectedOptionIndex--
 		if p.SelectedOptionIndex < 0 {
 			p.SelectedOptionIndex = len(p.Children) - 1
@@ -78,7 +78,7 @@ func (p *NodeSelect) KeyPress(e termui.Event) {
 		return
 	}
 
-	if "<down>" == keyStr {
+	if true == IsVimKeyPressDown(keyStr) {
 		p.SelectedOptionIndex += 1
 		if p.SelectedOptionIndex >= len(p.Children) {
 			p.SelectedOptionIndex = 0

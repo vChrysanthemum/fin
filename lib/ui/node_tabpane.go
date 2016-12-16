@@ -58,14 +58,14 @@ func (p *NodeTabpane) KeyPress(e termui.Event) {
 		return
 	}
 
-	if "<left>" == keyStr {
+	if true == IsVimKeyPressLeft(keyStr) {
 		if true == uiBuffer.SetActiveLeft() {
 			p.page.Rerender()
 		}
 		return
 	}
 
-	if "<right>" == keyStr {
+	if true == IsVimKeyPressRight(keyStr) {
 		if true == uiBuffer.SetActiveRight() {
 			p.page.Rerender()
 		}

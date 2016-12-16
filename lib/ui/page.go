@@ -157,6 +157,8 @@ func (p *Page) uiRender() error {
 			node.FocusThisNode = e
 			node.FocusTopNode = nil
 			node.FocusBottomNode = nil
+			node.FocusLeftNode = nil
+			node.FocusRightNode = nil
 		}
 
 		for e = p.WorkingNodes.Front(); e != nil; e = e.Next() {
@@ -166,6 +168,7 @@ func (p *Page) uiRender() error {
 				continue
 			}
 
+			// 更新 WorkingNodes内元素之间上下方向关系
 			for e2 = p.WorkingNodes.Front(); e2 != nil; e2 = e2.Next() {
 				node2 = e2.Value.(*Node)
 
@@ -182,14 +185,11 @@ func (p *Page) uiRender() error {
 				if ((node.UIBlock.InnerArea.Min.X <= node2.UIBlock.InnerArea.Min.X &&
 					node2.UIBlock.InnerArea.Min.X <= node.UIBlock.InnerArea.Max.X) ||
 
-					(node.UIBlock.InnerArea.Min.X <= node2.UIBlock.InnerArea.Min.X &&
-						node2.UIBlock.InnerArea.Min.X <= node.UIBlock.InnerArea.Max.X) ||
-
-					(node.UIBlock.InnerArea.Max.X <= node2.UIBlock.InnerArea.Max.X &&
+					(node.UIBlock.InnerArea.Min.X <= node2.UIBlock.InnerArea.Max.X &&
 						node2.UIBlock.InnerArea.Max.X <= node.UIBlock.InnerArea.Max.X) ||
 
-					(node.UIBlock.InnerArea.Min.X >= node2.UIBlock.InnerArea.Min.X &&
-						node.UIBlock.InnerArea.Max.X <= node2.UIBlock.InnerArea.Max.X)) &&
+					(node2.UIBlock.InnerArea.Min.X <= node.UIBlock.InnerArea.Min.X &&
+						node2.UIBlock.InnerArea.Max.X >= node.UIBlock.InnerArea.Max.X)) &&
 
 					(node2.UIBlock.Y > node.UIBlock.Y) {
 
@@ -198,6 +198,38 @@ func (p *Page) uiRender() error {
 					break
 				}
 			}
+
+			// 更新 WorkingNodes内元素之间左右方向关系
+			for e2 = p.WorkingNodes.Front(); e2 != nil; e2 = e2.Next() {
+				node2 = e2.Value.(*Node)
+
+				if false == *node2.Display {
+					continue
+				}
+
+				if node == node2 ||
+					nil != node.FocusLeftNode ||
+					nil != node2.FocusRightNode {
+					continue
+				}
+
+				if ((node.UIBlock.InnerArea.Min.Y <= node2.UIBlock.InnerArea.Min.Y &&
+					node2.UIBlock.InnerArea.Min.Y <= node.UIBlock.InnerArea.Max.Y) ||
+
+					(node.UIBlock.InnerArea.Min.Y <= node2.UIBlock.InnerArea.Max.Y &&
+						node2.UIBlock.InnerArea.Max.Y <= node.UIBlock.InnerArea.Max.Y) ||
+
+					(node2.UIBlock.InnerArea.Min.Y <= node.UIBlock.InnerArea.Min.Y &&
+						node2.UIBlock.InnerArea.Max.Y >= node.UIBlock.InnerArea.Max.Y)) &&
+
+					(node2.UIBlock.X > node.UIBlock.X) {
+
+					node.FocusRightNode = e2
+					node2.FocusLeftNode = e
+					break
+				}
+			}
+
 		}
 	}
 

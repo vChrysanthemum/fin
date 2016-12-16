@@ -68,13 +68,13 @@ func registerHandles() {
 					}
 
 				} else if true == IsVimKeyPressRight(keyStr) {
-					if nil != GCurrentRenderPage.FocusNode.Next() {
-						GCurrentRenderPage.FocusNode = GCurrentRenderPage.FocusNode.Next()
+					if nil != node.FocusRightNode {
+						GCurrentRenderPage.FocusNode = node.FocusRightNode
 					}
 
 				} else if true == IsVimKeyPressLeft(keyStr) {
-					if nil != GCurrentRenderPage.FocusNode.Prev() {
-						GCurrentRenderPage.FocusNode = GCurrentRenderPage.FocusNode.Prev()
+					if nil != node.FocusLeftNode {
+						GCurrentRenderPage.FocusNode = node.FocusLeftNode
 					}
 
 				} else if true == IsVimKeyPressDown(keyStr) {
