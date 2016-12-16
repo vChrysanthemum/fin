@@ -41,7 +41,7 @@ end
 
 function NewSpaceship()
     local Spaceship           = setmetatable({}, _mtSpaceship)
-    Spaceship.ScreenPosition  = {X=GetIntPart(NodeRadar:Width()/2), Y=GetIntPart(NodeRadar:Height()/2)}
+    Spaceship.ScreenPosition  = {X=math.floor(NodeRadar:Width()/2), Y=math.floor(NodeRadar:Height()/2)}
     Spaceship.CenterRectangle = {}
     Spaceship:Format(NewSpaceshipInfo())
     Spaceship.ColorBg   = ""
@@ -54,14 +54,14 @@ function NewSpaceship()
 end
 
 function _Spaceship.SetSpeedX(self, speedx)
-    self:UpdateFuel(-1 * GetIntPart(math.abs(self.Info.Speed.X - speedx)))
+    self:UpdateFuel(-1 * math.floor(math.abs(self.Info.Speed.X - speedx)))
     self.Info.Speed.X = speedx
     self:FlushToDB()
     self:RefreshNodeParGUserSpaceshipStatus()
 end
 
 function _Spaceship.SetSpeedY(self, speedy)
-    self:UpdateFuel(-1 * GetIntPart(math.abs(self.Info.Speed.Y - speedy)))
+    self:UpdateFuel(-1 * math.floor(math.abs(self.Info.Speed.Y - speedy)))
     self.Info.Speed.Y = speedy
     self:FlushToDB()
     self:RefreshNodeParGUserSpaceshipStatus()
@@ -92,12 +92,12 @@ end
 
 -- 刷新飞船为中心的指定大小区域所在的宇宙位置
 function _Spaceship.refreshCenterRectangle(self, rectangleWidth, rectangleHeight)
-    local x = GetIntPart(self.Info.Position.X)
-    local y = GetIntPart(self.Info.Position.Y)
+    local x = math.floor(self.Info.Position.X)
+    local y = math.floor(self.Info.Position.Y)
     local rectangle = {}
     rectangle.Min = {
-        X = GetIntPart(x - rectangleWidth / 2),
-        Y = GetIntPart(y - rectangleHeight / 2)
+        X = math.floor(x - rectangleWidth / 2),
+        Y = math.floor(y - rectangleHeight / 2)
     }
     rectangle.Max = {
         X = rectangle.Min.X + rectangleWidth,

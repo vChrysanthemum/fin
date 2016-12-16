@@ -107,31 +107,6 @@ function TableLength(T)
   return count
 end
 
-function GetIntPart(x)
-  if math.ceil(x) == x then
-    return math.ceil(x)
-  else 
-    return math.ceil(x) - 1
-  end
-end
-
-function GetMinIntPart(x)
-  if x >= 0 then
-    if math.ceil(x) == x then
-      return math.ceil(x)
-    else 
-      return math.ceil(x) - 1
-    end
-  end
-  if x < 0 then
-    if math.ceil(x) == x then
-      return math.ceil(x)
-    else 
-      return math.ceil(x) + 1
-    end
-  end
-end
-
 string.lpad = function(str, len, char)
   if len <= #str then
     return str

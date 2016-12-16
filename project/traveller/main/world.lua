@@ -158,12 +158,12 @@ end
 function _World.GetPlanetsByRectangle(self, rectangle)
     local blockIndexs = {
         Min = {
-            X = GetIntPart(rectangle.Min.X / self.CreateBlockWidth),
-            Y = GetIntPart(rectangle.Min.Y / self.CreateBlockHeight),
+            X = math.floor(rectangle.Min.X / self.CreateBlockWidth),
+            Y = math.floor(rectangle.Min.Y / self.CreateBlockHeight),
         },
         Max = {
-            X = GetIntPart(rectangle.Max.X / self.CreateBlockWidth),
-            Y = GetIntPart(rectangle.Max.Y / self.CreateBlockHeight),
+            X = math.floor(rectangle.Max.X / self.CreateBlockWidth),
+            Y = math.floor(rectangle.Max.Y / self.CreateBlockHeight),
         }
     }
 

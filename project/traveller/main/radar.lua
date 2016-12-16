@@ -4,7 +4,7 @@ local _mtRadar = {__index = _Radar}
 function NewRadar()
   local Radar = setmetatable({}, _mtRadar)
   Radar.ScreenPlanets = {}
-  Radar.ScreenCenterPosition = {X=GetIntPart(NodeRadar:Width()/2), Y=GetIntPart(NodeRadar:Height()/2)}
+  Radar.ScreenCenterPosition = {X=math.floor(NodeRadar:Width()/2), Y=math.floor(NodeRadar:Height()/2)}
   Radar.CursorScreenPosition = Radar.ScreenCenterPosition
   Radar.KeyPressStrForMove = ""
   Radar.FocusPlanet = nil
@@ -41,8 +41,8 @@ function _Radar.RefreshParInfo(self)
     self.FocusTarget.ColorBg = "white"
     NodeParInfo:SetText(string.format([[
 %s
-X: %d
-Y: %d]], GUserSpaceship.Info.Name, GUserSpaceship.Info.Position.X, GUserSpaceship.Info.Position.Y))
+X: %f
+Y: %f]], GUserSpaceship.Info.Name, GUserSpaceship.Info.Position.X, GUserSpaceship.Info.Position.Y))
     return
   end
 
@@ -140,8 +140,8 @@ end
 -- 根据坐标返回相应屏幕坐标
 function _Radar.GlobalPositionToScreenPosition(self, position)
   return {
-    X = GetIntPart(position.X - GUserSpaceship.CenterRectangle.Min.X),
-    Y = GetIntPart(position.Y - GUserSpaceship.CenterRectangle.Min.Y),
+    X = math.floor(position.X - GUserSpaceship.CenterRectangle.Min.X),
+    Y = math.floor(position.Y - GUserSpaceship.CenterRectangle.Min.Y),
   }
 end
 
@@ -168,8 +168,8 @@ function _Radar.RefreshScreenPlanets(self, planets, rectangle)
     -- 计算星球所在屏幕的位置
     -- rectangle 为指定宇宙位置
     planet.ScreenPosition = {
-      X = planet.Info.Position.X - startPosition.X,
-      Y = planet.Info.Position.Y - startPosition.Y
+      X = math.floor(planet.Info.Position.X) - startPosition.X,
+      Y = math.floor(planet.Info.Position.Y) - startPosition.Y
     }
     self.ScreenPlanets[PointToStr(planet.ScreenPosition)] = planet
   end
