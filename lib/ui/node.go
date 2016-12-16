@@ -67,28 +67,35 @@ type Node struct {
 
 	HtmlAttribute map[string]html.Attribute
 
-	isCalledFocusMode     bool
-	tmpFocusModeBorder    bool
-	tmpFocusModeBorderFg  termui.Attribute
+	// FocusMode
+	isCalledFocusMode    bool
+	tmpFocusModeBorder   bool
+	tmpFocusModeBorderFg termui.Attribute
+
+	// ActiveMode
 	isCalledActiveMode    bool
 	tmpActiveModeBorder   bool
 	tmpActiveModeBorderFg termui.Attribute
 
-	LuaActiveModeCallBack bool
+	// 是否可以有交互的 Node
+	isWorkNode bool
+
+	// 进入 ActiveMode 所需要触发的 NodeJob
 	LuaActiveModeHandlers map[string]NodeJob
 
 	ColorFg string
 	ColorBg string
 
+	Display  *bool
 	uiBuffer interface{}
 	UIBlock  *termui.Block
-	Display  *bool
 
 	HtmlData string
-	Data     interface{}
+	// NodeData 譬如 NodeTerminal
+	Data interface{}
 
-	KeyPressHandlers      map[string]NodeJob
 	KeyPress              NodeKeyPress
+	KeyPressHandlers      map[string]NodeJob
 	KeyPressEnterHandlers map[string]NodeJob
 
 	CursorLocation image.Point

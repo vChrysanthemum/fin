@@ -3,6 +3,8 @@ package ui
 import (
 	"unicode/utf8"
 
+	"github.com/gizak/termui/extra"
+
 	"golang.org/x/net/html"
 )
 
@@ -22,13 +24,13 @@ func (p *Page) parseBodyTabpaneTab(parentNode *Node, htmlNode *html.Node) (ret *
 	isFallthrough = true
 
 	ret.InitNodeTabpaneTab()
-	nodeTabpaneTab := ret.Data.(*NodeTabpaneTab)
 
 	for _, attr := range htmlNode.Attr {
 		switch attr.Key {
 		case "label":
-			nodeTabpaneTab.Tab.Label = attr.Val
-			nodeTabpaneTab.Tab.RuneLen = utf8.RuneCount([]byte(attr.Val))
+			uiBuffer := ret.uiBuffer.(*extra.Tab)
+			uiBuffer.Label = attr.Val
+			uiBuffer.RuneLen = utf8.RuneCount([]byte(attr.Val))
 		}
 	}
 

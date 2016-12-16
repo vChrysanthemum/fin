@@ -36,6 +36,8 @@ func (p *Node) InitNodeTerminal() {
 	p.isShouldCalculateHeight = false
 	p.UIBlock.Border = true
 
+	p.isWorkNode = true
+
 	return
 }
 

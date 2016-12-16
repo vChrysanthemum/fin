@@ -40,6 +40,8 @@ func (p *Node) InitNodeSelect() {
 	uiBuffer.Border = true
 	uiBuffer.BorderFg = COLOR_DEFAULT_BORDER_FG
 
+	p.isWorkNode = true
+
 	return
 }
 

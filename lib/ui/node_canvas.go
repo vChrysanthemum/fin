@@ -23,6 +23,8 @@ func (p *Node) InitNodeCanvas() {
 	p.UIBlock.Height = 10
 	p.UIBlock.Border = true
 
+	p.isWorkNode = true
+
 	return
 }
 

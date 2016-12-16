@@ -6,6 +6,9 @@ import (
 	"golang.org/x/net/html"
 )
 
+// 解析 Node 的函数
+// isFallthrough 解析完该 Node ，是否继续解析 ChildNodes
+// isFallthrough 例: parseBodyTable 用到该参数
 type ParseExecFunc func(parentNode *Node, htmlNode *html.Node) (ret *Node, isFallthrough bool)
 
 type ParseAgent struct {

@@ -7,7 +7,7 @@ import (
 
 type NodeTabpane struct {
 	*Node
-	Tabs []extra.Tab
+	Tabs []*extra.Tab
 }
 
 func (p *Node) InitNodeTabpane() {
@@ -23,19 +23,21 @@ func (p *Node) InitNodeTabpane() {
 
 	uiBuffer.Width = 30
 
+	p.isWorkNode = true
+
 	return
 }
 
 type NodeTabpaneTab struct {
-	Tab           *extra.Tab
-	ContentHeight int
+	Index int
 }
 
 func (p *Node) InitNodeTabpaneTab() {
 	nodeTabpaneTab := new(NodeTabpaneTab)
-	nodeTabpaneTab.Tab = extra.NewTab("")
 	p.Data = nodeTabpaneTab
 
+	uiBuffer := extra.NewTab("")
+	p.uiBuffer = uiBuffer
 	p.UIBlock = nil
 	p.Display = new(bool)
 	*p.Display = true

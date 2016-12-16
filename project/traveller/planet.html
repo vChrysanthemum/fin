@@ -19,12 +19,16 @@ end)
       <par>hello world 3</par>
       <par>hello world 4</par>
       <par>hello world 5</par>
+      <select  borderlabel="test.planet">
+        <option value="cancel">取消</option>
+        <option value="confirm">确定</option>
+      </select>
     </tab>
     <tab label="test2">
       <terminal id="TerminalMain" height=3></terminal>
       <table>
         <tr>
-          <td offset=5 cols=2>
+          <td offset=3 cols=2>
             <select id="SelectConfirm" borderlabel="test.planet">
               <option value="cancel">取消</option>
               <option value="confirm">确定</option>
@@ -33,11 +37,18 @@ end)
                                       PercentColor="blue" 
                                       percentcolor_highlighted="black" BarColor="green">
             </gauge>
-            <terminal borderlabel=" 控制台 " border=true id="TerminalMain" height=8></terminal>
+            <terminal borderlabel=" 控制台 " border=true height=8></terminal>
+          </td>
+          <td cols=2>
+            <select  borderlabel="test.planet">
+              <option value="cancel">取消</option>
+              <option value="confirm">确定</option>
+            </select>
+            <terminal borderlabel=" 控制台 " border=true height=8></terminal>
           </td>
         </tr>
       </table>
-   </tab>
+    </tab>
   </tabpane>
 </body>
 </html>

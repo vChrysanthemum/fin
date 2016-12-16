@@ -39,7 +39,7 @@ func (tab *Tab) Buffer() Buffer {
 
 type Tabpane struct {
 	Block
-	Tabs           []Tab
+	Tabs           []*Tab
 	activeTabIndex int
 	ActiveTabBg    Attribute
 	posTabText     []int
@@ -55,8 +55,8 @@ func NewTabpane() *Tabpane {
 	return &tp
 }
 
-func (tp *Tabpane) SetTabs(tabs ...Tab) {
-	tp.Tabs = make([]Tab, len(tabs))
+func (tp *Tabpane) SetTabs(tabs ...*Tab) {
+	tp.Tabs = make([]*Tab, len(tabs))
 	tp.posTabText = make([]int, len(tabs)+1)
 	off := 0
 	for i := 0; i < len(tp.Tabs); i++ {
@@ -94,6 +94,10 @@ func (tp *Tabpane) SetActiveRight() bool {
 		tp.offTabText = endOffset - tp.InnerWidth()
 	}
 	return true
+}
+
+func (tp *Tabpane) GetActiveIndex() int {
+	return tp.activeTabIndex
 }
 
 // Checks if left and right tabs are fully visible

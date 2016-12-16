@@ -78,7 +78,5 @@ func (p *Page) renderBodySelect(node *Node) {
 
 	p.BufferersAppend(node, uiBuffer)
 
-	p.pushWorkingNode(node)
-
 	return
 }

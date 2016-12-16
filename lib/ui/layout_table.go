@@ -1,17 +1,25 @@
 package ui
 
-func (p *Page) _layoutBodyTableAlignChild(node *Node) {
+func (p *Page) _layoutBodyTableChild(node *Node, isParentDeclareAvailWorkNode bool) {
 	for _node := node.FirstChild; nil != _node; _node = _node.NextSibling {
-		p._layoutBodyTableAlignChild(_node)
+		p._layoutBodyTableChild(_node, isParentDeclareAvailWorkNode)
 	}
 
 	if nil != node.UIBlock && true == *node.Display {
 		node.UIBlock.Align()
+
+		if true == node.isWorkNode && true == isParentDeclareAvailWorkNode {
+			p.pushWorkingNode(node)
+		}
 	}
 }
 
-func (p *Page) layoutBodyTable(node *Node) (isFallthrough bool) {
+func (p *Page) layoutBodyTable(
+	node *Node, isParentDeclareAvailWorkNode bool,
+) (isFallthrough, isChildNodesAvailWorkNode bool) {
+
 	isFallthrough = false
+	isChildNodesAvailWorkNode = isParentDeclareAvailWorkNode
 	nodeDataTable := node.Data.(*NodeTable)
 
 	var prevSiblingNode *Node
@@ -28,7 +36,7 @@ func (p *Page) layoutBodyTable(node *Node) (isFallthrough bool) {
 		nodeDataTable.Body.Y = 0
 	}
 
-	p._layoutBodyTableAlignChild(node)
+	p._layoutBodyTableChild(node, isChildNodesAvailWorkNode)
 
 	nodeDataTable.Body.Align()
 	return

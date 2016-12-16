@@ -1,6 +1,10 @@
 package ui
 
-func (p *Page) normalLayoutNodeBlock(node *Node) {
+func (p *Page) normalLayoutNodeBlock(
+	node *Node, isParentDeclareAvailWorkNode bool,
+) (isFallthrough, isChildNodesAvailWorkNode bool) {
+	isFallthrough = true
+	isChildNodesAvailWorkNode = true
 	if nil == node.UIBlock {
 		return
 	}
@@ -13,4 +17,6 @@ func (p *Page) normalLayoutNodeBlock(node *Node) {
 	}
 
 	p.layoutingY = node.UIBlock.Y + node.UIBlock.Height
+
+	return
 }

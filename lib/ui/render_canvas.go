@@ -7,7 +7,5 @@ func (p *Page) renderBodyCanvas(node *Node) {
 
 	p.BufferersAppend(node, uiBuffer)
 
-	p.pushWorkingNode(node)
-
 	return
 }

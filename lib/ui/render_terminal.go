@@ -20,7 +20,5 @@ func (p *Page) renderBodyTerminal(node *Node) {
 
 	p.BufferersAppend(node, uiBuffer)
 
-	p.pushWorkingNode(node)
-
 	return
 }

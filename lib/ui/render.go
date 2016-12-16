@@ -73,10 +73,8 @@ func (p *Page) render(node *Node) error {
 	}
 
 	renderAgent = p.fetchRenderAgentByNode(node)
-	if true == *node.Display {
-		if nil != renderAgent {
-			renderAgent.render(node)
-		}
+	if true == *node.Display && nil != renderAgent {
+		renderAgent.render(node)
 	}
 
 	return nil

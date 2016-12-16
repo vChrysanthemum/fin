@@ -28,6 +28,8 @@ func (p *Node) InitNodeEditor() {
 	p.UIBlock.Height = 10
 	p.UIBlock.Border = true
 
+	p.isWorkNode = true
+
 	return
 }
 

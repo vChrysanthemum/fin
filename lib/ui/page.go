@@ -32,9 +32,10 @@ type Page struct {
 	parsingNodesStack       *list.List
 	FirstChildNode          *Node
 	FocusNode               *list.Element
-	WorkingNodes            *list.List
 	ActiveNode              *Node
 	ActiveNodeAfterRerender *Node
+	// 能接受用户访问的 Nodes
+	WorkingNodes *list.List
 
 	layoutingX int
 	layoutingY int
@@ -161,8 +162,16 @@ func (p *Page) uiRender() error {
 		for e = p.WorkingNodes.Front(); e != nil; e = e.Next() {
 			node = e.Value.(*Node)
 
+			if false == *node.Display {
+				continue
+			}
+
 			for e2 = p.WorkingNodes.Front(); e2 != nil; e2 = e2.Next() {
 				node2 = e2.Value.(*Node)
+
+				if false == *node2.Display {
+					continue
+				}
 
 				if node == node2 {
 					continue

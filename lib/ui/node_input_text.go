@@ -17,7 +17,6 @@ func (p *Node) InitNodeInputText() {
 	nodeInputText.Editor = editor.NewEditor()
 	nodeInputText.Editor.CurrentLine = nodeInputText.Editor.InitNewLine()
 	nodeInputText.Editor.Border = true
-
 	p.Data = nodeInputText
 	p.KeyPress = nodeInputText.KeyPress
 
@@ -30,6 +29,8 @@ func (p *Node) InitNodeInputText() {
 	p.UIBlock.Width = 6
 	p.UIBlock.Height = 3
 	p.UIBlock.Border = true
+
+	p.isWorkNode = true
 
 	return
 }

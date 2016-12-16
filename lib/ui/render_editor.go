@@ -20,7 +20,5 @@ func (p *Page) renderBodyEditor(node *Node) {
 
 	p.BufferersAppend(node, uiBuffer)
 
-	p.pushWorkingNode(node)
-
 	return
 }
