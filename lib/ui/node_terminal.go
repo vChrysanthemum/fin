@@ -51,10 +51,7 @@ func (p *NodeTerminal) KeyPress(e termui.Event) {
 	// 获取新的命令行
 	if "<enter>" == keyStr {
 
-		if (len(p.CommandHistory) == 0 && nil != p.Editor.CurrentLine) ||
-			(len(p.CommandHistory) > 0 &&
-				p.CommandHistory[len(p.CommandHistory)-1] != string(p.Editor.CurrentLine.Data[len(p.CommandPrefix):])) {
-
+		if nil != p.Editor.CurrentLine {
 			p.NewCommand = p.Editor.CurrentLine
 			p.CommandHistory = append(p.CommandHistory, string(p.NewCommand.Data[len(p.CommandPrefix):]))
 			p.CurrentCommandLineIndex = len(p.CommandHistory) - 1

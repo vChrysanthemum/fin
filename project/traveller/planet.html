@@ -14,22 +14,24 @@ end)
   </script>
   <tabpane>
     <tab label="test1">
-      <par>hello world 1</par>
-      <par>hello world 2</par>
-      <par>hello world 3</par>
-      <par>hello world 4</par>
-      <par>hello world 5</par>
-      <select  borderlabel="test.planet">
-        <option value="cancel">取消</option>
-        <option value="confirm">确定</option>
-      </select>
+      <par height=0></par>
+      <table>
+        <tr>
+          <td offset=4 cols=4>
+            <select id="SelectConfirm" borderlabel="退出连接">
+              <option value="cancel">取消</option>
+              <option value="confirm">确定</option>
+            </select>
+          </td>
+        </tr>
+      </table>
     </tab>
     <tab label="test2">
       <terminal id="TerminalMain" height=3></terminal>
       <table>
         <tr>
           <td offset=3 cols=2>
-            <select id="SelectConfirm" borderlabel="test.planet">
+            <select borderlabel="test.planet">
               <option value="cancel">取消</option>
               <option value="confirm">确定</option>
             </select>

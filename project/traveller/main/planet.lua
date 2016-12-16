@@ -43,7 +43,6 @@ end
 function _Planet.SetName(self, name)
     self.Info.Name = name
     self:FlushToDB()
-    NodeRadar:SetActive()
 end
 
 function _Planet.Format(self, planetInfo)

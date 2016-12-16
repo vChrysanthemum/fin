@@ -130,6 +130,13 @@ function _Radar.renewCursor(self)
     NodeRadar:SetCursor(self.CursorScreenPosition.X, self.CursorScreenPosition.Y)
 end
 
+-- 根据坐标返回相应屏幕坐标
+function _Radar.GlobalPositionToScreenPosition(self, position)
+  return {
+    X = position.X - GUserSpaceship.CenterRectangle.Min.X,
+    Y = position.Y - GUserSpaceship.CenterRectangle.Min.Y,
+  }
+end
 
 -- 更新 Radar 的 ScreenPlanets
 -- ScreenPlanets 新的屏幕上需要显示的 planets

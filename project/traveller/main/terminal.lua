@@ -11,19 +11,36 @@ function NewTerminal()
     end)
 
     Terminal.ErrCommandNotExists = "无效命令"
+    Terminal.ConnentingPlanet = nil
 
     return Terminal
+end
+
+function _Terminal.ScreenErrMsg(self, msg)
+    NodeTerminalMain:TerminalWriteNewLine(string.format("[%s](fg-red)", msg))
+end
+
+function _Terminal.ScreenSuccessMsg(self, msg)
+    NodeTerminalMain:TerminalWriteNewLine(string.format("[%s](fg-green)", msg))
+end
+
+function _Terminal.ScreenInfoMsg(self, msg)
+    NodeTerminalMain:TerminalWriteNewLine(string.format("[%s](fg-green)", msg))
 end
 
 function _Terminal.ExecCommand(self, nodePointer, command)
     local tmp
     local commandArr = StringSplit(command, " ")
-    if 0 == TableLength(commandArr) then
+    if nil == commandArr or 0 == TableLength(commandArr) then
         return
     end
 
     if "/" == commandArr[1] then
         self:StartEnvMain()
+        return
+
+    elseif "clear" == commandArr[1] then
+        NodeTerminalMain:TerminalClearLines()
         return
 
     elseif "quit" == commandArr[1] then
@@ -34,11 +51,13 @@ function _Terminal.ExecCommand(self, nodePointer, command)
         self:ExecCommandMain(nodePointer, command)
     elseif "/jumper" == self.CurrentEnv then
         self:ExecCommandJump(nodePointer, command)
+    elseif "/planet" == self.CurrentEnv then
+        self:ExecCommandPlanet(nodePointer, command)
     end
 end
 
 function _Terminal.StartEnvMain(self)
-    self:ScreenSuccessMsg("连接 主控台 ...")
+    self:ScreenInfoMsg("连接 主控台 ...")
     self.CurrentEnv = "/"
     NodeTerminalMain:TerminalSetCommandPrefix("> ")
 end
@@ -66,14 +85,15 @@ function _Terminal.ExecCommandMain(self, nodePointer, command)
             GUserSpaceship:SetSpeedY(tmp)
         end
 
-    elseif "landing" == commandArr[1] then
-        GUserSpaceship:Landing()
-
-    elseif "clear" == commandArr[1] then
-        NodeTerminalMain:TerminalClearLines()
-
     elseif "/jumper" == commandArr[1] then
         self:StartEnvJumper()
+
+    elseif "/planet" == commandArr[1] then
+        if TableLength(commandArr) < 3 then
+            self:ScreenErrMsg("请输入星球坐标")
+            return
+        end
+        self:StartEnvPlanet({X=tonumber(commandArr[2]), Y=tonumber(commandArr[3])})
 
     else
         self:ScreenErrMsg(string.format("%s %s", self.ErrCommandNotExists, command))
@@ -81,7 +101,7 @@ function _Terminal.ExecCommandMain(self, nodePointer, command)
 end
 
 function _Terminal.StartEnvJumper(self)
-    self:ScreenSuccessMsg("连接 jumper ...")
+    self:ScreenInfoMsg("连接 jumper ...")
     NodeTerminalMain:TerminalSetCommandPrefix("jumper> ")
     self.CurrentEnv = "/jumper"
 end
@@ -103,10 +123,45 @@ function _Terminal.ExecCommandJump(self, nodePointer, command)
     end
 end
 
-function _Terminal.ScreenErrMsg(self, msg)
-    NodeTerminalMain:TerminalWriteNewLine(string.format("[%s](fg-red)", msg))
+function _Terminal.StartEnvPlanet(self, position)
+    if nil == position.X or nil == position.Y then
+        self:ScreenErrMsg(string.format("请输入有效坐标"))
+        return
+    end
+
+    self:ScreenInfoMsg(string.format("连接 星球 %s ...", PointToStr(position)))
+    local planet = GRadar.ScreenPlanets[PointToStr(GRadar:GlobalPositionToScreenPosition(position))]
+    if nil == planet then
+        self:ScreenErrMsg(string.format("无法连接星球 %s", PointToStr(position)))
+        self:StartEnvMain()
+        return
+    end
+    self.ConnentingPlanet = planet
+    NodeTerminalMain:TerminalSetCommandPrefix(string.format("%s> ", planet.Info.Name))
+    self.CurrentEnv = "/planet"
 end
 
-function _Terminal.ScreenSuccessMsg(self, msg)
-    NodeTerminalMain:TerminalWriteNewLine(string.format("[%s](fg-green)", msg))
+function _Terminal.ExecCommandPlanet(self, nodePointer, command)
+    local tmp
+    local commandArr = StringSplit(command, " ")
+
+    if "info" == commandArr[1] then
+        self:ScreenInfoMsg(string.format("名称: %s", self.ConnentingPlanet.Info.Name))
+        self:ScreenInfoMsg(string.format("坐标: %s", PointToStr(self.ConnentingPlanet.Info.Position)))
+
+    elseif "rename" == commandArr[1] then
+        self.ConnentingPlanet:SetName(commandArr[2])
+
+    elseif "login" == commandArr[1] then
+        self:LoginPlanet()
+
+    else
+        self:ScreenErrMsg(string.format("%s %s", self.ErrCommandNotExists, command))
+    end
+end
+
+function _Terminal.LoginPlanet(self)
+    GWorld:Stop(function()
+        NodeModalPlanet:ModalShow()
+    end)
 end
