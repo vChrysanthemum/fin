@@ -133,9 +133,9 @@ function _Terminal.StartEnvPlanet(self, position)
     local planet = GRadar.ScreenPlanets[PointToStr(GRadar:GlobalPositionToScreenPosition(position))]
     if nil == planet then
         self:ScreenErrMsg(string.format("无法连接星球 %s", PointToStr(position)))
-        self:StartEnvMain()
         return
     end
+
     self.ConnentingPlanet = planet
     NodeTerminalMain:TerminalSetCommandPrefix(string.format("%s> ", planet.Info.Name))
     self.CurrentEnv = "/planet"

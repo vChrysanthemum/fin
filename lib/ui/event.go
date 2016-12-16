@@ -12,6 +12,13 @@ func registerHandles() {
 		defer GCurrentRenderPage.KeyPressHandleLocker.Unlock()
 		keyStr := e.Data.(termui.EvtKbd).KeyStr
 
+		if "C-c" == keyStr {
+			termui.DefaultEvtStream.ResetHandlers()
+			termui.StopLoop()
+			termui.Close()
+			return
+		}
+
 		if nil != GCurrentRenderPage.ActiveNode {
 			if nil != GCurrentRenderPage.ActiveNode.KeyPress {
 				GCurrentRenderPage.ActiveNode.KeyPress(e)

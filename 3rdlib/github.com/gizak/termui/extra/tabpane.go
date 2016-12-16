@@ -8,18 +8,21 @@ import (
 	"unicode/utf8"
 
 	. "github.com/gizak/termui"
+	rw "github.com/mattn/go-runewidth"
 )
 
 type Tab struct {
-	Label   string
-	RuneLen int
-	Blocks  []Bufferer
+	Label       string
+	RuneLen     int
+	StringWidth int
+	Blocks      []Bufferer
 }
 
 func NewTab(label string) *Tab {
 	return &Tab{
-		Label:   label,
-		RuneLen: utf8.RuneCount([]byte(label))}
+		Label:       label,
+		RuneLen:     utf8.RuneCount([]byte(label)),
+		StringWidth: rw.StringWidth(label)}
 }
 
 func (tab *Tab) AddBlocks(rs ...Bufferer) {
@@ -62,7 +65,7 @@ func (tp *Tabpane) SetTabs(tabs ...*Tab) {
 	for i := 0; i < len(tp.Tabs); i++ {
 		tp.Tabs[i] = tabs[i]
 		tp.posTabText[i] = off
-		off += tp.Tabs[i].RuneLen + 1 //+1 for space between tabs
+		off += tp.Tabs[i].StringWidth + 1 //+1 for space between tabs
 	}
 	tp.posTabText[len(tabs)] = off - 1 //total length of Tab's text
 }
@@ -89,7 +92,7 @@ func (tp *Tabpane) SetActiveRight() bool {
 		return false
 	}
 	tp.activeTabIndex += 1
-	endOffset := tp.posTabText[tp.activeTabIndex] + tp.Tabs[tp.activeTabIndex].RuneLen
+	endOffset := tp.posTabText[tp.activeTabIndex] + tp.Tabs[tp.activeTabIndex].StringWidth
 	if endOffset+tp.offTabText > tp.InnerWidth() {
 		tp.offTabText = endOffset - tp.InnerWidth()
 	}
@@ -150,17 +153,17 @@ func buf2pt(b Buffer) []point {
 // Adds the point only if it is visible in Tabpane.
 // Point can be invisible if concatenation of Tab's texts is widther then
 // innerWidth of Tabpane
-func (tp *Tabpane) addPoint(ptab []point, charOffset *int, oftX *int, points ...point) []point {
+func (tp *Tabpane) addPoint(chWidth int, ptab []point, charOffset *int, oftX *int, points ...point) []point {
 	if *charOffset < tp.offTabText || tp.offTabText+tp.InnerWidth() < *charOffset {
-		*charOffset++
+		*charOffset += chWidth
 		return ptab
 	}
 	for _, p := range points {
 		p.X = *oftX
 		ptab = append(ptab, p)
 	}
-	*oftX++
-	*charOffset++
+	*oftX += chWidth
+	*charOffset += chWidth
 	return ptab
 }
 
@@ -200,13 +203,14 @@ func (tp *Tabpane) Buffer() Buffer {
 	oftX := tp.InnerX()
 	charOffset := 0
 	pt := point{Bg: tp.BorderBg, Fg: tp.BorderFg}
+	var chLen int
 	for i, tab := range tp.Tabs {
 
 		if i != 0 {
 			pt.X = oftX
 			pt.Y = tp.InnerY()
 			addp := tp.drawPointWithBorder(pt, ' ', VERTICAL_LINE, HORIZONTAL_DOWN, HORIZONTAL_UP)
-			ps = tp.addPoint(ps, &charOffset, &oftX, addp...)
+			ps = tp.addPoint(1, ps, &charOffset, &oftX, addp...)
 		}
 
 		if i == tp.activeTabIndex {
@@ -215,9 +219,16 @@ func (tp *Tabpane) Buffer() Buffer {
 		rs := []rune(tab.Label)
 		for k := 0; k < len(rs); k++ {
 
+			chLen = rw.RuneWidth(rs[k])
+
 			addp := make([]point, 0, 2)
 			if i == tp.activeTabIndex && tp.Border {
-				pt.Ch = ' '
+				if 2 == chLen {
+					pt.Ch = '　'
+				} else {
+					pt.Ch = ' '
+				}
+
 				pt.Y = tp.InnerY() + 1
 				pt.Bg = tp.BorderBg
 				addp = append(addp, pt)
@@ -228,7 +239,8 @@ func (tp *Tabpane) Buffer() Buffer {
 			pt.Ch = rs[k]
 
 			addp = append(addp, pt)
-			ps = tp.addPoint(ps, &charOffset, &oftX, addp...)
+
+			ps = tp.addPoint(chLen, ps, &charOffset, &oftX, addp...)
 		}
 		pt.Bg = tp.BorderBg
 

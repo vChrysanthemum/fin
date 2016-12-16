@@ -5,6 +5,7 @@ import (
 
 	"github.com/gizak/termui/extra"
 
+	rw "github.com/mattn/go-runewidth"
 	"golang.org/x/net/html"
 )
 
@@ -31,6 +32,7 @@ func (p *Page) parseBodyTabpaneTab(parentNode *Node, htmlNode *html.Node) (ret *
 			uiBuffer := ret.uiBuffer.(*extra.Tab)
 			uiBuffer.Label = attr.Val
 			uiBuffer.RuneLen = utf8.RuneCount([]byte(attr.Val))
+			uiBuffer.StringWidth = rw.StringWidth(attr.Val)
 		}
 	}
 
