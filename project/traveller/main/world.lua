@@ -41,6 +41,7 @@ function _World.loopEvent(self)
     GRadar:DrawSpaceship()
     GRadar:DrawPlanets()
     NodeRadar:CanvasDraw()
+    GUserSpaceship:RefreshNodeParGUserSpaceshipStatus()
     return
 end
 

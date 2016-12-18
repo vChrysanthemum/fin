@@ -43,9 +43,9 @@ function _Radar.RefreshParInfo(self)
     self.FocusTarget = GUserSpaceship
     self.FocusTarget.ColorBg = "white"
     NodeParInfo:SetText(string.format([[
-%s
 X: %f
-Y: %f]], GUserSpaceship.Info.Name, GUserSpaceship.Info.Position.X, GUserSpaceship.Info.Position.Y))
+Y: %f
+飞船:%s]], GUserSpaceship.Info.Position.X, GUserSpaceship.Info.Position.Y, GUserSpaceship.Info.Name))
     return
   end
 
@@ -54,15 +54,18 @@ Y: %f]], GUserSpaceship.Info.Name, GUserSpaceship.Info.Position.X, GUserSpaceshi
     self.FocusTarget = planet
     self.FocusTarget.ColorBg = "white"
     NodeParInfo:SetText(string.format([[
-%s
 X: %d
 Y: %d
-资源: %d]], planet.Info.Name, planet.Info.Position.X, planet.Info.Position.Y, planet.Info.Resource))
+星球: %s
+资源: %d]], planet.Info.Position.X, planet.Info.Position.Y, planet.Info.Name, planet.Info.Resource))
     return
   end
 
   if nil == self.FocusTarget then
-    NodeParInfo:SetText("")
+    local position = self:ScreenPositionToPosition(self.CursorScreenPosition)
+    NodeParInfo:SetText(string.format([[
+X: %d
+Y: %d]], position.X, position.Y))
   end
 end
 
@@ -141,16 +144,24 @@ function _Radar.renewCursor(self)
 end
 
 -- 根据坐标返回相应屏幕坐标
-function _Radar.GlobalPositionToScreenPosition(self, position)
+function _Radar.PositionToScreenPosition(self, position)
   return {
     X = math.floor(position.X - GUserSpaceship.CenterRectangle.Min.X),
     Y = math.floor(position.Y - GUserSpaceship.CenterRectangle.Min.Y),
   }
 end
 
+-- 根据屏幕坐标返回相应坐标
+function _Radar.ScreenPositionToPosition(self, position)
+  return {
+    X = math.floor(position.X + GUserSpaceship.CenterRectangle.Min.X),
+    Y = math.floor(position.Y + GUserSpaceship.CenterRectangle.Min.Y),
+  }
+end
+
 -- 根据坐标系获取屏幕上的星球
 function _Radar.GetPlanetOnScreenByPosition(self, position)
-  return self.ScreenPlanets[PointToStr(self:GlobalPositionToScreenPosition(position))]
+  return self.ScreenPlanets[PointToStr(self:PositionToScreenPosition(position))]
 end
 
 -- 根据屏幕坐标系获取屏幕上的星球
@@ -197,5 +208,4 @@ function _Radar.DrawSpaceship(self)
   GUserSpaceship.ScreenPosition.X,
   GUserSpaceship.ScreenPosition.Y,
   GUserSpaceship.Info.Character, GUserSpaceship.Info.ColorFg, GUserSpaceship.ColorBg)
-  GUserSpaceship:RefreshNodeParGUserSpaceshipStatus()
 end

@@ -93,11 +93,18 @@ function _Terminal.ExecCommandMain(self, nodePointer, command)
         self:StartEnvJumper()
 
     elseif "/planet" == commandArr[1] then
-        if TableLength(commandArr) < 3 then
-            self:ScreenErrMsg("请输入星球坐标")
-            return
+        local location = {}
+        if nil ~= GUserSpaceship.LoginedPlanet then
+            location = GUserSpaceship.LoginedPlanet.Info.Position
+        else
+            if TableLength(commandArr) < 3 then
+                self:ScreenErrMsg("请输入星球坐标")
+                return
+            end
+            location = {X=tonumber(commandArr[2]), Y=tonumber(commandArr[3])}
         end
-        self:StartEnvPlanet({X=tonumber(commandArr[2]), Y=tonumber(commandArr[3])})
+
+        self:StartEnvPlanet(location)
 
     else
         self:ScreenErrMsg(string.format("%s %s", self.ErrCommandNotExists, command))

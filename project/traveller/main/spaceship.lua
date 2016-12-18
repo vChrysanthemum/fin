@@ -73,7 +73,7 @@ end
 function _Spaceship.SetName(self, name)
     self.Info.Name = name
     self:FlushToDB()
-    NodeParGUserSpaceshipStatus:SetAttribute("borderlabel", " " .. self.Info.Name .. " ")
+    NodeParGUserSpaceshipStatus:SetAttribute("borderlabel", string.format(" %s状态 ", self.Info.Name))
     self:RefreshNodeParGUserSpaceshipStatus()
     NodeRadar:SetActive()
 end
@@ -85,13 +85,10 @@ X: %f
 Y: %f
 速度X: %f/s
 速度Y: %f/s
-飞行历时: %d
-
-仓库:
+飞行历时: %d]], self.Info.Position.X, self.Info.Position.Y, self.Info.Speed.X, self.Info.Speed.Y, TimeNow() - self.Info.StartAt))
+NodeParGUserSpaceshipWarehouse:SetText(string.format([[
 导弹: %d
-时空跳跃者: %d
-]], self.Info.Position.X, self.Info.Position.Y, self.Info.Speed.X, self.Info.Speed.Y, TimeNow() - self.Info.StartAt,
-    self.Info.Missiles, self.Info.Jumpers))
+时空跳跃者: %d]], self.Info.Missiles, self.Info.Jumpers))
 end
 
 -- 刷新飞船为中心的指定大小区域所在的宇宙位置
