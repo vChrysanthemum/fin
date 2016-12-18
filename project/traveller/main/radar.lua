@@ -4,8 +4,9 @@ local _mtRadar = {__index = _Radar}
 function NewRadar()
   local Radar = setmetatable({}, _mtRadar)
   Radar.ScreenPlanets = {}
-  Radar.ScreenCenterPosition = {X=math.floor(NodeRadar:Width()/2), Y=math.floor(NodeRadar:Height()/2)}
-  Radar.CursorScreenPosition = Radar.ScreenCenterPosition
+  Radar.ScreenRectangleSize = {Width=NodeRadar:InnerAreaWidth(), Height=NodeRadar:InnerAreaHeight()}
+  Radar.ScreenCenterPosition = {X=math.floor(NodeRadar:InnerAreaWidth()/2), Y=math.floor(NodeRadar:InnerAreaHeight()/2)}
+  Radar.CursorScreenPosition = {X=Radar.ScreenCenterPosition.X, Y=Radar.ScreenCenterPosition.Y}
   Radar.KeyPressStrForMove = ""
   Radar.FocusPlanet = nil
   Radar.NewestMsg = ""
@@ -19,10 +20,12 @@ function NewRadar()
   return Radar
 end
 
+-- 组件被激活
 function _Radar.ActiveMode(self, nodePointer)
   self:renewCursor()
 end
 
+-- 刷新 NodeParInfo NodeParNewestMsg 显示内容
 function _Radar.RefreshParInfo(self)
   if nil ~= self.FocusTarget then
     self.FocusTarget.ColorBg = ""

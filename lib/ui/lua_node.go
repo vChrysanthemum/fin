@@ -77,6 +77,38 @@ func (p *Script) luaFuncNodeHeight(L *lua.LState) int {
 	return 1
 }
 
+func (p *Script) luaFuncNodeInnerAreaWidth(L *lua.LState) int {
+	if L.GetTop() < 1 {
+		return 0
+	}
+
+	lu := L.ToUserData(1)
+	node := p._getNodePointerFromUserData(L, lu)
+	if nil == node {
+		L.Push(lua.LNil)
+		return 1
+	}
+
+	L.Push(lua.LNumber(node.UIBlock.InnerArea.Dx()))
+	return 1
+}
+
+func (p *Script) luaFuncNodeInnerAreaHeight(L *lua.LState) int {
+	if L.GetTop() < 1 {
+		return 0
+	}
+
+	lu := L.ToUserData(1)
+	node := p._getNodePointerFromUserData(L, lu)
+	if nil == node {
+		L.Push(lua.LNil)
+		return 1
+	}
+
+	L.Push(lua.LNumber(node.UIBlock.InnerArea.Dy()))
+	return 1
+}
+
 func (p *Script) luaFuncNodeGetAttribute(L *lua.LState) int {
 	if L.GetTop() < 2 {
 		return 0

@@ -63,6 +63,14 @@ function _Node.Height(self)
     return base.NodeHeight(self.nodePointer)
 end
 
+function _Node.InnerAreaWidth(self)
+    return base.NodeInnerAreaWidth(self.nodePointer)
+end
+
+function _Node.InnerAreaHeight(self)
+    return base.NodeInnerAreaHeight(self.nodePointer)
+end
+
 function _Node.GetAttribute(self, key, value)
     return base.NodeGetAttribute(self.nodePointer, key, value)
 end

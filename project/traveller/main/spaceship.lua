@@ -53,6 +53,7 @@ function NewSpaceship()
     return Spaceship
 end
 
+-- 设置 x 方向速度
 function _Spaceship.SetSpeedX(self, speedx)
     self:UpdateFuel(-1 * math.floor(math.abs(self.Info.Speed.X - speedx)))
     self.Info.Speed.X = speedx
@@ -60,6 +61,7 @@ function _Spaceship.SetSpeedX(self, speedx)
     self:RefreshNodeParGUserSpaceshipStatus()
 end
 
+-- 设置 y 方向速度
 function _Spaceship.SetSpeedY(self, speedy)
     self:UpdateFuel(-1 * math.floor(math.abs(self.Info.Speed.Y - speedy)))
     self.Info.Speed.Y = speedy
@@ -67,6 +69,7 @@ function _Spaceship.SetSpeedY(self, speedy)
     self:RefreshNodeParGUserSpaceshipStatus()
 end
 
+-- 设置飞船名称
 function _Spaceship.SetName(self, name)
     self.Info.Name = name
     self:FlushToDB()
@@ -75,6 +78,7 @@ function _Spaceship.SetName(self, name)
     NodeRadar:SetActive()
 end
 
+-- 刷新 NodeParGUserSpaceshipStatus 显示
 function _Spaceship.RefreshNodeParGUserSpaceshipStatus(self)
     NodeParGUserSpaceshipStatus:SetText(string.format([[
 X: %f
@@ -91,22 +95,30 @@ Y: %f
 end
 
 -- 刷新飞船为中心的指定大小区域所在的宇宙位置
-function _Spaceship.refreshCenterRectangle(self, rectangleWidth, rectangleHeight)
-    local x = math.floor(self.Info.Position.X)
-    local y = math.floor(self.Info.Position.Y)
-    local rectangle = {}
-    rectangle.Min = {
-        X = math.floor(x - rectangleWidth / 2),
-        Y = math.floor(y - rectangleHeight / 2)
-    }
-    rectangle.Max = {
-        X = rectangle.Min.X + rectangleWidth,
-        Y = rectangle.Min.Y + rectangleHeight,
+function _Spaceship.refreshCenterRectangle(self)
+    local rectangleWidth = GRadar.ScreenRectangleSize.Width
+    local rectangleHeight = GRadar.ScreenRectangleSize.Height
+    self.CenterRectangle = {}
+    self.CenterRectangle.Min = {
+        X = math.floor(self.Info.Position.X - rectangleWidth / 2),
+        Y = math.floor(self.Info.Position.Y - rectangleHeight / 2)
     }
 
-    self.CenterRectangle = rectangle
+    -- 矫正屏幕位置
+    self.ScreenPosition.X = math.floor(self.Info.Position.X) - self.CenterRectangle.Min.X
+    self.ScreenPosition.Y = math.floor(self.Info.Position.Y) - self.CenterRectangle.Min.Y
+    -- 如果飞船不在屏幕中央，则将其放回中央，并给 CenterRectangle 补差
+    self.CenterRectangle.Min.X = self.CenterRectangle.Min.X + self.ScreenPosition.X - GRadar.ScreenCenterPosition.X
+    self.CenterRectangle.Min.Y = self.CenterRectangle.Min.Y + self.ScreenPosition.Y - GRadar.ScreenCenterPosition.Y
+    self.ScreenPosition.X = GRadar.ScreenCenterPosition.X
+    self.ScreenPosition.Y = GRadar.ScreenCenterPosition.Y
 
-    return rectangle
+    self.CenterRectangle.Max = {
+        X = self.CenterRectangle.Min.X + rectangleWidth,
+        Y = self.CenterRectangle.Min.Y + rectangleHeight,
+    }
+
+    return
 end
 
 function _Spaceship.Format(self, spaceshipInfo)
@@ -123,7 +135,7 @@ function _Spaceship.Format(self, spaceshipInfo)
         Missiles    = spaceshipInfo.Missiles,
         Jumpers     = spaceshipInfo.Jumpers,
     }
-    self:refreshCenterRectangle(NodeRadar:Width(), NodeRadar:Height())
+    self:refreshCenterRectangle()
 end
 
 function _Spaceship.FlushToDB(self)
@@ -140,11 +152,11 @@ function _Spaceship.FlushToDB(self)
     end
 end
 
--- 飞船飞行，改变 position
+-- 飞船飞行一次，改变 position
 function _Spaceship.RunOneStep(self)
     self.Info.Position.X = self.Info.Position.X + self.Info.Speed.X
     self.Info.Position.Y = self.Info.Position.Y + self.Info.Speed.Y
-    self:refreshCenterRectangle(NodeRadar:Width(), NodeRadar:Height())
+    self:refreshCenterRectangle()
 
     if TimeNow() - self.lastFlushToDBForRunOneStepAt > 3 then
         self.lastFlushToDBForRunOneStepAt = TimeNow()
@@ -152,6 +164,7 @@ function _Spaceship.RunOneStep(self)
     end
 end
 
+-- 更改燃料
 function _Spaceship.UpdateFuel(self, number)
     self.Info.Fuel = self.Info.Fuel + number
     if self.Info.Fuel < 0 then
@@ -171,6 +184,7 @@ function _Spaceship.UpdateFuel(self, number)
     self:FlushToDB()
 end
 
+-- 更改生命值
 function _Spaceship.UpdateLife(self, number)
     self.Info.Life = self.Info.Life + number
     if self.Info.Life < 0 then
@@ -192,6 +206,7 @@ end
 
 -- spaceship tools
 
+-- 运行跳跃者
 function _Spaceship.JumperRun(self, position)
     if self.Info.Jumpers <= 0 then
         return "没有可用跳跃者"
@@ -199,13 +214,14 @@ function _Spaceship.JumperRun(self, position)
 
     self.Info.Position.X = position.X
     self.Info.Position.Y = position.Y
-    self:refreshCenterRectangle(NodeRadar:Width(), NodeRadar:Height())
+    self:refreshCenterRectangle()
     self.Info.Jumpers = self.Info.Jumpers - 1
     self:FlushToDB()
 
     return nil
 end
 
+-- 被星球捕获事件
 function _Spaceship.EventCachedByPlanet(self, planet)
     self.Info.Speed.X = 0
     self.Info.Speed.Y = 0
@@ -215,6 +231,7 @@ function _Spaceship.EventCachedByPlanet(self, planet)
     self:FlushToDB()
 end
 
+-- 离开星球捕获事件
 function _Spaceship.EventLeavePlanet(self)
     self.NewestMsg = string.format("飞船离开 %s", self.LoginedPlanet.Info.Name)
     self.LoginedPlanet = nil
@@ -225,7 +242,7 @@ end
 function _Spaceship.LoopEvent(self)
     -- 检查飞船是否被星球引力捕获
     if nil == self.LoginedPlanet then
-        local planet = GRadar:GetPlanetOnScreenByScreenPosition(GRadar.ScreenCenterPosition)
+        local planet = GRadar:GetPlanetOnScreenByScreenPosition(self.ScreenPosition)
         if nil ~= planet and
             math.abs(self.Info.Speed.X) < GWorld.LeavePlanetSpeed and
             math.abs(self.Info.Speed.Y) < GWorld.LeavePlanetSpeed then

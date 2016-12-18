@@ -12,11 +12,11 @@ NodeModalPlanet = Node("ModalPlanet")
 
 NodeRadar:SetAttribute("height", tostring(WindowHeight()-NodeTerminalMain:Height()))
 
-GUserSpaceship = GetSpaceshipFromDB(1)
-GUserSpaceship:RefreshNodeParGUserSpaceshipStatus()
 GRadar = NewRadar()
 GTerminal = NewTerminal()
 GWorld = NewWorld()
+GUserSpaceship = GetSpaceshipFromDB(1)
+GUserSpaceship:RefreshNodeParGUserSpaceshipStatus()
 
 NodeParGUserSpaceshipStatus:SetAttribute("borderlabel", " " .. GUserSpaceship.Info.Name .. " ")
 
