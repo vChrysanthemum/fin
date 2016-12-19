@@ -17,10 +17,10 @@ WindowConfirm("是否确定开始使用", function(isConfirm)
   end
 end)
 
-Node("ParResult"):SetText(result)
+Node("ParResult"):SetValue(result)
 InputTextTestEvent = Node("InputTextTest"):RegisterKeyPressEnterHandler(
   function(nodePointer)
-    Node("ParResult0"):SetText(Node("InputTextTest"):GetValue())
+    Node("ParResult0"):SetValue(Node("InputTextTest"):GetValue())
     Node("SelectTestChangeOptions"):SelectAppendOption("测试", "你好")
     WindowConfirm("是否继续删除", function(isConfirm)
       if "confirm" == isConfirm then

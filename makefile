@@ -14,6 +14,8 @@ build_in:
 	go install -tags deadlock ./src/main 
 	@mv bin/main bin/in
 
+test:test_ui test_script
+
 test_ui:
 	go test ./lib/ui -args ${pwd}
 

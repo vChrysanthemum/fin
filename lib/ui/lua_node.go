@@ -182,7 +182,7 @@ func (p *Script) luaFuncNodeGetHtmlData(L *lua.LState) int {
 	return 1
 }
 
-func (p *Script) luaFuncNodeSetText(L *lua.LState) int {
+func (p *Script) luaFuncNodeSetValue(L *lua.LState) int {
 	if L.GetTop() < 2 {
 		return 0
 	}
@@ -194,13 +194,8 @@ func (p *Script) luaFuncNodeSetText(L *lua.LState) int {
 		return 0
 	}
 
-	if nodeDataSetTexter, ok := node.Data.(NodeDataSetTexter); true == ok {
-		isNeedRerenderPage := nodeDataSetTexter.NodeDataSetText(text)
-		if true == isNeedRerenderPage {
-			p.page.Rerender()
-		} else {
-			node.uiRender()
-		}
+	if nodeDataSetValueer, ok := node.Data.(NodeDataSetValueer); true == ok {
+		nodeDataSetValueer.NodeDataSetValue(text)
 	}
 
 	return 0

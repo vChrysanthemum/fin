@@ -11,12 +11,12 @@ import (
 
 var GlobalOption = Option{
 	ResBaseDir:  filepath.Join(os.Getenv("HOME"), ".in"),
-	ProjectName: "",
+	ProjectPath: filepath.Join(os.Getenv("HOME"), ".in", "project", "traveller"),
 }
 
 type Option struct {
 	ResBaseDir  string
-	ProjectName string
+	ProjectPath string
 }
 
 func Init(option Option) {
@@ -47,6 +47,9 @@ func (p *Script) RegisterBaseTable(L *lua.LState, baseTable *lua.LTable) {
 	L.SetField(baseTable, "SetInterval", L.NewFunction(p.SetInterval))
 	L.SetField(baseTable, "SetTimeout", L.NewFunction(p.SetTimeout))
 	L.SetField(baseTable, "SendCancelSig", L.NewFunction(p.SendCancelSig))
+
+	L.SetField(baseTable, "WriteContentToFile", L.NewFunction(p.WriteContentToFile))
+	L.SetField(baseTable, "ReadContentFromFile", L.NewFunction(p.ReadContentFromFile))
 
 	L.SetField(baseTable, "OpenDB", L.NewFunction(p.OpenDB))
 	L.SetField(baseTable, "CloseDB", L.NewFunction(p.CloseDB))

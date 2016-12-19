@@ -69,11 +69,12 @@ func (p *NodeInputText) NodeDataGetValue() string {
 	}
 }
 
-func (p *NodeInputText) NodeDataSetText(content string) (isNeedRerenderPage bool) {
+func (p *NodeInputText) NodeDataSetValue(content string) {
 	uiBuffer := p.Node.uiBuffer.(*editor.Editor)
 	if len(uiBuffer.Lines) > 0 {
 		uiBuffer.Lines[0].Data = []byte(content)
 	}
+	p.Node.uiRender()
 	return
 }
 

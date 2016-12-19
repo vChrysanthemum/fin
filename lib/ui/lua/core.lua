@@ -87,8 +87,8 @@ function _Node.GetHtmlData(self)
     return base.NodeGetHtmlData(self.nodePointer)
 end
 
-function _Node.SetText(self, text)
-    return base.NodeSetText(self.nodePointer, text)
+function _Node.SetValue(self, text)
+    return base.NodeSetValue(self.nodePointer, text)
 end
 
 function _Node.GetValue(self)
@@ -157,6 +157,10 @@ end
 
 function _Node.SelectClearOptions(self)
     return base.NodeSelectClearOptions(self.nodePointer)
+end
+
+function _Node.SelectSetOptionData(self, value, newData)
+    return base.NodeSelectSetOptionData(self.nodePointer, value, newData)
 end
 
 function _Node.TerminalSetCommandPrefix(self, commandPrefix)

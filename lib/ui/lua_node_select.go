@@ -38,7 +38,6 @@ func (p *Script) luaFuncNodeSelectAppendOption(L *lua.LState) int {
 
 	nodeSelect.AppendOption(L.ToString(2), L.ToString(3))
 
-	p.page.Rerender()
 	return 0
 }
 
@@ -55,6 +54,21 @@ func (p *Script) luaFuncNodeSelectClearOptions(L *lua.LState) int {
 
 	nodeSelect.ClearOptions()
 
-	p.page.Rerender()
+	return 0
+}
+
+func (p *Script) luaFuncNodeSelectSetOptionData(L *lua.LState) int {
+	if L.GetTop() < 3 {
+		return 0
+	}
+
+	lu := L.ToUserData(1)
+	nodeSelect := p._getNodeSelectPointerFromUserData(L, lu)
+	if nil == nodeSelect {
+		return 0
+	}
+
+	nodeSelect.SetOptionData(L.ToString(2), L.ToString(3))
+
 	return 0
 }

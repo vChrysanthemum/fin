@@ -36,8 +36,9 @@ func (p *Page) layoutBodyTable(
 		nodeDataTable.Body.Y = 0
 	}
 
-	p._layoutBodyTableChild(node, isChildNodesAvailWorkNode)
-
 	nodeDataTable.Body.Align()
+	p._layoutBodyTableChild(node, isChildNodesAvailWorkNode)
+	nodeDataTable.Body.Align()
+
 	return
 }

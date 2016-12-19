@@ -80,13 +80,13 @@ end
 
 -- 刷新 NodeParGUserSpaceshipStatus 显示
 function _Spaceship.RefreshNodeParGUserSpaceshipStatus(self)
-    NodeParGUserSpaceshipStatus:SetText(string.format([[
+    NodeParGUserSpaceshipStatus:SetValue(string.format([[
 X: %f
 Y: %f
 速度X: %f/s
 速度Y: %f/s
 飞行历时: %d]], self.Info.Position.X, self.Info.Position.Y, self.Info.Speed.X, self.Info.Speed.Y, TimeNow() - self.Info.StartAt))
-NodeParGUserSpaceshipWarehouse:SetText(string.format([[
+NodeParGUserSpaceshipWarehouse:SetValue(string.format([[
 导弹: %d
 时空跳跃者: %d]], self.Info.Missiles, self.Info.Jumpers))
 end

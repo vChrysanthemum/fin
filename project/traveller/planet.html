@@ -2,8 +2,8 @@
 <body>
   <script type="text/lua">
 NodeSelectConfirm = Node("SelectConfirm")
-NodeSelectConfirmKeyPressEnterKey = NodeSelectConfirm:RegisterKeyPressEnterHandler(function(nodePointer)
-  NodeSelectConfirm:RemoveKeyPressEnterHandler(NodeSelectConfirmKeyPressEnterKey)
+NodeSelectConfirmKeyPressEnterKeySig = NodeSelectConfirm:RegisterKeyPressEnterHandler(function(nodePointer)
+  NodeSelectConfirm:RemoveKeyPressEnterHandler(NodeSelectConfirmKeyPressEnterKeySig)
   ModalClose()
   local ret = MainPageDoString([[
   GWorld.LoopEventSig = SetTimeout(200, function()

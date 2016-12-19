@@ -59,7 +59,7 @@ func (p *Page) prepareScript() {
 	s.luaState.SetField(luaBase, "NodeSetActive", s.luaState.NewFunction(s.luaFuncNodeSetActive))
 
 	s.luaState.SetField(luaBase, "NodeGetHtmlData", s.luaState.NewFunction(s.luaFuncNodeGetHtmlData))
-	s.luaState.SetField(luaBase, "NodeSetText", s.luaState.NewFunction(s.luaFuncNodeSetText))
+	s.luaState.SetField(luaBase, "NodeSetValue", s.luaState.NewFunction(s.luaFuncNodeSetValue))
 	s.luaState.SetField(luaBase, "NodeGetValue", s.luaState.NewFunction(s.luaFuncNodeGetValue))
 
 	s.luaState.SetField(luaBase, "NodeSetCursor", s.luaState.NewFunction(s.luaFuncNodeSetCursor))
@@ -90,6 +90,8 @@ func (p *Page) prepareScript() {
 		s.luaState.NewFunction(s.luaFuncNodeSelectAppendOption))
 	s.luaState.SetField(luaBase, "NodeSelectClearOptions",
 		s.luaState.NewFunction(s.luaFuncNodeSelectClearOptions))
+	s.luaState.SetField(luaBase, "NodeSelectSetOptionData",
+		s.luaState.NewFunction(s.luaFuncNodeSelectSetOptionData))
 
 	s.luaState.SetField(luaBase, "NodeTerminalSetCommandPrefix",
 		s.luaState.NewFunction(s.luaFuncNodeTerminalSetCommandPrefix))
@@ -139,7 +141,7 @@ func (p *Script) Run() {
 		switch doc.DataType {
 		case "file":
 			err = p.luaState.DoFile(
-				filepath.Join(GlobalOption.ResBaseDir, "project", GlobalOption.ProjectName, doc.Data))
+				filepath.Join(GlobalOption.ProjectPath, doc.Data))
 		case "string":
 			err = p.luaState.DoString(doc.Data)
 		}

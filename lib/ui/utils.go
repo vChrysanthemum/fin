@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"image"
 	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
 
@@ -35,8 +36,47 @@ func (p *ClearScreenBuffer) RefreshArea() {
 	p.buf.SetArea(image.Rectangle{min, max})
 }
 
+func (p *Page) dumpNodesHtmlData(node *Node) {
+	log.Println(node.HtmlData)
+	for childNode := node.FirstChild; childNode != nil; childNode = childNode.NextSibling {
+		p.dumpNodesHtmlData(childNode)
+	}
+}
+
+func (p *Page) DumpNodesHtmlData() {
+	p.dumpNodesHtmlData(p.FirstChildNode)
+}
+
+func (p *Page) RemoveNode(node *Node) {
+	if nodeDataOnRemover, ok := node.Data.(NodeDataOnRemover); true == ok {
+		nodeDataOnRemover.NodeDataOnRemove()
+	}
+
+	delete(p.IdToNodeMap, node.Id)
+
+	if nil != node.PrevSibling {
+		node.PrevSibling.NextSibling = node.NextSibling
+	}
+
+	if nil != node.NextSibling {
+		node.NextSibling.PrevSibling = node.PrevSibling
+	}
+
+	if nil != node.Parent {
+		node.Parent.ChildrenCount -= 1
+		if node.Parent.FirstChild == node {
+			node.Parent.FirstChild = node.NextSibling
+		}
+		if node.Parent.LastChild == node {
+			node.Parent.LastChild = node.PrevSibling
+		}
+	}
+
+	p.Rerender()
+}
+
 func GetFileContent(path string) ([]byte, error) {
-	path = filepath.Join(GlobalOption.ResBaseDir, "project", GlobalOption.ProjectName, path)
+	path = filepath.Join(GlobalOption.ProjectPath, path)
 	file, err := os.Open(path)
 	defer file.Close()
 	if err != nil {

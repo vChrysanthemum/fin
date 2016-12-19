@@ -8,3 +8,4 @@ log/
 /lua/
 *.db
 *.db-journal
+*.log

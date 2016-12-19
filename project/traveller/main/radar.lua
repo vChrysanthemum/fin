@@ -35,14 +35,14 @@ function _Radar.RefreshParInfo(self)
 
   if self.NewestMsg ~= GUserSpaceship.NewestMsg then
       self.NewestMsg = GUserSpaceship.NewestMsg
-      NodeParNewestMsg:SetText(string.format("%s", self.NewestMsg))
+      NodeParNewestMsg:SetValue(string.format("%s", self.NewestMsg))
   end
 
   if self.CursorScreenPosition.X == GUserSpaceship.ScreenPosition.X and
     self.CursorScreenPosition.Y == GUserSpaceship.ScreenPosition.Y then
     self.FocusTarget = GUserSpaceship
     self.FocusTarget.ColorBg = "white"
-    NodeParInfo:SetText(string.format([[
+    NodeParInfo:SetValue(string.format([[
 X: %f
 Y: %f
 飞船:%s]], GUserSpaceship.Info.Position.X, GUserSpaceship.Info.Position.Y, GUserSpaceship.Info.Name))
@@ -53,7 +53,7 @@ Y: %f
   if nil ~= planet then
     self.FocusTarget = planet
     self.FocusTarget.ColorBg = "white"
-    NodeParInfo:SetText(string.format([[
+    NodeParInfo:SetValue(string.format([[
 X: %d
 Y: %d
 星球: %s
@@ -63,7 +63,7 @@ Y: %d
 
   if nil == self.FocusTarget then
     local position = self:ScreenPositionToPosition(self.CursorScreenPosition)
-    NodeParInfo:SetText(string.format([[
+    NodeParInfo:SetValue(string.format([[
 X: %d
 Y: %d]], position.X, position.Y))
   end

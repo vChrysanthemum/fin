@@ -65,10 +65,6 @@ func (p *NodeSelect) KeyPress(e termui.Event) {
 		if p.SelectedOptionIndex-1 < 0 {
 		} else {
 			p.SelectedOptionIndex--
-			if p.SelectedOptionIndex < p.DisplayLinesRange[0] {
-				p.DisplayLinesRange[0] = p.DisplayLinesRange[0] - 1
-				p.DisplayLinesRange[1] = p.DisplayLinesRange[1] - 1
-			}
 			p.Node.refreshUiBufferItems()
 			p.Node.uiRender()
 		}
@@ -79,10 +75,6 @@ func (p *NodeSelect) KeyPress(e termui.Event) {
 		if p.SelectedOptionIndex+1 >= len(p.Children) {
 		} else {
 			p.SelectedOptionIndex++
-			if p.SelectedOptionIndex >= p.DisplayLinesRange[1] {
-				p.DisplayLinesRange[1] = p.DisplayLinesRange[1] + 1
-				p.DisplayLinesRange[0] = p.DisplayLinesRange[0] + 1
-			}
 			p.Node.refreshUiBufferItems()
 			p.Node.uiRender()
 		}
@@ -104,6 +96,18 @@ func (p *NodeSelect) NodeDataGetValue() string {
 	return nodeSelectOption.Value
 }
 
+func (p *NodeSelect) NodeDataSetValue(value string) {
+	for k, option := range p.Children {
+		if option.Value == value {
+			p.SelectedOptionIndex = k
+			p.Node.refreshUiBufferItems()
+			p.Node.uiRender()
+			break
+		}
+	}
+	return
+}
+
 func (p *NodeSelect) AppendOption(value, data string) {
 	p.Children = append(p.Children, NodeSelectOption{Value: value, Data: data})
 	width := rw.StringWidth(data)
@@ -111,12 +115,27 @@ func (p *NodeSelect) AppendOption(value, data string) {
 		p.ChildrenMaxStringWidth = width
 	}
 	p.Node.refreshUiBufferItems()
+	p.Node.uiRender()
 }
 
 func (p *NodeSelect) ClearOptions() {
 	p.SelectedOptionIndex = 0
 	p.Children = []NodeSelectOption{}
 	p.ChildrenMaxStringWidth = 0
+	p.Node.refreshUiBufferItems()
+	p.Node.uiRender()
+}
+
+func (p *NodeSelect) SetOptionData(value, newData string) {
+	for k, v := range p.Children {
+		if value == v.Value {
+			v.Data = newData
+			p.Children[k] = v
+			p.Node.refreshUiBufferItems()
+			p.Node.uiRender()
+			break
+		}
+	}
 }
 
 func (p *NodeSelect) NodeDataFocusMode() {

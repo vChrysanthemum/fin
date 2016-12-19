@@ -16,7 +16,10 @@ func TestDB(t *testing.T) {
 	log.SetFlags(log.Lshortfile | log.LstdFlags | log.Lmicroseconds)
 
 	dbpath := "test.db"
-	os.Remove(filepath.Join(GlobalOption.ResBaseDir, "project", GlobalOption.ProjectName, dbpath))
+	GlobalOption.ProjectPath = filepath.Join(GlobalOption.ResBaseDir)
+	os.Remove(filepath.Join(GlobalOption.ProjectPath, dbpath))
+
+	script.GlobalOption.ProjectPath = GlobalOption.ProjectPath
 
 	var (
 		err error
@@ -61,5 +64,5 @@ func TestDB(t *testing.T) {
 	err = L.DoString(content)
 	assert.Nil(t, err)
 
-	os.Remove(filepath.Join(GlobalOption.ResBaseDir, "project", GlobalOption.ProjectName, dbpath))
+	os.Remove(filepath.Join(GlobalOption.ProjectPath, dbpath))
 }

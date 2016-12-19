@@ -107,6 +107,16 @@ function TableLength(T)
   return count
 end
 
+function TableRemove(T, key)
+  local newTable = {}
+  for k, v in pairs(T) do
+    if tostring(k) ~= tostring(key) then
+      newTable[k] = v
+    end
+  end
+  return newTable
+end
+
 string.lpad = function(str, len, char)
   if len <= #str then
     return str
@@ -121,4 +131,12 @@ string.rpad = function(str, len, char)
   end
   if char == nil then char = ' ' end
   return str .. string.rep(char, len - #str)
+end
+
+function WriteContentToFile(filepath, content)
+  return base.WriteContentToFile(filepath, content)
+end
+
+function ReadContentFromFile(filepath)
+  return base.ReadContentFromFile(filepath)
 end

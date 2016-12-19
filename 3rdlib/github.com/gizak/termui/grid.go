@@ -13,6 +13,7 @@ type GridBufferer interface {
 	SetY(int)
 	GetX() int
 	GetY() int
+	Align()
 }
 
 // Row builds a layout tree
@@ -168,6 +169,12 @@ func (r *Row) SetWidth(w int) {
 	}
 }
 
+func (r *Row) Align() {
+	if r.Widget != nil {
+		r.Widget.Align()
+	}
+}
+
 // Buffer implements Bufferer interface,
 // recursively merge all widgets buffer
 func (r *Row) Buffer() Buffer {
@@ -272,6 +279,7 @@ func (g *Grid) Align() {
 		r.SetX(g.X)
 		r.SetY(g.Y + h)
 		r.calcLayout()
+		r.Align()
 		h += r.GetHeight()
 	}
 }

@@ -53,7 +53,7 @@ func (p *Script) OpenDB(L *lua.LState) int {
 		return 1
 	}
 
-	dbpath := filepath.Join(GlobalOption.ResBaseDir, "project", GlobalOption.ProjectName, L.ToString(1))
+	dbpath := filepath.Join(GlobalOption.ProjectPath, L.ToString(1))
 	db, err := sql.Open("sqlite3", dbpath)
 	if nil != err {
 		L.Push(lua.LString(err.Error()))

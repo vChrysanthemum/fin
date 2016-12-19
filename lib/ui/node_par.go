@@ -30,14 +30,16 @@ func (p *Node) InitNodePar() {
 	return
 }
 
-func (p *NodePar) NodeDataSetText(content string) (isNeedRerenderPage bool) {
+func (p *NodePar) NodeDataSetValue(content string) {
 	uiBuffer := p.Node.uiBuffer.(*termui.Par)
 	uiBuffer.Text = content
 
 	height := uiutils.CalculateTextHeight(content, uiBuffer.Width)
 
 	if height > uiBuffer.InnerArea.Dy() {
-		isNeedRerenderPage = true
+		p.Node.page.Rerender()
+	} else {
+		p.Node.uiRender()
 	}
 	return
 }

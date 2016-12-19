@@ -15,8 +15,8 @@ type NodeDataGetValuer interface {
 	NodeDataGetValue() string
 }
 
-type NodeDataSetTexter interface {
-	NodeDataSetText(content string) (isNeedRerenderPage bool)
+type NodeDataSetValueer interface {
+	NodeDataSetValue(content string)
 }
 
 type NodeDataOnRemover interface {
@@ -41,10 +41,6 @@ type NodeDataUnActiveModer interface {
 
 type NodeDataParseAttributer interface {
 	NodeDataParseAttribute(attr []html.Attribute) (isUIChange, isNeedRerenderPage bool)
-}
-
-type NodeDataAfterUIRenderHandler interface {
-	NodeDataAfterUIRenderHandle()
 }
 
 type Node struct {
@@ -175,9 +171,6 @@ func (p *Node) uiRender() {
 		return
 	}
 	uiutils.UIRender(p.uiBuffer.(termui.Bufferer))
-	if nodeDataAfterUIRenderHandler, ok := p.Data.(NodeDataAfterUIRenderHandler); true == ok {
-		nodeDataAfterUIRenderHandler.NodeDataAfterUIRenderHandle()
-	}
 }
 
 func (p *Node) SetCursor(x, y int) {
