@@ -9,7 +9,7 @@ const (
 var (
 	COLOR_BODY_DEFAULT_COLORFG                   = "blue"
 	COLOR_SELECTED_OPTION_COLORFG                = "white"
-	COLOR_SELECTED_OPTION_COLORBG                = "black"
+	COLOR_SELECTED_OPTION_COLORBG                = "blue"
 	COLOR_FOCUS_MODE_BORDERFG                    = termui.ColorRed
 	COLOR_ACTIVE_MODE_BORDERFG                   = termui.ColorBlue
 	COLOR_DEFAULT_TEXT_COLOR_FG                  = termui.ColorBlack

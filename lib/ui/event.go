@@ -29,13 +29,6 @@ func registerHandles() {
 				return
 			}
 
-			if len(GCurrentRenderPage.ActiveNode.KeyPressHandlers) > 0 {
-				for _, v := range GCurrentRenderPage.ActiveNode.KeyPressHandlers {
-					v.Args = append(v.Args, e)
-					v.Handler(GCurrentRenderPage.ActiveNode, v.Args...)
-				}
-			}
-
 			if "<escape>" == keyStr {
 				GCurrentRenderPage.ActiveNode.QuitActiveMode()
 				return

@@ -42,29 +42,18 @@ func (p *Node) InitNodeTerminal() {
 }
 
 func (p *NodeTerminal) KeyPress(e termui.Event) {
-	keyStr := e.Data.(termui.EvtKbd).KeyStr
-	if "<escape>" == keyStr {
-		p.Node.QuitActiveMode()
-		return
-	}
-
-	// 获取新的命令行
-	if "<enter>" == keyStr {
-
-		if nil != p.Editor.CurrentLine {
-			p.NewCommand = p.Editor.CurrentLine
-			p.CommandHistory = append(p.CommandHistory, string(p.NewCommand.Data[len(p.CommandPrefix):]))
-			p.CurrentCommandLineIndex = len(p.CommandHistory) - 1
-		}
-
-		if len(p.Node.KeyPressEnterHandlers) > 0 {
-			for _, v := range p.Node.KeyPressEnterHandlers {
+	defer func() {
+		if len(p.Node.KeyPressHandlers) > 0 {
+			for _, v := range p.Node.KeyPressHandlers {
+				v.Args = append(v.Args, e)
 				v.Handler(p.Node, v.Args...)
 			}
 		}
+	}()
 
-		p.PrepareNewCommand()
-		p.Node.uiRender()
+	keyStr := e.Data.(termui.EvtKbd).KeyStr
+	if "<escape>" == keyStr {
+		p.Node.QuitActiveMode()
 		return
 	}
 
@@ -82,12 +71,6 @@ func (p *NodeTerminal) KeyPress(e termui.Event) {
 
 	if "<up>" == keyStr || "<down>" == keyStr {
 		if len(p.CommandHistory) > 0 {
-			if len(p.CommandHistory) == p.CurrentCommandLineIndex {
-				p.Editor.UpdateCurrentLineData(p.CommandPrefix)
-			} else {
-				p.Editor.UpdateCurrentLineData(p.CommandPrefix + p.CommandHistory[p.CurrentCommandLineIndex])
-			}
-
 			if "<up>" == keyStr {
 				p.CurrentCommandLineIndex -= 1
 				if p.CurrentCommandLineIndex <= 0 {
@@ -100,6 +83,12 @@ func (p *NodeTerminal) KeyPress(e termui.Event) {
 				}
 			}
 
+			if len(p.CommandHistory) <= p.CurrentCommandLineIndex {
+				p.Editor.UpdateCurrentLineData(p.CommandPrefix)
+			} else {
+				p.Editor.UpdateCurrentLineData(p.CommandPrefix + p.CommandHistory[p.CurrentCommandLineIndex])
+			}
+
 			p.Node.uiRender()
 		}
 		return
@@ -107,6 +96,27 @@ func (p *NodeTerminal) KeyPress(e termui.Event) {
 
 	if "C-c" == keyStr {
 		p.Editor.UpdateCurrentLineData(p.CommandPrefix)
+		p.Node.uiRender()
+		return
+	}
+
+	// 获取新的命令行
+	if "<enter>" == keyStr {
+		if nil != p.Editor.CurrentLine {
+			p.NewCommand = p.Editor.CurrentLine
+			if "" != string(p.NewCommand.Data[len(p.CommandPrefix):]) {
+				p.CommandHistory = append(p.CommandHistory, string(p.NewCommand.Data[len(p.CommandPrefix):]))
+			}
+			p.CurrentCommandLineIndex = len(p.CommandHistory)
+		}
+
+		if len(p.Node.KeyPressEnterHandlers) > 0 {
+			for _, v := range p.Node.KeyPressEnterHandlers {
+				v.Handler(p.Node, v.Args...)
+			}
+		}
+
+		p.PrepareNewCommand()
 		p.Node.uiRender()
 		return
 	}

@@ -31,7 +31,6 @@ NodeTerminalTaskCommandSig = NodeTerminalTask:TerminalRegisterCommandHandle(func
 
     elseif "select" == commandArr[1] or "s" == commandArr[1] then
         NodeSelectTasks:SetActive()
-        NodeSelectTasksKeyPressSkipEnter = true
 
     elseif "clear" == commandArr[1] or "c" == commandArr[1] then
         CommandClearGTasks(nodePointer)
@@ -44,13 +43,7 @@ NodeTerminalTaskCommandSig = NodeTerminalTask:TerminalRegisterCommandHandle(func
     FlushGTasksToDB()
 end)
 
-NodeSelectTasksKeyPressSkipEnter = false
 NodeSelectTasksKeyPressKeySig = NodeSelectTasks:RegisterKeyPressHandler(function(nodePointer, KeyStr)
-    if "<enter>" == KeyStr and true == NodeSelectTasksKeyPressSkipEnter then
-        NodeSelectTasksKeyPressSkipEnter = false
-        return
-    end
-
     SetCurrentTask(NodeSelectTasks:GetValue())
 
     if "<enter>" == KeyStr then

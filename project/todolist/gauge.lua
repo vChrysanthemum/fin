@@ -18,7 +18,7 @@ function RefreshGaugeProgress()
         NodeGaugeProgress:SetAttribute("percentcolor_highlighted", "black")
     elseif  percent < 0.9 then
         NodeGaugeProgress:SetAttribute("barcolor", "green")
-        NodeGaugeProgress:SetAttribute("percentcolor_highlighted", "black")
+        NodeGaugeProgress:SetAttribute("percentcolor_highlighted", "blue")
     else
         NodeGaugeProgress:SetAttribute("barcolor", "blue")
         NodeGaugeProgress:SetAttribute("percentcolor_highlighted", "white")

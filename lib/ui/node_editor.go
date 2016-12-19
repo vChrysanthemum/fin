@@ -34,6 +34,15 @@ func (p *Node) InitNodeEditor() {
 }
 
 func (p *NodeEditor) KeyPress(e termui.Event) {
+	defer func() {
+		if len(p.Node.KeyPressHandlers) > 0 {
+			for _, v := range p.Node.KeyPressHandlers {
+				v.Args = append(v.Args, e)
+				v.Handler(p.Node, v.Args...)
+			}
+		}
+	}()
+
 	keyStr := e.Data.(termui.EvtKbd).KeyStr
 	if "<escape>" == keyStr {
 		p.Node.QuitActiveMode()
