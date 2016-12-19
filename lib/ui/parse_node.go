@@ -4,6 +4,8 @@ import (
 	uiutils "in/ui/utils"
 	"strconv"
 
+	"github.com/gizak/termui"
+
 	"golang.org/x/net/html"
 )
 
@@ -20,6 +22,25 @@ func (p *Node) ParseAttribute(attr []html.Attribute) (isUIChange, isNeedRerender
 	for _, v := range attr {
 		p.HtmlAttribute[v.Key] = v
 		switch v.Key {
+		case "float":
+			isUIChange = true
+			switch v.Val {
+			case "left":
+				p.UIBlock.Float = termui.AlignLeft
+			case "right":
+				p.UIBlock.Float = termui.AlignRight
+			case "top":
+				p.UIBlock.Float = termui.AlignTop
+			case "bottom":
+				p.UIBlock.Float = termui.AlignBottom
+			case "centervertical":
+				p.UIBlock.Float = termui.AlignCenterVertical
+			case "centerhorizontal":
+				p.UIBlock.Float = termui.AlignCenterHorizontal
+			case "center":
+				p.UIBlock.Float = termui.AlignCenter
+			}
+
 		case "display":
 			isUIChange = true
 			if "none" == v.Val {
