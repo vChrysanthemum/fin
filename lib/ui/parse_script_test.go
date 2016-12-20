@@ -1,8 +1,8 @@
 package ui
 
 import (
-	"fmt"
 	"fin/ui"
+	"fmt"
 	"log"
 	"os"
 	"strings"

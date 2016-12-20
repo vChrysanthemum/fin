@@ -29,7 +29,7 @@ func (p *Node) InitNodeCanvas() {
 }
 
 func (p *NodeCanvas) NodeDataFocusMode() {
-	if false == p.Node.isCalledFocusMode {
+	if false == p.Node.isCalledFocusMode && true == p.Node.UIBlock.Border {
 		p.Node.isCalledFocusMode = true
 		p.Node.tmpFocusModeBorder = p.Node.UIBlock.Border
 		p.Node.tmpFocusModeBorderFg = p.Node.UIBlock.BorderFg
@@ -40,7 +40,7 @@ func (p *NodeCanvas) NodeDataFocusMode() {
 }
 
 func (p *NodeCanvas) NodeDataUnFocusMode() {
-	if true == p.Node.isCalledFocusMode {
+	if true == p.Node.isCalledFocusMode && true == p.Node.UIBlock.Border {
 		p.Node.isCalledFocusMode = false
 		p.Node.UIBlock.Border = p.Node.tmpFocusModeBorder
 		p.Node.UIBlock.BorderFg = p.Node.tmpFocusModeBorderFg
@@ -49,7 +49,7 @@ func (p *NodeCanvas) NodeDataUnFocusMode() {
 }
 
 func (p *NodeCanvas) NodeDataActiveMode() {
-	if false == p.Node.isCalledActiveMode {
+	if false == p.Node.isCalledActiveMode && true == p.Node.UIBlock.Border {
 		p.Node.isCalledActiveMode = true
 		p.Node.tmpActiveModeBorderFg = p.Node.UIBlock.BorderFg
 		p.Node.UIBlock.BorderFg = COLOR_ACTIVE_MODE_BORDERFG
@@ -58,7 +58,7 @@ func (p *NodeCanvas) NodeDataActiveMode() {
 }
 
 func (p *NodeCanvas) NodeDataUnActiveMode() {
-	if true == p.Node.isCalledActiveMode {
+	if true == p.Node.isCalledActiveMode && true == p.Node.UIBlock.Border {
 		p.Node.isCalledActiveMode = false
 		p.Node.UIBlock.BorderFg = p.Node.tmpActiveModeBorderFg
 		p.Node.HideCursor()

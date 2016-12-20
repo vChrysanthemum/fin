@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 
 	"github.com/gizak/termui"
+	termbox "github.com/nsf/termbox-go"
 )
 
 var (
@@ -41,6 +42,7 @@ func init() {
 
 func PrepareUI() {
 	err := termui.Init()
+	termbox.SetOutputMode(termbox.Output256)
 	if err != nil {
 		panic(err)
 	}

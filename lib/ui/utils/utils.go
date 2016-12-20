@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"image"
+	"strings"
 	"sync"
 	"unicode/utf8"
 
@@ -32,27 +33,44 @@ func StringToBool(str string, defaultVal bool) bool {
 	return defaultVal
 }
 
-func ColorToTermuiAttribute(color string, defaultColor termui.Attribute) termui.Attribute {
-	switch color {
-	case "black":
-		return termui.ColorBlack
-	case "red":
-		return termui.ColorRed
-	case "green":
-		return termui.ColorGreen
-	case "yellow":
-		return termui.ColorYellow
-	case "blue":
-		return termui.ColorBlue
-	case "magenta":
-		return termui.ColorMagenta
-	case "cyan":
-		return termui.ColorCyan
-	case "white":
-		return termui.ColorWhite
+func ColorToTermuiAttribute(colorsStr string, defaultColor termui.Attribute) termui.Attribute {
+	if "" == colorsStr {
+		return defaultColor
 	}
 
-	return defaultColor
+	colors := strings.Split(colorsStr, "|")
+
+	var color termui.Attribute
+	for _, colorStr := range colors {
+		switch colorStr {
+		case "white":
+			color = 0xe8
+		case "black":
+			color |= termui.ColorBlack
+		case "red":
+			color |= termui.ColorRed
+		case "green":
+			color |= termui.ColorGreen
+		case "yellow":
+			color |= termui.ColorYellow
+		case "blue":
+			color |= termui.ColorBlue
+		case "magenta":
+			color |= termui.ColorMagenta
+		case "cyan":
+			color |= termui.ColorCyan
+		case "gray":
+			color |= termui.ColorWhite
+		case "bold":
+			color |= termui.AttrBold
+		case "underline":
+			color |= termui.AttrUnderline
+		case "reverse":
+			color |= termui.AttrReverse
+		}
+	}
+
+	return color
 }
 
 func MaxInt(data ...int) int {

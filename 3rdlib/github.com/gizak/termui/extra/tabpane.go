@@ -22,7 +22,14 @@ func NewTab(label string) *Tab {
 	return &Tab{
 		Label:       label,
 		RuneLen:     utf8.RuneCount([]byte(label)),
-		StringWidth: rw.StringWidth(label)}
+		StringWidth: rw.StringWidth(label) + 2,
+	}
+}
+
+func (tab *Tab) SetLabel(text string) {
+	tab.Label = text
+	tab.RuneLen = utf8.RuneCount([]byte(text))
+	tab.StringWidth = rw.StringWidth(text) + 2
 }
 
 func (tab *Tab) AddBlocks(rs ...Bufferer) {
@@ -44,6 +51,10 @@ type Tabpane struct {
 	Block
 	Tabs           []*Tab
 	activeTabIndex int
+	TabpaneBg      Attribute
+	TabFg          Attribute
+	TabBg          Attribute
+	ActiveTabFg    Attribute
 	ActiveTabBg    Attribute
 	posTabText     []int
 	offTabText     int
@@ -54,6 +65,9 @@ func NewTabpane() *Tabpane {
 		Block:          *NewBlock(),
 		activeTabIndex: 0,
 		offTabText:     0,
+		TabFg:          ThemeAttr("fg.tab"),
+		TabBg:          ThemeAttr("bg.tab"),
+		ActiveTabFg:    ThemeAttr("fg.tab.active"),
 		ActiveTabBg:    ThemeAttr("bg.tab.active")}
 	return &tp
 }
@@ -65,7 +79,11 @@ func (tp *Tabpane) SetTabs(tabs ...*Tab) {
 	for i := 0; i < len(tp.Tabs); i++ {
 		tp.Tabs[i] = tabs[i]
 		tp.posTabText[i] = off
-		off += tp.Tabs[i].StringWidth + 1 //+1 for space between tabs
+		if false == tp.Block.Border {
+			off += tp.Tabs[i].StringWidth
+		} else {
+			off += tp.Tabs[i].StringWidth + 1 //+1 for space between tabs
+		}
 	}
 	tp.posTabText[len(tabs)] = off - 1 //total length of Tab's text
 }
@@ -167,6 +185,13 @@ func (tp *Tabpane) addPoint(chWidth int, ptab []point, charOffset *int, oftX *in
 	return ptab
 }
 
+func (tp *Tabpane) addPoints(ptab []point, points ...point) []point {
+	for _, p := range points {
+		ptab = append(ptab, p)
+	}
+	return ptab
+}
+
 // Draws the point and redraws upper and lower border points (if it has one)
 func (tp *Tabpane) drawPointWithBorder(p point, ch rune, chbord rune, chdown rune, chup rune) []point {
 	var addp []point
@@ -200,13 +225,23 @@ func (tp *Tabpane) Buffer() Buffer {
 	if tp.InnerHeight() <= 0 || tp.InnerWidth() <= 0 {
 		return NewBuffer()
 	}
+
+	// 画背景
+	if false == tp.Block.Border {
+		_max := TermWidth()
+		var addp []point
+		for _oftX := tp.posTabText[len(tp.Tabs)-1]; _oftX < _max; _oftX++ {
+			addp = append(addp, point{X: _oftX, Y: tp.InnerY(), Ch: ' ', Bg: tp.TabpaneBg})
+		}
+		ps = tp.addPoints(ps, addp...)
+	}
+
 	oftX := tp.InnerX()
 	charOffset := 0
 	pt := point{Bg: tp.BorderBg, Fg: tp.BorderFg}
 	var chLen int
 	for i, tab := range tp.Tabs {
-
-		if i != 0 {
+		if i != 0 && true == tp.Block.Border {
 			pt.X = oftX
 			pt.Y = tp.InnerY()
 			addp := tp.drawPointWithBorder(pt, ' ', VERTICAL_LINE, HORIZONTAL_DOWN, HORIZONTAL_UP)
@@ -214,8 +249,28 @@ func (tp *Tabpane) Buffer() Buffer {
 		}
 
 		if i == tp.activeTabIndex {
+			if true == tp.Block.Border {
+				ps = tp.addPoint(1, ps, &charOffset, &oftX, []point{
+					point{Y: tp.InnerY(), Ch: ' ', Fg: tp.ActiveTabFg, Bg: tp.ActiveTabBg},
+					point{Y: tp.InnerY() + 1, Ch: ' ', Fg: tp.BorderFg, Bg: tp.BorderBg},
+				}...)
+			} else {
+				ps = tp.addPoint(1, ps, &charOffset, &oftX,
+					point{Y: tp.InnerY(), Ch: ' ', Fg: tp.ActiveTabFg, Bg: tp.ActiveTabBg})
+			}
+		} else {
+			ps = tp.addPoint(1, ps, &charOffset, &oftX,
+				point{Y: tp.InnerY(), Ch: ' ', Fg: tp.TabFg, Bg: tp.TabBg})
+		}
+
+		pt.Fg = tp.TabFg
+		pt.Bg = tp.TabBg
+
+		if i == tp.activeTabIndex {
+			pt.Fg = tp.ActiveTabFg
 			pt.Bg = tp.ActiveTabBg
 		}
+
 		rs := []rune(tab.Label)
 		for k := 0; k < len(rs); k++ {
 
@@ -229,9 +284,12 @@ func (tp *Tabpane) Buffer() Buffer {
 					pt.Ch = ' '
 				}
 
+				pt.X = oftX
 				pt.Y = tp.InnerY() + 1
+				pt.Fg = tp.BorderFg
 				pt.Bg = tp.BorderBg
 				addp = append(addp, pt)
+				pt.Fg = tp.ActiveTabFg
 				pt.Bg = tp.ActiveTabBg
 			}
 
@@ -242,6 +300,23 @@ func (tp *Tabpane) Buffer() Buffer {
 
 			ps = tp.addPoint(chLen, ps, &charOffset, &oftX, addp...)
 		}
+
+		if i == tp.activeTabIndex {
+			if true == tp.Block.Border {
+				ps = tp.addPoint(1, ps, &charOffset, &oftX, []point{
+					point{Y: tp.InnerY(), Ch: ' ', Fg: tp.ActiveTabFg, Bg: tp.ActiveTabBg},
+					point{Y: tp.InnerY() + 1, Ch: ' ', Fg: tp.BorderFg, Bg: tp.BorderBg},
+				}...)
+			} else {
+				ps = tp.addPoint(1, ps, &charOffset, &oftX,
+					point{Y: tp.InnerY(), Ch: ' ', Fg: tp.ActiveTabFg, Bg: tp.ActiveTabBg})
+			}
+		} else {
+			ps = tp.addPoint(1, ps, &charOffset, &oftX,
+				point{Y: tp.InnerY(), Ch: ' ', Fg: tp.TabFg, Bg: tp.TabBg})
+		}
+
+		pt.Fg = tp.BorderFg
 		pt.Bg = tp.BorderBg
 
 		if !tp.fitsWidth() {
@@ -271,15 +346,12 @@ func (tp *Tabpane) Buffer() Buffer {
 			}
 		}
 
-		//draw tab content below the Tabpane
-		if i == tp.activeTabIndex {
-			blockPoints := buf2pt(tab.Buffer())
-			/*
-				for i := 0; i < len(blockPoints); i++ {
-					blockPoints[i].Y += tp.Height + tp.Y
-				}
-			*/
-			ps = append(ps, blockPoints...)
+		for i, tab := range tp.Tabs {
+			//draw tab content below the Tabpane
+			if i == tp.activeTabIndex {
+				blockPoints := buf2pt(tab.Buffer())
+				ps = append(ps, blockPoints...)
+			}
 		}
 	}
 

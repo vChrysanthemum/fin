@@ -54,7 +54,7 @@ func (p *NodeEditor) KeyPress(e termui.Event) {
 }
 
 func (p *NodeEditor) NodeDataFocusMode() {
-	if false == p.Node.isCalledFocusMode {
+	if false == p.Node.isCalledFocusMode && true == p.Node.UIBlock.Border {
 		p.Node.isCalledFocusMode = true
 		p.Node.tmpFocusModeBorder = p.Node.UIBlock.Border
 		p.Node.tmpFocusModeBorderFg = p.Node.UIBlock.BorderFg
@@ -65,7 +65,7 @@ func (p *NodeEditor) NodeDataFocusMode() {
 }
 
 func (p *NodeEditor) NodeDataUnFocusMode() {
-	if true == p.Node.isCalledFocusMode {
+	if true == p.Node.isCalledFocusMode && true == p.Node.UIBlock.Border {
 		p.Node.isCalledFocusMode = false
 		p.Node.UIBlock.Border = p.Node.tmpFocusModeBorder
 		p.Node.UIBlock.BorderFg = p.Node.tmpFocusModeBorderFg
@@ -74,7 +74,7 @@ func (p *NodeEditor) NodeDataUnFocusMode() {
 }
 
 func (p *NodeEditor) NodeDataActiveMode() {
-	if false == p.Node.isCalledActiveMode {
+	if false == p.Node.isCalledActiveMode && true == p.Node.UIBlock.Border {
 		p.Node.isCalledActiveMode = true
 		p.Node.tmpActiveModeBorderFg = p.Node.UIBlock.BorderFg
 		p.Node.UIBlock.BorderFg = COLOR_ACTIVE_MODE_BORDERFG
@@ -84,7 +84,7 @@ func (p *NodeEditor) NodeDataActiveMode() {
 }
 
 func (p *NodeEditor) NodeDataUnActiveMode() {
-	if true == p.Node.isCalledActiveMode {
+	if true == p.Node.isCalledActiveMode && true == p.Node.UIBlock.Border {
 		p.Node.isCalledActiveMode = false
 		p.Node.UIBlock.BorderFg = p.Node.tmpActiveModeBorderFg
 		p.Editor.UnActiveMode()

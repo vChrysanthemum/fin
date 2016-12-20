@@ -21,7 +21,9 @@ func (p *Node) InitNodeTabpane() {
 	p.UIBlock = &uiBuffer.Block
 	p.Display = &p.UIBlock.Display
 
-	uiBuffer.Width = 30
+	p.isShouldCalculateWidth = true
+	uiBuffer.Border = false
+	uiBuffer.TabpaneBg = COLOR_DEFAULT_TABPANE_BG
 
 	p.isWorkNode = true
 
@@ -85,36 +87,58 @@ func (p *NodeTabpane) KeyPress(e termui.Event) {
 func (p *NodeTabpane) NodeDataFocusMode() {
 	if false == p.Node.isCalledFocusMode {
 		p.Node.isCalledFocusMode = true
-		p.Node.tmpFocusModeBorder = p.Node.UIBlock.Border
-		p.Node.tmpFocusModeBorderFg = p.Node.UIBlock.BorderFg
-		p.Node.UIBlock.Border = true
-		p.Node.UIBlock.BorderFg = COLOR_FOCUS_MODE_BORDERFG
-		p.Node.uiRender()
+		if true == p.Node.UIBlock.Border {
+			p.Node.tmpFocusModeBorder = p.Node.UIBlock.Border
+			p.Node.tmpFocusModeBorderFg = p.Node.UIBlock.BorderFg
+			p.Node.UIBlock.Border = true
+			p.Node.UIBlock.BorderFg = COLOR_FOCUS_MODE_BORDERFG
+			p.Node.uiRender()
+		} else {
+			p.Node.tmpFocusModeBorderFg = p.Node.uiBuffer.(*extra.Tabpane).TabpaneBg
+			p.Node.uiBuffer.(*extra.Tabpane).TabpaneBg = COLOR_FOCUS_MODE_BORDERFG
+			p.Node.uiRender()
+		}
 	}
 }
 
 func (p *NodeTabpane) NodeDataUnFocusMode() {
 	if true == p.Node.isCalledFocusMode {
 		p.Node.isCalledFocusMode = false
-		p.Node.UIBlock.Border = p.Node.tmpFocusModeBorder
-		p.Node.UIBlock.BorderFg = p.Node.tmpFocusModeBorderFg
-		p.Node.uiRender()
+		if true == p.Node.UIBlock.Border {
+			p.Node.UIBlock.Border = p.Node.tmpFocusModeBorder
+			p.Node.UIBlock.BorderFg = p.Node.tmpFocusModeBorderFg
+			p.Node.uiRender()
+		} else {
+			p.Node.uiBuffer.(*extra.Tabpane).TabpaneBg = p.Node.tmpFocusModeBorderFg
+			p.Node.uiRender()
+		}
 	}
 }
 
 func (p *NodeTabpane) NodeDataActiveMode() {
 	if false == p.Node.isCalledActiveMode {
 		p.Node.isCalledActiveMode = true
-		p.Node.tmpActiveModeBorderFg = p.Node.UIBlock.BorderFg
-		p.Node.UIBlock.BorderFg = COLOR_ACTIVE_MODE_BORDERFG
-		p.Node.uiRender()
+		if true == p.Node.UIBlock.Border {
+			p.Node.tmpActiveModeBorderFg = p.Node.UIBlock.BorderFg
+			p.Node.UIBlock.BorderFg = COLOR_ACTIVE_MODE_BORDERFG
+			p.Node.uiRender()
+		} else {
+			p.Node.tmpActiveModeBorderFg = p.Node.uiBuffer.(*extra.Tabpane).TabpaneBg
+			p.Node.uiBuffer.(*extra.Tabpane).TabpaneBg = COLOR_ACTIVE_MODE_BORDERFG
+			p.Node.uiRender()
+		}
 	}
 }
 
 func (p *NodeTabpane) NodeDataUnActiveMode() {
 	if true == p.Node.isCalledActiveMode {
 		p.Node.isCalledActiveMode = false
-		p.Node.UIBlock.BorderFg = p.Node.tmpActiveModeBorderFg
-		p.Node.uiRender()
+		if true == p.Node.UIBlock.Border {
+			p.Node.UIBlock.BorderFg = p.Node.tmpActiveModeBorderFg
+			p.Node.uiRender()
+		} else {
+			p.Node.uiBuffer.(*extra.Tabpane).TabpaneBg = p.Node.tmpActiveModeBorderFg
+			p.Node.uiRender()
+		}
 	}
 }

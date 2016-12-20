@@ -17,15 +17,23 @@ var (
 	GlobalResBaseDir string
 )
 
+func AssertErrIsNil(err error) {
+	if nil != err {
+		panic(err)
+	}
+}
+
 func main() {
 	if len(os.Args) < 2 {
 		fmt.Println("Project filepath is needed.")
 		return
 	}
 
-	GlobalResBaseDir = filepath.Join(os.Getenv("HOME"), ".fin")
-
 	log.SetFlags(log.Lshortfile | log.LstdFlags | log.Lmicroseconds)
+
+	projectPath := os.Args[1]
+
+	GlobalResBaseDir = filepath.Join(os.Getenv("HOME"), ".fin")
 
 	sigChan := make(chan os.Signal)
 	go func() {
@@ -37,16 +45,15 @@ func main() {
 	}()
 	signal.Notify(sigChan, syscall.SIGQUIT)
 
-	projectPath := os.Args[1]
-
 	projectMainHtmlFilePath := filepath.Join(projectPath, "main.html")
 	if _, err := os.Stat(projectMainHtmlFilePath); os.IsNotExist(err) {
 		fmt.Println("Project is not existed.")
 		return
 	}
 
-	logFile, _ := os.OpenFile(filepath.Join(projectPath, "main.log"),
-		os.O_CREATE|os.O_RDWR|os.O_APPEND, 0777)
+	logFile, err := os.OpenFile(filepath.Join(projectPath, "main.log"),
+		os.O_CREATE|os.O_RDWR|os.O_APPEND, 0755)
+	AssertErrIsNil(err)
 	log.SetOutput(logFile)
 
 	ui.GlobalOption.ResBaseDir = GlobalResBaseDir
