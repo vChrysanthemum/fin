@@ -10,8 +10,8 @@ import (
 )
 
 var GlobalOption = Option{
-	ResBaseDir:  filepath.Join(os.Getenv("HOME"), ".in"),
-	ProjectPath: filepath.Join(os.Getenv("HOME"), ".in", "project", "traveller"),
+	ResBaseDir:  filepath.Join(os.Getenv("HOME"), ".fin"),
+	ProjectPath: filepath.Join(os.Getenv("HOME"), ".fin", "project", "traveller"),
 }
 
 type Option struct {

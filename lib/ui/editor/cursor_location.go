@@ -2,7 +2,7 @@ package editor
 
 import (
 	"image"
-	uiutils "in/ui/utils"
+	uiutils "fin/ui/utils"
 
 	"github.com/gizak/termui"
 )

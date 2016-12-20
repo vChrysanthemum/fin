@@ -1,8 +1,8 @@
 package ui
 
 import (
-	"in/ui/editor"
-	"in/ui/utils"
+	"fin/ui/editor"
+	"fin/ui/utils"
 
 	"github.com/gizak/termui"
 )

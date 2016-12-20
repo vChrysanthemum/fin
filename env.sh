@@ -40,16 +40,16 @@ then
     ln -s "$(pwd)/test/ui.go" "$(pwd)/src/ui/ui.go"
 fi
 
-if [ ! -d "$(pwd)/src/in/" ];
+if [ ! -d "$(pwd)/src/fin/" ];
 then 
-    mkdir src/in
+    mkdir src/fin
 fi
 
 for folder in `ls ./lib/`
 do 
-    if [ ! -d "$(pwd)/src/in/$folder" ];
+    if [ ! -d "$(pwd)/src/fin/$folder" ];
     then
-        ln -s "$(pwd)/lib/$folder" "$(pwd)/src/in/$folder"
+        ln -s "$(pwd)/lib/$folder" "$(pwd)/src/fin/$folder"
     fi
 done
 
@@ -62,11 +62,17 @@ do
     fi
 done
 
+if [ ! -e "$(pwd)/lua" ];
+then
+    mkdir -p "$(pwd)/lua"
+fi
+
+
 for folder in `ls ./lib/`
 do 
-    if [ -d "$(pwd)/lib/$folder/lua" ];
+    if [ -e "$(pwd)/lib/$folder/lua" ];
     then
-        if [ ! -d "$(pwd)/lua/$folder" ];
+        if [ ! -e "$(pwd)/lua/$folder" ];
         then
             ln -s "$(pwd)/lib/$folder/lua" "$(pwd)/lua/$folder"
         fi

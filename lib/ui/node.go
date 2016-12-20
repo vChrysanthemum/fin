@@ -3,7 +3,7 @@ package ui
 import (
 	"container/list"
 	"image"
-	uiutils "in/ui/utils"
+	uiutils "fin/ui/utils"
 
 	"github.com/gizak/termui"
 	"golang.org/x/net/html"

@@ -3,7 +3,7 @@ package ui
 import (
 	"container/list"
 
-	uiutils "in/ui/utils"
+	uiutils "fin/ui/utils"
 
 	"github.com/gizak/termui"
 )

@@ -2,7 +2,7 @@ package script
 
 import (
 	"fmt"
-	"in/script"
+	"fin/script"
 	"log"
 	"path/filepath"
 	"testing"

@@ -1,7 +1,7 @@
 package ui
 
 import (
-	"in/script"
+	"fin/script"
 	"log"
 	"path/filepath"
 	"sync"

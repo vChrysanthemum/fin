@@ -1,7 +1,7 @@
 package ui
 
 import (
-	uiutils "in/ui/utils"
+	uiutils "fin/ui/utils"
 	"strconv"
 
 	"github.com/gizak/termui"

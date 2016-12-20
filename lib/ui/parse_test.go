@@ -2,7 +2,7 @@ package ui
 
 import (
 	"fmt"
-	"in/ui"
+	"fin/ui"
 	"log"
 	"testing"
 

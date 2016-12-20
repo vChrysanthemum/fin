@@ -1,9 +1,9 @@
 package main
 
 import (
+	"fin/script"
+	"fin/ui"
 	"fmt"
-	"in/script"
-	"in/ui"
 	"io/ioutil"
 	"log"
 	"os"
@@ -18,7 +18,12 @@ var (
 )
 
 func main() {
-	GlobalResBaseDir = filepath.Join(os.Getenv("HOME"), ".in")
+	if len(os.Args) < 2 {
+		fmt.Println("Project filepath is needed.")
+		return
+	}
+
+	GlobalResBaseDir = filepath.Join(os.Getenv("HOME"), ".fin")
 
 	log.SetFlags(log.Lshortfile | log.LstdFlags | log.Lmicroseconds)
 
@@ -31,11 +36,6 @@ func main() {
 		}
 	}()
 	signal.Notify(sigChan, syscall.SIGQUIT)
-
-	if len(os.Args) < 1 {
-		fmt.Println("Project filepath is needed.")
-		return
-	}
 
 	projectPath := os.Args[1]
 

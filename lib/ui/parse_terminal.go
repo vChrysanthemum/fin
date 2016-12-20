@@ -1,7 +1,7 @@
 package ui
 
 import (
-	uiutils "in/ui/utils"
+	uiutils "fin/ui/utils"
 
 	"golang.org/x/net/html"
 )

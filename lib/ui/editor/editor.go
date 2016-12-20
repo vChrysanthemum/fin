@@ -1,7 +1,7 @@
 package editor
 
 import (
-	uiutils "in/ui/utils"
+	uiutils "fin/ui/utils"
 	"strings"
 	"sync"
 

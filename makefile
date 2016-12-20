@@ -1,18 +1,19 @@
 export pwd = $(shell sh -c 'pwd')
 
-all:clean test build_in
+all:clean test build_fin
 
 install:
-	@./install.sh
+	@mkdir -p "$(HOME)/.fin"
+	@ln -sf "$(pwd)/lua" "$(HOME)/.fin/lua"
 	@echo "success."
 
 clean:
 	rm -rf pkg/*
 	rm -rf bin/*
 
-build_in:
+build_fin:
 	go install -tags deadlock ./src/main 
-	@mv bin/main bin/in
+	@mv bin/main bin/fin
 
 test:test_ui test_script
 
