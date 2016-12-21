@@ -32,12 +32,16 @@ end
 function ReadGTasksFromDB()
     GTasksLastId = 0
     GTasks = {}
-    local ret = json.decode(ReadContentFromFile("main.db"))
-    if "table" == type(ret) then
-        GTasksLastId = ret.GTasksLastId
-        GTasks = ret.GTasks
+    local ret = ReadContentFromFile("main.db")
+    if "" ~= ret then
+        ret = json.decode(ret)
+        if "table" == type(ret) then
+            GTasksLastId = ret.GTasksLastId
+            GTasks = ret.GTasks
+        end
     end
     if nil == ret.GTasks then
+        GTasksLastId = 0
         GTasks = {}
     end
 end
