@@ -18,6 +18,7 @@ var (
 	COLOR_DEFAULT_GAUGE_BARCOLOR                 = termui.ColorBlue
 	COLOR_DEFAULT_GAUGE_PERCENTCOLOR             = termui.ColorBlue
 	COLOR_DEFAULT_GAUGE_PERCENTCOLOR_HIGHLIGHTED = termui.ColorGreen
+	COLOR_DEFAULT_TABPANE_FG                     = termui.ColorDefault
 	COLOR_DEFAULT_TABPANE_BG                     = termui.ColorBlack
 	COLOR_DEFAULT_TAB_FG                         = termui.ColorDefault
 	COLOR_DEFAULT_TAB_BG                         = termui.ColorDefault

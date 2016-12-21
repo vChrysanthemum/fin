@@ -23,6 +23,7 @@ func (p *Node) InitNodeTabpane() {
 
 	p.isShouldCalculateWidth = true
 	uiBuffer.Border = false
+	uiBuffer.TabpaneBg = COLOR_DEFAULT_TABPANE_FG
 	uiBuffer.TabpaneBg = COLOR_DEFAULT_TABPANE_BG
 
 	p.isWorkNode = true

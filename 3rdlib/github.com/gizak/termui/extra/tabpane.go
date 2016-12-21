@@ -51,6 +51,7 @@ type Tabpane struct {
 	Block
 	Tabs           []*Tab
 	activeTabIndex int
+	TabpaneFg      Attribute
 	TabpaneBg      Attribute
 	TabFg          Attribute
 	TabBg          Attribute
@@ -231,7 +232,7 @@ func (tp *Tabpane) Buffer() Buffer {
 		_max := TermWidth()
 		var addp []point
 		for _oftX := tp.posTabText[len(tp.Tabs)-1]; _oftX < _max; _oftX++ {
-			addp = append(addp, point{X: _oftX, Y: tp.InnerY(), Ch: ' ', Bg: tp.TabpaneBg})
+			addp = append(addp, point{X: _oftX, Y: tp.InnerY(), Ch: ' ', Fg: tp.TabpaneFg, Bg: tp.TabpaneBg})
 		}
 		ps = tp.addPoints(ps, addp...)
 	}
