@@ -12,28 +12,30 @@ import (
 )
 
 type ClearScreenBuffer struct {
-	buf termui.Buffer
+	Buf termui.Buffer
 }
 
 func NewClearScreenBuffer() *ClearScreenBuffer {
 	buf := termui.NewBuffer()
-	min := image.Point{0, 0}
-	max := image.Point{termui.TermWidth(), termui.TermHeight()}
-	buf.SetArea(image.Rectangle{min, max})
+	buf.SetArea(image.Rectangle{
+		image.Point{0, 0},
+		image.Point{termui.TermWidth(), termui.TermHeight()},
+	})
 	buf.Fill(' ', termui.ColorDefault, termui.ColorDefault)
 	return &ClearScreenBuffer{
-		buf: buf,
+		Buf: buf,
 	}
 }
 
 func (p *ClearScreenBuffer) Buffer() termui.Buffer {
-	return p.buf
+	return p.Buf
 }
 
 func (p *ClearScreenBuffer) RefreshArea() {
-	min := image.Point{0, 0}
-	max := image.Point{termui.TermWidth() - 1, termui.TermHeight() - 1}
-	p.buf.SetArea(image.Rectangle{min, max})
+	p.Buf.SetArea(image.Rectangle{
+		image.Point{0, 0},
+		image.Point{termui.TermWidth() - 1, termui.TermHeight() - 1},
+	})
 }
 
 func (p *Page) dumpNodesHtmlData(node *Node) {
@@ -72,7 +74,7 @@ func (p *Page) RemoveNode(node *Node) {
 		}
 	}
 
-	p.Rerender()
+	p.ReRender()
 }
 
 func GetFileContent(path string) ([]byte, error) {

@@ -14,14 +14,7 @@ func (p *Page) _layoutBodyTableChild(node *Node, isParentDeclareAvailWorkNode bo
 	}
 }
 
-func (p *Page) layoutBodyTable(
-	node *Node, isParentDeclareAvailWorkNode bool,
-) (isFallthrough, isChildNodesAvailWorkNode bool) {
-
-	isFallthrough = false
-	isChildNodesAvailWorkNode = isParentDeclareAvailWorkNode
-	nodeDataTable := node.Data.(*NodeTable)
-
+func (p *Page) _layoutBodyTableGetPrevSiblingNode(node *Node) *Node {
 	var prevSiblingNode *Node
 	for _node := node.PrevSibling; nil != _node; _node = _node.PrevSibling {
 		if nil != _node.UIBlock && true == *_node.Display {
@@ -30,6 +23,30 @@ func (p *Page) layoutBodyTable(
 		}
 	}
 
+	if nil != prevSiblingNode {
+		return prevSiblingNode
+	}
+
+	if nil != node.Parent {
+		if nil != node.Parent.UIBlock {
+			return node.Parent
+		} else {
+			return p._layoutBodyTableGetPrevSiblingNode(node.Parent)
+		}
+	}
+
+	return nil
+}
+
+func (p *Page) layoutBodyTable(
+	node *Node, isParentDeclareAvailWorkNode bool,
+) (isFallthrough, isChildNodesAvailWorkNode bool) {
+
+	isFallthrough = false
+	isChildNodesAvailWorkNode = isParentDeclareAvailWorkNode
+	nodeDataTable := node.Data.(*NodeTable)
+
+	var prevSiblingNode *Node = p._layoutBodyTableGetPrevSiblingNode(node)
 	if nil != prevSiblingNode {
 		nodeDataTable.Body.Y = prevSiblingNode.UIBlock.Y + prevSiblingNode.UIBlock.Height
 	} else {

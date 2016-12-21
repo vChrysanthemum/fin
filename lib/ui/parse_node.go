@@ -10,9 +10,9 @@ import (
 	"golang.org/x/net/html"
 )
 
-func (p *Node) ParseAttribute(attr []html.Attribute) (isUIChange, isNeedRerenderPage bool) {
+func (p *Node) ParseAttribute(attr []html.Attribute) (isUIChange, isNeedReRenderPage bool) {
 	isUIChange = false
-	isNeedRerenderPage = false
+	isNeedReRenderPage = false
 
 	if nil == p.UIBlock {
 		return
@@ -100,7 +100,7 @@ func (p *Node) ParseAttribute(attr []html.Attribute) (isUIChange, isNeedRerender
 
 		case "height":
 			isUIChange = true
-			isNeedRerenderPage = true
+			isNeedReRenderPage = true
 			p.UIBlock.Height, _ = strconv.Atoi(v.Val)
 			if p.UIBlock.Height < 0 {
 				p.UIBlock.Height = 0
@@ -109,7 +109,7 @@ func (p *Node) ParseAttribute(attr []html.Attribute) (isUIChange, isNeedRerender
 
 		case "width":
 			isUIChange = true
-			isNeedRerenderPage = true
+			isNeedReRenderPage = true
 			p.UIBlock.Width, _ = strconv.Atoi(v.Val)
 			if p.UIBlock.Width < 0 {
 				p.UIBlock.Width = 0
@@ -152,12 +152,12 @@ func (p *Node) ParseAttribute(attr []html.Attribute) (isUIChange, isNeedRerender
 	}
 
 	if nodeDataParseAttributer, ok := p.Data.(NodeDataParseAttributer); true == ok {
-		_isUIChange, _isNeedRerenderPage := nodeDataParseAttributer.NodeDataParseAttribute(attr)
+		_isUIChange, _isNeedReRenderPage := nodeDataParseAttributer.NodeDataParseAttribute(attr)
 		if true == (isUIChange || _isUIChange) {
 			isUIChange = true
 		}
-		if true == (isNeedRerenderPage || _isNeedRerenderPage) {
-			isNeedRerenderPage = true
+		if true == (isNeedReRenderPage || _isNeedReRenderPage) {
+			isNeedReRenderPage = true
 		}
 	}
 

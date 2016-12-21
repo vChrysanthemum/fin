@@ -1,5 +1,5 @@
-function UIRerender()
-  return base.UIRerender()
+function UIReRender()
+  return base.UIReRender()
 end
 
 function WindowWidth()

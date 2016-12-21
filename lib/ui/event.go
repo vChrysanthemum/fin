@@ -4,7 +4,7 @@ import "github.com/gizak/termui"
 
 func registerHandles() {
 	termui.Handle("/sys/wnd/resize", func(e termui.Event) {
-		GCurrentRenderPage.Rerender()
+		GCurrentRenderPage.ReRender()
 	})
 
 	termui.Handle("/sys/kbd", func(e termui.Event) {
@@ -110,7 +110,7 @@ func (p *Page) pushWorkingNode(node *Node) {
 }
 
 func (p *Node) QuitActiveMode() {
-	p.page.ActiveNodeAfterRerender = nil
+	p.page.ActiveNodeAfterReRender = nil
 
 	if nodeDataUnActiveModer, ok := p.Data.(NodeDataUnActiveModer); true == ok {
 		nodeDataUnActiveModer.NodeDataUnActiveMode()
@@ -138,7 +138,7 @@ func (p *Page) ClearActiveNode() {
 
 func (p *Page) SetActiveNode(node *Node) {
 	p.ClearActiveNode()
-	p.ActiveNodeAfterRerender = node
+	p.ActiveNodeAfterReRender = node
 	p.ActiveNode = node
 	if nil != p.ActiveNode {
 		if len(p.ActiveNode.LuaActiveModeHandlers) > 0 {

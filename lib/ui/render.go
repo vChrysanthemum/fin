@@ -107,8 +107,8 @@ func (p *Page) uiRender() error {
 	}
 
 	// 更新 FocusNode / ActiveNode / WorkingNodes内元素之间方向关系
-	if nil != p.ActiveNodeAfterRerender {
-		p.SetActiveNode(p.ActiveNodeAfterRerender)
+	if nil != p.ActiveNodeAfterReRender {
+		p.SetActiveNode(p.ActiveNodeAfterReRender)
 		p.FocusNode = nil
 	} else if nil != p.FocusNode {
 		p.SetActiveNode(p.FocusNode.Value.(*Node))
@@ -223,17 +223,11 @@ func (p *Page) Render() error {
 	return nil
 }
 
-// 刷新 page 内容到屏幕
-// 包括刷新 page 上 focus/active 元素
-func (p *Page) Refresh() {
-	uiClear()
-	p.uiRender()
-}
-
 // 重新渲染 page 并刷新内容到屏幕
-func (p *Page) Rerender() {
+func (p *Page) ReRender() {
+	uiClear(0, -1)
 	p.Render()
-	p.Refresh()
+	p.uiRender()
 }
 
 // 清空 page 中所有元素，但不清空屏幕

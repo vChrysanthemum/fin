@@ -40,7 +40,7 @@ type NodeDataUnActiveModer interface {
 }
 
 type NodeDataParseAttributer interface {
-	NodeDataParseAttribute(attr []html.Attribute) (isUIChange, isNeedRerenderPage bool)
+	NodeDataParseAttribute(attr []html.Attribute) (isUIChange, isNeedReRenderPage bool)
 }
 
 type Node struct {

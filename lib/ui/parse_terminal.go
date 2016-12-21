@@ -16,9 +16,9 @@ func (p *Page) parseBodyTerminal(parentNode *Node, htmlNode *html.Node) (ret *No
 	return
 }
 
-func (p *NodeTerminal) NodeDataParseAttribute(attr []html.Attribute) (isUIChange, isNeedRerenderPage bool) {
+func (p *NodeTerminal) NodeDataParseAttribute(attr []html.Attribute) (isUIChange, isNeedReRenderPage bool) {
 	isUIChange = false
-	isNeedRerenderPage = false
+	isNeedReRenderPage = false
 
 	for _, v := range attr {
 		switch v.Key {

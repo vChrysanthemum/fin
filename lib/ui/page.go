@@ -31,7 +31,7 @@ type Page struct {
 	FirstChildNode          *Node
 	FocusNode               *list.Element
 	ActiveNode              *Node
-	ActiveNodeAfterRerender *Node
+	ActiveNodeAfterReRender *Node
 	// 能接受用户访问的 Nodes
 	WorkingNodes *list.List
 
@@ -61,7 +61,7 @@ func newPage() *Page {
 }
 
 func (p *Page) Serve() {
-	p.Refresh()
+	p.uiRender()
 
 	go func() {
 		defer func() {

@@ -37,7 +37,7 @@ func (p *NodePar) NodeDataSetValue(content string) {
 	height := uiutils.CalculateTextHeight(content, uiBuffer.Width)
 
 	if height > uiBuffer.InnerArea.Dy() {
-		p.Node.page.Rerender()
+		p.Node.page.ReRender()
 	} else {
 		p.Node.uiRender()
 	}

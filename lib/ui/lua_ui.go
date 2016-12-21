@@ -5,9 +5,9 @@ import (
 	lua "github.com/yuin/gopher-lua"
 )
 
-func (p *Script) luaFuncUIRerender(L *lua.LState) int {
+func (p *Script) luaFuncUIReRender(L *lua.LState) int {
 	p.page.SetActiveNode(nil)
-	p.page.Rerender()
+	p.page.ReRender()
 	return 0
 }
 
@@ -68,7 +68,7 @@ func (p *Script) luaFuncWindowConfirm(L *lua.LState) int {
 		}
 		_page.Clear()
 		_mainPage.SetActiveNode(nil)
-		_mainPage.Rerender()
+		_mainPage.ReRender()
 		go _node.RemoveKeyPressEnterHandler(_key)
 	}, L, callback, page, p.page)
 	_job := nodeSelect.KeyPressEnterHandlers[key]

@@ -50,6 +50,10 @@ func PrepareUI() {
 	registerHandles()
 }
 
-func uiClear() {
+func uiClear(startY, endY int) {
+	GClearScreenBuffer.Buf.Area.Min.Y = startY
+	if endY > 0 {
+		GClearScreenBuffer.Buf.Area.Max.Y = endY
+	}
 	uiutils.UIRender(GClearScreenBuffer)
 }
