@@ -65,7 +65,13 @@ func Init() error {
 	tios.Lflag &^= syscall_ECHO | syscall_ECHONL | syscall_ICANON |
 		syscall_ISIG | syscall_IEXTEN
 	tios.Cflag &^= syscall_CSIZE | syscall_PARENB
+	tios.Cflag &^= syscall_CSIZE | syscall_PARENB
 	tios.Cflag |= syscall_CS8
+	/*
+		tios.Iflag &^= syscall_ICRNL
+		tios.Lflag &^= syscall_ICANON | syscall_ECHO | syscall_ISIG | syscall_ECHOE | syscall_IEXTEN
+		tios.Oflag &^= syscall_ONLCR
+	*/
 	tios.Cc[syscall_VMIN] = 1
 	tios.Cc[syscall_VTIME] = 0
 

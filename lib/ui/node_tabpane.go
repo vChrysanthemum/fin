@@ -72,7 +72,7 @@ func (p *NodeTabpane) KeyPress(e termui.Event) {
 
 	if true == IsVimKeyPressLeft(keyStr) {
 		if true == uiBuffer.SetActiveLeft() {
-			uiClear(p.Node.UIBlock.Y, -1)
+			uiClear(p.Node.UIBlock.Y+1, -1)
 			p.Node.page.Render()
 			p.Node.page.uiRender()
 		}
@@ -81,7 +81,7 @@ func (p *NodeTabpane) KeyPress(e termui.Event) {
 
 	if true == IsVimKeyPressRight(keyStr) {
 		if true == uiBuffer.SetActiveRight() {
-			uiClear(p.Node.UIBlock.Y, -1)
+			uiClear(p.Node.UIBlock.Y+1, -1)
 			p.Node.page.Render()
 			p.Node.page.uiRender()
 		}

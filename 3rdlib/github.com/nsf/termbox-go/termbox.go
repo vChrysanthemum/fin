@@ -7,12 +7,11 @@ import (
 	"io"
 	"os"
 	"strconv"
+	"strings"
 	"syscall"
 	"unicode/utf8"
 	"unsafe"
 )
-
-import "strings"
 
 // private API
 
@@ -243,6 +242,7 @@ func flush() error {
 }
 
 func send_clear() error {
+	return nil
 	send_attr(foreground, background)
 	outbuf.WriteString(funcs[t_clear_screen])
 	if !is_cursor_hidden(cursor_x, cursor_y) {
