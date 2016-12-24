@@ -100,9 +100,12 @@ func (p *NodeSelect) KeyPress(e termui.Event) {
 	}
 }
 
-func (p *NodeSelect) NodeDataGetValue() string {
-	nodeSelectOption := p.Children[p.SelectedOptionIndex]
-	return nodeSelectOption.Value
+func (p *NodeSelect) NodeDataGetValue() (string, bool) {
+	if p.SelectedOptionIndex < 0 || p.SelectedOptionIndex > len(p.Children) {
+		return "", false
+	} else {
+		return p.Children[p.SelectedOptionIndex].Value, true
+	}
 }
 
 func (p *NodeSelect) NodeDataSetValue(value string) {
@@ -111,10 +114,13 @@ func (p *NodeSelect) NodeDataSetValue(value string) {
 			p.SelectedOptionIndex = k
 			p.Node.refreshUiBufferItems()
 			p.Node.uiRender()
-			break
+			return
 		}
 	}
-	return
+
+	p.SelectedOptionIndex = -1
+	p.Node.refreshUiBufferItems()
+	p.Node.uiRender()
 }
 
 func (p *NodeSelect) AppendOption(value, data string) {

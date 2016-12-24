@@ -2,8 +2,8 @@ package ui
 
 import (
 	"container/list"
-	"image"
 	uiutils "fin/ui/utils"
+	"image"
 
 	"github.com/gizak/termui"
 	"golang.org/x/net/html"
@@ -12,7 +12,10 @@ import (
 type NodeKeyPress func(e termui.Event)
 
 type NodeDataGetValuer interface {
-	NodeDataGetValue() string
+	// return:
+	//		string	返回结果
+	//		bool	结果是否有效
+	NodeDataGetValue() (string, bool)
 }
 
 type NodeDataSetValueer interface {

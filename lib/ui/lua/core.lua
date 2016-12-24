@@ -107,6 +107,10 @@ function _Node.HideCursor(self)
     return base.NodeHideCursor(self.nodePointer)
 end
 
+function _Node.Trigger(self, eventType, value)
+    return base.NodeTrigger(self.nodePointer, eventType, value)
+end
+
 function _Node.RegisterLuaActiveModeHandler(self, callback)
     return base.NodeRegisterLuaActiveModeHandler(self.nodePointer, callback)
 end
@@ -173,6 +177,10 @@ end
 
 function _Node.TerminalRemoveCommandHandle(self, key)
     return base.NodeTerminalRemoveCommandHandle(self.nodePointer, key)
+end
+
+function _Node.TerminalWriteString(self, data)
+    return base.NodeTerminalWriteString(self.nodePointer, data)
 end
 
 function _Node.TerminalWriteNewLine(self, line)

@@ -4,7 +4,6 @@ local _mtTerminal = {__index = _Terminal}
 function NewTerminal()
     local Terminal = setmetatable({}, _mtTerminal)
     Terminal.CurrentEnv = "/"
-    Terminal.CurrentCommand = ""
 
     Terminal.CommandSig = NodeTerminalMain:TerminalRegisterCommandHandle(function(nodePointer, command)
         Terminal:ExecCommand(nodePointer, command)
@@ -51,22 +50,59 @@ function _Terminal.ExecCommand(self, nodePointer, command)
         Quit()
     end
 
+    if true == self:ExecCommandMain(nodePointer, command) then
+        return
+    end
+       
+
     if "/" == self.CurrentEnv then
-        self:ExecCommandMain(nodePointer, command)
-    elseif "/jumper" == self.CurrentEnv then
-        self:ExecCommandJump(nodePointer, command)
+    elseif "/spaceship" == self.CurrentEnv then
+        self:ExecCommandSpaceship(nodePointer, command)
     elseif "/planet" == self.CurrentEnv then
         self:ExecCommandPlanet(nodePointer, command)
     end
 end
 
 function _Terminal.StartEnvMain(self)
-    self:ScreenInfoMsg("连接 主控台 ...")
+    self:ScreenInfoMsg("返回 主控台 ...")
     self.CurrentEnv = "/"
     NodeTerminalMain:TerminalSetCommandPrefix("> ")
 end
 
 function _Terminal.ExecCommandMain(self, nodePointer, command)
+    local tmp
+    local commandArr = StringSplit(command, " ")
+
+    if "/spaceship" == commandArr[1] then
+        self:StartEnvSpaceship()
+        return true
+
+    elseif "/planet" == commandArr[1] then
+        local location = {}
+        if nil ~= GUserSpaceship.LoginedPlanet then
+            location = GUserSpaceship.LoginedPlanet.Info.Position
+        else
+            if TableLength(commandArr) < 3 then
+                self:ScreenErrMsg("请输入星球坐标")
+                return
+            end
+            location = {X=tonumber(commandArr[2]), Y=tonumber(commandArr[3])}
+        end
+
+        self:StartEnvPlanet(location)
+        return true
+    end
+
+    return false
+end
+
+function _Terminal.StartEnvSpaceship(self)
+    self:ScreenInfoMsg("连接 飞船 ...")
+    NodeTerminalMain:TerminalSetCommandPrefix(string.format("%s> ", GUserSpaceship.Info.Name))
+    self.CurrentEnv = "/spaceship"
+end
+
+function _Terminal.ExecCommandSpaceship(self, nodePointer, command)
     local tmp
     local commandArr = StringSplit(command, " ")
 
@@ -89,39 +125,7 @@ function _Terminal.ExecCommandMain(self, nodePointer, command)
             GUserSpaceship:SetSpeedY(tmp)
         end
 
-    elseif "/jumper" == commandArr[1] then
-        self:StartEnvJumper()
-
-    elseif "/planet" == commandArr[1] then
-        local location = {}
-        if nil ~= GUserSpaceship.LoginedPlanet then
-            location = GUserSpaceship.LoginedPlanet.Info.Position
-        else
-            if TableLength(commandArr) < 3 then
-                self:ScreenErrMsg("请输入星球坐标")
-                return
-            end
-            location = {X=tonumber(commandArr[2]), Y=tonumber(commandArr[3])}
-        end
-
-        self:StartEnvPlanet(location)
-
-    else
-        self:ScreenErrMsg(string.format("%s %s", self.ErrCommandNotExists, command))
-    end
-end
-
-function _Terminal.StartEnvJumper(self)
-    self:ScreenInfoMsg("连接 jumper ...")
-    NodeTerminalMain:TerminalSetCommandPrefix("jumper> ")
-    self.CurrentEnv = "/jumper"
-end
-
-function _Terminal.ExecCommandJump(self, nodePointer, command)
-    local tmp
-    local commandArr = StringSplit(command, " ")
-
-    if "jump" == commandArr[1] then
+    elseif "jump" == commandArr[1] then
         local ret = GUserSpaceship:JumperRun({X=tonumber(commandArr[2]), Y=tonumber(commandArr[3])})
         if "string" == type(ret) then
             NodeTerminalMain:TerminalWriteNewLine(string.format("[%s](fg-red)", ret))
@@ -135,7 +139,7 @@ function _Terminal.ExecCommandJump(self, nodePointer, command)
 end
 
 function _Terminal.StartEnvPlanet(self, position)
-    if nil == position.X or nil == position.Y then
+    if nil == position or nil == position.X or nil == position.Y then
         self:ScreenErrMsg(string.format("请输入有效坐标"))
         return
     end

@@ -104,7 +104,10 @@ func (p *NodeTerminal) KeyPress(e termui.Event) {
 	if "<enter>" == keyStr {
 		if nil != p.Editor.CurrentLine {
 			p.NewCommand = p.Editor.CurrentLine
-			if "" != string(p.NewCommand.Data[len(p.CommandPrefix):]) {
+			if nil != p.NewCommand &&
+				nil != p.NewCommand.Data &&
+				len(p.NewCommand.Data) > len(p.CommandPrefix) &&
+				"" != string(p.NewCommand.Data[len(p.CommandPrefix):]) {
 				p.CommandHistory = append(p.CommandHistory, string(p.NewCommand.Data[len(p.CommandPrefix):]))
 			}
 			p.CurrentCommandLineIndex = len(p.CommandHistory)
@@ -141,6 +144,10 @@ func (p *NodeTerminal) PopNewCommand() (ret []byte) {
 	} else {
 		return ret
 	}
+}
+
+func (p *NodeTerminal) WriteString(data string) {
+	p.Editor.CurrentLine.Write(data)
 }
 
 func (p *NodeTerminal) WriteNewLine(line string) {

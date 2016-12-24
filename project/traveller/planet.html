@@ -1,6 +1,14 @@
 <html>
 <body>
   <script type="text/lua">
+NodeSelectMySatellite = Node("SelectMySatellite")
+NodeSelectOthersSatellite = Node("SelectOthersSatellite")
+
+NodeSelectMySatellite:SetAttribute("height", tostring(math.floor((WindowHeight()-1)/3)))
+NodeSelectOthersSatellite:SetAttribute("height", tostring(WindowHeight()-NodeSelectMySatellite:Height()-1))
+
+NodeSelectMySatellite:SetValue("-1")
+
 NodeSelectConfirm = Node("SelectConfirm")
 NodeSelectConfirmKeyPressEnterKeySig = NodeSelectConfirm:RegisterKeyPressEnterHandler(function(nodePointer)
   NodeSelectConfirm:RemoveKeyPressEnterHandler(NodeSelectConfirmKeyPressEnterKeySig)
@@ -14,6 +22,30 @@ end)
   </script>
   <tabpane tabpanefg="black|underline" 
            tabpanebg="black" border=false tabbg="gray" tabfg="black|underline" activetabfg="white">
+    <tab label="太空轨道">
+      <table>
+        <tr>
+          <td cols=3>
+            <select borderlabel="我的卫星" id="SelectMySatellite" height=6>
+              <option value="cancel">取消</option>
+              <option value="confirm">确定</option>
+            </select>
+            <select borderlabel="其他卫星" id="SelectOthersSatellite" height=6>
+              <option value="cancel">取消</option>
+              <option value="confirm">确定</option>
+            </select>
+          </td>
+          <td cols=9>
+            <select  borderlabel="test.planet">
+              <option value="cancel">取消</option>
+              <option value="confirm">确定</option>
+            </select>
+            <terminal borderlabel=" 控制台 " border=true height=8></terminal>
+          </td>
+        </tr>
+      </table>
+    </tab>
+
     <tab label="贸易市场">
       <par height=6></par>
       <table>
@@ -35,31 +67,7 @@ end)
         </tr>
       </table>
     </tab>
-    <tab label="太空轨道">
-      <terminal id="TerminalMain" height=3></terminal>
-      <table>
-        <tr>
-          <td offset=3 cols=2>
-            <select borderlabel="test.planet">
-              <option value="cancel">取消</option>
-              <option value="confirm">确定</option>
-            </select>
-            <gauge id="GaugeProgress" Percent="100" border=false height=1 paddingleft=1 paddingright=1
-                                      PercentColor="blue" 
-                                      percentcolor_highlighted="black" BarColor="green">
-            </gauge>
-            <terminal borderlabel=" 控制台 " border=true height=8></terminal>
-          </td>
-          <td cols=2>
-            <select  borderlabel="test.planet">
-              <option value="cancel">取消</option>
-              <option value="confirm">确定</option>
-            </select>
-            <terminal borderlabel=" 控制台 " border=true height=8></terminal>
-          </td>
-        </tr>
-      </table>
-    </tab>
+
   </tabpane>
 </body>
 </html>

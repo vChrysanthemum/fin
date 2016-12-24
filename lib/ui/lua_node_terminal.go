@@ -85,6 +85,21 @@ func (p *Script) luaFuncNodeTerminalRemoveCommandHandle(L *lua.LState) int {
 	return 0
 }
 
+func (p *Script) luaFuncNodeTerminalWriteString(L *lua.LState) int {
+	if L.GetTop() < 2 {
+		return 0
+	}
+
+	nodeTerminal := p._getNodeTerminalPointerFromUserData(L, L.ToUserData(1))
+	if nil == nodeTerminal {
+		return 0
+	}
+
+	nodeTerminal.WriteString(L.ToString(2))
+	nodeTerminal.Node.uiRender()
+	return 1
+}
+
 func (p *Script) luaFuncNodeTerminalWriteNewLine(L *lua.LState) int {
 	if L.GetTop() < 2 {
 		return 0

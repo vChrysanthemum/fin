@@ -59,11 +59,20 @@ func (p *Script) luaFuncWindowConfirm(L *lua.LState) int {
 		_key := args[4].(string)
 		luaNode := _L.NewUserData()
 		luaNode.Value = _node
+
+		_ret, _ok := _node.Data.(*NodeSelect).NodeDataGetValue()
+		var _paramData lua.LValue
+		if false == _ok {
+			_paramData = lua.LNil
+		} else {
+			_paramData = lua.LString(_ret)
+		}
+
 		if err := p.luaCallByParam(_L, lua.P{
 			Fn:      _callback,
 			NRet:    0,
 			Protect: true,
-		}, lua.LString(_node.Data.(*NodeSelect).NodeDataGetValue())); err != nil {
+		}, _paramData); err != nil {
 			panic(err)
 		}
 		_page.Clear()

@@ -63,6 +63,9 @@ func (p *Script) RegisterBaseTable(L *lua.LState, baseTable *lua.LTable) {
 	L.SetField(baseTable, "NewRWMutex", L.NewFunction(p.NewRWMutex))
 	L.SetField(baseTable, "RWMutexLock", L.NewFunction(p.RWMutexLock))
 	L.SetField(baseTable, "RWMutexUnlock", L.NewFunction(p.RWMutexUnlock))
+
+	L.SetField(baseTable, "NewUnixSockClient", L.NewFunction(p.NewUnixSockClient))
+	L.SetField(baseTable, "UnixSockGet", L.NewFunction(p.UnixSockGet))
 }
 
 func (p *Script) RegisterScript(L *lua.LState) {

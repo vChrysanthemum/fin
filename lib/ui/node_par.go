@@ -44,6 +44,6 @@ func (p *NodePar) NodeDataSetValue(content string) {
 	return
 }
 
-func (p *NodePar) NodeDataGetValue() string {
-	return p.Node.uiBuffer.(*termui.Par).Text
+func (p *NodePar) NodeDataGetValue() (string, bool) {
+	return p.Node.uiBuffer.(*termui.Par).Text, true
 }

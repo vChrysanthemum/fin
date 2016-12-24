@@ -1,23 +1,26 @@
 WorldLoop = function()
 end 
 
-NodeRadar = Node("CanvasRadar")
-NodeTerminalMain = Node("TerminalMain")
-NodeParInfo = Node("ParInfo")
-NodeParNewestMsg = Node("ParNewestMsg")
-NodeParGUserSpaceshipStatus = Node("ParGUserSpaceshipStatus")
+NodeRadar                      = Node("CanvasRadar")
+NodeTerminalMain               = Node("TerminalMain")
+NodeParInfo                    = Node("ParInfo")
+NodeParNewestMsg               = Node("ParNewestMsg")
+NodeParGUserSpaceshipStatus    = Node("ParGUserSpaceshipStatus")
 NodeParGUserSpaceshipWarehouse = Node("ParGUserSpaceshipWarehouse")
-NodeGaugeFuel = Node("GaugeFuel")
-NodeGaugeLife = Node("GaugeLife")
-NodeModalPlanet = Node("ModalPlanet")
+NodeGaugeFuel                  = Node("GaugeFuel")
+NodeGaugeLife                  = Node("GaugeLife")
+NodeModalPlanet                = Node("ModalPlanet")
 
 NodeRadar:SetAttribute("height", tostring(WindowHeight()-NodeTerminalMain:Height()))
 
-GRadar = NewRadar()
-GTerminal = NewTerminal()
-GWorld = NewWorld()
+GRadar         = NewRadar()
+GTerminal      = NewTerminal()
+GWorld         = NewWorld()
 GUserSpaceship = GetSpaceshipFromDB(1)
 GUserSpaceship:RefreshNodeParGUserSpaceshipStatus()
+
+NodeTerminalMain:Trigger("keypress", "/spaceship")
+NodeTerminalMain:Trigger("keypress", "<enter>")
 
 NodeParGUserSpaceshipStatus:SetAttribute("borderlabel", string.format(" %s状态 ", GUserSpaceship.Info.Name))
 

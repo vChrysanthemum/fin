@@ -66,6 +66,9 @@ func (p *Page) prepareScript() {
 	s.luaState.SetField(luaBase, "NodeResumeCursor", s.luaState.NewFunction(s.luaFuncNodeResumeCursor))
 	s.luaState.SetField(luaBase, "NodeHideCursor", s.luaState.NewFunction(s.luaFuncNodeHideCursor))
 
+	s.luaState.SetField(luaBase, "NodeTrigger",
+		s.luaState.NewFunction(s.luaFuncNodeTrigger))
+
 	s.luaState.SetField(luaBase, "NodeRegisterLuaActiveModeHandler",
 		s.luaState.NewFunction(s.luaFuncNodeRegisterLuaActiveModeHandler))
 	s.luaState.SetField(luaBase, "NodeRemoveLuaActiveModeHandler",
@@ -99,6 +102,8 @@ func (p *Page) prepareScript() {
 		s.luaState.NewFunction(s.luaFuncNodeTerminalRegisterCommandHandle))
 	s.luaState.SetField(luaBase, "NodeTerminalRemoveCommandHandle",
 		s.luaState.NewFunction(s.luaFuncNodeTerminalRemoveCommandHandle))
+	s.luaState.SetField(luaBase, "NodeTerminalWriteString",
+		s.luaState.NewFunction(s.luaFuncNodeTerminalWriteString))
 	s.luaState.SetField(luaBase, "NodeTerminalWriteNewLine",
 		s.luaState.NewFunction(s.luaFuncNodeTerminalWriteNewLine))
 	s.luaState.SetField(luaBase, "NodeTerminalClearLines",

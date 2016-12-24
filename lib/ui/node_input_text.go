@@ -70,11 +70,11 @@ func (p *NodeInputText) KeyPress(e termui.Event) {
 	p.Node.uiRender()
 }
 
-func (p *NodeInputText) NodeDataGetValue() string {
-	if len(p.Editor.Lines) > 0 {
-		return string(p.Editor.Lines[0].Data)
+func (p *NodeInputText) NodeDataGetValue() (string, bool) {
+	if len(p.Editor.Lines) == 0 {
+		return "", false
 	} else {
-		return ""
+		return string(p.Editor.Lines[0].Data), true
 	}
 }
 

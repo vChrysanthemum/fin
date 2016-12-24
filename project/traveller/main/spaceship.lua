@@ -244,6 +244,10 @@ function _Spaceship.LoopEvent(self)
             math.abs(self.Info.Speed.X) < GWorld.LeavePlanetSpeed and
             math.abs(self.Info.Speed.Y) < GWorld.LeavePlanetSpeed then
             GUserSpaceship:EventCachedByPlanet(planet)
+
+      -- TODO ClearMe
+      -- GTerminal:ExecCommand(nil, "/planet")
+      -- GTerminal:ExecCommand(nil, "detail")
             return
         end
     end

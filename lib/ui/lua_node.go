@@ -53,8 +53,7 @@ func (p *Script) luaFuncNodeWidth(L *lua.LState) int {
 	lu := L.ToUserData(1)
 	node := p._getNodePointerFromUserData(L, lu)
 	if nil == node {
-		L.Push(lua.LNil)
-		return 1
+		return 0
 	}
 
 	L.Push(lua.LNumber(node.UIBlock.Width))
@@ -69,8 +68,7 @@ func (p *Script) luaFuncNodeHeight(L *lua.LState) int {
 	lu := L.ToUserData(1)
 	node := p._getNodePointerFromUserData(L, lu)
 	if nil == node {
-		L.Push(lua.LNil)
-		return 1
+		return 0
 	}
 
 	L.Push(lua.LNumber(node.UIBlock.Height))
@@ -85,8 +83,7 @@ func (p *Script) luaFuncNodeInnerAreaWidth(L *lua.LState) int {
 	lu := L.ToUserData(1)
 	node := p._getNodePointerFromUserData(L, lu)
 	if nil == node {
-		L.Push(lua.LNil)
-		return 1
+		return 0
 	}
 
 	L.Push(lua.LNumber(node.UIBlock.InnerArea.Dx()))
@@ -101,8 +98,7 @@ func (p *Script) luaFuncNodeInnerAreaHeight(L *lua.LState) int {
 	lu := L.ToUserData(1)
 	node := p._getNodePointerFromUserData(L, lu)
 	if nil == node {
-		L.Push(lua.LNil)
-		return 1
+		return 0
 	}
 
 	L.Push(lua.LNumber(node.UIBlock.InnerArea.Dy()))
@@ -174,8 +170,7 @@ func (p *Script) luaFuncNodeGetHtmlData(L *lua.LState) int {
 	lu := L.ToUserData(1)
 	node := p._getNodePointerFromUserData(L, lu)
 	if nil == node {
-		L.Push(lua.LNil)
-		return 1
+		return 0
 	}
 
 	L.Push(lua.LString(node.HtmlData))
@@ -209,17 +204,20 @@ func (p *Script) luaFuncNodeGetValue(L *lua.LState) int {
 	lu := L.ToUserData(1)
 	node := p._getNodePointerFromUserData(L, lu)
 	if nil == node {
-		L.Push(lua.LNil)
-		return 1
+		return 0
 	}
 
 	nodeDataGetValuer, ok := node.Data.(NodeDataGetValuer)
 	if false == ok {
-		L.Push(lua.LNil)
-		return 1
+		return 0
 	}
 
-	L.Push(lua.LString(nodeDataGetValuer.NodeDataGetValue()))
+	ret, ok := nodeDataGetValuer.NodeDataGetValue()
+	if false == ok {
+		return 0
+	}
+
+	L.Push(lua.LString(ret))
 	return 1
 }
 
@@ -290,18 +288,43 @@ func (p *Script) luaFuncNodeHideCursor(L *lua.LState) int {
 	return 0
 }
 
+// node 模拟输入事件
+func (p *Script) luaFuncNodeTrigger(L *lua.LState) int {
+	if L.GetTop() < 2 {
+		return 0
+	}
+
+	lu := L.ToUserData(1)
+	eventType := L.ToString(2)
+	node := p._getNodePointerFromUserData(L, lu)
+	if nil == node {
+		return 0
+	}
+
+	switch eventType {
+	case "keypress":
+		keyStr := L.ToString(3)
+		if nil != node.KeyPress {
+			node.KeyPress(termui.Event{
+				Type: "keyboard",
+				Path: "/sys/kbd/" + keyStr,
+				Data: termui.EvtKbd{KeyStr: keyStr},
+			})
+		}
+	}
+	return 0
+}
+
 func (p *Script) luaFuncNodeRegisterLuaActiveModeHandler(L *lua.LState) int {
 	if L.GetTop() < 2 {
-		L.Push(lua.LNil)
-		return 1
+		return 0
 	}
 
 	lu := L.ToUserData(1)
 	callback := L.ToFunction(2)
 	node := p._getNodePointerFromUserData(L, lu)
 	if nil == node {
-		L.Push(lua.LNil)
-		return 1
+		return 0
 	}
 
 	key := node.RegisterLuaActiveModeHandler(func(_node *Node, args ...interface{}) {
@@ -341,16 +364,14 @@ func (p *Script) luaFuncNodeRemoveLuaActiveModeHandler(L *lua.LState) int {
 
 func (p *Script) luaFuncNodeRegisterKeyPressHandler(L *lua.LState) int {
 	if L.GetTop() < 2 {
-		L.Push(lua.LNil)
-		return 1
+		return 0
 	}
 
 	lu := L.ToUserData(1)
 	callback := L.ToFunction(2)
 	node := p._getNodePointerFromUserData(L, lu)
 	if nil == node {
-		L.Push(lua.LNil)
-		return 1
+		return 0
 	}
 
 	key := node.RegisterKeyPressHandler(func(_node *Node, args ...interface{}) {
@@ -390,16 +411,14 @@ func (p *Script) luaFuncNodeRemoveKeyPressHandler(L *lua.LState) int {
 
 func (p *Script) luaFuncNodeRegisterKeyPressEnterHandler(L *lua.LState) int {
 	if L.GetTop() < 2 {
-		L.Push(lua.LNil)
-		return 1
+		return 0
 	}
 
 	lu := L.ToUserData(1)
 	callback := L.ToFunction(2)
 	node := p._getNodePointerFromUserData(L, lu)
 	if nil == node {
-		L.Push(lua.LNil)
-		return 1
+		return 0
 	}
 
 	key := node.RegisterKeyPressEnterHandler(func(_node *Node, args ...interface{}) {
