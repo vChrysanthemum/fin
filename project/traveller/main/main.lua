@@ -19,12 +19,13 @@ GWorld         = NewWorld()
 GUserSpaceship = GetSpaceshipFromDB(1)
 GUserSpaceship:RefreshNodeParGUserSpaceshipStatus()
 
-NodeTerminalMain:Trigger("keypress", "/spaceship")
-NodeTerminalMain:Trigger("keypress", "<enter>")
-
 NodeParGUserSpaceshipStatus:SetAttribute("borderlabel", string.format(" %s状态 ", GUserSpaceship.Info.Name))
 
 NodeTerminalMain:SetActive()
 GUserSpaceship:UpdateFuel(0)
 GUserSpaceship:UpdateLife(0)
 GWorld:LoopEvent()
+
+SetTimeout(200, function()
+    GTerminal:ShowPlanetDetail()
+end)

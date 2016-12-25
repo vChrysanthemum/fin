@@ -2,7 +2,6 @@ package ui
 
 import (
 	"fin/script"
-	"log"
 	"path/filepath"
 	"sync"
 
@@ -155,15 +154,4 @@ func (p *Script) Run() {
 			panic(err)
 		}
 	}
-}
-
-func (p *Script) luaCallByParam(L *lua.LState, cp lua.P, args ...lua.LValue) error {
-	p.LuaCallByParamLocker.Lock()
-	defer func() {
-		p.LuaCallByParamLocker.Unlock()
-		if rcv := recover(); nil != rcv {
-			log.Println(rcv)
-		}
-	}()
-	return L.CallByParam(cp, args...)
 }

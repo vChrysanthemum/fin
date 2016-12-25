@@ -28,10 +28,10 @@ type Script struct {
 	LuaCallByParamLocker *sync.RWMutex
 }
 
-func NewScript(luaCallByParamLocker *sync.RWMutex) *Script {
+func NewScript(LuaCallByParamLocker *sync.RWMutex) *Script {
 	ret := new(Script)
 	ret.CancelSigs = make(map[string](chan bool), 0)
-	ret.LuaCallByParamLocker = luaCallByParamLocker
+	ret.LuaCallByParamLocker = LuaCallByParamLocker
 	return ret
 }
 

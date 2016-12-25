@@ -62,7 +62,7 @@ func (p *Script) SetInterval(L *lua.LState) int {
 
 			default:
 				time.Sleep(time.Duration(_tm) * time.Millisecond)
-				if err := p.luaCallByParam(_L, lua.P{
+				if err := p.LuaCallByParam(_L, lua.P{
 					Fn:      _callback,
 					NRet:    0,
 					Protect: true,
@@ -102,7 +102,7 @@ func (p *Script) SetTimeout(L *lua.LState) int {
 
 		default:
 			time.Sleep(time.Duration(_tm) * time.Millisecond)
-			if err := p.luaCallByParam(_L, lua.P{
+			if err := p.LuaCallByParam(_L, lua.P{
 				Fn:      _callback,
 				NRet:    0,
 				Protect: true,
@@ -135,7 +135,7 @@ func (p *Script) SendCancelSig(L *lua.LState) int {
 	return 0
 }
 
-func (p *Script) luaCallByParam(L *lua.LState, cp lua.P, args ...lua.LValue) error {
+func (p *Script) LuaCallByParam(L *lua.LState, cp lua.P, args ...lua.LValue) error {
 	p.LuaCallByParamLocker.Lock()
 	defer func() {
 		p.LuaCallByParamLocker.Unlock()
