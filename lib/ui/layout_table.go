@@ -50,7 +50,9 @@ func (p *Page) layoutBodyTable(node *Node) (isFallthrough bool) {
 	isFallthrough = false
 	nodeDataTable := node.Data.(*NodeTable)
 
-	nodeDataTable.Body.Y = p._layoutBodyTableGetPrevSiblingNodeBottomY(node)
+	if false == node.isSettedPositionY {
+		nodeDataTable.Body.Y = p._layoutBodyTableGetPrevSiblingNodeBottomY(node)
+	}
 
 	nodeDataTable.Body.Align()
 	p._layoutBodyTableChild(node)

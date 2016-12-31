@@ -3,6 +3,8 @@ package ui
 import (
 	"strconv"
 
+	"github.com/gizak/termui"
+
 	"golang.org/x/net/html"
 )
 
@@ -53,4 +55,32 @@ func (p *Page) parseBodyTableTrTd(parentNode *Node, htmlNode *html.Node) (ret *N
 	ret.isShouldTermuiRenderChild = true
 
 	return
+}
+
+func (p *NodeTable) NodeDataParseAttribute(attr []html.Attribute) (isUIChange, isNeedReRenderPage bool) {
+	isUIChange = false
+	isNeedReRenderPage = false
+
+	uiBuffer := p.Node.uiBuffer.(*termui.Grid)
+
+	for _, v := range attr {
+		switch v.Key {
+		case "top":
+			tmp, err := strconv.Atoi(v.Val)
+			if nil == err {
+				uiBuffer.Y = tmp
+				p.Node.isSettedPositionY = true
+			}
+		case "left":
+			tmp, err := strconv.Atoi(v.Val)
+			if nil == err {
+				uiBuffer.X = tmp
+				p.Node.isSettedPositionX = true
+			}
+
+		}
+	}
+
+	return
+
 }

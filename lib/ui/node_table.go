@@ -3,11 +3,13 @@ package ui
 import "github.com/gizak/termui"
 
 type NodeTable struct {
+	Node *Node
 	Body *termui.Grid
 }
 
 func (p *Node) InitNodeTable() {
 	nodeTable := new(NodeTable)
+	nodeTable.Node = p
 	nodeTable.Body = termui.NewGrid()
 	nodeTable.Body.X = 0
 	nodeTable.Body.Y = 0

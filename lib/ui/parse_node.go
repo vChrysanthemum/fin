@@ -21,6 +21,19 @@ func (p *Node) ParseAttribute(attr []html.Attribute) (isUIChange, isNeedReRender
 		for _, v := range attr {
 			p.HtmlAttribute[v.Key] = v
 			switch v.Key {
+			case "top":
+				tmp, err := strconv.Atoi(v.Val)
+				if nil == err {
+					p.UIBlock.Y = tmp
+					p.isSettedPositionY = true
+				}
+			case "left":
+				tmp, err := strconv.Atoi(v.Val)
+				if nil == err {
+					p.UIBlock.X = tmp
+					p.isSettedPositionX = true
+				}
+
 			case "colorfg":
 				p.ColorFg = v.Val
 

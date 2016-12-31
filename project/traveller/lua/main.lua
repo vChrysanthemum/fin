@@ -27,9 +27,6 @@ GUserSpaceship:RefreshNodeParGUserSpaceshipStatus()
 GUserSpaceship:RefreshGaugeLife()
 GUserSpaceship:RefreshGaugeFuel()
 
--- 调整页面组件大小
-NodeTabPlanetParPlanetInfo:SetAttribute("height", tostring(WindowHeight()-NodeTabPlanetTerminalMain:Height()))
-
 -- 初始化所有信号
 GTerminal.CommandSig = NodeTerminalMain:TerminalRegisterCommandHandle(function(nodePointer, command)
   GTerminal:ExecCommand(nodePointer, command)

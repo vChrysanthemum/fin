@@ -7,3 +7,5 @@ function StartTabPlanet(planet)
 资源: %d]], planet.Info.Name, planet.Info.Position.X, planet.Info.Position.Y, planet.Info.Resource))
   NodeTabPlanetTerminalMain:SetActive()
 end
+
+NodeTabPlanetTerminalMain:SetAttribute("top", tostring(WindowHeight()-NodeTabPlanetTerminalMain:Height()))

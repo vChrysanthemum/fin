@@ -66,6 +66,9 @@ type Node struct {
 	isShouldTermuiRenderChild bool
 	isShouldCalculateHeight   bool
 	isShouldCalculateWidth    bool
+	// 是否在 parse 阶段设置了位置
+	isSettedPositionY bool
+	isSettedPositionX bool
 
 	HtmlAttribute map[string]html.Attribute
 
