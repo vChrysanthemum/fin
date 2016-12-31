@@ -48,12 +48,17 @@ function _RobotEngineer.ExecCommand(self, command)
 
     elseif "mine" == commandArr[1] then
         if nil ~= self.RobotCore.PlanetLanding then
-            self.ClientTerminal:ScreenInfoMsg(string.format("%s开始采矿",
-            self.RobotCore.Info.Name))
             self.RobotCore.Info.Action = "mine"
             self.RobotCore:FlushToDB()
             RefreshNodeTabPlanetParPlanetInfo()
+            self.ClientTerminal:ScreenInfoMsg(string.format("%s开始采矿", self.RobotCore.Info.Name))
         end
+
+    elseif "cleanjob" == commandArr[1] then
+        self.RobotCore.Info.Action = nil
+        self.RobotCore:FlushToDB()
+        RefreshNodeTabPlanetParPlanetInfo()
+        self.ClientTerminal:ScreenInfoMsg(string.format("清空任务完成"))
 
     else
         self.ClientTerminal:ScreenErrMsg(string.format("%s %s", self.ClientTerminal.ErrCommandNotExists, command))
