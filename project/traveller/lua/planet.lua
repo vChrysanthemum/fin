@@ -68,3 +68,8 @@ function _Planet.FlushToDB(self)
     Log(queryRet)
   end
 end
+
+-- 被机器人挖矿，资源变动
+function _Planet.MineByRobot(self)
+    self.Info.Resource = self.Info.Resource - 1
+end

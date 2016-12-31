@@ -39,10 +39,13 @@ function _World.loopEvent(self)
 
     GUserSpaceship:LoopEvent()
 
+    GRobotCenter.LoopEvent()
+
     NodeRadar:CanvasClean()
     GRadar:DrawSpaceship()
     GRadar:DrawPlanets()
     NodeRadar:CanvasDraw()
+
     GUserSpaceship:RefreshNodeParGUserSpaceshipStatus()
     return
 end

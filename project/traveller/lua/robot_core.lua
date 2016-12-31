@@ -9,8 +9,10 @@ function NewRobotCore()
         RobotId         = 0,
         Name            = "",
         ServiceAddress  = "",
-        RobotOS       = "",
+        RobotOS         = "",
+        Location        = "",
         LandingPlanetId = nil,
+        Action          = nil,
     }
     RobotCore.Robot = nil
     return RobotCore
@@ -35,8 +37,10 @@ function _RobotCore.Format(self, robotInfo, robot_id)
         RobotId         = tonumber(robot_id),
         Name            = robotInfo.Name,
         ServiceAddress  = robotInfo.ServiceAddress,
-        RobotOS       = robotInfo.RobotOS,
+        RobotOS         = robotInfo.RobotOS,
+        Location        = robotInfo.Location,
         LandingPlanetId = robotInfo.LandingPlanetId,
+        Action          = robotInfo.Action,
     }
 
     if "engineer" == self.Info.RobotOS then
@@ -50,6 +54,7 @@ end
 
 function _RobotCore.LandingPlanet(self, planet)
     self.PlanetLanding = planet
+    self.Info.Location = "planet"
     self.Info.LandingPlanetId = planet.Info.PlanetId
     self:FlushToDB()
 end

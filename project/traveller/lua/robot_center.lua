@@ -5,17 +5,18 @@ local _mtRobotCenter = {__index = _RobotCenter}
 
 function NewRobotCenter()
   local RobotCenter = setmetatable({}, _mtRobotCenter)
-  RobotCenter.robotServiceAddressToRobot = {}
+  -- RobotCenter.robotServiceAddressToRobot = {}
+  RobotCenter.Robots = {}
   RobotCenter:LoadRobotsFromDB()
   return RobotCenter
 end
 
 function _RobotCenter.RegisterRobot(self, robotServiceAddress, robot)
-  self.robotServiceAddressToRobot[robotServiceAddress] = robot
+  self.Robots[robotServiceAddress] = robot
 end
 
 function _RobotCenter.GetRobotByServiceAddress(self, robotServiceAddress)
-  return self.robotServiceAddressToRobot[robotServiceAddress]
+  return self.Robots[robotServiceAddress]
 end
 
 function _RobotCenter.LoadRobotsFromDB(self)
@@ -35,4 +36,10 @@ function _RobotCenter.LoadRobotsFromDB(self)
       self:RegisterRobot(robotCore.Info.ServiceAddress, robotCore.Robot)
     end
     rows:Close()
+end
+
+function _RobotCenter.LoopEvent(self)
+    for k, robot in pairs(GRobotCenter.Robots) do
+        robot:LoopEvent()
+    end
 end
