@@ -1,6 +1,3 @@
-WorldLoop = function()
-end 
-
 -- node tab main
 NodeRadar                   = Node("CanvasRadar")
 NodeTerminalMain            = Node("TerminalMain")
@@ -18,11 +15,12 @@ NodeTabPlanetTerminalMain    = Node("TabPlanetTerminalMain")
 
 -- 初始化所有全局变量
 NodeRadar:SetAttribute("height", tostring(WindowHeight()-NodeTerminalMain:Height()))
-GRadar         = NewRadar()
-GTerminal      = NewTerminal(NodeTerminalMain)
-GWorld         = NewWorld()
-GUserSpaceship = GetSpaceshipFromDB(1)
-GTabTerminal   = NewTerminal(NodeTabPlanetTerminalMain)
+GRadar           = NewRadar()
+GTerminal        = NewTerminal(NodeTerminalMain)
+GWorld           = NewWorld()
+GRobotCenter = NewRobotCenter()
+GUserSpaceship   = GetSpaceshipFromDB(1)
+GTabTerminal     = NewTerminal(NodeTabPlanetTerminalMain)
 GUserSpaceship:RefreshNodeParGUserSpaceshipStatus()
 GUserSpaceship:RefreshGaugeLife()
 GUserSpaceship:RefreshGaugeFuel()

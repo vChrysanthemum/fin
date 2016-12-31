@@ -20,7 +20,10 @@ function _TerminalSpaceship.ExecCommand(self, nodePointer, command)
     local tmp
     local commandArr = StringSplit(command, " ")
 
-    if "speedx" == commandArr[1] then
+    if "info" == commandArr[1] then
+        self.Terminal:ScreenInfoMsg(string.format("名称: %s", self.Spaceship.Info.Name))
+
+    elseif "speedx" == commandArr[1] then
         tmp = tonumber(commandArr[2])
         if "number" == type(tmp) then
             self.Spaceship:SetSpeedX(tmp)

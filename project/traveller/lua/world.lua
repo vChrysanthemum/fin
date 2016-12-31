@@ -23,6 +23,8 @@ function NewWorld()
     World.afterStopCallback = nil
     World.LeavePlanetSpeed = 0.3
 
+    World.Planets = {}
+
     return World
 end
 
@@ -58,6 +60,24 @@ function _World.LoopEvent(self)
     self.LoopEventSig = SetInterval(200, function()
         self:loopEvent()
     end)
+end
+
+function _World.GetPlanetByPlanetId(self, planetId)
+    local planet = self.Planets[planetId]
+    if nil ~= planet then
+        return planet
+    end
+
+    sql = string.format([[
+    select planet_id, data from b_planet where planet_id=%d limit 1
+    ]], planetId)
+    local rows = DB:Query(sql)
+    local row = rows:FetchOne()
+    rows:Close()
+    planet = NewPlanet()
+    planet:Format(json.decode(row.data), row.planet_id)
+    self.Planets[planet.Info.PlanetId] = planet
+    return planet
 end
 
 -- 生成指定区域内的星球
@@ -97,9 +117,14 @@ function _World.initAreaPlanets(self, createBlockIndex)
             if "table" ~= type(row) then
                 break
             end
-            planet = NewPlanet()
-            planet:Format(json.decode(row.data))
-            planet.Info.PlanetId = tonumber(row.planet_id)
+
+            planet = self.Planets[tonumber(row.planet_id)]
+            if nil == planet then
+                planet = NewPlanet()
+                planet:Format(json.decode(row.data), row.planet_id)
+                self.Planets[planet.Info.PlanetId] = planets
+            end
+
             table.insert(planets, planet)
         end
         rows:Close()
@@ -145,6 +170,7 @@ function _World.initAreaPlanets(self, createBlockIndex)
         ]], createBlockStartPosition.X, createBlockStartPosition.Y, DB:QuoteSQL(json.encode(planet.Info)))
         queryRet = DB:Exec(sql)
         planets[k].Info.PlanetId = queryRet:LastInsertId()
+        self.Planets[planets[k].Info.PlanetId] = planets[k]
     end
     sql = string.format([[
     insert into b_planets_block(x, y, created_at) values(%d, %d, %d)

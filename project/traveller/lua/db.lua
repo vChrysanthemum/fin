@@ -22,11 +22,35 @@ spaceship_id integer primary key not null,
 data text
 );
 
+create table if not exists `b_robot` (
+robot_id integer primary key not null,
+data text
+);
+
 ]]
 local ret = DB:Exec(sql)
 
-local spaceship = NewSpaceshipInfo()
+local spaceship = NewSpaceship()
 sql = string.format([[
 insert into b_spaceship (spaceship_id, data) values (1, '%s');
-]], json.encode(spaceship))
+]], json.encode(spaceship.Info))
+ret = DB:Exec(sql)
+
+local robot = NewRobotCore()
+robot.Info.RobotOS = "engineer"
+
+robot.Info.RobotId = 1
+robot.Info.Name = "黄鹂"
+robot.Info.ServiceAddress = "a1"
+sql = string.format([[
+insert into b_robot (robot_id, data) values (%d, '%s');
+]], robot.Info.RobotId, json.encode(robot.Info))
+ret = DB:Exec(sql)
+
+robot.Info.RobotId = 2
+robot.Info.Name = "大象"
+robot.Info.ServiceAddress = "a2"
+sql = string.format([[
+insert into b_robot (robot_id, data) values (%d, '%s');
+]], robot.Info.RobotId, json.encode(robot.Info))
 ret = DB:Exec(sql)

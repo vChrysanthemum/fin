@@ -15,7 +15,7 @@ function GetSpaceshipFromDB(spaceshipId)
     end
 
     local spaceship = NewSpaceship()
-    spaceship:Format(json.decode(row.data))
+    spaceship:Format(json.decode(row.data), spaceshipId)
 
     spaceship.LoginedPlanet = nil
     spaceship.NewestMsg = ""
@@ -23,9 +23,11 @@ function GetSpaceshipFromDB(spaceshipId)
     return spaceship
 end
 
-function NewSpaceshipInfo()
-    return {
-        SpaceshipId = 1,
+function NewSpaceship()
+    local Spaceship           = setmetatable({}, _mtSpaceship)
+    Spaceship.CenterRectangle = {}
+    Spaceship.ScreenPosition  = {}
+    Spaceship:Format({
         Name        = "鹦鹉螺号",
         Position    = {X = 0.0, Y = 0.0},
         Speed       = {X = 0.0, Y = 0.0},
@@ -35,21 +37,13 @@ function NewSpaceshipInfo()
         Life        = 82,
         Fuel        = 100,
         Jumpers     = 6,
-    }
-end
-
-function NewSpaceship()
-    local Spaceship           = setmetatable({}, _mtSpaceship)
-    Spaceship.ScreenPosition  = {X=math.floor(NodeRadar:Width()/2), Y=math.floor(NodeRadar:Height()/2)}
-    Spaceship.CenterRectangle = {}
-    Spaceship:Format(NewSpaceshipInfo())
+    }, nil)
     Spaceship.ColorBg   = ""
+
     local Cabin     = {}
     Spaceship.Cabin = Cabin
 
     Spaceship.lastFlushToDBForRunOneStepAt = 0
-
-    Spaceship:RefreshGaugeFuel()
 
     return Spaceship
 end
@@ -106,9 +100,9 @@ function _Spaceship.refreshCenterRectangle(self)
     return
 end
 
-function _Spaceship.Format(self, spaceshipInfo)
+function _Spaceship.Format(self, spaceshipInfo, spaceship_id)
     self.Info       = {
-        SpaceshipId = spaceshipInfo.SpaceshipId,
+        SpaceshipId = tonumber(spaceship_id),
         Name        = spaceshipInfo.Name,
         Position    = spaceshipInfo.Position,
         Speed       = spaceshipInfo.Speed,
@@ -119,7 +113,6 @@ function _Spaceship.Format(self, spaceshipInfo)
         Life        = spaceshipInfo.Life,
         Jumpers     = spaceshipInfo.Jumpers,
     }
-    self:refreshCenterRectangle()
 end
 
 function _Spaceship.FlushToDB(self)
@@ -237,19 +230,24 @@ function _Spaceship.JumperRun(self, position)
     return nil
 end
 
+function _Spaceship.SetNewestMsg(self, msg)
+    self.NewestMsg = msg
+    NodeParNewestMsg:SetValue(string.format("%s", self.NewestMsg))
+end
+
 -- 被星球捕获事件
 function _Spaceship.EventCachedByPlanet(self, planet)
     self.Info.Speed.X = 0
     self.Info.Speed.Y = 0
     self.LoginedPlanet = planet
-    self.NewestMsg = string.format("飞船被 %s 引力捕获", planet.Info.Name)
+    self:SetNewestMsg(string.format("飞船被 %s 引力捕获", planet.Info.Name))
 
     self:FlushToDB()
 end
 
 -- 离开星球捕获事件
 function _Spaceship.EventLeavePlanet(self)
-    self.NewestMsg = string.format("飞船离开 %s", self.LoginedPlanet.Info.Name)
+    self:SetNewestMsg(string.format("飞船离开 %s", self.LoginedPlanet.Info.Name))
     self.LoginedPlanet = nil
 
     self:FlushToDB()
@@ -263,10 +261,6 @@ function _Spaceship.LoopEvent(self)
             math.abs(self.Info.Speed.X) < GWorld.LeavePlanetSpeed and
             math.abs(self.Info.Speed.Y) < GWorld.LeavePlanetSpeed then
             GUserSpaceship:EventCachedByPlanet(planet)
-
-      -- TODO ClearMe
-      -- GTerminal:ExecCommand(nil, "/planet")
-      -- GTerminal:ExecCommand(nil, "detail")
             return
         end
     end

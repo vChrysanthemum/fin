@@ -9,7 +9,6 @@ function NewRadar()
   Radar.CursorScreenPosition = {X=Radar.ScreenCenterPosition.X, Y=Radar.ScreenCenterPosition.Y}
   Radar.KeyPressStrForMove = ""
   Radar.FocusPlanet = nil
-  Radar.NewestMsg = ""
 
   Radar.KeyPressSig = NodeRadar:RegisterKeyPressHandler(function(nodePointer, keyStr)
     GRadar:KeyPressHandle(nodePointer, keyStr)
@@ -25,18 +24,13 @@ function _Radar.ActiveMode(self, nodePointer)
   self:renewCursor()
 end
 
--- 刷新 NodeParInfo NodeParNewestMsg 显示内容
+-- 刷新 NodeParInfo 显示内容
 function _Radar.RefreshParInfo(self)
   if nil ~= self.FocusTarget then
     self.FocusTarget.ColorBg = ""
   end
 
   self.FocusTarget = nil
-
-  if self.NewestMsg ~= GUserSpaceship.NewestMsg then
-      self.NewestMsg = GUserSpaceship.NewestMsg
-      NodeParNewestMsg:SetValue(string.format("%s", self.NewestMsg))
-  end
 
   if self.CursorScreenPosition.X == GUserSpaceship.ScreenPosition.X and
     self.CursorScreenPosition.Y == GUserSpaceship.ScreenPosition.Y then
@@ -208,4 +202,5 @@ function _Radar.DrawSpaceship(self)
   GUserSpaceship.ScreenPosition.X,
   GUserSpaceship.ScreenPosition.Y,
   GUserSpaceship.Info.Character, GUserSpaceship.Info.ColorFg, GUserSpaceship.ColorBg)
+
 end
