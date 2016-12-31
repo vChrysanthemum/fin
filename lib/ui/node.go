@@ -78,6 +78,7 @@ type Node struct {
 	isCalledActiveMode    bool
 	tmpActiveModeBorder   bool
 	tmpActiveModeBorderFg termui.Attribute
+	tmpActiveModeBorderBg termui.Attribute
 
 	// 是否可以有交互的 Node
 	isWorkNode bool
@@ -172,6 +173,9 @@ func (p *Node) addChild(child *Node) {
 }
 
 func (p *Node) uiRender() {
+	if false == p.CheckIfDisplay() {
+		return
+	}
 	if nil == p.uiBuffer {
 		return
 	}

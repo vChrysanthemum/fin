@@ -84,6 +84,7 @@ func (p *NodeTabpane) KeyPress(e termui.Event) {
 	if true == IsVimKeyPressLeft(keyStr) {
 		if true == uiBuffer.SetActiveLeft() {
 			uiClear(p.Node.UIBlock.Height, -1)
+			p.NodeDataUnActiveMode()
 			p.Node.page.Render()
 			p.Node.page.uiRender()
 		}
@@ -93,6 +94,7 @@ func (p *NodeTabpane) KeyPress(e termui.Event) {
 	if true == IsVimKeyPressRight(keyStr) {
 		if true == uiBuffer.SetActiveRight() {
 			uiClear(p.Node.UIBlock.Height, -1)
+			p.NodeDataUnActiveMode()
 			p.Node.page.Render()
 			p.Node.page.uiRender()
 		}
@@ -105,6 +107,7 @@ func (p *NodeTabpane) SetActiveTab(name string) {
 		uiBuffer := p.uiBuffer.(*extra.Tabpane)
 		if true == uiBuffer.SetActiveTab(index) {
 			uiClear(p.Node.UIBlock.Height, -1)
+			p.NodeDataUnActiveMode()
 			p.Node.page.Render()
 			p.Node.page.uiRender()
 		}
@@ -150,8 +153,8 @@ func (p *NodeTabpane) NodeDataActiveMode() {
 			p.Node.UIBlock.BorderFg = COLOR_ACTIVE_MODE_BORDERFG
 			p.Node.uiRender()
 		} else {
-			p.Node.tmpActiveModeBorderFg = p.Node.uiBuffer.(*extra.Tabpane).TabpaneBg
-			p.Node.uiBuffer.(*extra.Tabpane).TabpaneBg = COLOR_ACTIVE_MODE_BORDERFG
+			p.Node.tmpActiveModeBorderBg = p.Node.uiBuffer.(*extra.Tabpane).TabpaneBg
+			p.Node.uiBuffer.(*extra.Tabpane).TabpaneBg = COLOR_ACTIVE_MODE_BORDERBG
 			p.Node.uiRender()
 		}
 	}
@@ -164,7 +167,7 @@ func (p *NodeTabpane) NodeDataUnActiveMode() {
 			p.Node.UIBlock.BorderFg = p.Node.tmpActiveModeBorderFg
 			p.Node.uiRender()
 		} else {
-			p.Node.uiBuffer.(*extra.Tabpane).TabpaneBg = p.Node.tmpActiveModeBorderFg
+			p.Node.uiBuffer.(*extra.Tabpane).TabpaneBg = p.Node.tmpActiveModeBorderBg
 			p.Node.uiRender()
 		}
 	}

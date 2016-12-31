@@ -12,6 +12,7 @@ var (
 	COLOR_SELECTED_OPTION_COLORBG                = "blue"
 	COLOR_FOCUS_MODE_BORDERFG                    = utils.COLOR_RED
 	COLOR_ACTIVE_MODE_BORDERFG                   = utils.COLOR_BLUE
+	COLOR_ACTIVE_MODE_BORDERBG                   = utils.COLOR_BLUE
 	COLOR_DEFAULT_TEXT_COLOR_FG                  = utils.COLOR_BLACK
 	COLOR_DEFAULT_BORDER_LABEL_FG                = utils.COLOR_BLUE
 	COLOR_DEFAULT_BORDER_FG                      = utils.COLOR_GRAY
