@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"image"
+	"strconv"
 	"strings"
 	"sync"
 	"unicode/utf8"
@@ -42,25 +43,31 @@ func ColorToTermuiAttribute(colorsStr string, defaultColor termui.Attribute) ter
 
 	var color termui.Attribute
 	for _, colorStr := range colors {
+		tmp, err := strconv.ParseInt(colorStr, 0, 0)
+		if nil == err {
+			color = termui.Attribute(int(tmp))
+			continue
+		}
+
 		switch colorStr {
 		case "white":
-			color = 0xe8
+			color |= COLOR_WHITE
 		case "black":
-			color |= termui.ColorBlack
+			color |= COLOR_BLACK
 		case "red":
-			color |= termui.ColorRed
+			color |= COLOR_RED
 		case "green":
-			color |= termui.ColorGreen
+			color |= COLOR_GREEN
 		case "yellow":
-			color |= termui.ColorYellow
+			color |= COLOR_YELLOW
 		case "blue":
-			color |= termui.ColorBlue
+			color |= COLOR_BLUE
 		case "magenta":
-			color |= termui.ColorMagenta
+			color |= COLOR_MAGENTA
 		case "cyan":
-			color |= termui.ColorCyan
+			color |= COLOR_CYAN
 		case "gray":
-			color |= termui.ColorWhite
+			color |= COLOR_GRAY
 		case "bold":
 			color |= termui.AttrBold
 		case "underline":

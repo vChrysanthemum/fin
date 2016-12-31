@@ -2,6 +2,7 @@ package ui
 
 import (
 	"bufio"
+	"fin/ui/utils"
 	"image"
 	"io/ioutil"
 	"log"
@@ -21,7 +22,7 @@ func NewClearScreenBuffer() *ClearScreenBuffer {
 		image.Point{0, 0},
 		image.Point{termui.TermWidth(), termui.TermHeight()},
 	})
-	buf.Fill(' ', termui.ColorDefault, termui.ColorDefault)
+	buf.Fill(' ', utils.COLOR_DEFAULT, utils.COLOR_DEFAULT)
 	return &ClearScreenBuffer{
 		Buf: buf,
 	}

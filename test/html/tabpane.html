@@ -1,37 +1,58 @@
 <html>
-<head>
-  <label>Test</label>
-</head>
-<body colorfg="blue">
-  <!--
-  <tabpane border=true tabbg="gray" tabfg="black" activetabfg="white">
-  -->
-  <tabpane border=false tabbg="gray" tabfg="black|underline" activetabfg="white">
-    <tab label="控制lkzdjf">
-      <par>hello world 1</par>
-      <par>hello world 2</par>
-      <par>hello world 3</par>
-      <par>hello world 4</par>
-      <par>hello world 5</par>
+<body>
+  <script type="text/lua">
+  </script>
+  <tabpane tabpanefg="black|underline" 
+           tabpanebg="black" border=false tabbg="gray" tabfg="black|underline" activetabfg="white">
+    <tab label="太空轨道">
+      <table>
+        <tr>
+          <td cols=3>
+            <par border=true>hello world 1</par>
+            <par border=true>hello world 1</par>
+            <par border=true>hello world 1</par>
+            <select borderlabel="我的卫星" id="SelectMySatellite" height=6>
+              <option value="cancel">取消</option>
+              <option value="confirm">确定</option>
+            </select>
+            <select borderlabel="其他卫星" id="SelectOthersSatellite" height=6>
+              <option value="cancel">取消</option>
+              <option value="confirm">确定</option>
+            </select>
+          </td>
+          <td cols=9>
+            <select  borderlabel="test.planet">
+              <option value="cancel">取消</option>
+              <option value="confirm">确定</option>
+            </select>
+            <terminal borderlabel=" 控制台 " border=true height=8></terminal>
+          </td>
+        </tr>
+      </table>
     </tab>
-    <tab label="信息">
-    <table>
-      <tr>
-        <td cols=3>
-          <par></pan>
-        </td>
-        <td cols=6>
-          <select id="SelectConfirm" borderlabel="test.planet">
-            <option value="cancel">取消</option>
-            <option value="confirm">确定</option>
-          </select>
-        </td>
-        <td cols=3>
-          <par></pan>
-        </td>
-      </tr>
-    </table>
+
+    <tab label="贸易市场">
+      <par height=6></par>
+      <table>
+        <tr>
+          <td offset=4 cols=4>
+            <select id="SelectConfirm" borderlabel="退出星球">
+              <option value="confirm">确定</option>
+            </select>
+          </td>
+        </tr>
+      </table>
     </tab>
+    <tab label="矿产资源">
+      <par height=6></par>
+      <table>
+        <tr>
+          <td offset=4 cols=4>
+          </td>
+        </tr>
+      </table>
+    </tab>
+
   </tabpane>
 </body>
 </html>

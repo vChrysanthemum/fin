@@ -25,14 +25,6 @@ func (p *Page) parseBodyTabpaneTab(parentNode *Node, htmlNode *html.Node) (ret *
 
 	ret.InitNodeTabpaneTab()
 
-	for _, attr := range htmlNode.Attr {
-		switch attr.Key {
-		case "label":
-			uiBuffer := ret.uiBuffer.(*extra.Tab)
-			uiBuffer.SetLabel(attr.Val)
-		}
-	}
-
 	ret.isShouldTermuiRenderChild = true
 
 	return
@@ -46,6 +38,19 @@ func (p *NodeTabpane) NodeDataParseAttribute(attr []html.Attribute) (isUIChange,
 
 	for _, v := range attr {
 		switch v.Key {
+		case "hidemenu":
+			if "true" == v.Val {
+				if false == uiBuffer.IsHideMenu {
+					isUIChange = true
+				}
+				uiBuffer.IsHideMenu = true
+			} else {
+				if true == uiBuffer.IsHideMenu {
+					isUIChange = true
+				}
+				uiBuffer.IsHideMenu = false
+			}
+
 		case "tabpanefg":
 			isUIChange = true
 			uiBuffer.TabpaneFg = uiutils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_TABPANE_FG)
@@ -69,6 +74,23 @@ func (p *NodeTabpane) NodeDataParseAttribute(attr []html.Attribute) (isUIChange,
 		case "activetabbg":
 			isUIChange = true
 			uiBuffer.ActiveTabBg = uiutils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_ACTIVE_TAB_BG)
+		}
+	}
+
+	return
+}
+
+func (p *NodeTabpaneTab) NodeDataParseAttribute(attr []html.Attribute) (isUIChange, isNeedReRenderPage bool) {
+	isUIChange = false
+	isNeedReRenderPage = false
+
+	uiBuffer := p.Node.uiBuffer.(*extra.Tab)
+
+	for _, v := range attr {
+		switch v.Key {
+		case "label":
+			uiBuffer.SetLabel(v.Val)
+			isUIChange = true
 		}
 	}
 

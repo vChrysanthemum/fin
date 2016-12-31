@@ -1,6 +1,10 @@
 package ui
 
-import "fin/ui/canvas"
+import (
+	"fin/ui/canvas"
+
+	"github.com/gizak/termui"
+)
 
 type NodeCanvas struct {
 	*Node
@@ -13,6 +17,7 @@ func (p *Node) InitNodeCanvas() {
 	nodeCanvas.Canvas = canvas.NewCanvas()
 
 	p.Data = nodeCanvas
+	p.KeyPress = nodeCanvas.KeyPress
 
 	p.uiBuffer = nodeCanvas.Canvas
 	p.UIBlock = &nodeCanvas.Canvas.Block
@@ -26,6 +31,15 @@ func (p *Node) InitNodeCanvas() {
 	p.isWorkNode = true
 
 	return
+}
+
+func (p *NodeCanvas) KeyPress(e termui.Event) {
+	if len(p.Node.KeyPressHandlers) > 0 {
+		for _, v := range p.Node.KeyPressHandlers {
+			v.Args = append(v.Args, e)
+			v.Handler(p.Node, v.Args...)
+		}
+	}
 }
 
 func (p *NodeCanvas) NodeDataFocusMode() {

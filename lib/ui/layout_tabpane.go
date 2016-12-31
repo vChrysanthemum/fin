@@ -22,10 +22,15 @@ func (p *Page) layoutBodyTabpane(
 		node.UIBlock.Y = 0
 	}
 
-	if true == node.UIBlock.Border {
-		node.UIBlock.Height = 3
+	uiBuffer := node.uiBuffer.(*extra.Tabpane)
+	if true == uiBuffer.IsHideMenu {
+		node.UIBlock.Height = 0
 	} else {
-		node.UIBlock.Height = 1
+		if true == node.UIBlock.Border {
+			node.UIBlock.Height = 3
+		} else {
+			node.UIBlock.Height = 1
+		}
 	}
 
 	p.layoutingY = node.UIBlock.Y + node.UIBlock.Height

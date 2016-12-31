@@ -41,7 +41,7 @@ function _Radar.RefreshParInfo(self)
   if self.CursorScreenPosition.X == GUserSpaceship.ScreenPosition.X and
     self.CursorScreenPosition.Y == GUserSpaceship.ScreenPosition.Y then
     self.FocusTarget = GUserSpaceship
-    self.FocusTarget.ColorBg = "gray"
+    self.FocusTarget.ColorBg = "195"
     NodeParInfo:SetValue(string.format([[
 X: %f
 Y: %f

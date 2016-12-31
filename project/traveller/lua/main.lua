@@ -18,6 +18,8 @@ GTerminal      = NewTerminal()
 GWorld         = NewWorld()
 GUserSpaceship = GetSpaceshipFromDB(1)
 GUserSpaceship:RefreshNodeParGUserSpaceshipStatus()
+GUserSpaceship:RefreshGaugeLife()
+GUserSpaceship:RefreshGaugeFuel()
 
 NodeParGUserSpaceshipStatus:SetAttribute("borderlabel", string.format(" %s状态 ", GUserSpaceship.Info.Name))
 
@@ -27,5 +29,5 @@ GUserSpaceship:UpdateLife(0)
 GWorld:LoopEvent()
 
 SetTimeout(200, function()
-    GTerminal:ShowPlanetDetail()
+    GTerminal.CmdExcuter["/planet"]:ShowPlanetDetail()
 end)

@@ -1,13 +1,13 @@
 package ui
 
-import "github.com/gizak/termui"
+import "fin/ui/utils"
 
 func (p *Page) renderBodyInputText(node *Node) {
 	uiBuffer := node.Data.(*NodeInputText).Editor
 
 	p.normalRenderNodeBlock(node)
 
-	uiBuffer.TextFgColor = termui.ColorBlue
+	uiBuffer.TextFgColor = utils.COLOR_BLUE
 
 	p.BufferersAppend(node, uiBuffer)
 

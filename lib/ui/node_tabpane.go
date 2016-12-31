@@ -32,11 +32,13 @@ func (p *Node) InitNodeTabpane() {
 }
 
 type NodeTabpaneTab struct {
+	*Node
 	Index int
 }
 
 func (p *Node) InitNodeTabpaneTab() {
 	nodeTabpaneTab := new(NodeTabpaneTab)
+	nodeTabpaneTab.Node = p
 	p.Data = nodeTabpaneTab
 
 	uiBuffer := extra.NewTab("")

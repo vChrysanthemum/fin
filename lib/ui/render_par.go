@@ -31,10 +31,10 @@ func (p *Page) renderBodyPar(node *Node) {
 	}
 
 	if "" != node.ColorFg {
-		uiBuffer.TextFgColor = uiutils.ColorToTermuiAttribute(node.ColorFg, termui.ColorDefault)
+		uiBuffer.TextFgColor = uiutils.ColorToTermuiAttribute(node.ColorFg, uiutils.COLOR_DEFAULT)
 	}
 	if "" != node.ColorBg {
-		uiBuffer.TextBgColor = uiutils.ColorToTermuiAttribute(node.ColorBg, termui.ColorDefault)
+		uiBuffer.TextBgColor = uiutils.ColorToTermuiAttribute(node.ColorBg, uiutils.COLOR_DEFAULT)
 	}
 
 	p.BufferersAppend(node, uiBuffer)

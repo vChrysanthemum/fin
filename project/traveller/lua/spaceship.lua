@@ -50,6 +50,8 @@ function NewSpaceship()
 
     Spaceship.lastFlushToDBForRunOneStepAt = 0
 
+    Spaceship:RefreshGaugeFuel()
+
     return Spaceship
 end
 
@@ -76,19 +78,6 @@ function _Spaceship.SetName(self, name)
     NodeParGUserSpaceshipStatus:SetAttribute("borderlabel", string.format(" %s状态 ", self.Info.Name))
     self:RefreshNodeParGUserSpaceshipStatus()
     NodeRadar:SetActive()
-end
-
--- 刷新 NodeParGUserSpaceshipStatus 显示
-function _Spaceship.RefreshNodeParGUserSpaceshipStatus(self)
-    NodeParGUserSpaceshipStatus:SetValue(string.format([[
-X: %f
-Y: %f
-速度X: %f/s
-速度Y: %f/s
-飞行历时: %d]], self.Info.Position.X, self.Info.Position.Y, self.Info.Speed.X, self.Info.Speed.Y, TimeNow() - self.Info.StartAt))
-NodeParGUserSpaceshipWarehouse:SetValue(string.format([[
-导弹: %d
-时空跳跃者: %d]], self.Info.Missiles, self.Info.Jumpers))
 end
 
 -- 刷新飞船为中心的指定大小区域所在的宇宙位置
@@ -155,6 +144,10 @@ function _Spaceship.RunOneStep(self)
     self.Info.Position.Y = self.Info.Position.Y + self.Info.Speed.Y
     self:refreshCenterRectangle()
 
+    if nil == self.LoginedPlanet then
+        self:UpdateFuel(-0.01)
+    end
+
     if TimeNow() - self.lastFlushToDBForRunOneStepAt > 3 then
         self.lastFlushToDBForRunOneStepAt = TimeNow()
         self:FlushToDB()
@@ -163,30 +156,33 @@ end
 
 -- 更改燃料
 function _Spaceship.UpdateFuel(self, number)
-    self.Info.Fuel = self.Info.Fuel + number
-    if self.Info.Fuel < 0 then
-        self.Info.Fuel = 0
+    local newFuelValue = self.Info.Fuel + number
+    if newFuelValue < 0 then
+        newFuelValue = 0
     end
-    NodeGaugeFuel:SetAttribute("percent", tostring(self.Info.Fuel))
-    if self.Info.Fuel < 20 then
-        NodeGaugeFuel:SetAttribute("percentcolor_highlighted", "black")
-        NodeGaugeFuel:SetAttribute("barcolor", "red")
-    elseif self.Info.Fuel < 80 then
-        NodeGaugeFuel:SetAttribute("percentcolor_highlighted", "blue")
-        NodeGaugeFuel:SetAttribute("barcolor", "yellow")
+
+    if math.abs(math.ceil(self.Info.Fuel) - math.ceil(newFuelValue)) < 1 then
+        self.Info.Fuel = newFuelValue
+        return
     else
-        NodeGaugeFuel:SetAttribute("percentcolor_highlighted", "white")
-        NodeGaugeFuel:SetAttribute("barcolor", "blue")
+        self.Info.Fuel = newFuelValue
     end
+
+    self:RefreshGaugeFuel()
     self:FlushToDB()
 end
 
--- 更改生命值
+--- 更改生命值
 function _Spaceship.UpdateLife(self, number)
     self.Info.Life = self.Info.Life + number
     if self.Info.Life < 0 then
         self.Info.Life = 0
     end
+    self:RefreshGaugeLife()
+    self:FlushToDB()
+end
+
+function _Spaceship.RefreshGaugeLife(self)
     NodeGaugeLife:SetAttribute("percent", tostring(self.Info.Life))
     if self.Info.Life < 20 then
         NodeGaugeLife:SetAttribute("percentcolor_highlighted", "black")
@@ -198,7 +194,33 @@ function _Spaceship.UpdateLife(self, number)
         NodeGaugeLife:SetAttribute("percentcolor_highlighted", "black")
         NodeGaugeLife:SetAttribute("barcolor", "green")
     end
-    self:FlushToDB()
+end
+
+function _Spaceship.RefreshGaugeFuel(self)
+    NodeGaugeFuel:SetAttribute("percent", tostring(math.ceil(self.Info.Fuel)))
+    if self.Info.Fuel < 20 then
+        NodeGaugeFuel:SetAttribute("percentcolor_highlighted", "black")
+        NodeGaugeFuel:SetAttribute("barcolor", "red")
+    elseif self.Info.Fuel < 80 then
+        NodeGaugeFuel:SetAttribute("percentcolor_highlighted", "blue")
+        NodeGaugeFuel:SetAttribute("barcolor", "yellow")
+    else
+        NodeGaugeFuel:SetAttribute("percentcolor_highlighted", "white")
+        NodeGaugeFuel:SetAttribute("barcolor", "blue")
+    end
+end
+
+-- 刷新 NodeParGUserSpaceshipStatus 显示
+function _Spaceship.RefreshNodeParGUserSpaceshipStatus(self)
+    NodeParGUserSpaceshipStatus:SetValue(string.format([[
+X: %f
+Y: %f
+速度X: %f/s
+速度Y: %f/s
+飞行历时: %d]], self.Info.Position.X, self.Info.Position.Y, self.Info.Speed.X, self.Info.Speed.Y, TimeNow() - self.Info.StartAt))
+NodeParGUserSpaceshipWarehouse:SetValue(string.format([[
+导弹: %d
+时空跳跃者: %d]], self.Info.Missiles, self.Info.Jumpers))
 end
 
 -- spaceship tools

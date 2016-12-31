@@ -59,6 +59,7 @@ type Tabpane struct {
 	ActiveTabBg    Attribute
 	posTabText     []int
 	offTabText     int
+	IsHideMenu     bool
 }
 
 func NewTabpane() *Tabpane {
@@ -211,30 +212,40 @@ func (tp *Tabpane) drawPointWithBorder(p point, ch rune, chbord rune, chdown run
 }
 
 func (tp *Tabpane) Buffer() Buffer {
-	if tp.Border {
-		tp.Height = 3
+	if true == tp.IsHideMenu {
+		tp.Height = 0
 	} else {
-		tp.Height = 1
+		if tp.Border {
+			tp.Height = 3
+		} else {
+			tp.Height = 1
+		}
 	}
+
 	if tp.Width > tp.posTabText[len(tp.Tabs)]+2 {
 		tp.Width = tp.posTabText[len(tp.Tabs)] + 2
 	}
+
 	buf := tp.Block.Buffer()
 	ps := []point{}
 
 	tp.Align()
-	if tp.InnerHeight() <= 0 || tp.InnerWidth() <= 0 {
-		return NewBuffer()
+	if false == tp.IsHideMenu {
+		if tp.InnerHeight() <= 0 || tp.InnerWidth() <= 0 {
+			return NewBuffer()
+		}
 	}
 
-	// 画背景
-	if false == tp.Block.Border {
-		_max := TermWidth()
-		var addp []point
-		for _oftX := tp.posTabText[len(tp.Tabs)-1]; _oftX < _max; _oftX++ {
-			addp = append(addp, point{X: _oftX, Y: tp.InnerY(), Ch: ' ', Fg: tp.TabpaneFg, Bg: tp.TabpaneBg})
+	if false == tp.IsHideMenu {
+		// 画背景
+		if false == tp.Block.Border {
+			_max := TermWidth()
+			var addp []point
+			for _oftX := tp.posTabText[len(tp.Tabs)-1]; _oftX < _max; _oftX++ {
+				addp = append(addp, point{X: _oftX, Y: tp.InnerY(), Ch: ' ', Fg: tp.TabpaneFg, Bg: tp.TabpaneBg})
+			}
+			ps = tp.addPoints(ps, addp...)
 		}
-		ps = tp.addPoints(ps, addp...)
 	}
 
 	oftX := tp.InnerX()
@@ -242,108 +253,110 @@ func (tp *Tabpane) Buffer() Buffer {
 	pt := point{Bg: tp.BorderBg, Fg: tp.BorderFg}
 	var chLen int
 	for i, tab := range tp.Tabs {
-		if i != 0 && true == tp.Block.Border {
-			pt.X = oftX
-			pt.Y = tp.InnerY()
-			addp := tp.drawPointWithBorder(pt, ' ', VERTICAL_LINE, HORIZONTAL_DOWN, HORIZONTAL_UP)
-			ps = tp.addPoint(1, ps, &charOffset, &oftX, addp...)
-		}
+		if false == tp.IsHideMenu {
+			if i != 0 && true == tp.Block.Border {
+				pt.X = oftX
+				pt.Y = tp.InnerY()
+				addp := tp.drawPointWithBorder(pt, ' ', VERTICAL_LINE, HORIZONTAL_DOWN, HORIZONTAL_UP)
+				ps = tp.addPoint(1, ps, &charOffset, &oftX, addp...)
+			}
 
-		if i == tp.activeTabIndex {
-			if true == tp.Block.Border {
-				ps = tp.addPoint(1, ps, &charOffset, &oftX, []point{
-					point{Y: tp.InnerY(), Ch: ' ', Fg: tp.ActiveTabFg, Bg: tp.ActiveTabBg},
-					point{Y: tp.InnerY() + 1, Ch: ' ', Fg: tp.BorderFg, Bg: tp.BorderBg},
-				}...)
+			if i == tp.activeTabIndex {
+				if true == tp.Block.Border {
+					ps = tp.addPoint(1, ps, &charOffset, &oftX, []point{
+						point{Y: tp.InnerY(), Ch: ' ', Fg: tp.ActiveTabFg, Bg: tp.ActiveTabBg},
+						point{Y: tp.InnerY() + 1, Ch: ' ', Fg: tp.BorderFg, Bg: tp.BorderBg},
+					}...)
+				} else {
+					ps = tp.addPoint(1, ps, &charOffset, &oftX,
+						point{Y: tp.InnerY(), Ch: ' ', Fg: tp.ActiveTabFg, Bg: tp.ActiveTabBg})
+				}
 			} else {
 				ps = tp.addPoint(1, ps, &charOffset, &oftX,
-					point{Y: tp.InnerY(), Ch: ' ', Fg: tp.ActiveTabFg, Bg: tp.ActiveTabBg})
+					point{Y: tp.InnerY(), Ch: ' ', Fg: tp.TabFg, Bg: tp.TabBg})
 			}
-		} else {
-			ps = tp.addPoint(1, ps, &charOffset, &oftX,
-				point{Y: tp.InnerY(), Ch: ' ', Fg: tp.TabFg, Bg: tp.TabBg})
-		}
 
-		pt.Fg = tp.TabFg
-		pt.Bg = tp.TabBg
+			pt.Fg = tp.TabFg
+			pt.Bg = tp.TabBg
 
-		if i == tp.activeTabIndex {
-			pt.Fg = tp.ActiveTabFg
-			pt.Bg = tp.ActiveTabBg
-		}
-
-		rs := []rune(tab.Label)
-		for k := 0; k < len(rs); k++ {
-
-			chLen = rw.RuneWidth(rs[k])
-
-			addp := make([]point, 0, 2)
-			if i == tp.activeTabIndex && tp.Border {
-				if 2 == chLen {
-					pt.Ch = '　'
-				} else {
-					pt.Ch = ' '
-				}
-
-				pt.X = oftX
-				pt.Y = tp.InnerY() + 1
-				pt.Fg = tp.BorderFg
-				pt.Bg = tp.BorderBg
-				addp = append(addp, pt)
+			if i == tp.activeTabIndex {
 				pt.Fg = tp.ActiveTabFg
 				pt.Bg = tp.ActiveTabBg
 			}
 
-			pt.Y = tp.InnerY()
-			pt.Ch = rs[k]
+			rs := []rune(tab.Label)
+			for k := 0; k < len(rs); k++ {
 
-			addp = append(addp, pt)
+				chLen = rw.RuneWidth(rs[k])
 
-			ps = tp.addPoint(chLen, ps, &charOffset, &oftX, addp...)
-		}
+				addp := make([]point, 0, 2)
+				if i == tp.activeTabIndex && tp.Border {
+					if 2 == chLen {
+						pt.Ch = '　'
+					} else {
+						pt.Ch = ' '
+					}
 
-		if i == tp.activeTabIndex {
-			if true == tp.Block.Border {
-				ps = tp.addPoint(1, ps, &charOffset, &oftX, []point{
-					point{Y: tp.InnerY(), Ch: ' ', Fg: tp.ActiveTabFg, Bg: tp.ActiveTabBg},
-					point{Y: tp.InnerY() + 1, Ch: ' ', Fg: tp.BorderFg, Bg: tp.BorderBg},
-				}...)
+					pt.X = oftX
+					pt.Y = tp.InnerY() + 1
+					pt.Fg = tp.BorderFg
+					pt.Bg = tp.BorderBg
+					addp = append(addp, pt)
+					pt.Fg = tp.ActiveTabFg
+					pt.Bg = tp.ActiveTabBg
+				}
+
+				pt.Y = tp.InnerY()
+				pt.Ch = rs[k]
+
+				addp = append(addp, pt)
+
+				ps = tp.addPoint(chLen, ps, &charOffset, &oftX, addp...)
+			}
+
+			if i == tp.activeTabIndex {
+				if true == tp.Block.Border {
+					ps = tp.addPoint(1, ps, &charOffset, &oftX, []point{
+						point{Y: tp.InnerY(), Ch: ' ', Fg: tp.ActiveTabFg, Bg: tp.ActiveTabBg},
+						point{Y: tp.InnerY() + 1, Ch: ' ', Fg: tp.BorderFg, Bg: tp.BorderBg},
+					}...)
+				} else {
+					ps = tp.addPoint(1, ps, &charOffset, &oftX,
+						point{Y: tp.InnerY(), Ch: ' ', Fg: tp.ActiveTabFg, Bg: tp.ActiveTabBg})
+				}
 			} else {
 				ps = tp.addPoint(1, ps, &charOffset, &oftX,
-					point{Y: tp.InnerY(), Ch: ' ', Fg: tp.ActiveTabFg, Bg: tp.ActiveTabBg})
-			}
-		} else {
-			ps = tp.addPoint(1, ps, &charOffset, &oftX,
-				point{Y: tp.InnerY(), Ch: ' ', Fg: tp.TabFg, Bg: tp.TabBg})
-		}
-
-		pt.Fg = tp.BorderFg
-		pt.Bg = tp.BorderBg
-
-		if !tp.fitsWidth() {
-			all := tp.checkAlignment()
-			pt.X = tp.InnerX() - 1
-
-			pt.Ch = '*'
-			if tp.Border {
-				pt.Ch = VERTICAL_LINE
-			}
-			ps = append(ps, pt)
-
-			if all <= 0 {
-				addp := tp.drawPointWithBorder(pt, '<', '«', HORIZONTAL_LINE, HORIZONTAL_LINE)
-				ps = append(ps, addp...)
+					point{Y: tp.InnerY(), Ch: ' ', Fg: tp.TabFg, Bg: tp.TabBg})
 			}
 
-			pt.X = tp.InnerX() + tp.InnerWidth()
-			pt.Ch = '*'
-			if tp.Border {
-				pt.Ch = VERTICAL_LINE
-			}
-			ps = append(ps, pt)
-			if all >= 0 {
-				addp := tp.drawPointWithBorder(pt, '>', '»', HORIZONTAL_LINE, HORIZONTAL_LINE)
-				ps = append(ps, addp...)
+			pt.Fg = tp.BorderFg
+			pt.Bg = tp.BorderBg
+
+			if !tp.fitsWidth() {
+				all := tp.checkAlignment()
+				pt.X = tp.InnerX() - 1
+
+				pt.Ch = '*'
+				if tp.Border {
+					pt.Ch = VERTICAL_LINE
+				}
+				ps = append(ps, pt)
+
+				if all <= 0 {
+					addp := tp.drawPointWithBorder(pt, '<', '«', HORIZONTAL_LINE, HORIZONTAL_LINE)
+					ps = append(ps, addp...)
+				}
+
+				pt.X = tp.InnerX() + tp.InnerWidth()
+				pt.Ch = '*'
+				if tp.Border {
+					pt.Ch = VERTICAL_LINE
+				}
+				ps = append(ps, pt)
+				if all >= 0 {
+					addp := tp.drawPointWithBorder(pt, '>', '»', HORIZONTAL_LINE, HORIZONTAL_LINE)
+					ps = append(ps, addp...)
+				}
 			}
 		}
 

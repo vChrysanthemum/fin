@@ -121,8 +121,6 @@ func (p *Page) ParseNodeAttribute(node *Node, attr []html.Attribute) {
 		case "id":
 			p.IdToNodeMap[v.Val] = node
 			node.Id = v.Val
-		case "colorfg":
-			node.ColorFg = v.Val
 		}
 	}
 
