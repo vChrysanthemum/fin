@@ -110,6 +110,9 @@ func (p *Page) prepareScript() {
 	s.luaState.SetField(luaBase, "NodeTerminalClearCommandHistory",
 		s.luaState.NewFunction(s.luaFuncNodeTerminalClearCommandHistory))
 
+	s.luaState.SetField(luaBase, "NodeTabpaneSetActiveTab",
+		s.luaState.NewFunction(s.luaFuncNodeTabpaneSetActiveTab))
+
 	s.luaState.SetField(luaBase, "NodeModalDoString", s.luaState.NewFunction(s.luaFuncNodeModalDoString))
 	s.luaState.SetField(luaBase, "NodeModalShow", s.luaState.NewFunction(s.luaFuncNodeModalShow))
 

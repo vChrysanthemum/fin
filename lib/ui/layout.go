@@ -4,9 +4,7 @@ import "container/list"
 
 // 计算 Node 的布局函数
 // isFallthrough 计算完该 Node 布局，是否继续计算 ChildNodes 布局
-// isChildNodesAvailWorkNode 该 Node 的 ChildNodes 是否可以成为 WorkNode，与用户进行交互
-// isChildNodesAvailWorkNode 例: tabpane 将利用该参数
-type LayoutExecFunc func(node *Node, isParentDeclareAvailWorkNode bool) (isFallthrough, isChildNodesAvailWorkNode bool)
+type LayoutExecFunc func(node *Node) (isFallthrough bool)
 
 type LayoutAgent struct {
 	path   []string
@@ -58,8 +56,7 @@ func (p *Page) fetchLayoutAgentByNode(node *Node) (ret *LayoutAgent) {
 //
 // param:
 // 		node 							*Node 	需要计算布局的 Node
-// 		isParentDeclareAvailWorkNode	bool 	父节点是否已申明子孙节点可以为 WorkNode
-func (p *Page) layout(node *Node, isParentDeclareAvailWorkNode bool) error {
+func (p *Page) layout(node *Node) error {
 	var (
 		layoutAgent    *LayoutAgent
 		child          *Node
@@ -68,22 +65,18 @@ func (p *Page) layout(node *Node, isParentDeclareAvailWorkNode bool) error {
 	)
 
 	layoutAgent = p.fetchLayoutAgentByNode(node)
-	if true == *node.Display {
+	if true == node.CheckIfDisplay() {
 		if nil != layoutAgent {
 			layoutExecFunc = layoutAgent.layout
 		} else {
 			layoutExecFunc = p.normalLayoutNodeBlock
 		}
 
-		if true == node.isWorkNode && true == isParentDeclareAvailWorkNode {
+		if true == node.isWorkNode {
 			p.pushWorkingNode(node)
 		}
 
-		if false == isParentDeclareAvailWorkNode {
-			isFallthrough, _ = layoutExecFunc(node, isParentDeclareAvailWorkNode)
-		} else {
-			isFallthrough, isParentDeclareAvailWorkNode = layoutExecFunc(node, isParentDeclareAvailWorkNode)
-		}
+		isFallthrough = layoutExecFunc(node)
 
 		if false == isFallthrough {
 			return nil
@@ -91,7 +84,7 @@ func (p *Page) layout(node *Node, isParentDeclareAvailWorkNode bool) error {
 	}
 
 	for child = node.FirstChild; child != nil; child = child.NextSibling {
-		p.layout(child, isParentDeclareAvailWorkNode)
+		p.layout(child)
 	}
 
 	return nil
@@ -103,7 +96,7 @@ func (p *Page) Layout() error {
 	p.layoutingY = 0
 
 	p.WorkingNodes = list.New()
-	err := p.layout(p.FirstChildNode, true)
+	err := p.layout(p.FirstChildNode)
 	if nil != err {
 		return err
 	}

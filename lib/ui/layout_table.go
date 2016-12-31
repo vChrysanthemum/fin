@@ -1,14 +1,14 @@
 package ui
 
-func (p *Page) _layoutBodyTableChild(node *Node, isParentDeclareAvailWorkNode bool) {
+func (p *Page) _layoutBodyTableChild(node *Node) {
 	for _node := node.FirstChild; nil != _node; _node = _node.NextSibling {
-		p._layoutBodyTableChild(_node, isParentDeclareAvailWorkNode)
+		p._layoutBodyTableChild(_node)
 	}
 
-	if nil != node.UIBlock && true == *node.Display {
+	if nil != node.UIBlock && true == node.CheckIfDisplay() {
 		node.UIBlock.Align()
 
-		if true == node.isWorkNode && true == isParentDeclareAvailWorkNode {
+		if true == node.isWorkNode {
 			p.pushWorkingNode(node)
 		}
 	}
@@ -17,7 +17,7 @@ func (p *Page) _layoutBodyTableChild(node *Node, isParentDeclareAvailWorkNode bo
 func (p *Page) _layoutBodyTableGetPrevSiblingNode(node *Node) *Node {
 	var prevSiblingNode *Node
 	for _node := node.PrevSibling; nil != _node; _node = _node.PrevSibling {
-		if nil != _node.UIBlock && true == *_node.Display {
+		if nil != _node.UIBlock && true == node.CheckIfDisplay() {
 			prevSiblingNode = _node
 			break
 		}
@@ -38,12 +38,9 @@ func (p *Page) _layoutBodyTableGetPrevSiblingNode(node *Node) *Node {
 	return nil
 }
 
-func (p *Page) layoutBodyTable(
-	node *Node, isParentDeclareAvailWorkNode bool,
-) (isFallthrough, isChildNodesAvailWorkNode bool) {
+func (p *Page) layoutBodyTable(node *Node) (isFallthrough bool) {
 
 	isFallthrough = false
-	isChildNodesAvailWorkNode = isParentDeclareAvailWorkNode
 	nodeDataTable := node.Data.(*NodeTable)
 
 	var prevSiblingNode *Node = p._layoutBodyTableGetPrevSiblingNode(node)
@@ -54,7 +51,7 @@ func (p *Page) layoutBodyTable(
 	}
 
 	nodeDataTable.Body.Align()
-	p._layoutBodyTableChild(node, isChildNodesAvailWorkNode)
+	p._layoutBodyTableChild(node)
 	nodeDataTable.Body.Align()
 
 	return

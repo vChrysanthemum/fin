@@ -1,6 +1,9 @@
 package ui
 
-import "github.com/gizak/termui"
+import (
+	"github.com/gizak/termui"
+	"github.com/gizak/termui/extra"
+)
 
 func termuiHandlerKBD(e termui.Event) {
 	keyStr := e.Data.(termui.EvtKbd).KeyStr
@@ -109,6 +112,14 @@ func registerHandles() {
 }
 
 func (p *Page) pushWorkingNode(node *Node) {
+	if false == node.CheckIfDisplay() {
+		return
+	}
+	if uiBuffer, ok := node.uiBuffer.(*extra.Tabpane); true == ok {
+		if true == uiBuffer.IsHideMenu {
+			return
+		}
+	}
 	p.WorkingNodes.PushBack(node)
 	p.FocusNode = p.WorkingNodes.Back()
 }

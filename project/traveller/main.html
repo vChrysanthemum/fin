@@ -8,15 +8,21 @@
   <script type="text/lua" src="lua/spaceship.lua"></script>
 
   <script type="text/lua" src="lua/terminal.lua"></script>
-  <script type="text/lua" src="lua/terminal/main.lua"></script>
-  <script type="text/lua" src="lua/terminal/spaceship.lua"></script>
-  <script type="text/lua" src="lua/terminal/planet.lua"></script>
+  <script type="text/lua" src="lua/terminal_main.lua"></script>
+  <script type="text/lua" src="lua/terminal_spaceship.lua"></script>
+  <script type="text/lua" src="lua/terminal_planet.lua"></script>
 
   <script type="text/lua" src="lua/planet.lua"></script>
   <script type="text/lua" src="lua/world.lua"></script>
   <script type="text/lua" src="lua/db.lua"></script>
+
   <script type="text/lua" src="lua/main.lua"></script>
-  <modal src="modal/planet.html" id="ModalPlanet"></modal>
+  <script type="text/lua" src="lua/main_tab_planet.lua"></script>
+
+  <tabpane id="TabpaneMain" tabpanefg="black|underline" hidemenu="true"
+           tabpanebg="black" border=false tabbg="gray" tabfg="black|underline" activetabfg="white">
+
+  <tab name="main">
   <table>
      <tr>
        <td cols=9>
@@ -36,7 +42,7 @@
                     borderlabel=" 燃料 " percentcolor="blue" barcolor="red" height=3 percent=100></gauge>
 
          <par border=true id="ParGUserSpaceshipStatus" borderlabel=" "></par>
-         <par border=true id="ParGUserSpaceshipWarehouse" height=5 borderlabel=" 仓库 ">
+         <par border=true id="ParGUserSpaceshipCabin" height=5 borderlabel=" 船舱 ">
 
        </td>
      </tr>
@@ -46,5 +52,32 @@
        </td>
      </tr>
   </table>
+  </tab>
+
+  <tab name="planet">
+  <table>
+    <tr>
+      <td offset=4 cols=4>
+        <par border="true" id="TabPlanetParPlanetInfo"></par>
+        <select id="TabPlanetSelectEnterMain">
+          <option value="confirm">返回主页面</option>
+        </select>
+      </td>
+    </tr>
+  </table>
+  </tab>
+
+  <tab name="base">
+  <table>
+    <tr>
+      <td offset=4 cols=4>
+        <select id="TabBaseSelectEnterMain">
+          <option value="confirm">返回主页面</option>
+        </select>
+      </td>
+    </tr>
+  </table>
+  </tab>
+  </tabpane>
 </body>
 </html>

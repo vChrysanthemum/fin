@@ -23,9 +23,18 @@ func (p *Page) parseBodyTabpaneTab(parentNode *Node, htmlNode *html.Node) (ret *
 	parentNode.addChild(ret)
 	isFallthrough = true
 
-	ret.InitNodeTabpaneTab()
+	ret.InitNodeTabpaneTab(parentNode)
 
-	ret.isShouldTermuiRenderChild = true
+	nodeTabpaneTab := ret.Data.(*NodeTabpaneTab)
+	uiBuffer := ret.uiBuffer.(*extra.Tab)
+	for index := 0; index < len(nodeTabpaneTab.NodeTabpane.Tabs); index++ {
+		if uiBuffer == nodeTabpaneTab.NodeTabpane.Tabs[index] {
+			nodeTabpaneTab.Index = index
+			break
+		}
+	}
+
+	ret.Tab = nodeTabpaneTab
 
 	return
 }
@@ -91,6 +100,14 @@ func (p *NodeTabpaneTab) NodeDataParseAttribute(attr []html.Attribute) (isUIChan
 		case "label":
 			uiBuffer.SetLabel(v.Val)
 			isUIChange = true
+
+		case "name":
+			if nil == p.NodeTabpane || p.Name == v.Val {
+				continue
+			}
+			delete(p.NodeTabpane.TabsNameToIndex, p.Name)
+			p.Name = v.Val
+			p.NodeTabpane.TabsNameToIndex[p.Name] = p.Index
 		}
 	}
 

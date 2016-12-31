@@ -48,9 +48,7 @@ function _TerminalSpaceship.ExecCommand(self, nodePointer, command)
 
     elseif "landing" == commandArr[1] then
         if nil ~= self.Spaceship.LoginedPlanet then
-            GWorld:Stop(function()
-                NodeModalPlanet:ModalShow()
-            end)
+            GTerminal:StartEnv("/planet")
         end
 
     else

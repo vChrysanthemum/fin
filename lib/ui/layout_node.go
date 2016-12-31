@@ -1,10 +1,7 @@
 package ui
 
-func (p *Page) normalLayoutNodeBlock(
-	node *Node, isParentDeclareAvailWorkNode bool,
-) (isFallthrough, isChildNodesAvailWorkNode bool) {
+func (p *Page) normalLayoutNodeBlock(node *Node) (isFallthrough bool) {
 	isFallthrough = true
-	isChildNodesAvailWorkNode = true
 	if nil == node.UIBlock {
 		return
 	}

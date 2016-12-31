@@ -75,7 +75,7 @@ func (p *Page) render(node *Node) error {
 	}
 
 	renderAgent = p.fetchRenderAgentByNode(node)
-	if true == *node.Display && nil != renderAgent {
+	if true == node.CheckIfDisplay() && nil != renderAgent {
 		renderAgent.render(node)
 	}
 
@@ -131,7 +131,7 @@ func (p *Page) uiRender() error {
 		for e = p.WorkingNodes.Front(); e != nil; e = e.Next() {
 			node = e.Value.(*Node)
 
-			if false == *node.Display {
+			if false == node.CheckIfDisplay() {
 				continue
 			}
 
@@ -139,7 +139,7 @@ func (p *Page) uiRender() error {
 			for e2 = p.WorkingNodes.Front(); e2 != nil; e2 = e2.Next() {
 				node2 = e2.Value.(*Node)
 
-				if false == *node2.Display ||
+				if false == node2.CheckIfDisplay() ||
 					node == node2 ||
 					nil != node.FocusBottomNode ||
 					nil != node2.FocusTopNode {
@@ -167,7 +167,7 @@ func (p *Page) uiRender() error {
 			for e2 = p.WorkingNodes.Front(); e2 != nil; e2 = e2.Next() {
 				node2 = e2.Value.(*Node)
 
-				if false == *node2.Display ||
+				if false == node2.CheckIfDisplay() ||
 					node == node2 ||
 					nil != node.FocusLeftNode ||
 					nil != node2.FocusRightNode {
@@ -200,10 +200,13 @@ func (p *Page) uiRender() error {
 }
 
 func (p *Page) BufferersAppend(node *Node, buffer termui.Bufferer) {
-	if nil != node && true == node.Parent.isShouldTermuiRenderChild {
-	} else {
-		p.Bufferers = append(p.Bufferers, buffer)
+	if nil == node ||
+		true == node.Parent.isShouldTermuiRenderChild ||
+		false == node.CheckIfDisplay() {
+		return
 	}
+
+	p.Bufferers = append(p.Bufferers, buffer)
 }
 
 // 渲染 page 中所有元素，但不输出到屏幕
@@ -233,7 +236,9 @@ func (p *Page) ReRender() {
 // 清空 page 中所有元素，但不清空屏幕
 func (p *Page) Clear() {
 	p.Bufferers = make([]termui.Bufferer, 0)
+	uiutils.UISetCursor(-1, -1)
 	p.FocusNode = nil
 	p.WorkingNodes = list.New()
 	p.ActiveNode = nil
+	p.ActiveNodeAfterReRender = nil
 }

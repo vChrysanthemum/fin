@@ -2,15 +2,12 @@ package ui
 
 import "github.com/gizak/termui/extra"
 
-func (p *Page) layoutBodyTabpane(
-	node *Node, isParentDeclareAvailWorkNode bool,
-) (isFallthrough, isChildNodesAvailWorkNode bool) {
+func (p *Page) layoutBodyTabpane(node *Node) (isFallthrough bool) {
 
 	isFallthrough = true
-	isChildNodesAvailWorkNode = true
 	var prevSiblingNode *Node
 	for _node := node.PrevSibling; nil != _node; _node = _node.PrevSibling {
-		if nil != _node.UIBlock && true == *_node.Display {
+		if nil != _node.UIBlock && true == _node.CheckIfDisplay() {
 			prevSiblingNode = _node
 			break
 		}
@@ -39,22 +36,11 @@ func (p *Page) layoutBodyTabpane(
 	return
 }
 
-func (p *Page) layoutBodyTabpaneTab(
-	node *Node, isParentDeclareAvailWorkNode bool,
-) (isFallthrough, isChildNodesAvailWorkNode bool) {
+func (p *Page) layoutBodyTabpaneTab(node *Node) (isFallthrough bool) {
 
 	isFallthrough = true
 
 	p.layoutingY = node.Parent.UIBlock.Y + node.Parent.UIBlock.Height
-
-	parentUiBuffer := node.Parent.uiBuffer.(*extra.Tabpane)
-	nodeDataTab := node.Data.(*NodeTabpaneTab)
-
-	if nodeDataTab.Index == parentUiBuffer.GetActiveIndex() {
-		isChildNodesAvailWorkNode = true
-	} else {
-		isChildNodesAvailWorkNode = false
-	}
 
 	return
 }

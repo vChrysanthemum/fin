@@ -123,6 +123,20 @@ func (tp *Tabpane) GetActiveIndex() int {
 	return tp.activeTabIndex
 }
 
+func (tp *Tabpane) SetActiveTab(index int) bool {
+	if index > len(tp.Tabs)-1 || index < 0 {
+		return false
+	}
+	if index == tp.activeTabIndex {
+		return false
+	}
+	tp.activeTabIndex = index
+	if tp.posTabText[tp.activeTabIndex] < tp.offTabText {
+		tp.offTabText = tp.posTabText[tp.activeTabIndex]
+	}
+	return true
+}
+
 // Checks if left and right tabs are fully visible
 // if only left tabs are not visible return -1
 // if only right tabs are not visible return 1
@@ -357,14 +371,6 @@ func (tp *Tabpane) Buffer() Buffer {
 					addp := tp.drawPointWithBorder(pt, '>', '»', HORIZONTAL_LINE, HORIZONTAL_LINE)
 					ps = append(ps, addp...)
 				}
-			}
-		}
-
-		for i, tab := range tp.Tabs {
-			//draw tab content below the Tabpane
-			if i == tp.activeTabIndex {
-				blockPoints := buf2pt(tab.Buffer())
-				ps = append(ps, blockPoints...)
 			}
 		}
 	}

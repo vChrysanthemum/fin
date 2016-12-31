@@ -93,7 +93,16 @@ func (p *Page) fetchParseAgentByNode(htmlNode *html.Node) (ret *ParseAgent) {
 	return ret
 }
 
-func (p *Page) parseToNode(htmlNode *html.Node) (ret *Node, isFallthrough bool) {
+func (p *Page) filter(htmlNode *html.Node) {
+	var childHtmlNode *html.Node
+
+	for childHtmlNode = htmlNode.FirstChild; childHtmlNode != nil; childHtmlNode = childHtmlNode.NextSibling {
+		childHtmlNode.Data = strings.Trim(childHtmlNode.Data, " \r\n\t")
+		p.filter(childHtmlNode)
+	}
+}
+
+func (p *Page) parseHtmlNodeToNode(htmlNode *html.Node) (ret *Node, isFallthrough bool) {
 	var (
 		parentNode *Node
 		parseAgent *ParseAgent
@@ -111,10 +120,15 @@ func (p *Page) parseToNode(htmlNode *html.Node) (ret *Node, isFallthrough bool) 
 	}
 
 	ret, isFallthrough = parseAgent.parse(parentNode, htmlNode)
+
+	if nil != ret && nil != ret.Parent && nil != ret.Parent.Tab {
+		ret.Tab = ret.Parent.Tab
+	}
+
 	return
 }
 
-func (p *Page) ParseNodeAttribute(node *Node, attr []html.Attribute) {
+func (p *Page) parseNodeAttribute(node *Node, attr []html.Attribute) {
 	// 公用的解析
 	for _, v := range attr {
 		switch v.Key {
@@ -138,11 +152,11 @@ func (p *Page) parse(htmlNode *html.Node) *Node {
 		isFallthrough bool
 	)
 
-	node, isFallthrough = p.parseToNode(htmlNode)
+	node, isFallthrough = p.parseHtmlNodeToNode(htmlNode)
 	if nil != node {
 		p.pushParsingNodesStack(node)
 
-		p.ParseNodeAttribute(node, htmlNode.Attr)
+		p.parseNodeAttribute(node, htmlNode.Attr)
 	}
 
 	if true == isFallthrough {
@@ -156,15 +170,6 @@ func (p *Page) parse(htmlNode *html.Node) *Node {
 	}
 
 	return node
-}
-
-func (p *Page) filter(htmlNode *html.Node) {
-	var childHtmlNode *html.Node
-
-	for childHtmlNode = htmlNode.FirstChild; childHtmlNode != nil; childHtmlNode = childHtmlNode.NextSibling {
-		childHtmlNode.Data = strings.Trim(childHtmlNode.Data, " \r\n\t")
-		p.filter(childHtmlNode)
-	}
 }
 
 func Parse(content string) (ret *Page, err error) {

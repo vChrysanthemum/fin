@@ -195,6 +195,10 @@ function _Node.TerminalClearCommandHistory(self)
     return base.NodeTerminalClearCommandHistory(self.nodePointer)
 end
 
+function _Node.TabpaneSetActiveTab(self, name)
+    return base.NodeTabpaneSetActiveTab(self.nodePointer, name)
+end
+
 function _Node.ModalDoString(self, callback)
     return base.NodeModalDoString(self.nodePointer, callback)
 end

@@ -7,12 +7,14 @@ import (
 
 type NodeTabpane struct {
 	*Node
-	Tabs []*extra.Tab
+	Tabs            []*extra.Tab
+	TabsNameToIndex map[string]int
 }
 
 func (p *Node) InitNodeTabpane() {
 	nodeTabpane := new(NodeTabpane)
 	nodeTabpane.Node = p
+	nodeTabpane.TabsNameToIndex = make(map[string]int)
 	p.Data = nodeTabpane
 	p.KeyPress = nodeTabpane.KeyPress
 
@@ -33,12 +35,15 @@ func (p *Node) InitNodeTabpane() {
 
 type NodeTabpaneTab struct {
 	*Node
-	Index int
+	Index       int
+	NodeTabpane *NodeTabpane
+	Name        string
 }
 
-func (p *Node) InitNodeTabpaneTab() {
+func (p *Node) InitNodeTabpaneTab(parentNode *Node) {
 	nodeTabpaneTab := new(NodeTabpaneTab)
 	nodeTabpaneTab.Node = p
+	nodeTabpaneTab.NodeTabpane, _ = parentNode.Data.(*NodeTabpane)
 	p.Data = nodeTabpaneTab
 
 	uiBuffer := extra.NewTab("")
@@ -46,6 +51,10 @@ func (p *Node) InitNodeTabpaneTab() {
 	p.UIBlock = nil
 	p.Display = new(bool)
 	*p.Display = true
+
+	if nil != nodeTabpaneTab.NodeTabpane {
+		nodeTabpaneTab.NodeTabpane.Tabs = append(nodeTabpaneTab.NodeTabpane.Tabs, uiBuffer)
+	}
 
 	return
 }
@@ -74,7 +83,7 @@ func (p *NodeTabpane) KeyPress(e termui.Event) {
 
 	if true == IsVimKeyPressLeft(keyStr) {
 		if true == uiBuffer.SetActiveLeft() {
-			uiClear(p.Node.UIBlock.Y+1, -1)
+			uiClear(p.Node.UIBlock.Height, -1)
 			p.Node.page.Render()
 			p.Node.page.uiRender()
 		}
@@ -83,11 +92,22 @@ func (p *NodeTabpane) KeyPress(e termui.Event) {
 
 	if true == IsVimKeyPressRight(keyStr) {
 		if true == uiBuffer.SetActiveRight() {
-			uiClear(p.Node.UIBlock.Y+1, -1)
+			uiClear(p.Node.UIBlock.Height, -1)
 			p.Node.page.Render()
 			p.Node.page.uiRender()
 		}
 		return
+	}
+}
+
+func (p *NodeTabpane) SetActiveTab(name string) {
+	if index, ok := p.TabsNameToIndex[name]; true == ok {
+		uiBuffer := p.uiBuffer.(*extra.Tabpane)
+		if true == uiBuffer.SetActiveTab(index) {
+			uiClear(p.Node.UIBlock.Height, -1)
+			p.Node.page.Render()
+			p.Node.page.uiRender()
+		}
 	}
 }
 

@@ -6,6 +6,7 @@ import (
 	"image"
 
 	"github.com/gizak/termui"
+	"github.com/gizak/termui/extra"
 	"golang.org/x/net/html"
 )
 
@@ -48,6 +49,7 @@ type NodeDataParseAttributer interface {
 
 type Node struct {
 	Id   string
+	Tab  *NodeTabpaneTab
 	page *Page
 
 	ChildrenCount int
@@ -191,4 +193,16 @@ func (p *Node) ResumeCursor() {
 func (p *Node) HideCursor() {
 	uiutils.UISetCursor(-1, -1)
 	p.uiRender()
+}
+
+func (p *Node) CheckIfDisplay() bool {
+	if false == *p.Display {
+		return false
+	}
+
+	if nil != p.Tab && p.Tab.Index != p.Tab.NodeTabpane.Node.uiBuffer.(*extra.Tabpane).GetActiveIndex() {
+		return false
+	}
+
+	return true
 }

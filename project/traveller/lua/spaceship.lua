@@ -34,7 +34,6 @@ function NewSpaceshipInfo()
         StartAt     = TimeNow(),
         Life        = 82,
         Fuel        = 100,
-        Missiles    = 12,
         Jumpers     = 6,
     }
 end
@@ -45,8 +44,8 @@ function NewSpaceship()
     Spaceship.CenterRectangle = {}
     Spaceship:Format(NewSpaceshipInfo())
     Spaceship.ColorBg   = ""
-    local Warehouse     = {}
-    Spaceship.Warehouse = Warehouse
+    local Cabin     = {}
+    Spaceship.Cabin = Cabin
 
     Spaceship.lastFlushToDBForRunOneStepAt = 0
 
@@ -118,7 +117,6 @@ function _Spaceship.Format(self, spaceshipInfo)
         StartAt     = spaceshipInfo.StartAt,
         Fuel        = spaceshipInfo.Fuel,
         Life        = spaceshipInfo.Life,
-        Missiles    = spaceshipInfo.Missiles,
         Jumpers     = spaceshipInfo.Jumpers,
     }
     self:refreshCenterRectangle()
@@ -218,9 +216,8 @@ Y: %f
 速度X: %f/s
 速度Y: %f/s
 飞行历时: %d]], self.Info.Position.X, self.Info.Position.Y, self.Info.Speed.X, self.Info.Speed.Y, TimeNow() - self.Info.StartAt))
-NodeParGUserSpaceshipWarehouse:SetValue(string.format([[
-导弹: %d
-时空跳跃者: %d]], self.Info.Missiles, self.Info.Jumpers))
+NodeParGUserSpaceshipCabin:SetValue(string.format([[
+时空跳跃者: %d]], self.Info.Jumpers))
 end
 
 -- spaceship tools
