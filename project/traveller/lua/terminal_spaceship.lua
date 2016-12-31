@@ -1,18 +1,19 @@
 local _TerminalSpaceship = {}
 local _mtTerminalSpaceship = {__index = _TerminalSpaceship} 
 
-function NewTerminalSpaceship()
+function NewTerminalSpaceship(terminal)
     local TerminalSpaceship = setmetatable({}, _mtTerminalSpaceship)
     TerminalSpaceship.Env = "/spaceship"
     TerminalSpaceship.Spaceship = nil
+    TerminalSpaceship.Terminal = terminal
 
     return TerminalSpaceship
 end
 
 function _TerminalSpaceship.StartEnv(self, command)
-    GTerminal:ScreenInfoMsg("连接 飞船 ...")
+    self.Terminal:ScreenInfoMsg("连接 飞船 ...")
     self.Spaceship = GUserSpaceship
-    NodeTerminalMain:TerminalSetCommandPrefix(string.format("%s> ", self.Spaceship.Info.Name))
+    self.Terminal.Port:TerminalSetCommandPrefix(string.format("%s> ", self.Spaceship.Info.Name))
 end
 
 function _TerminalSpaceship.ExecCommand(self, nodePointer, command)
@@ -41,17 +42,17 @@ function _TerminalSpaceship.ExecCommand(self, nodePointer, command)
     elseif "jump" == commandArr[1] then
         local ret = self.Spaceship:JumperRun({X=tonumber(commandArr[2]), Y=tonumber(commandArr[3])})
         if "string" == type(ret) then
-            NodeTerminalMain:TerminalWriteNewLine(string.format("[%s](fg-red)", ret))
+            self.Terminal.Port:TerminalWriteNewLine(string.format("[%s](fg-red)", ret))
         else
-            GTerminal:ScreenSuccessMsg("跳跃成功")
+            self.Terminal:ScreenSuccessMsg("跳跃成功")
         end
 
     elseif "landing" == commandArr[1] then
         if nil ~= self.Spaceship.LoginedPlanet then
-            GTerminal:StartEnv("/planet")
+            self.Terminal:StartEnv("/planet")
         end
 
     else
-        GTerminal:ScreenErrMsg(string.format("%s %s", GTerminal.ErrCommandNotExists, command))
+        self.Terminal:ScreenErrMsg(string.format("%s %s", self.Terminal.ErrCommandNotExists, command))
     end
 end

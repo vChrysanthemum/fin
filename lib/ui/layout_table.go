@@ -14,9 +14,16 @@ func (p *Page) _layoutBodyTableChild(node *Node) {
 	}
 }
 
-func (p *Page) _layoutBodyTableGetPrevSiblingNode(node *Node) *Node {
-	var prevSiblingNode *Node
+func (p *Page) _layoutBodyTableGetPrevSiblingNodeBottomY(node *Node) int {
+	var (
+		prevSiblingNode *Node
+		nodeDataTable   *NodeTable
+		ok              bool
+	)
 	for _node := node.PrevSibling; nil != _node; _node = _node.PrevSibling {
+		if nodeDataTable, ok = _node.Data.(*NodeTable); true == ok {
+			return nodeDataTable.Body.Y + nodeDataTable.Body.Height
+		}
 		if nil != _node.UIBlock && true == node.CheckIfDisplay() {
 			prevSiblingNode = _node
 			break
@@ -24,18 +31,18 @@ func (p *Page) _layoutBodyTableGetPrevSiblingNode(node *Node) *Node {
 	}
 
 	if nil != prevSiblingNode {
-		return prevSiblingNode
+		return prevSiblingNode.UIBlock.Y + prevSiblingNode.UIBlock.Height
 	}
 
 	if nil != node.Parent {
 		if nil != node.Parent.UIBlock {
-			return node.Parent
+			return node.Parent.UIBlock.Y + node.Parent.UIBlock.Height
 		} else {
-			return p._layoutBodyTableGetPrevSiblingNode(node.Parent)
+			return p._layoutBodyTableGetPrevSiblingNodeBottomY(node.Parent)
 		}
 	}
 
-	return nil
+	return 0
 }
 
 func (p *Page) layoutBodyTable(node *Node) (isFallthrough bool) {
@@ -43,12 +50,7 @@ func (p *Page) layoutBodyTable(node *Node) (isFallthrough bool) {
 	isFallthrough = false
 	nodeDataTable := node.Data.(*NodeTable)
 
-	var prevSiblingNode *Node = p._layoutBodyTableGetPrevSiblingNode(node)
-	if nil != prevSiblingNode {
-		nodeDataTable.Body.Y = prevSiblingNode.UIBlock.Y + prevSiblingNode.UIBlock.Height
-	} else {
-		nodeDataTable.Body.Y = 0
-	}
+	nodeDataTable.Body.Y = p._layoutBodyTableGetPrevSiblingNodeBottomY(node)
 
 	nodeDataTable.Body.Align()
 	p._layoutBodyTableChild(node)

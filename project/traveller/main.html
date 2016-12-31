@@ -17,6 +17,7 @@
   <script type="text/lua" src="lua/db.lua"></script>
 
   <script type="text/lua" src="lua/main.lua"></script>
+  <script type="text/lua" src="lua/main_tab_main.lua"></script>
   <script type="text/lua" src="lua/main_tab_planet.lua"></script>
 
   <tabpane id="TabpaneMain" tabpanefg="black|underline" hidemenu="true"
@@ -24,44 +25,51 @@
 
   <tab name="main" label="主页">
   <table>
-     <tr>
-       <td cols=9>
-         <canvas id="CanvasRadar" borderlabel=" 雷达 "></canvas>
-       </td>
-       <td>
-         <par border=true id="ParInfo" height=7 borderlabel=" 位置信息 "></par>
+    <tr>
+      <td cols=9>
+        <canvas id="CanvasRadar" borderlabel=" 雷达 "></canvas>
+      </td>
+      <td>
+        <par border=true id="ParInfo" height=7 borderlabel=" 位置信息 "></par>
 
-         <par border=true id="ParNewestMsg" height=3 borderlabel=" 最新信息 "></par>
+        <par border=true id="ParNewestMsg" height=3 borderlabel=" 最新信息 "></par>
 
-         <gauge border=true id="GaugeLife"
-                    percentcolor="blue" percentcolor_highlighted="white" barcolor="green"
-                    borderlabel=" 生命线 " height=3 percent=100></gauge>
+        <gauge border=true id="GaugeLife"
+                           percentcolor="blue" percentcolor_highlighted="white" barcolor="green"
+                                                                                borderlabel=" 生命线 " height=3 percent=100></gauge>
 
-         <gauge border=true id="GaugeFuel"
-                    percentcolor="blue" percentcolor_highlighted="blue" barcolor="green"
-                    borderlabel=" 燃料 " percentcolor="blue" barcolor="red" height=3 percent=100></gauge>
+        <gauge border=true id="GaugeFuel"
+                           percentcolor="blue" percentcolor_highlighted="blue" barcolor="green"
+                                                                               borderlabel=" 燃料 " percentcolor="blue" barcolor="red" height=3 percent=100></gauge>
 
-         <par border=true id="ParGUserSpaceshipStatus" borderlabel=" "></par>
-         <par border=true id="ParGUserSpaceshipCabin" height=5 borderlabel=" 船舱 ">
+        <par border=true id="ParGUserSpaceshipStatus" borderlabel=" "></par>
+        <par border=true id="ParGUserSpaceshipCabin" height=5 borderlabel=" 船舱 ">
 
-       </td>
-     </tr>
-     <tr>
-       <td>
-          <terminal borderlabel=" 大脑 " border=true id="TerminalMain" height=8></terminal>
-       </td>
-     </tr>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <terminal borderlabel=" 大脑 " border=true id="TerminalMain" height=8></terminal>
+      </td>
+    </tr>
   </table>
   </tab>
 
   <tab name="planet" label="星球">
   <table>
     <tr>
-      <td offset=4 cols=4>
-        <par border="true" id="TabPlanetParPlanetInfo"></par>
-        <select id="TabPlanetSelectEnterMain">
-          <option value="confirm">返回主页面</option>
-        </select>
+      <td offset=2 cols=4>
+        <par border="true" id="TabPlanetParPlanetInfo" paddingleft=1 paddingright=1></par>
+      </td>
+      <td cols=4>
+        <par border="true" paddingleft=1 paddingright=1>helloworld</par>
+      </td>
+    </tr>
+  </table>
+  <table>
+    <tr>
+      <td>
+        <terminal borderlabel=" 大脑 " border=true id="TabPlanetTerminalMain" height=8></terminal>
       </td>
     </tr>
   </table>

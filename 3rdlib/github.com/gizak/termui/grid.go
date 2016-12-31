@@ -226,6 +226,7 @@ type Grid struct {
 	X       int
 	Y       int
 	BgColor Attribute
+	Height  int
 }
 
 // NewGrid returns *Grid with given rows.
@@ -273,14 +274,14 @@ func NewCol(span, offset int, widgets ...GridBufferer) *Row {
 
 // Align calculate each rows' layout.
 func (g *Grid) Align() {
-	h := 0
+	g.Height = 0
 	for _, r := range g.Rows {
 		r.SetWidth(g.Width)
 		r.SetX(g.X)
-		r.SetY(g.Y + h)
+		r.SetY(g.Y + g.Height)
 		r.calcLayout()
 		r.Align()
-		h += r.GetHeight()
+		g.Height += r.GetHeight()
 	}
 }
 

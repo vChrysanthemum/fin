@@ -1,53 +1,66 @@
 function _Terminal.StartEnvMain(self)
-  self:ScreenInfoMsg("返回 主控台 ...")
-  self.CurrentEnv = "/"
-  NodeTerminalMain:TerminalSetCommandPrefix("> ")
+    self:ScreenInfoMsg("返回 主控台 ...")
+    self.CurrentEnv = "/"
+    self.Port:TerminalSetCommandPrefix("> ")
 end
 
 function _Terminal.StartEnv(self, command)
-  local commandArr = StringSplit(command, " ")
-  if nil == commandArr or 0 == TableLength(commandArr) then
-    return
-  end
-  self.CurrentEnv = commandArr[1]
-  self.CmdExcuter[commandArr[1]]:StartEnv(command)
+    local commandArr = StringSplit(command, " ")
+    if nil == commandArr or 0 == TableLength(commandArr) then
+        return
+    end
+    self.CurrentEnv = commandArr[1]
+    self.CmdExcuter[commandArr[1]]:StartEnv(command)
 end
 
 function _Terminal.ExecCommand(self, nodePointer, command)
-  local commandArr = StringSplit(command, " ")
-  if nil == commandArr or 0 == TableLength(commandArr) then
-    return
-  end
+    local commandArr = StringSplit(command, " ")
+    if nil == commandArr or 0 == TableLength(commandArr) then
+        return
+    end
 
-  if "/" == commandArr[1] then
-    self:StartEnvMain()
-    NodeTabpaneMain:TabpaneSetActiveTab("main")
-    return
+    if "/" == commandArr[1] then
+        self:StartEnvMain()
+        return
 
-  elseif "clear" == commandArr[1] then
-    NodeTerminalMain:TerminalClearLines()
-    return
+    elseif "tab" == commandArr[1] then
+        self:StartTab(command)
+        return
 
-  elseif "clearhistory" == commandArr[1] then
-    NodeTerminalMain:TerminalClearCommandHistory()
-    return
+    elseif "clear" == commandArr[1] then
+        self.Port:TerminalClearLines()
+        return
 
-  elseif "quit" == commandArr[1] then
-    Quit()
-    return
-  end
+    elseif "clearhistory" == commandArr[1] then
+        self.Port:TerminalClearCommandHistory()
+        return
 
-  if true == CheckTableHasKey(self.CmdExcuter, commandArr[1]) then
-    self:StartEnv(command)
-    return
-  end
+    elseif "quit" == commandArr[1] then
+        Quit()
+        return
+    end
 
-  if "/" ~= self.CurrentEnv then
-    self.CmdExcuter[self.CurrentEnv]:ExecCommand(nodePointer, command)
-    return
-  end
+    if true == CheckTableHasKey(self.CmdExcuter, commandArr[1]) then
+        self:StartEnv(command)
+        return
+    end
 
-  GTerminal:ScreenErrMsg(string.format("%s %s", GTerminal.ErrCommandNotExists, command))
+    if "/" ~= self.CurrentEnv then
+        self.CmdExcuter[self.CurrentEnv]:ExecCommand(nodePointer, command)
+        return
+    end
 
-  return true
+    self:ScreenErrMsg(string.format("%s %s", self.ErrCommandNotExists, command))
+
+    return true
+end
+
+function _Terminal.StartTab(self, command)
+    local commandArr = StringSplit(command, " ")
+
+    if "main" == commandArr[2] then
+        StartTabMain()
+    elseif "planet" == commandArr[2] then
+        StartTabPlanet()
+    end
 end
