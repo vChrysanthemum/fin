@@ -14,15 +14,11 @@ function _TerminalRobot.StartEnv(self, command)
     local commandArr = StringSplit(command, " ")
 
     local position = {}
-    if nil ~= GUserSpaceship.LoginedRobot then
-        position = GUserSpaceship.LoginedRobot.Info.Position
-    else
-        if TableLength(commandArr) < 2 then
-            self.Terminal:ScreenErrMsg("请输入机器人监听地址")
-            return
-        end 
-        robotServiceAddress = commandArr[2]
-    end
+    if TableLength(commandArr) < 2 then
+        self.Terminal:ScreenErrMsg("请输入机器人监听地址")
+        return
+    end 
+    robotServiceAddress = commandArr[2]
 
     self.Terminal:ScreenInfoMsg(string.format("连接 机器人 %s ...", robotServiceAddress))
     local robot = GRobotCenter:GetRobotByServiceAddress(robotServiceAddress)

@@ -20,7 +20,7 @@ function _RobotCenter.GetRobotByServiceAddress(self, robotServiceAddress)
 end
 
 function _RobotCenter.LoadRobotsFromDB(self)
-    sql = string.format([[
+    local sql = string.format([[
     select robot_id, data from b_robot
     ]])
     local rows = DB:Query(sql)

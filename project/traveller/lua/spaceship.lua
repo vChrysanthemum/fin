@@ -4,7 +4,7 @@ local _Spaceship = {}
 local _mtSpaceship = {__index = _Spaceship}
 
 function GetSpaceshipFromDB(spaceshipId)
-    sql = string.format([[
+    local sql = string.format([[
     select data from b_spaceship where spaceship_id=%d limit 1
     ]], spaceshipId)
     local rows = DB:Query(sql)
@@ -120,7 +120,7 @@ function _Spaceship.FlushToDB(self)
         return nil
     end
 
-    sql = string.format([[
+    local sql = string.format([[
     update b_spaceship set data = '%s' where spaceship_id=%d
     ]], DB:QuoteSQL(json.encode(self.Info)), self.Info.SpaceshipId)
     local queryRet = DB:Exec(sql)

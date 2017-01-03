@@ -27,6 +27,13 @@ robot_id integer primary key not null,
 data text
 );
 
+create table if not exists `b_building` (
+building_id integer primary key not null,
+planet_id integer,
+data text
+);
+create index if not exists b_building_planet_id on b_building(planet_id);
+
 ]]
 local ret = DB:Exec(sql)
 
@@ -37,7 +44,7 @@ insert into b_spaceship (spaceship_id, data) values (1, '%s');
 ret = DB:Exec(sql)
 
 local robot = NewRobotCore()
-robot.Info.RobotOS = "engineer"
+robot.Info.RobotOS = "Engineer"
 
 robot.Info.RobotId = 1
 robot.Info.Name = "黄鹂"

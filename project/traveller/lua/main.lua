@@ -15,13 +15,14 @@ NodeTabPlanetTerminalMain    = Node("TabPlanetTerminalMain")
 
 -- 初始化所有全局变量
 NodeRadar:SetAttribute("height", tostring(WindowHeight()-NodeTerminalMain:Height()))
-GRadar         = NewRadar()
-GTerminal      = NewTerminal(NodeTerminalMain)
-GWorld         = NewWorld()
-GRobotCenter   = NewRobotCenter()
-GUserSpaceship = GetSpaceshipFromDB(1)
-GTabTerminal   = NewTerminal(NodeTabPlanetTerminalMain)
-GTabPlanet     = nil
+GRadar          = NewRadar()
+GTerminal       = NewTerminal(NodeTerminalMain)
+GWorld          = NewWorld()
+GRobotCenter    = NewRobotCenter()
+GBuildingCenter = NewBuildingCenter()
+GUserSpaceship  = GetSpaceshipFromDB(1)
+GTabTerminal    = NewTerminal(NodeTabPlanetTerminalMain)
+GTabPlanet      = nil
 GUserSpaceship:RefreshNodeParGUserSpaceshipStatus()
 GUserSpaceship:RefreshGaugeLife()
 GUserSpaceship:RefreshGaugeFuel()

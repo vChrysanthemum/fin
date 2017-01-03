@@ -19,6 +19,19 @@ function _RobotEngineer.GetActionCh(self)
     return self.RobotCore.Info.Action
 end
 
+function _RobotEngineer.CleanJob(self)
+    if nil == self.RobotCore.Info.Action then
+        return
+    end
+    self.RobotCore.Info.Action = nil
+    self.RobotCore:FlushToDB()
+end
+
+function _RobotEngineer.AboardSpaceship(self)
+    self:CleanJob()
+    self.RobotCore.AboardSpaceship()
+end
+
 function _RobotEngineer.ExecCommand(self, command)
     local commandArr = StringSplit(command, " ")
 
@@ -46,6 +59,22 @@ function _RobotEngineer.ExecCommand(self, command)
         self.RobotCore.Info.Name, self.RobotCore.PlanetLanding.Info.Name))
         RefreshNodeTabPlanetParPlanetInfo()
 
+    elseif "aboard" == commandArr[1] then
+        if nil == self.RobotCore.PlanetLanding then
+            self.ClientTerminal:ScreenErrMsg(string.format("机器人不在星球上"))
+            return
+        end
+
+        if nil == GUserSpaceship.LoginedPlanet or 
+            GUserSpaceship.LoginedPlanet.Info.PlanetId ~= self.RobotCore.PlanetLanding.Info.PlanetId then
+            self.ClientTerminal:ScreenErrMsg(string.format("飞船不在星球上，机器人无法登船"))
+            return
+        end
+
+        self:AboardSpaceship()
+        self.ClientTerminal:ScreenInfoMsg(string.format("%s登船成功", self.RobotCore.Info.Name))
+        RefreshNodeTabPlanetParPlanetInfo()
+
     elseif "mine" == commandArr[1] then
         if nil ~= self.RobotCore.PlanetLanding then
             self.RobotCore.Info.Action = "mine"
@@ -54,9 +83,27 @@ function _RobotEngineer.ExecCommand(self, command)
             self.ClientTerminal:ScreenInfoMsg(string.format("%s开始采矿", self.RobotCore.Info.Name))
         end
 
+    elseif "build" == commandArr[1] then
+        if nil == self.RobotCore.PlanetLanding then
+            self.ClientTerminal:ScreenErrMsg(string.format("机器人没有停落在任何星球，无法建造建筑"))
+            return
+        end
+
+        local buildingType = commandArr[2]
+        if "PowerPlant" == buildingType then
+            local powerPlant = BuildPowerPlant(self.RobotCore.PlanetLanding)
+            if "string" == powerPlant then
+                self.ClientTerminal:ScreenErrMsg(string.format("建造失败: %s", powerPlant))
+                return
+            end
+            self.RobotCore.PlanetLanding:RefreshModuleDevelopedBuilding()
+            RefreshNodeTabPlanetParPlanetInfo()
+            self.ClientTerminal:ScreenInfoMsg(string.format("建造%s完成", powerPlant:GetBuildingTypeCh()))
+        end
+
+
     elseif "cleanjob" == commandArr[1] then
-        self.RobotCore.Info.Action = nil
-        self.RobotCore:FlushToDB()
+        self:CleanJob()
         RefreshNodeTabPlanetParPlanetInfo()
         self.ClientTerminal:ScreenInfoMsg(string.format("清空任务完成"))
 

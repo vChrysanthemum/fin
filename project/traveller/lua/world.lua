@@ -71,7 +71,7 @@ function _World.GetPlanetByPlanetId(self, planetId)
         return planet
     end
 
-    sql = string.format([[
+    local sql = string.format([[
     select planet_id, data from b_planet where planet_id=%d limit 1
     ]], planetId)
     local rows = DB:Query(sql)
@@ -104,7 +104,7 @@ function _World.initAreaPlanets(self, createBlockIndex)
     local sql
     local queryRet = nil
 
-    sql = string.format([[
+    local sql = string.format([[
     select created_at from b_planets_block where x=%d and y=%d limit 1
     ]], createBlockStartPosition.X, createBlockStartPosition.Y)
     local rows = DB:Query(sql)

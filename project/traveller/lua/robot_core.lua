@@ -23,7 +23,7 @@ function _RobotCore.FlushToDB(self)
         return nil
     end
 
-    sql = string.format([[
+    local sql = string.format([[
     update b_robot set data = '%s' where robot_id=%d
     ]], DB:QuoteSQL(json.encode(self.Info)), self.Info.RobotId)
     local queryRet = DB:Exec(sql)
@@ -43,7 +43,7 @@ function _RobotCore.Format(self, robotInfo, robot_id)
         Action          = robotInfo.Action,
     }
 
-    if "engineer" == self.Info.RobotOS then
+    if "Engineer" == self.Info.RobotOS then
         self.Robot = NewRobotEngineer(self)
     end
 
@@ -56,5 +56,12 @@ function _RobotCore.LandingPlanet(self, planet)
     self.PlanetLanding = planet
     self.Info.Location = "planet"
     self.Info.LandingPlanetId = planet.Info.PlanetId
+    self:FlushToDB()
+end
+
+function _RobotCore.AboardSpaceship(self, planet)
+    self.PlanetLanding = nil
+    self.Info.Location = nil
+    self.Info.LandingPlanetId = nil
     self:FlushToDB()
 end

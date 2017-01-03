@@ -6,7 +6,7 @@ function NewTerminal(port)
     Terminal.CurrentEnv = "/"
 
     Terminal.ErrCommandNotExists = "无效命令"
-    Terminal.ConnentingPlanet = nil
+    Terminal.ConnetingPlanet = nil
 
     local _terminalPlanet = NewTerminalPlanet(Terminal)
     local _terminalSpaceship = NewTerminalSpaceship(Terminal)

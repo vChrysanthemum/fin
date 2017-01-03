@@ -4,7 +4,7 @@ local _mtTerminalPlanet = {__index = _TerminalPlanet}
 function NewTerminalPlanet(terminal)
     local TerminalPlanet = setmetatable({}, _mtTerminalPlanet)
     TerminalPlanet.Env = "/planet"
-    TerminalPlanet.ConnentingPlanet = nil
+    TerminalPlanet.ConnetingPlanet = nil
     TerminalPlanet.Terminal = terminal
 
     return TerminalPlanet
@@ -36,7 +36,7 @@ function _TerminalPlanet.StartEnv(self, command)
         return
     end
 
-    self.ConnentingPlanet = planet
+    self.ConnetingPlanet = planet
     self.Terminal.Port:TerminalSetCommandPrefix(string.format("%s> ", planet.Info.Name))
 end
 
@@ -44,13 +44,13 @@ function _TerminalPlanet.ExecCommand(self, nodePointer, command)
     local commandArr = StringSplit(command, " ")
 
     if "info" == commandArr[1] then
-        self.Terminal:ScreenInfoMsg(string.format("名称: %s", self.ConnentingPlanet.Info.Name))
-        self.Terminal:ScreenInfoMsg(string.format("坐标: %s", PointToStr(self.ConnentingPlanet.Info.Position)))
-        self.Terminal:ScreenInfoMsg(string.format("资源: %d", self.ConnentingPlanet.Info.Resource))
+        self.Terminal:ScreenInfoMsg(string.format("名称: %s", self.ConnetingPlanet.Info.Name))
+        self.Terminal:ScreenInfoMsg(string.format("坐标: %s", PointToStr(self.ConnetingPlanet.Info.Position)))
+        self.Terminal:ScreenInfoMsg(string.format("资源: %d", self.ConnetingPlanet.Info.Resource))
 
     elseif "rename" == commandArr[1] then
-        self.ConnentingPlanet:SetName(commandArr[2])
-        self.Terminal.Port:TerminalSetCommandPrefix(string.format("%s> ", self.ConnentingPlanet.Info.Name))
+        self.ConnetingPlanet:SetName(commandArr[2])
+        self.Terminal.Port:TerminalSetCommandPrefix(string.format("%s> ", self.ConnetingPlanet.Info.Name))
 
     elseif "detail" == commandArr[1] then
         self:ShowPlanetDetail()
@@ -61,7 +61,7 @@ function _TerminalPlanet.ExecCommand(self, nodePointer, command)
 end
 
 function _TerminalPlanet.ShowPlanetDetail(self)
-    local planet = self.Terminal.CmdExcuter["/planet"].ConnentingPlanet
+    local planet = self.Terminal.CmdExcuter["/planet"].ConnetingPlanet
     if nil == planet then
         return
     end
