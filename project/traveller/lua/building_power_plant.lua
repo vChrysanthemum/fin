@@ -13,7 +13,7 @@ function BuildPowerPlant(planet)
     local buildingType = "PowerPlant" 
     local building = GBuildingCenter:GetBuildingByPlanetIdAndBuildingType(planet.Info.PlanetId, buildingType)
     if nil ~= building then
-        return nil
+        return "能源站已建造"
     end
 
     local PowerPlantCost = 10

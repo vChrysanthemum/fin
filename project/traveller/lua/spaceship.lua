@@ -129,22 +129,6 @@ function _Spaceship.FlushToDB(self)
     end
 end
 
--- 飞船飞行一次，改变 position
-function _Spaceship.RunOneStep(self)
-    self.Info.Position.X = self.Info.Position.X + self.Info.Speed.X
-    self.Info.Position.Y = self.Info.Position.Y + self.Info.Speed.Y
-    self:refreshCenterRectangle()
-
-    if nil == self.LoginedPlanet then
-        self:UpdateFuel(-0.01)
-    end
-
-    if TimeNow() - self.lastFlushToDBForRunOneStepAt > 3 then
-        self.lastFlushToDBForRunOneStepAt = TimeNow()
-        self:FlushToDB()
-    end
-end
-
 -- 更改燃料
 function _Spaceship.UpdateFuel(self, number)
     local newFuelValue = self.Info.Fuel + number
@@ -155,10 +139,9 @@ function _Spaceship.UpdateFuel(self, number)
     if math.abs(math.ceil(self.Info.Fuel) - math.ceil(newFuelValue)) < 1 then
         self.Info.Fuel = newFuelValue
         return
-    else
-        self.Info.Fuel = newFuelValue
     end
 
+    self.Info.Fuel = newFuelValue
     self:RefreshGaugeFuel()
     self:FlushToDB()
 end
@@ -251,6 +234,22 @@ function _Spaceship.EventLeavePlanet(self)
     self.LoginedPlanet = nil
 
     self:FlushToDB()
+end
+
+-- 飞船飞行一次，改变 position
+function _Spaceship.RunOneStep(self)
+    self.Info.Position.X = self.Info.Position.X + self.Info.Speed.X
+    self.Info.Position.Y = self.Info.Position.Y + self.Info.Speed.Y
+    self:refreshCenterRectangle()
+
+    if nil == self.LoginedPlanet then
+        self:UpdateFuel(-0.01)
+    end
+
+    if TimeNow() - self.lastFlushToDBForRunOneStepAt > 3 then
+        self.lastFlushToDBForRunOneStepAt = TimeNow()
+        self:FlushToDB()
+    end
 end
 
 function _Spaceship.LoopEvent(self)

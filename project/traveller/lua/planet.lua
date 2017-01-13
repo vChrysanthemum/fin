@@ -83,12 +83,18 @@ function _Planet.FlushToDB(self)
   end
 end
 
--- 被机器人挖矿，资源变动
-function _Planet.MineByRobot(self)
-    self.Info.Resource = self.Info.Resource - 1
-    self.Info.ModuleDeveloped.Resource = self.Info.ModuleDeveloped.Resource + 1
-end
-
 function _Planet.RefreshModuleDevelopedBuilding(self)
     self.ModuleDevelopedBuilding = GBuildingCenter:GetBuildingByPlanetId(self.Info.PlanetId)
+end
+
+-- 被机器人挖矿，资源变动
+function _Planet.MineByRobot(self)
+    local delta = 0.03
+    self.Info.ModuleDeveloped.Resource = self.Info.ModuleDeveloped.Resource + delta
+    self.Info.Resource = self.Info.Resource - delta
+end
+
+-- 更改已开发资源数量
+function _Planet.ChangeDevelopedResource(self, delta)
+    self.Info.ModuleDeveloped.Resource = self.Info.ModuleDeveloped.Resource + delta
 end

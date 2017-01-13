@@ -5,18 +5,19 @@ local _mtRobotCenter = {__index = _RobotCenter}
 
 function NewRobotCenter()
   local RobotCenter = setmetatable({}, _mtRobotCenter)
-  -- RobotCenter.robotServiceAddressToRobot = {}
   RobotCenter.Robots = {}
+  RobotCenter.robotServiceAddressToRobot = {}
   RobotCenter:LoadRobotsFromDB()
   return RobotCenter
 end
 
 function _RobotCenter.RegisterRobot(self, robotServiceAddress, robot)
-  self.Robots[robotServiceAddress] = robot
+    table.insert(self.Robots, robot)
+    self.robotServiceAddressToRobot[robotServiceAddress] = robot
 end
 
 function _RobotCenter.GetRobotByServiceAddress(self, robotServiceAddress)
-  return self.Robots[robotServiceAddress]
+  return self.robotServiceAddressToRobot[robotServiceAddress]
 end
 
 function _RobotCenter.LoadRobotsFromDB(self)

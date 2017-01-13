@@ -19,19 +19,6 @@ function _RobotEngineer.GetActionCh(self)
     return self.RobotCore.Info.Action
 end
 
-function _RobotEngineer.CleanJob(self)
-    if nil == self.RobotCore.Info.Action then
-        return
-    end
-    self.RobotCore.Info.Action = nil
-    self.RobotCore:FlushToDB()
-end
-
-function _RobotEngineer.AboardSpaceship(self)
-    self:CleanJob()
-    self.RobotCore.AboardSpaceship()
-end
-
 function _RobotEngineer.ExecCommand(self, command)
     local commandArr = StringSplit(command, " ")
 
@@ -91,14 +78,7 @@ function _RobotEngineer.ExecCommand(self, command)
 
         local buildingType = commandArr[2]
         if "PowerPlant" == buildingType then
-            local powerPlant = BuildPowerPlant(self.RobotCore.PlanetLanding)
-            if "string" == powerPlant then
-                self.ClientTerminal:ScreenErrMsg(string.format("建造失败: %s", powerPlant))
-                return
-            end
-            self.RobotCore.PlanetLanding:RefreshModuleDevelopedBuilding()
-            RefreshNodeTabPlanetParPlanetInfo()
-            self.ClientTerminal:ScreenInfoMsg(string.format("建造%s完成", powerPlant:GetBuildingTypeCh()))
+            self:BuildPowerPlant()
         end
 
 
@@ -112,6 +92,33 @@ function _RobotEngineer.ExecCommand(self, command)
     end
 end
 
+function _RobotEngineer.CleanJob(self)
+    if nil == self.RobotCore.Info.Action then
+        return
+    end
+    self.RobotCore.Info.Action = nil
+    self.RobotCore:FlushToDB()
+end
+
+function _RobotEngineer.AboardSpaceship(self)
+    self:CleanJob()
+    self.RobotCore.AboardSpaceship()
+end
+
+function _RobotEngineer.CollectResourceToPlanet(self)
+end
+
+function _RobotEngineer.BuildPowerPlant(self)
+    local powerPlant = BuildPowerPlant(self.RobotCore.PlanetLanding)
+    if "string" == type(powerPlant) then
+        self.ClientTerminal:ScreenErrMsg(string.format("建造失败: %s", powerPlant))
+        return
+    end
+    self.RobotCore.PlanetLanding:RefreshModuleDevelopedBuilding()
+    RefreshNodeTabPlanetParPlanetInfo()
+    self.ClientTerminal:ScreenInfoMsg(string.format("建造%s完成", powerPlant:GetBuildingTypeCh()))
+end
+
 function _RobotEngineer.LoopEvent(self)
     if nil == self.RobotCore.PlanetLanding then
         return
@@ -123,6 +130,7 @@ function _RobotEngineer.LoopEvent(self)
             self.RobotCore:FlushToDB()
         else
             self.RobotCore.PlanetLanding:MineByRobot()
+            RefreshNodeTabPlanetParPlanetInfo()
         end
     end
 end

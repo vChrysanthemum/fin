@@ -13,7 +13,7 @@ end
 function _BuildingCenter.GetBuildingByPlanetIdAndBuildingType(self, planetId, buildingType)
     local buildings = self:GetBuildingByPlanetId(planetId)
     for _, building in pairs(buildings) do
-        if buildingType == building.Info.BuildingType then
+        if buildingType == building.BuildingCore.Info.BuildingType then
             return building
         end
     end
