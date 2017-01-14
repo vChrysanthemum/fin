@@ -17,7 +17,7 @@ function GetSpaceshipFromDB(spaceshipId)
     local spaceship = NewSpaceship()
     spaceship:Format(json.decode(row.data), spaceshipId)
 
-    spaceship.PlanetLanding = nil
+    spaceship.LandingPlanetId = nil
     spaceship.NewestMsg = ""
 
     return spaceship
@@ -228,7 +228,7 @@ end
 function _Spaceship.EventCachedByPlanet(self, planet)
     self.Info.Speed.X = 0
     self.Info.Speed.Y = 0
-    self.PlanetLanding = planet
+    self.LandingPlanetId = planet.Info.PlanetId
     self:SetNewestMsg(string.format("飞船被 %s 引力捕获", planet.Info.Name))
 
     self:FlushToDB()
@@ -236,8 +236,9 @@ end
 
 -- 离开星球捕获事件
 function _Spaceship.EventLeavePlanet(self)
-    self:SetNewestMsg(string.format("飞船离开 %s", self.PlanetLanding.Info.Name))
-    self.PlanetLanding = nil
+    local planet = GWorld:GetPlanetByPlanetId(self.LandingPlanetId)
+    self:SetNewestMsg(string.format("飞船离开 %s", planet.Info.Name))
+    self.LandingPlanetId = nil
 
     self:FlushToDB()
 end
@@ -248,7 +249,7 @@ function _Spaceship.RunOneStep(self)
     self.Info.Position.Y = self.Info.Position.Y + self.Info.Speed.Y
     self:refreshCenterRectangle()
 
-    if nil == self.PlanetLanding then
+    if nil == self.LandingPlanetId then
         self:UpdateFuel(-0.01)
     end
 
@@ -259,9 +260,11 @@ function _Spaceship.RunOneStep(self)
 end
 
 function _Spaceship.LoopEvent(self)
+    local planet = {}
+
     -- 检查飞船是否被星球引力捕获
-    if nil == self.PlanetLanding then
-        local planet = GRadar:GetPlanetOnScreenByScreenPosition(self.ScreenPosition)
+    if nil == self.LandingPlanetId then
+        planet = GRadar:GetPlanetOnScreenByScreenPosition(self.ScreenPosition)
         if nil ~= planet and
             math.abs(self.Info.Speed.X) < GWorld.LeavePlanetSpeed and
             math.abs(self.Info.Speed.Y) < GWorld.LeavePlanetSpeed then
@@ -271,20 +274,23 @@ function _Spaceship.LoopEvent(self)
     end
 
     -- 检查飞船是否离开星球
-    if nil ~= self.PlanetLanding then
-        -- 检查飞船是否会被星球引力捕获
-        if (math.abs(self.Info.Speed.X) > 0 or
-            math.abs(self.Info.Speed.Y) > 0) and
-            math.abs(self.Info.Speed.X) < GWorld.LeavePlanetSpeed and
-            math.abs(self.Info.Speed.Y) < GWorld.LeavePlanetSpeed then
-            GUserSpaceship:EventCachedByPlanet(self.PlanetLanding)
-            return
-        end
+    if nil ~= self.LandingPlanetId then
+        planet = GWorld:GetPlanetByPlanetId(self.LandingPlanetId)
+        if nil ~= planet then
+            -- 检查飞船是否会被星球引力捕获
+            if (math.abs(self.Info.Speed.X) > 0 or
+                math.abs(self.Info.Speed.Y) > 0) and
+                math.abs(self.Info.Speed.X) < GWorld.LeavePlanetSpeed and
+                math.abs(self.Info.Speed.Y) < GWorld.LeavePlanetSpeed then
+                GUserSpaceship:EventCachedByPlanet(planet)
+                return
+            end
 
-        -- 检查飞船是否足够动力离开星球
-        if (math.abs(self.Info.Speed.X) >= GWorld.LeavePlanetSpeed or
-            math.abs(self.Info.Speed.Y) >= GWorld.LeavePlanetSpeed) then
-            GUserSpaceship:EventLeavePlanet()
+            -- 检查飞船是否足够动力离开星球
+            if (math.abs(self.Info.Speed.X) >= GWorld.LeavePlanetSpeed or
+                math.abs(self.Info.Speed.Y) >= GWorld.LeavePlanetSpeed) then
+                GUserSpaceship:EventLeavePlanet()
+            end
         end
     end
 

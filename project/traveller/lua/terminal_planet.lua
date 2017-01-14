@@ -14,14 +14,16 @@ function _TerminalPlanet.StartEnv(self, command)
     local commandArr = StringSplit(command, " ")
 
     local position = {}
-    if nil ~= GUserSpaceship.PlanetLanding then
-        position = GUserSpaceship.PlanetLanding.Info.Position
-    else
-        if TableLength(commandArr) < 3 then
-            self.Terminal:ScreenErrMsg("请输入星球坐标")
-            return
-        end
+    local planet = {}
+
+    planet = GWorld:GetPlanetByPlanetId(GUserSpaceship.LandingPlanetId)
+    if TableLength(commandArr) >= 3 then
         position = {X=tonumber(commandArr[2]), Y=tonumber(commandArr[3])}
+    elseif nil ~= planet then
+        position = planet.Info.Position
+    else 
+        self.Terminal:ScreenErrMsg("请输入星球坐标")
+        return
     end
 
     if nil == position or nil == position.X or nil == position.Y then
@@ -30,7 +32,7 @@ function _TerminalPlanet.StartEnv(self, command)
     end
 
     self.Terminal:ScreenInfoMsg(string.format("连接 星球 %s ...", PointToStr(position)))
-    local planet = GRadar:GetPlanetOnScreenByPosition(position)
+    planet = GRadar:GetPlanetOnScreenByPosition(position)
     if nil == planet then
         self.Terminal:ScreenErrMsg(string.format("无法连接星球 %s", PointToStr(position)))
         return
@@ -65,5 +67,5 @@ function _TerminalPlanet.ShowPlanetDetail(self)
     if nil == planet then
         return
     end
-    StartTabPlanet(planet)
+    StartTabPlanet(planet.Info.PlanetId)
 end

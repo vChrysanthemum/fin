@@ -16,7 +16,7 @@ function NewWorld()
     World.CreateBlockSize   = World.WorkBlockSize * World.WorkBlocksCount
     World.CreateBlockWidth  = World.WorkBlockWidth * World.WorkBlockColumns
     World.CreateBlockHeight = World.WorkBlockHeight * World.WorkBlockRows
-    World.Planets           = {}
+    World.AreaPlanetIds       = {}
     World.EventLocker       = rwmutex.NewRWMutex()
 
     World.isShouldMove = true
@@ -66,6 +66,10 @@ function _World.LoopEvent(self)
 end
 
 function _World.GetPlanetByPlanetId(self, planetId)
+    if nil == planetId then
+        return nil
+    end
+
     local planet = self.Planets[planetId]
     if nil ~= planet then
         return planet
@@ -89,7 +93,7 @@ end
 function _World.initAreaPlanets(self, createBlockIndex)
     local key = PointToStr(createBlockIndex)
 
-    if CheckTableHasKey(self.Planets, key) then
+    if CheckTableHasKey(self.AreaPlanetIds, key) then
         return
     end
 
@@ -100,7 +104,7 @@ function _World.initAreaPlanets(self, createBlockIndex)
 
     local k = 0
     local planet = {}
-    local planets = {}
+    local planetIds = {}
     local sql
     local queryRet = nil
 
@@ -125,13 +129,13 @@ function _World.initAreaPlanets(self, createBlockIndex)
             if nil == planet then
                 planet = NewPlanet()
                 planet:Format(json.decode(row.data), row.planet_id)
-                self.Planets[planet.Info.PlanetId] = planets
+                self.Planets[planet.Info.PlanetId] = planet
             end
 
-            table.insert(planets, planet)
+            table.insert(planetIds, planet.Info.PlanetId)
         end
         rows:Close()
-        self.Planets[key] = planets
+        self.AreaPlanetIds[key] = planetIds
         return
     end
 
@@ -139,6 +143,7 @@ function _World.initAreaPlanets(self, createBlockIndex)
     local i, columnIndex, rowIndex = 0, 0, 0
     local rectangle = {}
     local i = 0
+    local planets = {}
     while columnIndex < self.WorkBlockColumns do
         rowIndex = 0
         while rowIndex < self.WorkBlockRows do
@@ -174,13 +179,14 @@ function _World.initAreaPlanets(self, createBlockIndex)
         queryRet = DB:Exec(sql)
         planets[k].Info.PlanetId = queryRet:LastInsertId()
         self.Planets[planets[k].Info.PlanetId] = planets[k]
+        table.insert(planetIds, planets[k].Info.PlanetId)
     end
     sql = string.format([[
     insert into b_planets_block(x, y, created_at) values(%d, %d, %d)
     ]], createBlockStartPosition.X, createBlockStartPosition.Y, TimeNow())
     DB:Exec(sql)
 
-    self.Planets[key] = planets
+    self.AreaPlanetIds[key] = planetIds
 end
 
 -- 获取指定区域内的星球
@@ -216,6 +222,7 @@ function _World.GetPlanetsByRectangle(self, rectangle)
         blockIndexs = newblockIndexs
     end
 
+    local planet = {}
     local key = nil
     local planets = {}
     for _, block in pairs(blockIndexs) do
@@ -223,13 +230,14 @@ function _World.GetPlanetsByRectangle(self, rectangle)
     end
     for _, block in pairs(blockIndexs) do
         key = PointToStr(block)
-        for _, planet in pairs(self.Planets[key]) do
-
-            if rectangle.Min.X <= planet.Info.Position.X and planet.Info.Position.X <= rectangle.Max.X and 
-                rectangle.Min.Y <= planet.Info.Position.Y and planet.Info.Position.Y <= rectangle.Max.Y then
-                table.insert(planets, planet)
+        for _, planetId in pairs(self.AreaPlanetIds[key]) do
+            planet = self:GetPlanetByPlanetId(planetId)
+            if nil ~= planet then
+                if rectangle.Min.X <= planet.Info.Position.X and planet.Info.Position.X <= rectangle.Max.X and 
+                    rectangle.Min.Y <= planet.Info.Position.Y and planet.Info.Position.Y <= rectangle.Max.Y then
+                    table.insert(planets, self:GetPlanetByPlanetId(planetId))
+                end
             end
-
         end
     end
 

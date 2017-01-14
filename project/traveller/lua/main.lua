@@ -22,7 +22,7 @@ GRobotCenter    = NewRobotCenter()
 GBuildingCenter = NewBuildingCenter()
 GUserSpaceship  = GetSpaceshipFromDB(1)
 GTabTerminal    = NewTerminal(NodeTabPlanetTerminalMain)
-GTabPlanet      = nil
+GTabPlanetId    = nil
 GUserSpaceship:RefreshNodeParGUserSpaceshipStatus()
 GUserSpaceship:RefreshGaugeLife()
 GUserSpaceship:RefreshGaugeFuel()

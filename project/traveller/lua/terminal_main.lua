@@ -61,6 +61,8 @@ function _Terminal.StartTab(self, command)
     if "main" == commandArr[2] then
         StartTabMain()
     elseif "planet" == commandArr[2] then
-        StartTabPlanet()
+      if nil ~= GTabPlanetId then
+        StartTabPlanet(GTabPlanetId)
+      end
     end
 end

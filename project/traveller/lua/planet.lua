@@ -89,7 +89,7 @@ end
 
 -- 被机器人挖矿，资源变动
 function _Planet.MineByRobot(self)
-    local delta = 0.03
+    local delta = 0.06
     self.Info.ModuleDeveloped.Resource = self.Info.ModuleDeveloped.Resource + delta
     self.Info.Resource = self.Info.Resource - delta
 end

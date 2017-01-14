@@ -46,21 +46,15 @@ function _RobotCore.Format(self, robotInfo, robot_id)
     if "Engineer" == self.Info.RobotOS then
         self.Robot = NewRobotEngineer(self)
     end
-
-    if "number" == type(self.Info.LandingPlanetId) and self.Info.LandingPlanetId > 0 then
-        self.PlanetLanding = GWorld:GetPlanetByPlanetId(self.Info.LandingPlanetId)
-    end
 end
 
 function _RobotCore.LandingPlanet(self, planet)
-    self.PlanetLanding = planet
     self.Info.Location = "planet"
     self.Info.LandingPlanetId = planet.Info.PlanetId
     self:FlushToDB()
 end
 
 function _RobotCore.AboardSpaceship(self, planet)
-    self.PlanetLanding = nil
     self.Info.Location = nil
     self.Info.LandingPlanetId = nil
     self:FlushToDB()

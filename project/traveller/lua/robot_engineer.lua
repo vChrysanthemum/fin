@@ -20,18 +20,12 @@ function _RobotEngineer.GetActionCh(self)
 end
 
 function _RobotEngineer.LoopEvent(self)
-    if nil == self.RobotCore.PlanetLanding then
+    if nil == self.RobotCore.Info.LandingPlanetId then
         return
     end
 
     if "mine" == self.RobotCore.Info.Action then
-        if self.RobotCore.PlanetLanding.Info.Resource <= 0 then
-            self.RobotCore.Info.Action = nil
-            self.RobotCore:FlushToDB()
-        else
-            self.RobotCore.PlanetLanding:MineByRobot()
-            RefreshNodeTabPlanetParPlanetInfo()
-        end
+        self:ActionMine()
     end
 end
 
@@ -40,36 +34,38 @@ function _RobotEngineer.ExecCommand(self, command)
 
     if "info" == commandArr[1] then
         self.ClientTerminal:ScreenInfoMsg(string.format("OS: %s",self.RobotCore.Info.RobotOS))
-        if "planet" == self.RobotCore.Info.Location and nil ~= self.RobotCore.PlanetLanding then
+        if "planet" == self.RobotCore.Info.Location and nil ~= self.RobotCore.Info.LandingPlanetId then
+            local planet = GWorld:GetPlanetByPlanetId(self.RobotCore.Info.LandingPlanetId)
             self.ClientTerminal:ScreenInfoMsg(string.format("位于%s",
-            self.RobotCore.PlanetLanding.Info.Name))
+            planet.Info.Name))
         end
         if nil ~= self.RobotCore.Info.Action then
             self.ClientTerminal:ScreenInfoMsg(string.format("正在%s中", self:GetActionCh()))
         end
 
     elseif "landing" == commandArr[1] then
-        if nil == GUserSpaceship.PlanetLanding then
+        local GUserSpaceshipPlanetLanding = GWorld:GetPlanetByPlanetId(GUserSpaceship.LandingPlanetId)
+        if nil == GUserSpaceshipPlanetLanding then
             self.ClientTerminal:ScreenErrMsg(string.format("飞船没有停落在任何星球，机器人无法着陆"))
             return
         end
 
         GUserSpaceship:SetNewestMsg(string.format("%s着陆星球%s", 
-        self.RobotCore.Info.Name, GUserSpaceship.PlanetLanding.Info.Name))
+        self.RobotCore.Info.Name, GUserSpaceshipPlanetLanding.Info.Name))
 
-        self.RobotCore:LandingPlanet(GUserSpaceship.PlanetLanding)
+        self.RobotCore:LandingPlanet(GUserSpaceshipPlanetLanding)
         self.ClientTerminal:ScreenInfoMsg(string.format("%s着陆%s成功",
-        self.RobotCore.Info.Name, self.RobotCore.PlanetLanding.Info.Name))
+        self.RobotCore.Info.Name, GUserSpaceshipPlanetLanding.Info.Name))
         RefreshNodeTabPlanetParPlanetInfo()
 
     elseif "aboard" == commandArr[1] then
-        if nil == self.RobotCore.PlanetLanding then
+        if nil == self.RobotCore.Info.LandingPlanetId then
             self.ClientTerminal:ScreenErrMsg(string.format("机器人不在星球上"))
             return
         end
 
-        if nil == GUserSpaceship.PlanetLanding or 
-            GUserSpaceship.PlanetLanding.Info.PlanetId ~= self.RobotCore.PlanetLanding.Info.PlanetId then
+        if nil == GUserSpaceship.LandingPlanetId or 
+            GUserSpaceship.LandingPlanetId ~= self.RobotCore.Info.LandingPlanetId then
             self.ClientTerminal:ScreenErrMsg(string.format("飞船不在星球上，机器人无法登船"))
             return
         end
@@ -79,7 +75,7 @@ function _RobotEngineer.ExecCommand(self, command)
         RefreshNodeTabPlanetParPlanetInfo()
 
     elseif "mine" == commandArr[1] then
-        if nil ~= self.RobotCore.PlanetLanding then
+        if nil ~= self.RobotCore.Info.LandingPlanetId then
             self.RobotCore.Info.Action = "mine"
             self.RobotCore:FlushToDB()
             RefreshNodeTabPlanetParPlanetInfo()
@@ -87,9 +83,12 @@ function _RobotEngineer.ExecCommand(self, command)
         end
 
     elseif "collect" == commandArr[1] then
-        if nil == self.RobotCore.PlanetLanding or 
-            nil == GUserSpaceship.PlanetLanding or 
-            self.RobotCore.PlanetLanding.Info.PlanetId ~= GUserSpaceship.PlanetLanding.Info.PlanetId then
+        local GUserSpaceshipPlanetLanding = GWorld:GetPlanetByPlanetId(GUserSpaceship.LandingPlanetId)
+        local RobotCorePlanetLanding = GWorld:GetPlanetByPlanetId(self.RobotCore.Info.LandingPlanetId)
+
+        if nil == self.RobotCore.Info.LandingPlanetId or 
+            nil == GUserSpaceshipPlanetLanding or 
+            RobotCorePlanetLanding.Info.PlanetId ~= GUserSpaceshipPlanetLanding.Info.PlanetId then
             self.ClientTerminal:ScreenErrMsg(string.format("无法收集"))
             return
         end
@@ -103,7 +102,7 @@ function _RobotEngineer.ExecCommand(self, command)
 
 
     elseif "build" == commandArr[1] then
-        if nil == self.RobotCore.PlanetLanding then
+        if nil == self.RobotCore.Info.LandingPlanetId then
             self.ClientTerminal:ScreenErrMsg(string.format("机器人没有停落在任何星球，无法建造建筑"))
             return
         end
@@ -133,7 +132,7 @@ end
 
 function _RobotEngineer.AboardSpaceship(self)
     self:CleanJob()
-    self.RobotCore.AboardSpaceship()
+    self.RobotCore:AboardSpaceship()
 end
 
 function _RobotEngineer.CollectResourceToPlanet(self, resourceNum)
@@ -143,7 +142,13 @@ function _RobotEngineer.CollectResourceToPlanet(self, resourceNum)
         return
     end
 
-    local ret = self.RobotCore.PlanetLanding:ChangeDevelopedResource(-1*resourceNum)
+    local RobotCorePlanetLanding = GWorld:GetPlanetByPlanetId(self.RobotCore.Info.LandingPlanetId)
+    if nil == RobotCorePlanetLanding then
+        self.ClientTerminal:ScreenErrMsg("星球不存在")
+        return
+    end
+
+    local ret = RobotCorePlanetLanding:ChangeDevelopedResource(-1*resourceNum)
     if true ~= ret then
         self.ClientTerminal:ScreenErrMsg(string.format(ret))
         return
@@ -159,12 +164,36 @@ function _RobotEngineer.CollectResourceToPlanet(self, resourceNum)
 end
 
 function _RobotEngineer.BuildPowerPlant(self)
-    local powerPlant = BuildPowerPlant(self.RobotCore.PlanetLanding)
+    local RobotCorePlanetLanding = GWorld:GetPlanetByPlanetId(self.RobotCore.Info.LandingPlanetId)
+    if nil == RobotCorePlanetLanding then
+        self.ClientTerminal:ScreenErrMsg("星球不存在")
+        return
+    end
+
+    local powerPlant = BuildPowerPlant(RobotCorePlanetLanding)
+
     if "string" == type(powerPlant) then
         self.ClientTerminal:ScreenErrMsg(string.format("建造失败: %s", powerPlant))
         return
     end
-    self.RobotCore.PlanetLanding:RefreshModuleDevelopedBuilding()
+    RobotCorePlanetLanding:RefreshModuleDevelopedBuilding()
     RefreshNodeTabPlanetParPlanetInfo()
     self.ClientTerminal:ScreenInfoMsg(string.format("建造%s完成", powerPlant:GetBuildingTypeCh()))
+end
+
+-- 挖矿
+function _RobotEngineer.ActionMine(self)
+    local RobotCorePlanetLanding = GWorld:GetPlanetByPlanetId(self.RobotCore.Info.LandingPlanetId)
+    if nil == RobotCorePlanetLanding then
+        self.ClientTerminal:ScreenErrMsg("星球不存在")
+        return
+    end
+
+    if RobotCorePlanetLanding.Info.Resource <= 0 then
+        self.RobotCore.Info.Action = nil
+        self.RobotCore:FlushToDB()
+    else
+        RobotCorePlanetLanding:MineByRobot()
+        RefreshNodeTabPlanetParPlanetInfo()
+    end
 end
