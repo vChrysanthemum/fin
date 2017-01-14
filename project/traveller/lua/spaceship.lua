@@ -146,6 +146,9 @@ function _Spaceship.UpdateFuel(self, number)
         return
     end
 
+    if newFuelValue > 100 then
+        newFuelValue = 100
+    end
     self.Info.Fuel = newFuelValue
     self:RefreshGaugeFuel()
     self:FlushToDB()

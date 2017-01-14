@@ -31,5 +31,15 @@ function _PowerPlant.SetClientTerminal(self, clientTerminal)
 end
 
 function _PowerPlant.ExecCommand(self, command)
-    self.ClientTerminal:ScreenErrMsg("PowerPlant")
+    local commandArr = StringSplit(command, " ")
+
+    if "recharge" == commandArr[1] then
+        if self.BuildingCore.Info.PlanetId ~= GUserSpaceship.LandingPlanetId then
+            self.ClientTerminal:ScreenErrMsg(string.format("飞船没有停落在星球，无法充电"))
+            return
+        end
+
+        GUserSpaceship:UpdateFuel(100)
+        self.ClientTerminal:ScreenInfoMsg(string.format("充电完成"))
+    end
 end
