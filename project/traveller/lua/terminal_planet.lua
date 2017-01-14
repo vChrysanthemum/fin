@@ -23,23 +23,24 @@ function _TerminalPlanet.StartEnv(self, command)
         position = planet.Info.Position
     else 
         self.Terminal:ScreenErrMsg("请输入星球坐标")
-        return
+        return false
     end
 
     if nil == position or nil == position.X or nil == position.Y then
         self.Terminal:ScreenErrMsg(string.format("请输入有效坐标"))
-        return
+        return false
     end
 
     self.Terminal:ScreenInfoMsg(string.format("连接 星球 %s ...", PointToStr(position)))
     planet = GRadar:GetPlanetOnScreenByPosition(position)
     if nil == planet then
         self.Terminal:ScreenErrMsg(string.format("无法连接星球 %s", PointToStr(position)))
-        return
+        return false
     end
 
     self.ConnetingPlanet = planet
     self.Terminal.Port:TerminalSetCommandPrefix(string.format("%s> ", planet.Info.Name))
+    return true
 end
 
 function _TerminalPlanet.ExecCommand(self, nodePointer, command)

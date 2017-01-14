@@ -11,10 +11,12 @@ function NewTerminal(port)
     local _terminalPlanet = NewTerminalPlanet(Terminal)
     local _terminalSpaceship = NewTerminalSpaceship(Terminal)
     local _terminalRobot = NewTerminalRobot(Terminal)
+    local _terminalBuilding = NewTerminalBuilding(Terminal)
     Terminal.CmdExcuter = {}
     Terminal.CmdExcuter[_terminalPlanet.Env] = _terminalPlanet
     Terminal.CmdExcuter[_terminalSpaceship.Env] = _terminalSpaceship
     Terminal.CmdExcuter[_terminalRobot.Env] = _terminalRobot
+    Terminal.CmdExcuter[_terminalBuilding.Env] = _terminalBuilding
 
     Terminal.Port = port
 

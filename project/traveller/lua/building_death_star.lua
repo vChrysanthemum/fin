@@ -6,6 +6,8 @@ local _mtDeathStar = {__index = _DeathStar}
 function NewDeathStar(buildingCore)
     local DeathStar = setmetatable({}, _mtDeathStar)
     DeathStar.BuildingCore = buildingCore
+    DeathStar.BuildingCore.BuildingType = "DeathStar"
+    DeathStar.ClientTerminal = nil
     return DeathStar
 end
 
@@ -22,4 +24,12 @@ end
 function DestroyDeathStar(planet)
     local buildingType = "DeathStar" 
     return DestroyBuildingCore(planet, buildingType)
+end
+
+function _DeathStar.SetClientTerminal(self, clientTerminal)
+    self.ClientTerminal = clientTerminal
+end
+
+function _DeathStar.ExecCommand(self, command)
+    self.ClientTerminal:ScreenErrMsg("DeathStar")
 end

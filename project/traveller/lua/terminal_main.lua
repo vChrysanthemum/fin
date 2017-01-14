@@ -7,10 +7,14 @@ end
 function _Terminal.StartEnv(self, command)
     local commandArr = StringSplit(command, " ")
     if nil == commandArr or 0 == TableLength(commandArr) then
-        return
+        return false
+    end
+    local ret = self.CmdExcuter[commandArr[1]]:StartEnv(command)
+    if false == ret then
+        return false
     end
     self.CurrentEnv = commandArr[1]
-    self.CmdExcuter[commandArr[1]]:StartEnv(command)
+    return true
 end
 
 function _Terminal.ExecCommand(self, nodePointer, command)

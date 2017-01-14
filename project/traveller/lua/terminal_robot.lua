@@ -16,7 +16,7 @@ function _TerminalRobot.StartEnv(self, command)
     local position = {}
     if TableLength(commandArr) < 2 then
         self.Terminal:ScreenErrMsg("请输入机器人监听地址")
-        return
+        return false
     end 
     robotServiceAddress = commandArr[2]
 
@@ -24,12 +24,13 @@ function _TerminalRobot.StartEnv(self, command)
     local robot = GRobotCenter:GetRobotByServiceAddress(robotServiceAddress)
     if nil == robot then
         self.Terminal:ScreenErrMsg(string.format("无法连接机器人 %s", robotServiceAddress))
-        return
+        return false
     end
 
     self.ConnentingRobot = robot
     self.ConnentingRobot:SetClientTerminal(self.Terminal)
     self.Terminal.Port:TerminalSetCommandPrefix(string.format("%s> ", robot.RobotCore.Info.Name))
+    return true
 end
 
 function _TerminalRobot.ExecCommand(self, nodePointer, command)

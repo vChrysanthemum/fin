@@ -14,6 +14,7 @@ function _TerminalSpaceship.StartEnv(self, command)
     self.Terminal:ScreenInfoMsg("连接 飞船 ...")
     self.Spaceship = GUserSpaceship
     self.Terminal.Port:TerminalSetCommandPrefix(string.format("%s> ", self.Spaceship.Info.Name))
+    return true
 end
 
 function _TerminalSpaceship.ExecCommand(self, nodePointer, command)
