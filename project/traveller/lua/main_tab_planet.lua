@@ -34,7 +34,7 @@ function RefreshNodeTabPlanetParPlanetInfo()
     local building = nil
     if nil ~= planet.ModuleDevelopedBuilding then
         for _, building in ipairs(planet.ModuleDevelopedBuilding) do
-            moduleDeveloped = moduleDeveloped .. string.format("%s\n", building:GetBuildingTypeCh())
+            moduleDeveloped = moduleDeveloped .. string.format("%s\n", GDictE2C[building.BuildingCore.Info.BuildingType])
         end
     end
 

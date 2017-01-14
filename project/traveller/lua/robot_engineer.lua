@@ -59,6 +59,12 @@ function _RobotEngineer.ExecCommand(self, command)
         RefreshNodeTabPlanetParPlanetInfo()
 
     elseif "aboard" == commandArr[1] then
+        if nil ~= self.RobotCore.Info.Action then
+            self:CleanJob()
+            RefreshNodeTabPlanetParPlanetInfo()
+            self.ClientTerminal:ScreenInfoMsg(string.format("清空任务完成"))
+        end
+
         if nil == self.RobotCore.Info.LandingPlanetId then
             self.ClientTerminal:ScreenErrMsg(string.format("机器人不在星球上"))
             return
@@ -75,7 +81,9 @@ function _RobotEngineer.ExecCommand(self, command)
         RefreshNodeTabPlanetParPlanetInfo()
 
     elseif "mine" == commandArr[1] then
-        if nil ~= self.RobotCore.Info.LandingPlanetId then
+        if nil == self.RobotCore.Info.LandingPlanetId then
+            self.ClientTerminal:ScreenInfoMsg(string.format("%s未登录星球", self.RobotCore.Info.Name))
+        else 
             self.RobotCore.Info.Action = "mine"
             self.RobotCore:FlushToDB()
             RefreshNodeTabPlanetParPlanetInfo()
@@ -107,10 +115,21 @@ function _RobotEngineer.ExecCommand(self, command)
             return
         end
 
+        local RobotCorePlanetLanding = GWorld:GetPlanetByPlanetId(self.RobotCore.Info.LandingPlanetId)
         local buildingType = commandArr[2]
-        if "PowerPlant" == buildingType then
-            self:BuildPowerPlant()
+        self:Build(buildingType)
+     
+
+    elseif "destroy" == commandArr[1] then
+        if nil == self.RobotCore.Info.LandingPlanetId then
+            self.ClientTerminal:ScreenErrMsg(string.format("机器人没有停落在任何星球，无法摧毁建筑"))
+            return
         end
+
+        local RobotCorePlanetLanding = GWorld:GetPlanetByPlanetId(self.RobotCore.Info.LandingPlanetId)
+        local buildingType = commandArr[2]
+        self:Destroy(buildingType)
+
 
     elseif "cleanjob" == commandArr[1] then
         self:CleanJob()
@@ -163,22 +182,56 @@ function _RobotEngineer.CollectResourceToPlanet(self, resourceNum)
     self.ClientTerminal:ScreenInfoMsg("收集资源完成")
 end
 
-function _RobotEngineer.BuildPowerPlant(self)
+function _RobotEngineer.Destroy(self, buildingType)
     local RobotCorePlanetLanding = GWorld:GetPlanetByPlanetId(self.RobotCore.Info.LandingPlanetId)
     if nil == RobotCorePlanetLanding then
         self.ClientTerminal:ScreenErrMsg("星球不存在")
         return
     end
 
-    local powerPlant = BuildPowerPlant(RobotCorePlanetLanding)
+    local building = {}
+    if "PowerPlant" == buildingType then
+        ret = DestroyPowerPlant(RobotCorePlanetLanding)
+    elseif "DeathStar" == buildingType then
+        ret = DestroyDeathStar(RobotCorePlanetLanding)
+    else
+        self.ClientTerminal:ScreenErrMsg(string.format("无效建筑 %s", buildingType))
+        return
+    end
 
-    if "string" == type(powerPlant) then
-        self.ClientTerminal:ScreenErrMsg(string.format("建造失败: %s", powerPlant))
+    if "string" == type(ret) then
+        self.ClientTerminal:ScreenErrMsg(string.format("摧毁失败: %s", ret))
         return
     end
     RobotCorePlanetLanding:RefreshModuleDevelopedBuilding()
     RefreshNodeTabPlanetParPlanetInfo()
-    self.ClientTerminal:ScreenInfoMsg(string.format("建造%s完成", powerPlant:GetBuildingTypeCh()))
+    self.ClientTerminal:ScreenInfoMsg(string.format("摧毁%s完成", GDictE2C[buildingType]))
+end
+
+function _RobotEngineer.Build(self, buildingType)
+    local RobotCorePlanetLanding = GWorld:GetPlanetByPlanetId(self.RobotCore.Info.LandingPlanetId)
+    if nil == RobotCorePlanetLanding then
+        self.ClientTerminal:ScreenErrMsg("星球不存在")
+        return
+    end
+
+    local building = {}
+    if "PowerPlant" == buildingType then
+        building = BuildPowerPlant(RobotCorePlanetLanding)
+    elseif "DeathStar" == buildingType then
+        building = BuildDeathStar(RobotCorePlanetLanding)
+    else
+        self.ClientTerminal:ScreenErrMsg(string.format("无效建筑 %s", buildingType))
+        return
+    end
+
+    if "string" == type(building) then
+        self.ClientTerminal:ScreenErrMsg(string.format("建造失败: %s", building))
+        return
+    end
+    RobotCorePlanetLanding:RefreshModuleDevelopedBuilding()
+    RefreshNodeTabPlanetParPlanetInfo()
+    self.ClientTerminal:ScreenInfoMsg(string.format("建造%s完成", GDictE2C[building.BuildingCore.Info.BuildingType]))
 end
 
 -- 挖矿
