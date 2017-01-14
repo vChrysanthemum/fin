@@ -102,10 +102,29 @@ function _RobotEngineer.ExecCommand(self, command)
         end
 
         if "resource" == commandArr[2] then
-            self:CollectResourceToPlanet(commandArr[3])
+            self:CollectResourceFromPlanet(commandArr[3])
             RefreshNodeTabPlanetParPlanetInfo()
         else 
             self.ClientTerminal:ScreenErrMsg(string.format("需指定收集对象"))
+        end
+
+
+    elseif "transport" == commandArr[1] then
+        local GUserSpaceshipPlanetLanding = GWorld:GetPlanetByPlanetId(GUserSpaceship.LandingPlanetId)
+        local RobotCorePlanetLanding = GWorld:GetPlanetByPlanetId(self.RobotCore.Info.LandingPlanetId)
+
+        if nil == self.RobotCore.Info.LandingPlanetId or 
+            nil == GUserSpaceshipPlanetLanding or 
+            RobotCorePlanetLanding.Info.PlanetId ~= GUserSpaceshipPlanetLanding.Info.PlanetId then
+            self.ClientTerminal:ScreenErrMsg(string.format("无法输送"))
+            return
+        end
+
+        if "resource" == commandArr[2] then
+            self:TransportResourceToPlanet(commandArr[3])
+            RefreshNodeTabPlanetParPlanetInfo()
+        else 
+            self.ClientTerminal:ScreenErrMsg(string.format("需指定输送对象"))
         end
 
 
@@ -154,7 +173,7 @@ function _RobotEngineer.AboardSpaceship(self)
     self.RobotCore:AboardSpaceship()
 end
 
-function _RobotEngineer.CollectResourceToPlanet(self, resourceNum)
+function _RobotEngineer.CollectResourceFromPlanet(self, resourceNum)
     resourceNum = tonumber(resourceNum)
     if nil == resourceNum or resourceNum <= 0 then
         self.ClientTerminal:ScreenErrMsg("需输入正确资源数量")
@@ -167,7 +186,9 @@ function _RobotEngineer.CollectResourceToPlanet(self, resourceNum)
         return
     end
 
-    local ret = RobotCorePlanetLanding:ChangeDevelopedResource(-1*resourceNum)
+    local ret = nil
+
+    ret = RobotCorePlanetLanding:ChangeDevelopedResource(-1*resourceNum)
     if true ~= ret then
         self.ClientTerminal:ScreenErrMsg(string.format(ret))
         return
@@ -180,6 +201,36 @@ function _RobotEngineer.CollectResourceToPlanet(self, resourceNum)
     end
 
     self.ClientTerminal:ScreenInfoMsg("收集资源完成")
+end
+
+function _RobotEngineer.TransportResourceToPlanet(self, resourceNum)
+    resourceNum = tonumber(resourceNum)
+    if nil == resourceNum or resourceNum <= 0 then
+        self.ClientTerminal:ScreenErrMsg("需输入正确资源数量")
+        return
+    end
+
+    local RobotCorePlanetLanding = GWorld:GetPlanetByPlanetId(self.RobotCore.Info.LandingPlanetId)
+    if nil == RobotCorePlanetLanding then
+        self.ClientTerminal:ScreenErrMsg("星球不存在")
+        return
+    end
+
+    local ret = nil
+
+    ret = GUserSpaceship:ChangeCabinResource(-1*resourceNum)
+    if true ~= ret then
+        self.ClientTerminal:ScreenErrMsg(string.format(ret))
+        return
+    end
+
+    ret = RobotCorePlanetLanding:ChangeDevelopedResource(resourceNum)
+    if true ~= ret then
+        self.ClientTerminal:ScreenErrMsg(string.format(ret))
+        return
+    end
+
+    self.ClientTerminal:ScreenInfoMsg("输送资源完成")
 end
 
 function _RobotEngineer.Destroy(self, buildingType)
