@@ -96,5 +96,10 @@ end
 
 -- 更改已开发资源数量
 function _Planet.ChangeDevelopedResource(self, delta)
+    if self.Info.ModuleDeveloped.Resource + delta < 0 then
+        return "资源不足"
+    end
     self.Info.ModuleDeveloped.Resource = self.Info.ModuleDeveloped.Resource + delta
+    self:FlushToDB()
+    return true
 end

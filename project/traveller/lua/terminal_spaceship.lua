@@ -51,7 +51,7 @@ function _TerminalSpaceship.ExecCommand(self, nodePointer, command)
         end
 
     elseif "landing" == commandArr[1] then
-        if nil ~= self.Spaceship.LoginedPlanet then
+        if nil ~= self.Spaceship.PlanetLanding then
             self.Terminal:StartEnv("/planet")
         end
 

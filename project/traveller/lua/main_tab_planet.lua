@@ -36,13 +36,12 @@ function RefreshNodeTabPlanetParPlanetInfo()
 坐标: %d, %d
 资源: %f
 
-已着陆机器人:
-%s
-
 已开发模块:
+%s
+已着陆机器人:
 %s]], 
     GTabPlanet.Info.Name, GTabPlanet.Info.Position.X, GTabPlanet.Info.Position.Y, GTabPlanet.Info.Resource,
-    robotsStr, moduleDeveloped)
+    moduleDeveloped, robotsStr)
 
     NodeTabPlanetParPlanetInfo:SetValue(value)
 end

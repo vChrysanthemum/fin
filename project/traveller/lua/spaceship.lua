@@ -17,7 +17,7 @@ function GetSpaceshipFromDB(spaceshipId)
     local spaceship = NewSpaceship()
     spaceship:Format(json.decode(row.data), spaceshipId)
 
-    spaceship.LoginedPlanet = nil
+    spaceship.PlanetLanding = nil
     spaceship.NewestMsg = ""
 
     return spaceship
@@ -36,12 +36,14 @@ function NewSpaceship()
         StartAt     = TimeNow(),
         Life        = 82,
         Fuel        = 100,
-        Jumpers     = 6,
+        Cabin       = {
+            Jumpers     = 6,
+            Resource    = 20,
+        },
     }, nil)
     Spaceship.ColorBg   = ""
 
-    local Cabin     = {}
-    Spaceship.Cabin = Cabin
+    Spaceship.Cabin = {}
 
     Spaceship.lastFlushToDBForRunOneStepAt = 0
 
@@ -111,7 +113,10 @@ function _Spaceship.Format(self, spaceshipInfo, spaceship_id)
         StartAt     = spaceshipInfo.StartAt,
         Fuel        = spaceshipInfo.Fuel,
         Life        = spaceshipInfo.Life,
-        Jumpers     = spaceshipInfo.Jumpers,
+        Cabin = {
+            Jumpers     = spaceshipInfo.Cabin.Jumpers,
+            Resource    = spaceshipInfo.Cabin.Resource,
+        },
     }
 end
 
@@ -193,21 +198,22 @@ Y: %f
 速度Y: %f/s
 飞行历时: %d]], self.Info.Position.X, self.Info.Position.Y, self.Info.Speed.X, self.Info.Speed.Y, TimeNow() - self.Info.StartAt))
 NodeParGUserSpaceshipCabin:SetValue(string.format([[
-时空跳跃者: %d]], self.Info.Jumpers))
+时空跳跃者: %d
+资源: %f]], self.Info.Cabin.Jumpers, self.Info.Cabin.Resource))
 end
 
 -- spaceship tools
 
 -- 运行跳跃者
 function _Spaceship.JumperRun(self, position)
-    if self.Info.Jumpers <= 0 then
+    if self.Info.Cabin.Jumpers <= 0 then
         return "没有可用跳跃者"
     end
 
     self.Info.Position.X = position.X
     self.Info.Position.Y = position.Y
     self:refreshCenterRectangle()
-    self.Info.Jumpers = self.Info.Jumpers - 1
+    self.Info.Cabin.Jumpers = self.Info.Cabin.Jumpers - 1
     self:FlushToDB()
 
     return nil
@@ -222,7 +228,7 @@ end
 function _Spaceship.EventCachedByPlanet(self, planet)
     self.Info.Speed.X = 0
     self.Info.Speed.Y = 0
-    self.LoginedPlanet = planet
+    self.PlanetLanding = planet
     self:SetNewestMsg(string.format("飞船被 %s 引力捕获", planet.Info.Name))
 
     self:FlushToDB()
@@ -230,8 +236,8 @@ end
 
 -- 离开星球捕获事件
 function _Spaceship.EventLeavePlanet(self)
-    self:SetNewestMsg(string.format("飞船离开 %s", self.LoginedPlanet.Info.Name))
-    self.LoginedPlanet = nil
+    self:SetNewestMsg(string.format("飞船离开 %s", self.PlanetLanding.Info.Name))
+    self.PlanetLanding = nil
 
     self:FlushToDB()
 end
@@ -242,7 +248,7 @@ function _Spaceship.RunOneStep(self)
     self.Info.Position.Y = self.Info.Position.Y + self.Info.Speed.Y
     self:refreshCenterRectangle()
 
-    if nil == self.LoginedPlanet then
+    if nil == self.PlanetLanding then
         self:UpdateFuel(-0.01)
     end
 
@@ -254,7 +260,7 @@ end
 
 function _Spaceship.LoopEvent(self)
     -- 检查飞船是否被星球引力捕获
-    if nil == self.LoginedPlanet then
+    if nil == self.PlanetLanding then
         local planet = GRadar:GetPlanetOnScreenByScreenPosition(self.ScreenPosition)
         if nil ~= planet and
             math.abs(self.Info.Speed.X) < GWorld.LeavePlanetSpeed and
@@ -265,13 +271,13 @@ function _Spaceship.LoopEvent(self)
     end
 
     -- 检查飞船是否离开星球
-    if nil ~= self.LoginedPlanet then
+    if nil ~= self.PlanetLanding then
         -- 检查飞船是否会被星球引力捕获
         if (math.abs(self.Info.Speed.X) > 0 or
             math.abs(self.Info.Speed.Y) > 0) and
             math.abs(self.Info.Speed.X) < GWorld.LeavePlanetSpeed and
             math.abs(self.Info.Speed.Y) < GWorld.LeavePlanetSpeed then
-            GUserSpaceship:EventCachedByPlanet(self.LoginedPlanet)
+            GUserSpaceship:EventCachedByPlanet(self.PlanetLanding)
             return
         end
 
@@ -285,4 +291,14 @@ function _Spaceship.LoopEvent(self)
     GUserSpaceship:RunOneStep()
     GRadar:RefreshScreenPlanets(GWorld:GetPlanetsByRectangle(self.CenterRectangle),
     self.CenterRectangle)
+end
+
+-- 更改仓库资源数量
+function _Spaceship.ChangeCabinResource(self, delta)
+    if self.Info.Cabin.Resource + delta < 0 then
+        return "资源不足"
+    end
+    self.Info.Cabin.Resource = self.Info.Cabin.Resource + delta
+    self:FlushToDB()
+    return true
 end

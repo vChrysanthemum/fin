@@ -14,8 +14,8 @@ function _TerminalPlanet.StartEnv(self, command)
     local commandArr = StringSplit(command, " ")
 
     local position = {}
-    if nil ~= GUserSpaceship.LoginedPlanet then
-        position = GUserSpaceship.LoginedPlanet.Info.Position
+    if nil ~= GUserSpaceship.PlanetLanding then
+        position = GUserSpaceship.PlanetLanding.Info.Position
     else
         if TableLength(commandArr) < 3 then
             self.Terminal:ScreenErrMsg("请输入星球坐标")

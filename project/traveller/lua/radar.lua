@@ -202,5 +202,4 @@ function _Radar.DrawSpaceship(self)
   GUserSpaceship.ScreenPosition.X,
   GUserSpaceship.ScreenPosition.Y,
   GUserSpaceship.Info.Character, GUserSpaceship.Info.ColorFg, GUserSpaceship.ColorBg)
-
 end
