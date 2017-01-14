@@ -188,13 +188,15 @@ end
 function _Radar.DrawPlanets(self)
     self:RefreshParInfo()
     local planet = {}
-    for _, planetId in pairs(self.ScreenPlanets) do
+    for k, planetId in pairs(self.ScreenPlanets) do
         planet = GWorld:GetPlanetByPlanetId(planetId)
         if nil ~= planet then
             NodeRadar:CanvasSet(
             planet.ScreenPosition.X,
             planet.ScreenPosition.Y,
             planet.Info.Character, planet.Info.ColorFg, planet.ColorBg)
+        else 
+            table.remove(self.ScreenPlanets, k)
         end
     end
 end

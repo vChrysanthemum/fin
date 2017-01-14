@@ -81,6 +81,9 @@ function _World.GetPlanetByPlanetId(self, planetId)
     local rows = DB:Query(sql)
     local row = rows:FetchOne()
     rows:Close()
+    if nil == row then
+        return nil
+    end
     planet = NewPlanet()
     planet:Format(json.decode(row.data), row.planet_id)
     self.Planets[planet.Info.PlanetId] = planet
@@ -242,4 +245,19 @@ function _World.GetPlanetsByRectangle(self, rectangle)
     end
 
     return planets
+end
+
+function _World.RemovePlanet(self, planet)
+    local newPlanets = {}
+    for _, _planet in pairs(self.Planets) do
+        if _planet.Info.PlanetId ~= planet.Info.PlanetId then 
+            newPlanets[_planet.Info.PlanetId] = _planet
+        end
+    end
+    self.Planets = newPlanets
+
+    local sql = string.format(
+    "delete from b_planet where planet_id=%d",
+    planet.Info.PlanetId)
+    DB:Exec(sql)
 end
