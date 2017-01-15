@@ -6,6 +6,7 @@ package lua
 
 import (
 	"fmt"
+	"github.com/yuin/gopher-lua/parse"
 	"io"
 	"math"
 	"os"
@@ -13,8 +14,6 @@ import (
 	"strings"
 	"sync/atomic"
 	"time"
-
-	"github.com/yuin/gopher-lua/parse"
 )
 
 const MultRet = -1
@@ -1604,63 +1603,61 @@ func (ls *LState) Call(nargs, nret int) {
 
 func (ls *LState) PCall(nargs, nret int, errfunc *LFunction) (err error) {
 	err = nil
+	sp := ls.stack.Sp()
+	base := ls.reg.Top() - nargs - 1
+	oldpanic := ls.Panic
 	ls.Panic = panicWithoutTraceback
 	if errfunc != nil {
 		ls.hasErrorFunc = true
 	}
-	/*
-		sp := ls.stack.Sp()
-		base := ls.reg.Top() - nargs - 1
-		oldpanic := ls.Panic
-		defer func() {
-			ls.Panic = oldpanic
-			ls.hasErrorFunc = false
-			rcv := recover()
-			if rcv != nil {
-				if _, ok := rcv.(*ApiError); !ok {
-					err = newApiErrorS(ApiErrorPanic, fmt.Sprint(rcv))
-					if ls.Options.IncludeGoStackTrace {
-						buf := make([]byte, 4096)
-						runtime.Stack(buf, false)
-						err.(*ApiError).StackTrace = strings.Trim(string(buf), "\000") + "\n" + ls.stackTrace(0)
-					}
-				} else {
-					err = rcv.(*ApiError)
+	defer func() {
+		ls.Panic = oldpanic
+		ls.hasErrorFunc = false
+		rcv := recover()
+		if rcv != nil {
+			if _, ok := rcv.(*ApiError); !ok {
+				err = newApiErrorS(ApiErrorPanic, fmt.Sprint(rcv))
+				if ls.Options.IncludeGoStackTrace {
+					buf := make([]byte, 4096)
+					runtime.Stack(buf, false)
+					err.(*ApiError).StackTrace = strings.Trim(string(buf), "\000") + "\n" + ls.stackTrace(0)
 				}
-				if errfunc != nil {
-					ls.Push(errfunc)
-					ls.Push(err.(*ApiError).Object)
-					ls.Panic = panicWithoutTraceback
-					defer func() {
-						ls.Panic = oldpanic
-						rcv := recover()
-						if rcv != nil {
-							if _, ok := rcv.(*ApiError); !ok {
-								err = newApiErrorS(ApiErrorPanic, fmt.Sprint(rcv))
-								if ls.Options.IncludeGoStackTrace {
-									buf := make([]byte, 4096)
-									runtime.Stack(buf, false)
-									err.(*ApiError).StackTrace = strings.Trim(string(buf), "\000") + ls.stackTrace(0)
-								}
-							} else {
-								err = rcv.(*ApiError)
-								err.(*ApiError).StackTrace = ls.stackTrace(0)
+			} else {
+				err = rcv.(*ApiError)
+			}
+			if errfunc != nil {
+				ls.Push(errfunc)
+				ls.Push(err.(*ApiError).Object)
+				ls.Panic = panicWithoutTraceback
+				defer func() {
+					ls.Panic = oldpanic
+					rcv := recover()
+					if rcv != nil {
+						if _, ok := rcv.(*ApiError); !ok {
+							err = newApiErrorS(ApiErrorPanic, fmt.Sprint(rcv))
+							if ls.Options.IncludeGoStackTrace {
+								buf := make([]byte, 4096)
+								runtime.Stack(buf, false)
+								err.(*ApiError).StackTrace = strings.Trim(string(buf), "\000") + ls.stackTrace(0)
 							}
+						} else {
+							err = rcv.(*ApiError)
+							err.(*ApiError).StackTrace = ls.stackTrace(0)
 						}
-					}()
-					ls.Call(1, 1)
-					err = newApiError(ApiErrorError, ls.Get(-1))
-				} else if len(err.(*ApiError).StackTrace) == 0 {
-					err.(*ApiError).StackTrace = ls.stackTrace(0)
-				}
-				ls.reg.SetTop(base)
+					}
+				}()
+				ls.Call(1, 1)
+				err = newApiError(ApiErrorError, ls.Get(-1))
+			} else if len(err.(*ApiError).StackTrace) == 0 {
+				err.(*ApiError).StackTrace = ls.stackTrace(0)
 			}
-			ls.stack.SetSp(sp)
-			if sp == 0 {
-				ls.currentFrame = nil
-			}
-		}()
-	*/
+			ls.reg.SetTop(base)
+		}
+		ls.stack.SetSp(sp)
+		if sp == 0 {
+			ls.currentFrame = nil
+		}
+	}()
 
 	ls.Call(nargs, nret)
 
