@@ -3,7 +3,6 @@ package ui
 import (
 	uiutils "fin/ui/utils"
 	"fmt"
-	"log"
 	"strconv"
 	"strings"
 
@@ -51,7 +50,6 @@ func (p *NodeLineChart) NodeDataSetValue(content string) {
 			arr = append(arr, _f64)
 		}
 	}
-	log.Println(arr)
 	uiBuffer.Data = arr
 
 	p.Node.uiRender()
