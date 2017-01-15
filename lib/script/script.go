@@ -66,6 +66,8 @@ func (p *Script) RegisterBaseTable(L *lua.LState, baseTable *lua.LTable) {
 
 	L.SetField(baseTable, "NewUnixSockClient", L.NewFunction(p.NewUnixSockClient))
 	L.SetField(baseTable, "UnixSockGet", L.NewFunction(p.UnixSockGet))
+
+	L.SetField(baseTable, "GetMemAlloc", L.NewFunction(p.GetMemAlloc))
 }
 
 func (p *Script) RegisterScript(L *lua.LState) {
