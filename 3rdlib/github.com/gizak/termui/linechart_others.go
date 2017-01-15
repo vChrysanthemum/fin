@@ -6,6 +6,8 @@
 
 package termui
 
-const VDASH = '┊'
-const HDASH = '┈'
+//const VDASH = '┊'
+//const HDASH = '┈'
+const VDASH = '╎'
+const HDASH = '-'
 const ORIGIN = '└'

@@ -1,0 +1,24 @@
+<html>
+<head>
+  <title>Test</title>
+</head>
+<body colorfg="blue">
+  <script type="text/lua">
+NodeLineChart = Node("LineChart")
+NodeLineChart:SetValue("2,3,4,5,6")
+  </script>
+  <table>
+    <tr>
+      <td>
+        <tr>
+          <td offset=3 cols=3>
+            <linechart id="LineChart" 
+                       axescolor=blue height=10 width=30 mode="braille" top=10 border=true borderlabel=" test ">
+            </linechart>
+          </td>
+        </tr>
+      </td>
+    </tr>
+</table>
+</body>
+</html>

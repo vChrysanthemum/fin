@@ -28,6 +28,7 @@ func (p *Page) prepareRender() {
 		&RenderAgent{[]string{"body", "gauge"}, p.renderBodyGauge},
 		&RenderAgent{[]string{"body", "tabpane"}, p.renderBodyTabpane},
 		&RenderAgent{[]string{"body", "modal"}, p.renderBodyModal},
+		&RenderAgent{[]string{"body", "linechart"}, p.renderBodyLineChart},
 	}
 }
 

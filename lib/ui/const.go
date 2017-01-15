@@ -1,6 +1,10 @@
 package ui
 
-import "fin/ui/utils"
+import (
+	"fin/ui/utils"
+
+	"github.com/gizak/termui"
+)
 
 const (
 	TABLE_TR_COLS = 12
@@ -25,4 +29,6 @@ var (
 	COLOR_DEFAULT_TAB_BG                         = utils.COLOR_DEFAULT
 	COLOR_DEFAULT_ACTIVE_TAB_FG                  = utils.COLOR_DEFAULT
 	COLOR_DEFAULT_ACTIVE_TAB_BG                  = utils.COLOR_DEFAULT
+	COLOR_DEFAULT_LINE_CHART_AXES                = utils.COLOR_WHITE
+	COLOR_DEFAULT_LINE_CHART_LINE                = utils.COLOR_BLUE | termui.AttrBold
 )
