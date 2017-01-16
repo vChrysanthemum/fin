@@ -200,9 +200,22 @@ Y: %f
 速度X: %f/s
 速度Y: %f/s
 飞行历时: %d]], self.Info.Position.X, self.Info.Position.Y, self.Info.Speed.X, self.Info.Speed.Y, TimeNow() - self.Info.StartAt))
-NodeParGUserSpaceshipCabin:SetValue(string.format([[
+    
+    local robotStr = {}
+    for _, robot in ipairs(GRobotCenter.Robots) do
+        if nil == RobotCorePlanetLanding then
+            table.insert(robotStr, string.format("%s", robot.RobotCore.Info.Name))
+        end
+    end
+    if TableLength(robotStr) > 0 then
+        robotStr = table.concat(robotStr, ', ')
+    else 
+        robotStr = ''
+    end
+    NodeParGUserSpaceshipCabin:SetValue(string.format([[
 时空跳跃者: %d
-资源: %f]], self.Info.Cabin.Jumpers, self.Info.Cabin.Resource))
+资源: %f
+机器人: %s]], self.Info.Cabin.Jumpers, self.Info.Cabin.Resource, robotStr))
 end
 
 -- spaceship tools
