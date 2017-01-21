@@ -3,7 +3,10 @@
 #### Fin 是一款终端下可以玩游戏的编辑器 -- 雏形
 #### Traveller 是基于 Fin 的星际旅行游戏 -- 简单的实现
 
- <img src="./fin.gif" align=center />
+<center><img src="./fin.gif" align=center /></center>
+
+[更详细的演示视频](http://www.bilibili.com/video/av8131488/)
+
 ******
 
 ### 简要介绍 Fin & Traveller
@@ -134,16 +137,18 @@ Traveller 主要以终端命令行为交互方式。
 新人类通过连接并控制机器人完成各种任务。  
 目前机器人只有 “工程师” 型号。
 
-| 命令       | 参数                                       | 详细                                       |
-| -------- | ---------------------------------------- | ---------------------------------------- |
-| /robot   | $ROBOT_SERVICE_ADDRESS  <br /> $ROBOT_SERVICE_ADDRESS 为字符串<br />表示机器人接受连接的地址。<br /> 譬如输入 /robot a1 | 连接并控制机器人 。<br /> 初始化 Traveller 后，<br />会为玩家自动生成两个机器人：黄鹂、大象。<br />连接地址分别为 a1 a2。 |
-| info     |                                          | 显示机器人详细信息。                               |
-| landing  |                                          | 登录星球，<br />机器人只有登录星球后才能工作。               |
-| aboard   |                                          | 返回飞船。                                    |
-| mine     |                                          | 挖矿，该操作将开发星球上的资源，<br />已开发的资源可用于建造建筑物。    |
-| cleanjob |                                          | 清空所有任务                                   |
-| build    | $BUILDING_TYPE<br />$BUILDING_TYPE 为字符串，表示建筑物类型。<br />目前可建造建筑物为能源站、死星 | 建造建筑物。<br />                             |
-| destroy  | $BUILDING_TYPE<br />$BUILDING_TYPE 为字符串，表示建筑物类型。 | 毁灭建筑物。                                   |
+| 命令                 | 参数                                       | 详细                                       |
+| ------------------ | ---------------------------------------- | ---------------------------------------- |
+| /robot             | $ROBOT_SERVICE_ADDRESS  <br /> $ROBOT_SERVICE_ADDRESS 为字符串<br />表示机器人接受连接的地址。<br /> 譬如输入 /robot a1 | 连接并控制机器人 。<br /> 初始化 Traveller 后，<br />会为玩家自动生成两个机器人：黄鹂、大象。<br />连接地址分别为 a1 a2。 |
+| info               |                                          | 显示机器人详细信息。                               |
+| landing            |                                          | 登录星球，<br />机器人只有登录星球后才能工作。               |
+| aboard             |                                          | 返回飞船。                                    |
+| mine               |                                          | 挖矿，该操作将开发星球上的资源，<br />已开发的资源可用于建造建筑物。    |
+| cleanjob           |                                          | 清空所有任务                                   |
+| build              | $BUILDING_TYPE<br />$BUILDING_TYPE 为字符串，表示建筑物类型。<br />目前可建造建筑物为能源站、死星 | 建造建筑物。<br />                             |
+| destroy            | $BUILDING_TYPE<br />$BUILDING_TYPE 为字符串，表示建筑物类型。 | 毁灭建筑物。                                   |
+| collect resource   | $NUMBER<br />$NUMBER 为数字，表示要收集的资源数量。     | 从星球上收集已开发的资源到飞船上。                        |
+| transport resource | $NUMBER<br />$NUMBER 为数字，表示要运输的资源数量。     | 把飞船上的资源运输到星球上。                           |
 
 
 
