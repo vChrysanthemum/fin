@@ -53,5 +53,9 @@ function _DeathStar.ExecCommand(self, command)
 
         GWorld:RemovePlanet(planet)
         self.ClientTerminal:ScreenInfoMsg(string.format("摧毁星球完成"))
+        GUserSpaceship:SetNewestMsg(string.format("星球 %s 被摧毁", planet.Info.Name))
+
+    else
+        self.Terminal:ScreenErrMsg(string.format("%s %s", self.Terminal.ErrCommandNotExists, command))
     end
 end

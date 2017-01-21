@@ -41,5 +41,8 @@ function _PowerPlant.ExecCommand(self, command)
 
         GUserSpaceship:UpdateFuel(100)
         self.ClientTerminal:ScreenInfoMsg(string.format("充电完成"))
+
+    else
+        self.Terminal:ScreenErrMsg(string.format("%s %s", self.Terminal.ErrCommandNotExists, command))
     end
 end
