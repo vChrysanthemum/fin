@@ -28,12 +28,20 @@ function _TerminalSpaceship.ExecCommand(self, nodePointer, command)
         tmp = tonumber(commandArr[2])
         if "number" == type(tmp) then
             self.Spaceship:SetSpeedX(tmp)
+            self.Terminal:ScreenSuccessMsg(string.format("飞船速度更新为: x:%f y:%f", 
+            self.Spaceship.Info.Speed.X, self.Spaceship.Info.Speed.Y))
+        else
+            self.Terminal:ScreenErrMsg("无效速度")
         end
 
     elseif "speedy" == commandArr[1] then
         tmp = tonumber(commandArr[2])
         if "number" == type(tmp) then
             self.Spaceship:SetSpeedY(tmp)
+            self.Terminal:ScreenSuccessMsg(string.format("飞船速度更新为: x:%f y:%f", 
+            self.Spaceship.Info.Speed.X, self.Spaceship.Info.Speed.Y))
+        else
+            self.Terminal:ScreenErrMsg("无效速度")
         end
 
     elseif "speed" == commandArr[1] then
@@ -41,6 +49,10 @@ function _TerminalSpaceship.ExecCommand(self, nodePointer, command)
         if "number" == type(tmp) then
             self.Spaceship:SetSpeedX(tmp)
             self.Spaceship:SetSpeedY(tmp)
+            self.Terminal:ScreenSuccessMsg(string.format("飞船速度更新为: x:%f y:%f", 
+            self.Spaceship.Info.Speed.X, self.Spaceship.Info.Speed.Y))
+        else
+            self.Terminal:ScreenErrMsg("无效速度")
         end
 
     elseif "jump" == commandArr[1] then
