@@ -102,6 +102,7 @@ void callbackTrampoline(sqlite3_context*, int, sqlite3_value**);
 */
 import "C"
 import (
+	"context"
 	"database/sql"
 	"database/sql/driver"
 	"errors"
@@ -114,8 +115,6 @@ import (
 	"strings"
 	"time"
 	"unsafe"
-
-	"golang.org/x/net/context"
 )
 
 // SQLiteTimestampFormats is timestamp formats understood by both this module
