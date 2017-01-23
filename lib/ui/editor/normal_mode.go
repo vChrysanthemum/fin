@@ -60,16 +60,16 @@ func (p *Editor) commandMoveTop() {
 	}
 
 	if p.offXCellIndexForVerticalMoveCursor > p.OffXCellIndex {
-		if p.offXCellIndexForVerticalMoveCursor >= len(p.CurrentLine.Cells) {
-			if 0 == len(p.CurrentLine.Cells) {
+		if p.offXCellIndexForVerticalMoveCursor >= len(p.Editor.CurrentLine().Cells) {
+			if 0 == len(p.Editor.CurrentLine().Cells) {
 				p.OffXCellIndex = 0
 			} else {
-				p.OffXCellIndex = len(p.CurrentLine.Cells) - 1
+				p.OffXCellIndex = len(p.Editor.CurrentLine().Cells) - 1
 			}
 		} else {
 			p.OffXCellIndex = p.offXCellIndexForVerticalMoveCursor
 		}
-		p.CursorLocation.RefreshCursorByLine(p.CurrentLine)
+		p.CursorLocation.RefreshCursorByLine(p.Editor.CurrentLine())
 	}
 }
 
@@ -87,16 +87,16 @@ func (p *Editor) commandMoveBottom() {
 	}
 
 	if p.offXCellIndexForVerticalMoveCursor > p.OffXCellIndex {
-		if p.offXCellIndexForVerticalMoveCursor >= len(p.CurrentLine.Cells) {
-			if 0 == len(p.CurrentLine.Cells) {
+		if p.offXCellIndexForVerticalMoveCursor >= len(p.Editor.CurrentLine().Cells) {
+			if 0 == len(p.Editor.CurrentLine().Cells) {
 				p.OffXCellIndex = 0
 			} else {
-				p.OffXCellIndex = len(p.CurrentLine.Cells) - 1
+				p.OffXCellIndex = len(p.Editor.CurrentLine().Cells) - 1
 			}
 		} else {
 			p.OffXCellIndex = p.offXCellIndexForVerticalMoveCursor
 		}
-		p.CursorLocation.RefreshCursorByLine(p.CurrentLine)
+		p.CursorLocation.RefreshCursorByLine(p.Editor.CurrentLine())
 	}
 }
 
@@ -125,7 +125,7 @@ func (p *Editor) commandEnterEditModeBackward() {
 }
 
 func (p *Editor) commandEnterEditModeForward() {
-	if len(p.CurrentLine.Cells) > 0 {
+	if len(p.CurrentLine().Cells) > 0 {
 		p.OffXCellIndex += 1
 	}
 	p.EditModeEnter()

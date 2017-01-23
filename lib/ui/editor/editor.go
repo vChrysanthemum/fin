@@ -19,7 +19,7 @@ type Editor struct {
 	NormalModeCommands     []NormalModeCommand
 	NormalModeCommandStack string
 
-	FirstLine, LastLine, CurrentLine *Line
+	CurrentLineIndex int
 
 	LinesLocker sync.RWMutex
 	Lines       []*Line
@@ -52,15 +52,22 @@ func NewEditor() *Editor {
 	return ret
 }
 
+func (p *Editor) CurrentLine() *Line {
+	if p.CurrentLineIndex >= len(p.Lines) {
+		return nil
+	}
+	return p.Lines[p.CurrentLineIndex]
+}
+
 func (p *Editor) UpdateCurrentLineData(line string) {
-	p.CurrentLine.Data = []byte(line)
+	p.CurrentLine().Data = []byte(line)
 }
 
 func (p *Editor) Write(keyStr string) (isQuitActiveMode bool) {
 	isQuitActiveMode = false
 
 	if 0 == len(p.Lines) {
-		p.CurrentLine = p.InitNewLine()
+		p.AppendNewLine()
 	}
 
 	switch keyStr {
@@ -145,7 +152,7 @@ REFRESH_BEGIN:
 		line = p.Lines[k]
 
 		if y >= p.Block.InnerArea.Dy() {
-			if p.CurrentLine == line {
+			if p.CurrentLineIndex == line.Index {
 				p.DisplayLinesTopIndex += 1
 				goto REFRESH_BEGIN
 			} else {
@@ -163,7 +170,7 @@ REFRESH_BEGIN:
 		for _, v := range linePrefix {
 			finalX = p.Block.InnerArea.Min.X + x
 			finalY = p.Block.InnerArea.Min.Y + y
-			p.Buf.Set(finalX, finalY, termui.Cell{rune(v), fg, bg, finalX, finalY})
+			p.Buf.Set(finalX, finalY, termui.Cell{rune(v), fg, bg, finalX, finalY, 0})
 			//termbox.SetCell(finalX, finalY, v, toTmAttr(fg), toTmAttr(bg))
 			x += 1
 		}
@@ -200,14 +207,14 @@ REFRESH_BEGIN:
 	for ; y < dy; y++ {
 		finalX = p.Block.InnerArea.Min.X
 		finalY = p.Block.InnerArea.Min.Y + y
-		p.Buf.Set(finalX, finalY, termui.Cell{'~', fg, bg, finalX, finalY})
+		p.Buf.Set(finalX, finalY, termui.Cell{'~', fg, bg, finalX, finalY, 0})
 	}
 }
 
 func (p *Editor) Buffer() termui.Buffer {
 	if nil == p.Buf {
 		if 0 == len(p.Lines) {
-			p.CurrentLine = p.InitNewLine()
+			p.AppendNewLine()
 		}
 		buf := p.Block.Buffer()
 		p.Buf = &buf
@@ -223,7 +230,7 @@ func (p *Editor) Buffer() termui.Buffer {
 func (p *Editor) ActiveMode() {
 	p.EditModeEnter()
 	p.CursorLocation.IsDisplay = true
-	p.CursorLocation.RefreshCursorByLine(p.CurrentLine)
+	p.CursorLocation.RefreshCursorByLine(p.CurrentLine())
 }
 
 func (p *Editor) UnActiveMode() {

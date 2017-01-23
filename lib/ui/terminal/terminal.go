@@ -1,4 +1,4 @@
-package editor
+package terminal
 
 import (
 	uiutils "fin/ui/utils"

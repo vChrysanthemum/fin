@@ -15,5 +15,5 @@ func toTmAttr(x termui.Attribute) termbox.Attribute {
 
 func (p *Editor) UIRender() {
 	p.RefreshContent()
-	p.CursorLocation.RefreshCursorByLine(p.CurrentLine)
+	p.CursorLocation.RefreshCursorByLine(p.CurrentLine())
 }

@@ -165,7 +165,7 @@ func TextCells(s string, fg, bg Attribute) []Cell {
 	for n := range runes {
 		// point, _ := sequence.PointAt(n, 0, 0)
 		// cs = append(cs, Cell{point.Ch, point.Fg, point.Bg})
-		cs = append(cs, Cell{runes[n], fg, bg, 0, 0})
+		cs = append(cs, Cell{runes[n], fg, bg, 0, 0, 0})
 	}
 	return cs
 }
@@ -205,7 +205,7 @@ func DTrimTxCls(cs []Cell, w int) []Cell {
 			rt = append(rt, c)
 			csw += cw
 		} else {
-			rt = append(rt, Cell{'…', c.Fg, c.Bg, 0, 0})
+			rt = append(rt, Cell{'…', c.Fg, c.Bg, 0, 0, 0})
 			break
 		}
 	}

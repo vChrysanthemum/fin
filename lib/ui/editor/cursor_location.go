@@ -28,47 +28,27 @@ func (p *CursorLocation) MoveCursorNRuneTop(n int) {
 		return
 	}
 
-	if nil == p.Editor.CurrentLine.Prev || len(p.Editor.Lines) == 0 {
-		return
-	}
-
-	var index, i int
-
-	if n >= len(p.Editor.Lines) {
+	index := p.Editor.CurrentLineIndex - n
+	if index < 0 {
 		index = 0
-		goto MOVE_END
 	}
 
-	for i = 0; i <= n; i++ {
-		if p.Editor.Lines[i] == p.Editor.CurrentLine {
-			index = 0
-			goto MOVE_END
-		}
-	}
+	p.Editor.CurrentLineIndex = index
 
-	for i = n + 1; i < len(p.Editor.Lines); i++ {
-		if p.Editor.Lines[i] == p.Editor.CurrentLine {
-			index = i - n
-			goto MOVE_END
-		}
-	}
-
-MOVE_END:
-	p.Editor.CurrentLine = p.Editor.Lines[index]
 	if index < p.Editor.DisplayLinesTopIndex {
 		p.Editor.DisplayLinesTopIndex = index
 		p.Editor.RefreshContent()
 	}
 
-	if 0 == len(p.Editor.CurrentLine.Cells) {
-		p.UISetCursor(p.Editor.CurrentLine.ContentStartX, p.Editor.CurrentLine.ContentStartY)
+	if 0 == len(p.Editor.CurrentLine().Cells) {
+		p.UISetCursor(p.Editor.CurrentLine().ContentStartX, p.Editor.CurrentLine().ContentStartY)
 
 	} else {
-		if p.OffXCellIndex >= len(p.Editor.CurrentLine.Cells) {
-			p.OffXCellIndex = len(p.Editor.CurrentLine.Cells) - 1
+		if p.OffXCellIndex >= len(p.Editor.CurrentLine().Cells) {
+			p.OffXCellIndex = len(p.Editor.CurrentLine().Cells) - 1
 		}
 
-		cell := p.Editor.CurrentLine.Cells[p.OffXCellIndex]
+		cell := p.Editor.CurrentLine().Cells[p.OffXCellIndex]
 		p.UISetCursor(cell.X, cell.Y)
 	}
 }
@@ -78,51 +58,27 @@ func (p *CursorLocation) MoveCursorNRuneBottom(n int) {
 		return
 	}
 
-	if nil == p.Editor.CurrentLine.Next || len(p.Editor.Lines) == 0 {
-		return
-	}
-
-	var i, index, last int
-
-	if n >= len(p.Editor.Lines) {
+	index := p.Editor.CurrentLineIndex + n
+	if index >= len(p.Editor.Lines) {
 		index = len(p.Editor.Lines) - 1
-		goto MOVE_END
 	}
 
-	last = len(p.Editor.Lines) - n
-	if last <= 0 {
-		index = len(p.Editor.Lines) - 1
-		goto MOVE_END
-	}
+	p.Editor.CurrentLineIndex = index
 
-	for i = 0; i < len(p.Editor.Lines); i++ {
-		if i >= last {
-			index = len(p.Editor.Lines) - 1
-			goto MOVE_END
-		}
-
-		if p.Editor.Lines[i] == p.Editor.CurrentLine {
-			index = i + n
-			goto MOVE_END
-		}
-	}
-
-MOVE_END:
-	p.Editor.CurrentLine = p.Editor.Lines[index]
 	if index > p.Editor.DisplayLinesBottomIndex {
 		p.Editor.DisplayLinesTopIndex += (index - p.Editor.DisplayLinesBottomIndex)
 		p.Editor.RefreshContent()
 	}
 
-	if 0 == len(p.Editor.CurrentLine.Cells) {
-		p.UISetCursor(p.Editor.CurrentLine.ContentStartX, p.Editor.CurrentLine.ContentStartY)
+	if 0 == len(p.Editor.CurrentLine().Cells) {
+		p.UISetCursor(p.Editor.CurrentLine().ContentStartX, p.Editor.CurrentLine().ContentStartY)
 
 	} else {
-		if p.OffXCellIndex >= len(p.Editor.CurrentLine.Cells) {
-			p.OffXCellIndex = len(p.Editor.CurrentLine.Cells) - 1
+		if p.OffXCellIndex >= len(p.Editor.CurrentLine().Cells) {
+			p.OffXCellIndex = len(p.Editor.CurrentLine().Cells) - 1
 		}
 
-		cell := p.Editor.CurrentLine.Cells[p.OffXCellIndex]
+		cell := p.Editor.CurrentLine().Cells[p.OffXCellIndex]
 		p.UISetCursor(cell.X, cell.Y)
 	}
 }
@@ -132,7 +88,7 @@ func (p *CursorLocation) MoveCursorNRuneLeft(n int) {
 		return
 	}
 
-	if len(p.Editor.CurrentLine.Cells) == 0 {
+	if len(p.Editor.CurrentLine().Cells) == 0 {
 		p.OffXCellIndex = 0
 		return
 	}
@@ -142,7 +98,7 @@ func (p *CursorLocation) MoveCursorNRuneLeft(n int) {
 		p.OffXCellIndex = 0
 	}
 
-	cell := p.Editor.CurrentLine.Cells[p.OffXCellIndex]
+	cell := p.Editor.CurrentLine().Cells[p.OffXCellIndex]
 	p.UISetCursor(cell.X, cell.Y)
 }
 
@@ -151,17 +107,17 @@ func (p *CursorLocation) MoveCursorNRuneRight(n int) {
 		return
 	}
 
-	if len(p.Editor.CurrentLine.Cells) == 0 {
+	if len(p.Editor.CurrentLine().Cells) == 0 {
 		p.OffXCellIndex = 0
 		return
 	}
 
 	p.OffXCellIndex += n
-	if p.OffXCellIndex >= len(p.Editor.CurrentLine.Cells) {
-		p.OffXCellIndex = len(p.Editor.CurrentLine.Cells) - 1
+	if p.OffXCellIndex >= len(p.Editor.CurrentLine().Cells) {
+		p.OffXCellIndex = len(p.Editor.CurrentLine().Cells) - 1
 	}
 
-	cell := p.Editor.CurrentLine.Cells[p.OffXCellIndex]
+	cell := p.Editor.CurrentLine().Cells[p.OffXCellIndex]
 	p.UISetCursor(cell.X, cell.Y)
 }
 

@@ -7,6 +7,7 @@ package termui
 import (
 	"regexp"
 	"strings"
+	"unicode/utf8"
 
 	"github.com/mitchellh/go-wordwrap"
 )
@@ -216,7 +217,7 @@ func WrapTx(cs []Cell, wl int) []Cell {
 				trigger = "stop"
 			} else if plainRune[i] != plainWrappedRune[i] && plainWrappedRune[i] == 10 {
 				trigger = "go"
-				cell := Cell{10, 0, 0, 0, 0}
+				cell := Cell{10, 0, 0, 0, 0, 0}
 				j := i - 0
 
 				// insert a cell into the []Cell in correct position
@@ -259,8 +260,15 @@ func (mtb MarkdownTxBuilder) Build(s string, fg, bg Attribute) []Cell {
 	mtb.reset()
 	mtb.parse(s)
 	cs := make([]Cell, len(mtb.plainTx))
+	_off := 0
 	for i := range cs {
-		cs[i] = Cell{Ch: mtb.plainTx[i], Fg: fg, Bg: bg}
+		if i > 0 {
+			_off += utf8.RuneLen(cs[i-1].Ch)
+			cs[i] = Cell{Ch: mtb.plainTx[i], Fg: fg, Bg: bg, BytesOff: _off}
+		} else {
+			cs[i] = Cell{Ch: mtb.plainTx[i], Fg: fg, Bg: bg, BytesOff: 0}
+		}
+
 	}
 	for _, mrk := range mtb.markers {
 		for i := mrk.st; i < mrk.ed; i++ {

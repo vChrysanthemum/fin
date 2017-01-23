@@ -1,23 +1,23 @@
 package ui
 
-import "fin/ui/editor"
+import "fin/ui/terminal"
 
 type NodeInputText struct {
 	*Node
-	*editor.Editor
+	*terminal.Terminal
 }
 
 func (p *Node) InitNodeInputText() {
 	nodeInputText := new(NodeInputText)
 	nodeInputText.Node = p
-	nodeInputText.Editor = editor.NewEditor()
-	nodeInputText.Editor.CurrentLine = nodeInputText.Editor.InitNewLine()
-	nodeInputText.Editor.Block.Border = true
+	nodeInputText.Terminal = terminal.NewTerminal()
+	nodeInputText.Terminal.CurrentLine = nodeInputText.Terminal.InitNewLine()
+	nodeInputText.Terminal.Block.Border = true
 	p.Data = nodeInputText
 	p.KeyPress = nodeInputText.KeyPress
 
-	p.uiBuffer = nodeInputText.Editor
-	p.UIBlock = &nodeInputText.Editor.Block
+	p.uiBuffer = nodeInputText.Terminal
+	p.UIBlock = &nodeInputText.Terminal.Block
 	p.Display = &p.UIBlock.Display
 
 	p.isShouldCalculateWidth = false
@@ -57,26 +57,26 @@ func (p *NodeInputText) KeyPress(keyStr string) (isExecNormalKeyPressWork bool) 
 	}
 
 	if "C-8" == keyStr {
-		if len(p.Editor.CurrentLine.Data) == 0 {
+		if len(p.Terminal.CurrentLine.Data) == 0 {
 			return
 		}
 	}
 
-	p.Editor.Write(keyStr)
+	p.Terminal.Write(keyStr)
 	p.Node.uiRender()
 	return
 }
 
 func (p *NodeInputText) NodeDataGetValue() (string, bool) {
-	if len(p.Editor.Lines) == 0 {
+	if len(p.Terminal.Lines) == 0 {
 		return "", false
 	} else {
-		return string(p.Editor.Lines[0].Data), true
+		return string(p.Terminal.Lines[0].Data), true
 	}
 }
 
 func (p *NodeInputText) NodeDataSetValue(content string) {
-	uiBuffer := p.Node.uiBuffer.(*editor.Editor)
+	uiBuffer := p.Node.uiBuffer.(*terminal.Terminal)
 	if len(uiBuffer.Lines) > 0 {
 		uiBuffer.Lines[0].Data = []byte(content)
 	}
@@ -110,7 +110,7 @@ func (p *NodeInputText) NodeDataActiveMode() {
 		p.Node.tmpActiveModeBorderFg = p.Node.UIBlock.BorderFg
 		p.Node.UIBlock.BorderFg = COLOR_ACTIVE_MODE_BORDERFG
 	}
-	p.Editor.ActiveMode()
+	p.Terminal.ActiveMode()
 	p.Node.uiRender()
 }
 
@@ -118,7 +118,7 @@ func (p *NodeInputText) NodeDataUnActiveMode() {
 	if true == p.Node.isCalledActiveMode && true == p.Node.UIBlock.Border {
 		p.Node.isCalledActiveMode = false
 		p.Node.UIBlock.BorderFg = p.Node.tmpActiveModeBorderFg
-		p.Editor.UnActiveMode()
+		p.Terminal.UnActiveMode()
 		p.Node.uiRender()
 	}
 }

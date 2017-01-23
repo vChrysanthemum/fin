@@ -3,7 +3,6 @@ package editor
 import (
 	"fmt"
 	"strconv"
-	"unicode/utf8"
 
 	"github.com/gizak/termui"
 )
@@ -11,14 +10,13 @@ import (
 type Line struct {
 	ContentStartX, ContentStartY int
 
+	Index  int
 	Editor *Editor
 	Data   []byte
 	Cells  []termui.Cell
-	Next   *Line
-	Prev   *Line
 }
 
-func (p *Editor) InitNewLine() *Line {
+func (p *Editor) AppendNewLine() *Line {
 	p.LinesLocker.Lock()
 	defer p.LinesLocker.Unlock()
 
@@ -28,18 +26,44 @@ func (p *Editor) InitNewLine() *Line {
 		ContentStartY: p.Block.InnerArea.Min.Y,
 		Data:          make([]byte, 0),
 	}
-	p.Lines = append(p.Lines, ret)
 
-	if nil == p.FirstLine {
-		p.FirstLine = ret
+	if 0 == len(p.Lines) {
+		ret.Index = 0
+		p.Lines = append(p.Lines, ret)
+		p.CurrentLineIndex = ret.Index
+
+	} else if p.CurrentLineIndex == len(p.Lines)-1 {
+		ret.Index = len(p.Lines)
+		p.Lines = append(p.Lines, ret)
+		p.CurrentLineIndex = ret.Index
+
+	} else {
+		for _, line := range p.Lines[p.CurrentLineIndex+1:] {
+			line.Index += 1
+		}
+		ret.Index = p.CurrentLineIndex + 1
+
+		n := len(p.Lines) + 1
+		if cap(p.Lines) < n {
+			_lines := make([]*Line, len(p.Lines), n)
+			copy(_lines, p.Lines)
+			p.Lines = _lines
+		}
+		p.Lines = p.Lines[:n]
+
+		copy(p.Lines[p.CurrentLineIndex+2:], p.Lines[p.CurrentLineIndex+1:])
+		copy(p.Lines[p.CurrentLineIndex+1:], []*Line{ret})
+		p.CurrentLineIndex = ret.Index
 	}
 
-	if nil != p.LastLine {
-		p.LastLine.Next = ret
-		ret.Prev = p.LastLine
+	if p.CurrentLineIndex > 0 {
+		line := p.Lines[p.CurrentLineIndex-1]
+		if p.OffXCellIndex < len(line.Cells) {
+			p.CurrentLine().Data = line.Data[line.Cells[p.OffXCellIndex].BytesOff:]
+			line.Data = line.Data[:line.Cells[p.OffXCellIndex].BytesOff]
+			p.OffXCellIndex = 0
+		}
 	}
-
-	p.LastLine = ret
 
 	if true == p.isDisplayLineNumber {
 		ret.ContentStartX = p.Block.InnerArea.Min.X +
@@ -49,41 +73,31 @@ func (p *Editor) InitNewLine() *Line {
 	return ret
 }
 
-func (p *Editor) RemoveLine(line *Line) {
+func (p *Editor) RemoveCurrentLine() {
 	p.LinesLocker.Lock()
 	defer p.LinesLocker.Unlock()
 
-	if nil == line.Prev {
+	var line *Line
+
+	if 0 == len(p.Lines) {
 		return
 	}
 
-	if nil != line.Prev {
-		line.Prev.Next = line.Next
-	}
-	if nil != line.Next {
-		line.Next.Prev = line.Prev
+	for _, line = range p.Lines[p.CurrentLineIndex:] {
+		line.Index--
 	}
 
-	if p.FirstLine == line {
-		p.FirstLine = p.FirstLine.Next
+	line = p.CurrentLine()
+
+	p.Lines = append(p.Lines[:p.CurrentLineIndex], p.Lines[p.CurrentLineIndex+1:]...)
+	if p.CurrentLineIndex > 0 {
+		p.CurrentLineIndex--
 	}
 
-	if p.LastLine == line {
-		p.LastLine = p.LastLine.Prev
-	}
+	p.OffXCellIndex = len(p.CurrentLine().Cells)
+	p.CurrentLine().Data = append(p.CurrentLine().Data, line.Data...)
 
-	if p.CurrentLine == p.Lines[p.DisplayLinesTopIndex] {
-		p.DisplayLinesTopIndex--
-	}
-
-	for k, v := range p.Lines {
-		if line == v {
-			p.Lines = append(p.Lines[:k], p.Lines[k+1:]...)
-		}
-	}
-
-	p.CurrentLine = line.Prev
-	p.CursorLocation.OffXCellIndex = len(p.CurrentLine.Cells)
+	return
 }
 
 // 获取 line 内容前缀
@@ -116,10 +130,7 @@ func (p *Line) Write(keyStr string) {
 
 	} else {
 		newData := make([]byte, len(p.Data)+len(keyStr))
-		_off, i := 0, 0
-		for ; i < off; i += 1 {
-			_off += utf8.RuneLen(p.Cells[i].Ch)
-		}
+		_off := p.Cells[off].BytesOff
 		copy(newData, p.Data[:_off])
 		copy(newData[_off:], []byte(keyStr))
 		copy(newData[_off+len(keyStr):], p.Data[_off:])
@@ -140,18 +151,14 @@ func (p *Line) Backspace() {
 	}
 
 	if 0 == off {
-		p.Editor.RemoveLine(p)
+		p.Editor.RemoveCurrentLine()
 
 	} else if off == len(p.Cells) {
-		p.Data = p.Data[:len(p.Data)-utf8.RuneLen(p.Cells[off-1].Ch)]
+		p.Data = p.Data[:p.Cells[off-1].BytesOff]
 		p.Editor.CursorLocation.OffXCellIndex -= 1
 
 	} else {
-		_off, i := 0, 0
-		for ; i < off-1; i += 1 {
-			_off += utf8.RuneLen(p.Cells[i].Ch)
-		}
-		p.Data = append(p.Data[:_off], p.Data[_off+utf8.RuneLen(p.Cells[off-1].Ch):]...)
+		p.Data = append(p.Data[:p.Cells[off].BytesOff], p.Data[p.Cells[off+1].BytesOff:]...)
 		p.Editor.CursorLocation.OffXCellIndex -= 1
 	}
 }

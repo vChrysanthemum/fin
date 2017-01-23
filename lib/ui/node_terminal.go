@@ -9,10 +9,10 @@ import (
 
 type NodeTerminal struct {
 	*Node
-	*editor.Terminal
+	*terminal.Terminal
 	ActiveModeBorderColor   termui.Attribute
 	CommandPrefix           string
-	NewCommand              *editor.Line
+	NewCommand              *terminal.Line
 	CommandHistory          []string
 	CurrentCommandLineIndex int
 }
@@ -20,7 +20,7 @@ type NodeTerminal struct {
 func (p *Node) InitNodeTerminal() {
 	nodeTerminal := new(NodeTerminal)
 	nodeTerminal.Node = p
-	nodeTerminal.Terminal = editor.NewTerminal()
+	nodeTerminal.Terminal = terminal.NewTerminal()
 	nodeTerminal.ActiveModeBorderColor = COLOR_ACTIVE_MODE_BORDERFG
 	nodeTerminal.CommandPrefix = "> "
 	nodeTerminal.PrepareNewCommand()
