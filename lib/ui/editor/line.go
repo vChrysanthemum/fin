@@ -92,9 +92,13 @@ func (p *Line) Write(ch string) {
 
 	} else {
 		newData := make([]byte, len(p.Data)+len(ch))
-		copy(newData, p.Data[:off])
-		copy(newData[off:], []byte(ch))
-		copy(newData[off+len(ch):], p.Data[off:])
+		_off, i := 0, 0
+		for ; i < off; i += 1 {
+			_off += utf8.RuneLen(p.Cells[i].Ch)
+		}
+		copy(newData, p.Data[:_off])
+		copy(newData[_off:], []byte(ch))
+		copy(newData[_off+len(ch):], p.Data[_off:])
 		p.Data = newData
 	}
 
@@ -104,6 +108,7 @@ func (p *Line) Write(ch string) {
 }
 
 func (p *Line) Backspace() {
+	return
 	if 0 == len(p.Data) {
 		return
 	}

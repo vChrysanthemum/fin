@@ -2,6 +2,7 @@ package editor
 
 import (
 	uiutils "fin/ui/utils"
+	"log"
 	"sync"
 
 	"github.com/gizak/termui"
@@ -107,6 +108,11 @@ func (p *Editor) RefreshContent() {
 	)
 
 START_REFRESH:
+	if p.DisplayLinesTopIndex >= len(p.Lines) {
+		p.DisplayLinesTopIndex = len(p.Lines) - 1
+		return
+	}
+
 	buf := p.Block.Buffer()
 	p.Buf = &buf
 	finalX, finalY = 0, 0
@@ -114,9 +120,10 @@ START_REFRESH:
 	for _, line := range p.Lines[p.DisplayLinesTopIndex:] {
 		line.Cells = termui.DefaultTxBuilder.Build(string(line.Data), fg, bg)
 		line.ContentStartY = y + p.Block.InnerArea.Min.Y
-		n = 0
+		x, n = 0, 0
 		for n < len(line.Cells) {
 			w = line.Cells[n].Width()
+			log.Println(string(line.Cells[n].Ch), w)
 			if x+w > p.Block.InnerArea.Dx() {
 				x = 0
 				y++
@@ -136,7 +143,6 @@ START_REFRESH:
 			x += w
 		}
 
-		x = 0
 		y++
 
 	CHECK_LAST_LINE:

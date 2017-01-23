@@ -33,11 +33,7 @@ func (p *Editor) EditModeWrite(keyStr string) {
 	}
 
 	if "C-8" == keyStr {
-		if len(p.CurrentLine.Data) > 0 {
-			p.CurrentLine.Backspace()
-		} else {
-			p.RemoveLine(p.CurrentLine)
-		}
+		p.CurrentLine.Backspace()
 		return
 	}
 
