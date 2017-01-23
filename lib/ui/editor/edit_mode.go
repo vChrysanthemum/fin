@@ -34,6 +34,9 @@ func (p *Editor) EditModeWrite(keyStr string) {
 
 	if "C-8" == keyStr {
 		p.CurrentLine.Backspace()
+		p.RefreshContent()
+		p.CursorLocation.RefreshCursorByLine(p.CurrentLine)
+		uiutils.UIRender(p.Editor)
 		return
 	}
 
