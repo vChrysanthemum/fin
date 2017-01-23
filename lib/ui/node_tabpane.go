@@ -59,7 +59,8 @@ func (p *Node) InitNodeTabpaneTab(parentNode *Node) {
 	return
 }
 
-func (p *NodeTabpane) KeyPress(e termui.Event) {
+func (p *NodeTabpane) KeyPress(e termui.Event) (isExecNormalKeyPressWork bool) {
+	isExecNormalKeyPressWork = true
 	defer func() {
 		if len(p.Node.KeyPressHandlers) > 0 {
 			for _, v := range p.Node.KeyPressHandlers {
@@ -100,6 +101,8 @@ func (p *NodeTabpane) KeyPress(e termui.Event) {
 		}
 		return
 	}
+
+	return
 }
 
 func (p *NodeTabpane) SetActiveTab(name string) {

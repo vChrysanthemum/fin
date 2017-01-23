@@ -2,13 +2,22 @@ package editor
 
 import (
 	uiutils "fin/ui/utils"
-	"strings"
 	"sync"
 
 	"github.com/gizak/termui"
 )
 
+type EditorMode int
+type EditorModeWrite func(keyStr string)
+
 type Editor struct {
+	Mode      EditorMode
+	ModeWrite EditorModeWrite
+
+	// NormalMode
+	NormalModeCommands     []NormalModeCommand
+	NormalModeCommandStack string
+
 	FirstLine, LastLine, CurrentLine *Line
 
 	LinesLocker sync.RWMutex
@@ -18,7 +27,6 @@ type Editor struct {
 
 	TextFgColor       termui.Attribute
 	TextBgColor       termui.Attribute
-	WrapLength        int // words wrap limit. Note it may not work properly with multi-width char
 	DisplayLinesRange [2]int
 	*CursorLocation
 }
@@ -31,12 +39,17 @@ func NewEditor() *Editor {
 		TextBgColor:       termui.ThemeAttr("par.text.bg"),
 		DisplayLinesRange: [2]int{0, 1},
 	}
-	ret.CursorLocation = NewCursorLocation(&ret.Block)
+	ret.Mode = EDITOR_MODE_NONE
+	ret.ModeWrite = nil
+	ret.PrepareNormalMode()
+	ret.PrepareEditMode()
+	ret.PrepareCommandMode()
+	ret.CursorLocation = NewCursorLocation(ret)
 	return ret
 }
 
-func (p *Editor) Text() string {
-	var printLines []string
+func (p *Editor) Text() []*Line {
+	var printLines []*Line
 	for k, line := range p.Lines {
 		if k < p.DisplayLinesRange[0] {
 			continue
@@ -44,9 +57,9 @@ func (p *Editor) Text() string {
 		if k >= p.DisplayLinesRange[1] {
 			continue
 		}
-		printLines = append(printLines, string(line.Data))
+		printLines = append(printLines, line)
 	}
-	return strings.Join(printLines, "\n")
+	return printLines
 }
 
 func (p *Editor) UpdateCurrentLineData(line string) {
@@ -67,96 +80,92 @@ func (p *Editor) WriteNewLine(line string) {
 	p.CurrentLine.Data = []byte(line)
 }
 
-func (p *Editor) Write(keyStr string) {
+func (p *Editor) Write(keyStr string) (isQuitActiveMode bool) {
+	isQuitActiveMode = false
+
 	if 0 == len(p.Lines) {
 		p.CurrentLine = p.InitNewLine()
 	}
 
-	if "<space>" == keyStr {
-		keyStr = " "
-	}
-
-	if "<tab>" == keyStr {
-		keyStr = "\t"
-	}
-
-	if "<enter>" == keyStr {
-		p.CurrentLine = p.InitNewLine()
-		return
-	}
-
-	if "C-8" == keyStr {
-		if len(p.CurrentLine.Data) > 0 {
-			p.CurrentLine.Backspace()
-		} else {
-			p.RemoveLine(p.CurrentLine)
+	switch keyStr {
+	case "<escape>":
+		if EDITOR_NORMAL_MODE == p.Mode {
+			isQuitActiveMode = true
+			return
 		}
-		return
+
+		if EDITOR_EDIT_MODE == p.Mode {
+			p.NormalModeEnter()
+			return
+		}
+
+		if EDITOR_COMMAND_MODE == p.Mode {
+			p.NormalModeEnter()
+			return
+		}
+
+	default:
+		p.ModeWrite(keyStr)
 	}
 
-	p.CurrentLine.Write(keyStr)
+	return
 }
 
 func (p *Editor) Buffer() termui.Buffer {
 	buf := p.Block.Buffer()
 
 	fg, bg := p.TextFgColor, p.TextBgColor
-	cs := termui.DefaultTxBuilder.Build(p.Text(), fg, bg)
-
-	// wrap if WrapLength set
-	if p.WrapLength < 0 {
-		cs = termui.WrapTx(cs, p.Width-2)
-	} else if p.WrapLength > 0 {
-		cs = termui.WrapTx(cs, p.WrapLength)
+	lines := p.Text()
+	for k, _ := range lines {
+		lines[k].Cells = termui.DefaultTxBuilder.Build(string(lines[k].Data), fg, bg)
 	}
 
 	finalX, finalY := 0, 0
 	y, x, n, w := 0, 0, 0, 0
-	for y < p.InnerArea.Dy() && n < len(cs) {
-		w = cs[n].Width()
-		if cs[n].Ch == '\n' || x+w > p.InnerArea.Dx() {
-			y++
-			x = 0 // set x = 0
-			if cs[n].Ch == '\n' {
-				n++
+	for _, line := range lines {
+		line.ContentStartY = y
+		n = 0
+		for n < len(line.Cells) {
+			w = line.Cells[n].Width()
+			if x+w > p.InnerArea.Dx() {
+				x = 0
+				y++
+				if y >= p.InnerArea.Dy() {
+					goto BUFFER_END
+				}
+
+				continue
 			}
 
-			if y >= p.InnerArea.Dy() {
-				buf.Set(p.InnerArea.Min.X+p.InnerArea.Dx()-1,
-					p.InnerArea.Min.Y+p.InnerArea.Dy()-1,
-					termui.Cell{Ch: '…', Fg: p.TextFgColor, Bg: p.TextBgColor})
-				break
-			}
-			continue
+			finalX = p.Block.InnerArea.Min.X + x
+			finalY = p.Block.InnerArea.Min.Y + y
+			buf.Set(finalX, finalY, line.Cells[n])
+			line.Cells[n].X, line.Cells[n].Y = finalX, finalY
+
+			n++
+			x += w
 		}
 
-		finalX = p.InnerArea.Min.X + x
-		finalY = p.InnerArea.Min.Y + y
-		buf.Set(finalX, finalY, cs[n])
-
-		n++
-		x += w
-	}
-
-	if true == p.CursorLocation.IsDisplay {
-		if 0 == len(cs) {
-			p.CursorLocation.ResetLocation()
-		} else {
-			finalX = p.InnerArea.Min.X + x
-			finalY = p.InnerArea.Min.Y + y
-			p.CursorLocation.SetCursor(finalX, finalY)
+		x = 0
+		y++
+		if y >= p.InnerArea.Dy() {
+			goto BUFFER_END
 		}
 	}
 
+BUFFER_END:
 	return buf
 }
 
 func (p *Editor) ActiveMode() {
+	p.EditModeEnter()
 	p.CursorLocation.IsDisplay = true
 	p.CursorLocation.ResumeCursor()
 }
 
 func (p *Editor) UnActiveMode() {
+	p.Mode = EDITOR_MODE_NONE
+	p.ModeWrite = nil
 	p.CursorLocation.IsDisplay = false
 	uiutils.UISetCursor(-1, -1)
 }

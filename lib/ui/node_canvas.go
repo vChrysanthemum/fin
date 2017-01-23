@@ -33,13 +33,15 @@ func (p *Node) InitNodeCanvas() {
 	return
 }
 
-func (p *NodeCanvas) KeyPress(e termui.Event) {
+func (p *NodeCanvas) KeyPress(e termui.Event) (isExecNormalKeyPressWork bool) {
+	isExecNormalKeyPressWork = true
 	if len(p.Node.KeyPressHandlers) > 0 {
 		for _, v := range p.Node.KeyPressHandlers {
 			v.Args = append(v.Args, e)
 			v.Handler(p.Node, v.Args...)
 		}
 	}
+	return
 }
 
 func (p *NodeCanvas) NodeDataFocusMode() {

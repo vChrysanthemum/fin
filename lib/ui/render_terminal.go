@@ -3,7 +3,7 @@ package ui
 import uiutils "fin/ui/utils"
 
 func (p *Page) renderBodyTerminal(node *Node) {
-	uiBuffer := node.Data.(*NodeTerminal).Editor
+	uiBuffer := node.Data.(*NodeTerminal).Terminal
 
 	p.normalRenderNodeBlock(node)
 

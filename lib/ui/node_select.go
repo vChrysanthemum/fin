@@ -50,7 +50,8 @@ type NodeSelectOption struct {
 	Data  string
 }
 
-func (p *NodeSelect) KeyPress(e termui.Event) {
+func (p *NodeSelect) KeyPress(e termui.Event) (isExecNormalKeyPressWork bool) {
+	isExecNormalKeyPressWork = true
 	defer func() {
 		if len(p.Node.KeyPressHandlers) > 0 {
 			for _, v := range p.Node.KeyPressHandlers {
@@ -98,6 +99,8 @@ func (p *NodeSelect) KeyPress(e termui.Event) {
 		}
 		return
 	}
+
+	return
 }
 
 func (p *NodeSelect) NodeDataGetValue() (string, bool) {

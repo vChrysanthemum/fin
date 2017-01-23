@@ -76,7 +76,7 @@ func (p *Script) luaFuncNodeCanvasSet(L *lua.LState) int {
 	if params >= 6 {
 		colorBg = uiutils.ColorToTermuiAttribute(L.ToString(6), uiutils.COLOR_DEFAULT)
 	}
-	nodeCanvas.Canvas.Set(L.ToInt(2), L.ToInt(3), &termui.Cell{ch, colorFg, colorBg})
+	nodeCanvas.Canvas.Set(L.ToInt(2), L.ToInt(3), &termui.Cell{ch, colorFg, colorBg, 0, 0})
 	return 0
 }
 

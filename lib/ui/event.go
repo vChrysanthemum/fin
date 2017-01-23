@@ -18,18 +18,17 @@ func termuiHandlerKBD(e termui.Event) {
 	}
 
 	if nil != GCurrentRenderPage.ActiveNode {
+		isExecNormalKeyPressWork := true
 		if nil != GCurrentRenderPage.ActiveNode.KeyPress {
-			GCurrentRenderPage.ActiveNode.KeyPress(e)
+			isExecNormalKeyPressWork = GCurrentRenderPage.ActiveNode.KeyPress(e)
 		}
 
-		// GCurrentRenderPage.ActiveNode.KeyPress后，GCurrentRenderPage.ActiveNode有可能为nil
-		if nil == GCurrentRenderPage.ActiveNode {
-			return
-		}
-
-		if "<escape>" == keyStr {
-			GCurrentRenderPage.ActiveNode.QuitActiveMode()
-			return
+		// 关于 ActiveNode 的一般性操作
+		if true == isExecNormalKeyPressWork && nil != GCurrentRenderPage.ActiveNode {
+			if "<escape>" == keyStr {
+				GCurrentRenderPage.ActiveNode.QuitActiveMode()
+				return
+			}
 		}
 
 		return

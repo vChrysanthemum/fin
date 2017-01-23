@@ -1,7 +1,7 @@
 package ui
 
 import (
-	"fin/ui/editor"
+	"fin/ui/terminal"
 	"fin/ui/utils"
 
 	"github.com/gizak/termui"
@@ -9,7 +9,7 @@ import (
 
 type NodeTerminal struct {
 	*Node
-	*editor.Editor
+	*editor.Terminal
 	ActiveModeBorderColor   termui.Attribute
 	CommandPrefix           string
 	NewCommand              *editor.Line
@@ -20,7 +20,7 @@ type NodeTerminal struct {
 func (p *Node) InitNodeTerminal() {
 	nodeTerminal := new(NodeTerminal)
 	nodeTerminal.Node = p
-	nodeTerminal.Editor = editor.NewEditor()
+	nodeTerminal.Terminal = editor.NewTerminal()
 	nodeTerminal.ActiveModeBorderColor = COLOR_ACTIVE_MODE_BORDERFG
 	nodeTerminal.CommandPrefix = "> "
 	nodeTerminal.PrepareNewCommand()
@@ -28,8 +28,8 @@ func (p *Node) InitNodeTerminal() {
 	p.Data = nodeTerminal
 	p.KeyPress = nodeTerminal.KeyPress
 
-	p.uiBuffer = nodeTerminal.Editor
-	p.UIBlock = &nodeTerminal.Editor.Block
+	p.uiBuffer = nodeTerminal.Terminal
+	p.UIBlock = &nodeTerminal.Terminal.Block
 	p.Display = &p.UIBlock.Display
 
 	p.isShouldCalculateWidth = true
@@ -41,7 +41,8 @@ func (p *Node) InitNodeTerminal() {
 	return
 }
 
-func (p *NodeTerminal) KeyPress(e termui.Event) {
+func (p *NodeTerminal) KeyPress(e termui.Event) (isExecNormalKeyPressWork bool) {
+	isExecNormalKeyPressWork = true
 	defer func() {
 		if len(p.Node.KeyPressHandlers) > 0 {
 			for _, v := range p.Node.KeyPressHandlers {
@@ -60,7 +61,7 @@ func (p *NodeTerminal) KeyPress(e termui.Event) {
 	// 禁止删除一行
 	if "C-8" == keyStr && (nil == p.CurrentLine || len(p.CurrentLine.Data) <= len(p.CommandPrefix)) {
 		utils.Beep()
-		p.Editor.ResumeCursor()
+		p.Terminal.ResumeCursor()
 		p.Node.uiRender()
 		return
 	}
@@ -84,9 +85,9 @@ func (p *NodeTerminal) KeyPress(e termui.Event) {
 			}
 
 			if len(p.CommandHistory) <= p.CurrentCommandLineIndex {
-				p.Editor.UpdateCurrentLineData(p.CommandPrefix)
+				p.Terminal.UpdateCurrentLineData(p.CommandPrefix)
 			} else {
-				p.Editor.UpdateCurrentLineData(p.CommandPrefix + p.CommandHistory[p.CurrentCommandLineIndex])
+				p.Terminal.UpdateCurrentLineData(p.CommandPrefix + p.CommandHistory[p.CurrentCommandLineIndex])
 			}
 
 			p.Node.uiRender()
@@ -95,15 +96,15 @@ func (p *NodeTerminal) KeyPress(e termui.Event) {
 	}
 
 	if "C-c" == keyStr {
-		p.Editor.UpdateCurrentLineData(p.CommandPrefix)
+		p.Terminal.UpdateCurrentLineData(p.CommandPrefix)
 		p.Node.uiRender()
 		return
 	}
 
 	// 获取新的命令行
 	if "<enter>" == keyStr {
-		if nil != p.Editor.CurrentLine {
-			p.NewCommand = p.Editor.CurrentLine
+		if nil != p.Terminal.CurrentLine {
+			p.NewCommand = p.Terminal.CurrentLine
 			if nil != p.NewCommand &&
 				nil != p.NewCommand.Data &&
 				len(p.NewCommand.Data) > len(p.CommandPrefix) &&
@@ -124,12 +125,13 @@ func (p *NodeTerminal) KeyPress(e termui.Event) {
 		return
 	}
 
-	p.Editor.Write(keyStr)
+	p.Terminal.Write(keyStr)
 	p.Node.uiRender()
+	return
 }
 
 func (p *NodeTerminal) PrepareNewCommand() {
-	p.Editor.WriteNewLine(p.CommandPrefix)
+	p.Terminal.WriteNewLine(p.CommandPrefix)
 }
 
 func (p *NodeTerminal) PopNewCommand() (ret []byte) {
@@ -147,17 +149,17 @@ func (p *NodeTerminal) PopNewCommand() (ret []byte) {
 }
 
 func (p *NodeTerminal) WriteString(data string) {
-	p.Editor.CurrentLine.Write(data)
+	p.Terminal.CurrentLine.Write(data)
 }
 
 func (p *NodeTerminal) WriteNewLine(line string) {
-	p.Editor.WriteNewLine(line)
-	p.Editor.CurrentLine = p.InitNewLine()
+	p.Terminal.WriteNewLine(line)
+	p.Terminal.CurrentLine = p.InitNewLine()
 }
 
 func (p *NodeTerminal) ClearLines() {
 	p.NewCommand = nil
-	p.Editor.ClearLines()
+	p.Terminal.ClearLines()
 }
 
 func (p *NodeTerminal) ClearCommandHistory() {
@@ -190,7 +192,7 @@ func (p *NodeTerminal) NodeDataActiveMode() {
 		p.Node.tmpActiveModeBorderFg = p.Node.UIBlock.BorderFg
 		p.Node.UIBlock.BorderFg = COLOR_ACTIVE_MODE_BORDERFG
 	}
-	p.Editor.ActiveMode()
+	p.Terminal.ActiveMode()
 	p.Node.uiRender()
 }
 
@@ -198,7 +200,7 @@ func (p *NodeTerminal) NodeDataUnActiveMode() {
 	if true == p.Node.isCalledActiveMode && true == p.Node.UIBlock.Border {
 		p.Node.isCalledActiveMode = false
 		p.Node.UIBlock.BorderFg = p.Node.tmpActiveModeBorderFg
-		p.Editor.UnActiveMode()
+		p.Terminal.UnActiveMode()
 		p.Node.uiRender()
 	}
 }

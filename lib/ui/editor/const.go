@@ -1,0 +1,8 @@
+package editor
+
+const (
+	EDITOR_MODE_NONE = iota
+	EDITOR_NORMAL_MODE
+	EDITOR_EDIT_MODE
+	EDITOR_COMMAND_MODE
+)

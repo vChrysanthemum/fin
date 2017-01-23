@@ -10,7 +10,7 @@ import (
 	"golang.org/x/net/html"
 )
 
-type NodeKeyPress func(e termui.Event)
+type NodeKeyPress func(e termui.Event) (isExecNormalKeyPressWork bool)
 
 type NodeDataGetValuer interface {
 	// return:
@@ -185,11 +185,29 @@ func (p *Node) uiRender() {
 	uiutils.UIRender(p.uiBuffer.(termui.Bufferer))
 }
 
-func (p *Node) SetCursor(x, y int) {
-	p.CursorLocation.X = p.UIBlock.InnerArea.Min.X + x
-	p.CursorLocation.Y = p.UIBlock.InnerArea.Min.Y + y
+// 设定 光标
+// relativeX relativeY 为相对 node 位置
+func (p *Node) SetRelativeCursor(relativeX, relativeY int) (int, int) {
+	maxWidth := p.UIBlock.InnerArea.Dx()
+	maxHeight := p.UIBlock.InnerArea.Dy()
+
+	if relativeX < 0 {
+		relativeX = 0
+	} else if relativeX > maxWidth-1 {
+		relativeX = maxWidth - 1
+	}
+	if relativeY < 0 {
+		relativeY = 0
+	} else if relativeY > maxHeight-1 {
+		relativeY = maxHeight - 1
+	}
+
+	p.CursorLocation.X = p.UIBlock.InnerArea.Min.X + p.UIBlock.X + relativeX
+	p.CursorLocation.Y = p.UIBlock.InnerArea.Min.Y + p.UIBlock.Y + relativeY
+
 	uiutils.UISetCursor(p.CursorLocation.X, p.CursorLocation.Y)
 	p.uiRender()
+	return relativeX, relativeY
 }
 
 func (p *Node) ResumeCursor() {

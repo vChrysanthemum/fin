@@ -8,9 +8,10 @@ import "image"
 
 // Cell is a rune with assigned Fg and Bg
 type Cell struct {
-	Ch rune
-	Fg Attribute
-	Bg Attribute
+	Ch   rune
+	Fg   Attribute
+	Bg   Attribute
+	X, Y int
 }
 
 // Buffer is a renderable rectangle cell data container.
@@ -62,7 +63,7 @@ func (b *Buffer) Sync() {
 
 // NewCell returns a new cell
 func NewCell(ch rune, fg, bg Attribute) Cell {
-	return Cell{ch, fg, bg}
+	return Cell{ch, fg, bg, 0, 0}
 }
 
 // Merge merges bs Buffers onto b
@@ -86,7 +87,7 @@ func NewBuffer() Buffer {
 func (b Buffer) Fill(ch rune, fg, bg Attribute) {
 	for x := b.Area.Min.X; x < b.Area.Max.X; x++ {
 		for y := b.Area.Min.Y; y < b.Area.Max.Y; y++ {
-			b.Set(x, y, Cell{ch, fg, bg})
+			b.Set(x, y, Cell{ch, fg, bg, 0, 0})
 		}
 	}
 }
@@ -99,7 +100,7 @@ func NewFilledBuffer(x0, y0, x1, y1 int, ch rune, fg, bg Attribute) Buffer {
 
 	for x := buf.Area.Min.X; x < buf.Area.Max.X; x++ {
 		for y := buf.Area.Min.Y; y < buf.Area.Max.Y; y++ {
-			buf.Set(x, y, Cell{ch, fg, bg})
+			buf.Set(x, y, Cell{ch, fg, bg, 0, 0})
 		}
 	}
 	return buf

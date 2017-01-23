@@ -61,6 +61,7 @@ func (p *Canvas) Set(x, y int, cell *termui.Cell) {
 	if x < 0 || y < 0 || x >= p.Block.InnerArea.Dx() || y >= p.Block.InnerArea.Dy() {
 		return
 	} else {
+		cell.X, cell.Y = x, y
 		p.Image[y][x] = *cell
 	}
 }

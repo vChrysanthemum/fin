@@ -35,7 +35,8 @@ func (p *Node) InitNodeInputText() {
 	return
 }
 
-func (p *NodeInputText) KeyPress(e termui.Event) {
+func (p *NodeInputText) KeyPress(e termui.Event) (isExecNormalKeyPressWork bool) {
+	isExecNormalKeyPressWork = true
 	defer func() {
 		if len(p.Node.KeyPressHandlers) > 0 {
 			for _, v := range p.Node.KeyPressHandlers {
@@ -68,6 +69,7 @@ func (p *NodeInputText) KeyPress(e termui.Event) {
 
 	p.Editor.Write(keyStr)
 	p.Node.uiRender()
+	return
 }
 
 func (p *NodeInputText) NodeDataGetValue() (string, bool) {
