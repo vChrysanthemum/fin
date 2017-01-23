@@ -125,7 +125,7 @@ func (p *Editor) commandEnterEditModeBackward() {
 }
 
 func (p *Editor) commandEnterEditModeForward() {
-	if p.OffXCellIndex > 0 {
+	if len(p.CurrentLine.Cells) > 0 {
 		p.OffXCellIndex += 1
 	}
 	p.EditModeEnter()

@@ -53,6 +53,10 @@ func (p *Editor) RemoveLine(line *Line) {
 	p.LinesLocker.Lock()
 	defer p.LinesLocker.Unlock()
 
+	if nil == line.Prev {
+		return
+	}
+
 	if nil != line.Prev {
 		line.Prev.Next = line.Next
 	}
@@ -66,6 +70,10 @@ func (p *Editor) RemoveLine(line *Line) {
 
 	if p.LastLine == line {
 		p.LastLine = p.LastLine.Prev
+	}
+
+	if p.CurrentLine == p.Lines[p.DisplayLinesTopIndex] {
+		p.DisplayLinesTopIndex--
 	}
 
 	for k, v := range p.Lines {

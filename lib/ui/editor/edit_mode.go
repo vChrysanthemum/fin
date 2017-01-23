@@ -21,7 +21,6 @@ func (p *Editor) EditModeEnter() {
 }
 
 func (p *Editor) EditModeWrite(keyStr string) {
-
 	if "<enter>" == keyStr {
 		p.CurrentLine = p.InitNewLine()
 
