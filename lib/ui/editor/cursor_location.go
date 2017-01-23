@@ -76,17 +76,27 @@ func (p *CursorLocation) RefreshCursorByLine(line *Line) {
 		p.OffXCellIndex = len(line.Cells)
 	}
 
+	var x, y int
 	var cell termui.Cell
 	if p.OffXCellIndex == len(line.Cells) {
 		cell = line.Cells[p.OffXCellIndex-1]
 		width := cell.Width()
 		if cell.X+width >= p.Editor.Block.InnerArea.Max.X {
-			uiutils.UISetCursor(line.ContentStartX, cell.Y+1)
+			x, y = line.ContentStartX, cell.Y+1
 		} else {
-			uiutils.UISetCursor(cell.X+width, cell.Y)
+			x, y = cell.X+width, cell.Y
 		}
+
+		if y >= p.Editor.Block.InnerArea.Max.Y {
+			y = p.Editor.Block.InnerArea.Max.Y - 1
+			p.Editor.DisplayLinesTopIndex += 1
+			p.Editor.RefreshContent()
+		}
+
 	} else {
 		cell = line.Cells[p.OffXCellIndex]
-		uiutils.UISetCursor(cell.X, cell.Y)
+		x, y = cell.X, cell.Y
 	}
+
+	uiutils.UISetCursor(x, y)
 }

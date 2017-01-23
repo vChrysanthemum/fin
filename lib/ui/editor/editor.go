@@ -100,8 +100,17 @@ func (p *Editor) Write(keyStr string) (isQuitActiveMode bool) {
 
 func (p *Editor) RefreshContent() {
 	fg, bg := p.TextFgColor, p.TextBgColor
-	finalX, finalY := 0, 0
-	y, x, n, w := 0, 0, 0, 0
+
+	var (
+		finalX, finalY int
+		y, x, n, w     int
+	)
+
+START_REFRESH:
+	buf := p.Block.Buffer()
+	p.Buf = &buf
+	finalX, finalY = 0, 0
+	y, x, n, w = 0, 0, 0, 0
 	for _, line := range p.Lines[p.DisplayLinesTopIndex:] {
 		line.Cells = termui.DefaultTxBuilder.Build(string(line.Data), fg, bg)
 		line.ContentStartY = y + p.Block.InnerArea.Min.Y
@@ -111,8 +120,8 @@ func (p *Editor) RefreshContent() {
 			if x+w > p.Block.InnerArea.Dx() {
 				x = 0
 				y++
-				if y >= p.Block.InnerArea.Dy() {
-					goto REFRESH_END
+				if y > p.Block.InnerArea.Dy() {
+					goto CHECK_LAST_LINE
 				}
 
 				continue
@@ -129,8 +138,15 @@ func (p *Editor) RefreshContent() {
 
 		x = 0
 		y++
-		if y >= p.Block.InnerArea.Dy() {
-			goto REFRESH_END
+
+	CHECK_LAST_LINE:
+		if y > p.Block.InnerArea.Dy() {
+			if p.CurrentLine == line && p.DisplayLinesTopIndex < len(p.Lines)-1 {
+				p.DisplayLinesTopIndex += 1
+				goto START_REFRESH
+			} else {
+				goto REFRESH_END
+			}
 		}
 	}
 
