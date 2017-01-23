@@ -59,7 +59,8 @@ func (p *Editor) AppendNewLine() *Line {
 	if p.CurrentLineIndex > 0 {
 		line := p.Lines[p.CurrentLineIndex-1]
 		if p.OffXCellIndex < len(line.Cells) {
-			p.CurrentLine().Data = line.Data[line.Cells[p.OffXCellIndex].BytesOff:]
+			p.CurrentLine().Data = make([]byte, len(line.Data[line.Cells[p.OffXCellIndex].BytesOff:]))
+			copy(p.CurrentLine().Data, line.Data[line.Cells[p.OffXCellIndex].BytesOff:])
 			line.Data = line.Data[:line.Cells[p.OffXCellIndex].BytesOff]
 			p.OffXCellIndex = 0
 		}
