@@ -21,30 +21,22 @@ func (p *Editor) EditModeEnter() {
 }
 
 func (p *Editor) EditModeWrite(keyStr string) {
-	if "<space>" == keyStr {
-		keyStr = " "
-	}
-
-	if "<tab>" == keyStr {
-		keyStr = "\t"
-	}
 
 	if "<enter>" == keyStr {
 		p.CurrentLine = p.InitNewLine()
-		p.RefreshContent()
-		p.CursorLocation.RefreshCursorByLine(p.CurrentLine)
-		return
-	}
 
-	if "C-8" == keyStr {
+	} else if "C-8" == keyStr {
 		p.CurrentLine.Backspace()
-		p.RefreshContent()
-		p.CursorLocation.RefreshCursorByLine(p.CurrentLine)
-		return
+
+	} else {
+		if "<space>" == keyStr {
+			keyStr = " "
+		} else if "<tab>" == keyStr {
+			keyStr = "\t"
+		}
+		p.CurrentLine.Write(keyStr)
 	}
 
-	p.CurrentLine.Write(keyStr)
-	p.RefreshContent()
-	p.CursorLocation.RefreshCursorByLine(p.CurrentLine)
+	p.UIRender()
 	return
 }

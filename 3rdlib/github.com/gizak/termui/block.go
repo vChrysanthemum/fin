@@ -46,8 +46,8 @@ func (b Block) DrawBorder(buf Buffer) {
 		return
 	}
 
-	min := b.area.Min
-	max := b.area.Max
+	min := b.Area.Min
+	max := b.Area.Max
 
 	x0 := min.X
 	y0 := min.Y
@@ -69,26 +69,26 @@ func (b Block) DrawBorder(buf Buffer) {
 	}
 
 	// draw corners
-	if b.BorderTop && b.BorderLeft && b.area.Dx() > 0 && b.area.Dy() > 0 {
+	if b.BorderTop && b.BorderLeft && b.Area.Dx() > 0 && b.Area.Dy() > 0 {
 		buf.Set(x0, y0, Cell{TOP_LEFT, b.BorderFg, b.BorderBg, 0, 0})
 	}
-	if b.BorderTop && b.BorderRight && b.area.Dx() > 1 && b.area.Dy() > 0 {
+	if b.BorderTop && b.BorderRight && b.Area.Dx() > 1 && b.Area.Dy() > 0 {
 		buf.Set(x1, y0, Cell{TOP_RIGHT, b.BorderFg, b.BorderBg, 0, 0})
 	}
-	if b.BorderBottom && b.BorderLeft && b.area.Dx() > 0 && b.area.Dy() > 1 {
+	if b.BorderBottom && b.BorderLeft && b.Area.Dx() > 0 && b.Area.Dy() > 1 {
 		buf.Set(x0, y1, Cell{BOTTOM_LEFT, b.BorderFg, b.BorderBg, 0, 0})
 	}
-	if b.BorderBottom && b.BorderRight && b.area.Dx() > 1 && b.area.Dy() > 1 {
+	if b.BorderBottom && b.BorderRight && b.Area.Dx() > 1 && b.Area.Dy() > 1 {
 		buf.Set(x1, y1, Cell{BOTTOM_RIGHT, b.BorderFg, b.BorderBg, 0, 0})
 	}
 }
 
 func (b Block) DrawBorderLabel(buf Buffer) {
-	maxTxtW := b.area.Dx() - 2
+	maxTxtW := b.Area.Dx() - 2
 	tx := DTrimTxCls(DefaultTxBuilder.Build(b.BorderLabel, b.BorderLabelFg, b.BorderLabelBg), maxTxtW)
 
 	for i, w := 0, 0; i < len(tx); i++ {
-		buf.Set(b.area.Min.X+1+w, b.area.Min.Y, tx[i])
+		buf.Set(b.Area.Min.X+1+w, b.Area.Min.Y, tx[i])
 		w += tx[i].Width()
 	}
 }
@@ -97,7 +97,7 @@ func (b Block) DrawBorderLabel(buf Buffer) {
 // consider it as css: display:block.
 // Normally you do not need to create it manually.
 type Block struct {
-	area          image.Rectangle
+	Area          image.Rectangle
 	InnerArea     image.Rectangle
 	X             int
 	Y             int
@@ -151,20 +151,20 @@ func (b Block) Id() string {
 // Align computes box model
 func (b *Block) Align() {
 	// outer
-	b.area.Min.X = 0
-	b.area.Min.Y = 0
-	b.area.Max.X = b.Width
-	b.area.Max.Y = b.Height
+	b.Area.Min.X = 0
+	b.Area.Min.Y = 0
+	b.Area.Max.X = b.Width
+	b.Area.Max.Y = b.Height
 
 	// float
-	b.area = AlignArea(TermRect(), b.area, b.Float)
-	b.area = MoveArea(b.area, b.X, b.Y)
+	b.Area = AlignArea(TermRect(), b.Area, b.Float)
+	b.Area = MoveArea(b.Area, b.X, b.Y)
 
 	// inner
-	b.InnerArea.Min.X = b.area.Min.X + b.PaddingLeft
-	b.InnerArea.Min.Y = b.area.Min.Y + b.PaddingTop
-	b.InnerArea.Max.X = b.area.Max.X - b.PaddingRight
-	b.InnerArea.Max.Y = b.area.Max.Y - b.PaddingBottom
+	b.InnerArea.Min.X = b.Area.Min.X + b.PaddingLeft
+	b.InnerArea.Min.Y = b.Area.Min.Y + b.PaddingTop
+	b.InnerArea.Max.X = b.Area.Max.X - b.PaddingRight
+	b.InnerArea.Max.Y = b.Area.Max.Y - b.PaddingBottom
 
 	if b.Border {
 		if b.BorderLeft {
@@ -195,7 +195,7 @@ func (b *Block) Buffer() Buffer {
 	b.Align()
 
 	buf := NewBuffer()
-	buf.SetArea(b.area)
+	buf.SetArea(b.Area)
 	buf.Fill(' ', ColorDefault, b.Bg)
 
 	b.DrawBorder(buf)

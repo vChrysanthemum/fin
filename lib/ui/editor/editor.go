@@ -97,16 +97,6 @@ func (p *Editor) Write(keyStr string) (isQuitActiveMode bool) {
 	return
 }
 
-func (p *Editor) RefreshBorder() {
-	if true == p.Block.Border {
-		p.Block.DrawBorder(*p.Buf)
-		p.Block.DrawBorderLabel(*p.Buf)
-		for point, c := range p.Buf.CellMap {
-			termbox.SetCell(point.X, point.Y, c.Ch, toTmAttr(c.Fg), toTmAttr(c.Bg))
-		}
-	}
-}
-
 func (p *Editor) RefreshContent() {
 	if 0 == p.Block.InnerArea.Dy() {
 		return
@@ -130,6 +120,16 @@ func (p *Editor) RefreshContent() {
 	)
 
 REFRESH_BEGIN:
+	p.Buf.Fill(' ', uiutils.COLOR_DEFAULT, uiutils.COLOR_DEFAULT)
+
+	if true == p.Block.Border {
+		p.Block.DrawBorder(*p.Buf)
+		p.Block.DrawBorderLabel(*p.Buf)
+		for point, c := range p.Buf.CellMap {
+			termbox.SetCell(point.X, point.Y, c.Ch, toTmAttr(c.Fg), toTmAttr(c.Bg))
+		}
+	}
+
 	p.DisplayLinesBottomIndex = p.DisplayLinesTopIndex
 	if p.DisplayLinesTopIndex >= len(p.Lines) {
 		p.DisplayLinesBottomIndex = p.DisplayLinesTopIndex
@@ -212,11 +212,9 @@ func (p *Editor) Buffer() termui.Buffer {
 		buf := p.Block.Buffer()
 		p.Buf = &buf
 		p.Buf.IfNotRenderByTermUI = true
-		p.RefreshBorder()
-		p.RefreshContent()
-		p.CursorLocation.RefreshCursorByLine(p.CurrentLine)
+		p.UIRender()
 	} else {
-		p.RefreshBorder()
+		p.UIRender()
 	}
 
 	return *p.Buf
