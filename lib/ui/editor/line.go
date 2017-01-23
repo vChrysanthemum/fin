@@ -158,7 +158,7 @@ func (p *Line) Backspace() {
 		p.Editor.CursorLocation.OffXCellIndex -= 1
 
 	} else {
-		p.Data = append(p.Data[:p.Cells[off].BytesOff], p.Data[p.Cells[off+1].BytesOff:]...)
+		p.Data = append(p.Data[:p.Cells[off-1].BytesOff], p.Data[p.Cells[off].BytesOff:]...)
 		p.Editor.CursorLocation.OffXCellIndex -= 1
 	}
 }
