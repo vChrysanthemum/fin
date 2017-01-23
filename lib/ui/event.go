@@ -3,24 +3,25 @@ package ui
 import (
 	"github.com/gizak/termui"
 	"github.com/gizak/termui/extra"
+	"github.com/nsf/termbox-go"
 )
 
-func termuiHandlerKBD(e termui.Event) {
-	keyStr := e.Data.(termui.EvtKbd).KeyStr
+func handleEventKey(ev termbox.Event) (isContinue bool) {
+	isContinue = true
+	keyStr := evt2KeyStr(ev)
 	GCurrentRenderPage.KeyPressHandleLocker.Lock()
 	defer GCurrentRenderPage.KeyPressHandleLocker.Unlock()
 
 	if "C-c" == keyStr {
-		termui.DefaultEvtStream.ResetHandlers()
-		termui.StopLoop()
 		termui.Close()
+		isContinue = false
 		return
 	}
 
 	if nil != GCurrentRenderPage.ActiveNode {
 		isExecNormalKeyPressWork := true
 		if nil != GCurrentRenderPage.ActiveNode.KeyPress {
-			isExecNormalKeyPressWork = GCurrentRenderPage.ActiveNode.KeyPress(e)
+			isExecNormalKeyPressWork = GCurrentRenderPage.ActiveNode.KeyPress(keyStr)
 		}
 
 		// 关于 ActiveNode 的一般性操作
@@ -98,16 +99,48 @@ func termuiHandlerKBD(e termui.Event) {
 			GCurrentRenderPage.SetActiveNode(GCurrentRenderPage.FocusNode.Value.(*Node))
 		}
 	}
+
+	return
+}
+func consumeMoreEvents() bool {
+	for {
+		select {
+		case ev := <-GTermboxEvent:
+			if ev.Type != termbox.EventKey {
+				continue
+			}
+			ok := handleEventKey(ev)
+			if !ok {
+				return false
+			}
+		default:
+			return true
+		}
+	}
 }
 
-func registerHandles() {
-	termui.Handle("/sys/wnd/resize", func(e termui.Event) {
-		GCurrentRenderPage.ReRender()
-	})
+func MainLoop() {
+	go func() {
+		for {
+			GTermboxEvent <- termbox.PollEvent()
+		}
+	}()
 
-	termui.Handle("/sys/kbd", func(e termui.Event) {
-		termuiHandlerKBD(e)
-	})
+	for {
+		select {
+		case ev := <-GTermboxEvent:
+			if ev.Type != termbox.EventKey {
+				continue
+			}
+			if false == handleEventKey(ev) {
+				return
+			}
+			if false == consumeMoreEvents() {
+				return
+			}
+		}
+		termbox.Flush()
+	}
 }
 
 func (p *Page) pushWorkingNode(node *Node) {

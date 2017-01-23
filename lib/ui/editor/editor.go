@@ -5,14 +5,15 @@ import (
 	"sync"
 
 	"github.com/gizak/termui"
+	"github.com/nsf/termbox-go"
 )
 
 type EditorMode int
-type EditorModeWrite func(keyStr string)
 
 type Editor struct {
-	Mode      EditorMode
-	ModeWrite EditorModeWrite
+	Mode EditorMode
+
+	Buf *termui.Buffer
 
 	// NormalMode
 	NormalModeCommands     []NormalModeCommand
@@ -23,7 +24,6 @@ type Editor struct {
 	LinesLocker sync.RWMutex
 	Lines       []*Line
 
-	Buf *termui.Buffer
 	termui.Block
 
 	TextFgColor             termui.Attribute
@@ -44,7 +44,6 @@ func NewEditor() *Editor {
 		DisplayLinesTopIndex: 0,
 	}
 	ret.Mode = EDITOR_MODE_NONE
-	ret.ModeWrite = nil
 	ret.PrepareNormalMode()
 	ret.PrepareEditMode()
 	ret.PrepareCommandMode()
@@ -68,6 +67,7 @@ func (p *Editor) Write(keyStr string) (isQuitActiveMode bool) {
 	case "<escape>":
 		if EDITOR_NORMAL_MODE == p.Mode {
 			isQuitActiveMode = true
+			uiutils.UISetCursor(-1, -1)
 			return
 		}
 
@@ -83,16 +83,40 @@ func (p *Editor) Write(keyStr string) (isQuitActiveMode bool) {
 		}
 
 	default:
-		p.ModeWrite(keyStr)
+		switch p.Mode {
+		case EDITOR_MODE_NONE:
+		case EDITOR_EDIT_MODE:
+			p.EditModeWrite(keyStr)
+		case EDITOR_NORMAL_MODE:
+			p.NormalModeWrite(keyStr)
+		case EDITOR_COMMAND_MODE:
+			p.CommandModeWrite(keyStr)
+		}
 	}
 
 	return
+}
+
+func (p *Editor) RefreshBorder() {
+	if true == p.Block.Border {
+		p.Block.DrawBorder(*p.Buf)
+		p.Block.DrawBorderLabel(*p.Buf)
+		for point, c := range p.Buf.CellMap {
+			termbox.SetCell(point.X, point.Y, c.Ch, toTmAttr(c.Fg), toTmAttr(c.Bg))
+		}
+	}
 }
 
 func (p *Editor) RefreshContent() {
 	if 0 == p.Block.InnerArea.Dy() {
 		return
 	}
+
+	defer func() {
+		for point, c := range p.Buf.CellMap {
+			termbox.SetCell(point.X, point.Y, c.Ch, toTmAttr(c.Fg), toTmAttr(c.Bg))
+		}
+	}()
 
 	fg, bg := p.TextFgColor, p.TextBgColor
 
@@ -114,8 +138,6 @@ REFRESH_BEGIN:
 
 	pageLastLine = p.DisplayLinesTopIndex + p.Block.InnerArea.Dy()
 
-	buf := p.Block.Buffer()
-	p.Buf = &buf
 	finalX, finalY = 0, 0
 	y, x, n, w = 0, 0, 0, 0
 	for k = p.DisplayLinesTopIndex; k < len(p.Lines); k++ {
@@ -126,12 +148,12 @@ REFRESH_BEGIN:
 				p.DisplayLinesTopIndex += 1
 				goto REFRESH_BEGIN
 			} else {
-				goto REFRESH_END
+				return
 			}
 		}
 
 		p.DisplayLinesBottomIndex = k
-		line.Cells = termui.DefaultTxBuilder.Build(string(line.Data), fg, bg)
+		line.Cells = DefaultRawTextBuilder.Build(string(line.Data), fg, bg)
 
 		linePrefix = line.getLinePrefix(k, pageLastLine)
 		line.ContentStartX = len(linePrefix) + p.Block.InnerArea.Min.X
@@ -141,6 +163,7 @@ REFRESH_BEGIN:
 			finalX = p.Block.InnerArea.Min.X + x
 			finalY = p.Block.InnerArea.Min.Y + y
 			p.Buf.Set(finalX, finalY, termui.Cell{rune(v), fg, bg, finalX, finalY})
+			//termbox.SetCell(finalX, finalY, v, toTmAttr(fg), toTmAttr(bg))
 			x += 1
 		}
 
@@ -162,6 +185,7 @@ REFRESH_BEGIN:
 			finalX = line.ContentStartX + x
 			finalY = p.Block.InnerArea.Min.Y + y
 			p.Buf.Set(finalX, finalY, line.Cells[n])
+			//termbox.SetCell(finalX, finalY, line.Cells[n].Ch, toTmAttr(line.Cells[n].Fg), toTmAttr(line.Cells[n].Bg))
 			line.Cells[n].X, line.Cells[n].Y = finalX, finalY
 
 			n++
@@ -170,9 +194,6 @@ REFRESH_BEGIN:
 
 		y++
 	}
-
-REFRESH_END:
-	return
 }
 
 func (p *Editor) Buffer() termui.Buffer {
@@ -182,12 +203,13 @@ func (p *Editor) Buffer() termui.Buffer {
 		}
 		buf := p.Block.Buffer()
 		p.Buf = &buf
+		p.Buf.IfNotRenderByTermUI = true
+		p.RefreshBorder()
 		p.RefreshContent()
 		p.CursorLocation.RefreshCursorByLine(p.CurrentLine)
+	} else {
+		p.RefreshBorder()
 	}
-
-	p.Block.DrawBorder(*p.Buf)
-	p.Block.DrawBorderLabel(*p.Buf)
 
 	return *p.Buf
 }
@@ -200,7 +222,6 @@ func (p *Editor) ActiveMode() {
 
 func (p *Editor) UnActiveMode() {
 	p.Mode = EDITOR_MODE_NONE
-	p.ModeWrite = nil
 	p.CursorLocation.IsDisplay = false
 	uiutils.UISetCursor(-1, -1)
 }

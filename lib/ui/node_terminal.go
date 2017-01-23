@@ -41,18 +41,17 @@ func (p *Node) InitNodeTerminal() {
 	return
 }
 
-func (p *NodeTerminal) KeyPress(e termui.Event) (isExecNormalKeyPressWork bool) {
+func (p *NodeTerminal) KeyPress(keyStr string) (isExecNormalKeyPressWork bool) {
 	isExecNormalKeyPressWork = true
 	defer func() {
 		if len(p.Node.KeyPressHandlers) > 0 {
 			for _, v := range p.Node.KeyPressHandlers {
-				v.Args = append(v.Args, e)
+				v.Args = append(v.Args, keyStr)
 				v.Handler(p.Node, v.Args...)
 			}
 		}
 	}()
 
-	keyStr := e.Data.(termui.EvtKbd).KeyStr
 	if "<escape>" == keyStr {
 		p.Node.QuitActiveMode()
 		return

@@ -10,7 +10,7 @@ import (
 	"golang.org/x/net/html"
 )
 
-type NodeKeyPress func(e termui.Event) (isExecNormalKeyPressWork bool)
+type NodeKeyPress func(keyStr string) (isExecNormalKeyPressWork bool)
 
 type NodeDataGetValuer interface {
 	// return:

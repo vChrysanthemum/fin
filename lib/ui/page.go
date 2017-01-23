@@ -72,6 +72,4 @@ func (p *Page) Serve() {
 		}()
 		p.Script.Run()
 	}()
-
-	termui.Loop()
 }

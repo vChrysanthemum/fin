@@ -191,7 +191,6 @@ func (p *Page) uiRender() error {
 					break
 				}
 			}
-
 		}
 	}
 

@@ -3,7 +3,6 @@ package ui
 import (
 	"golang.org/x/net/html"
 
-	"github.com/gizak/termui"
 	lua "github.com/yuin/gopher-lua"
 )
 
@@ -292,11 +291,7 @@ func (p *Script) luaFuncNodeTrigger(L *lua.LState) int {
 	case "keypress":
 		keyStr := L.ToString(3)
 		if nil != node.KeyPress {
-			node.KeyPress(termui.Event{
-				Type: "keyboard",
-				Path: "/sys/kbd/" + keyStr,
-				Data: termui.EvtKbd{KeyStr: keyStr},
-			})
+			node.KeyPress(keyStr)
 		}
 	}
 	return 0
@@ -366,12 +361,12 @@ func (p *Script) luaFuncNodeRegisterKeyPressHandler(L *lua.LState) int {
 		_callback := args[1].(*lua.LFunction)
 		luaNode := _L.NewUserData()
 		luaNode.Value = _node
-		_e := args[2].(termui.Event)
+		_keyStr := args[2].(string)
 		if err := p.Script.LuaCallByParam(_L, lua.P{
 			Fn:      _callback,
 			NRet:    0,
 			Protect: true,
-		}, luaNode, lua.LString(_e.Data.(termui.EvtKbd).KeyStr)); err != nil {
+		}, luaNode, lua.LString(_keyStr)); err != nil {
 			panic(err)
 		}
 	}, L, callback)

@@ -1,7 +1,5 @@
 package editor
 
-import uiutils "fin/ui/utils"
-
 func (p *Editor) PrepareEditMode() {
 }
 
@@ -13,16 +11,13 @@ func (p *Editor) EditModeQuit() {
 			p.CursorLocation.OffXCellIndex = len(p.CurrentLine.Cells) - 1
 		}
 		p.CursorLocation.RefreshCursorByLine(p.CurrentLine)
-		uiutils.UIRender(p.Editor)
 	}
 }
 
 func (p *Editor) EditModeEnter() {
 	p.offXCellIndexForVerticalMoveCursor = 0
 	p.Mode = EDITOR_EDIT_MODE
-	p.ModeWrite = p.EditModeWrite
 	p.CursorLocation.RefreshCursorByLine(p.CurrentLine)
-	uiutils.UIRender(p.Editor)
 }
 
 func (p *Editor) EditModeWrite(keyStr string) {
@@ -38,7 +33,6 @@ func (p *Editor) EditModeWrite(keyStr string) {
 		p.CurrentLine = p.InitNewLine()
 		p.RefreshContent()
 		p.CursorLocation.RefreshCursorByLine(p.CurrentLine)
-		uiutils.UIRender(p.Editor)
 		return
 	}
 
@@ -46,13 +40,11 @@ func (p *Editor) EditModeWrite(keyStr string) {
 		p.CurrentLine.Backspace()
 		p.RefreshContent()
 		p.CursorLocation.RefreshCursorByLine(p.CurrentLine)
-		uiutils.UIRender(p.Editor)
 		return
 	}
 
 	p.CurrentLine.Write(keyStr)
 	p.RefreshContent()
 	p.CursorLocation.RefreshCursorByLine(p.CurrentLine)
-	uiutils.UIRender(p.Editor)
 	return
 }

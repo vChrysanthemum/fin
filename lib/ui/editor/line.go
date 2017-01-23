@@ -96,30 +96,28 @@ func (p *Line) getLinePrefix(lineIndex, lastLineIndex int) string {
 	return ""
 }
 
-func (p *Line) Write(ch string) {
+func (p *Line) Write(keyStr string) {
 	off := p.Editor.CursorLocation.OffXCellIndex
 
 	if off >= len(p.Cells) {
-		p.Data = append(p.Data, []byte(ch)...)
+		p.Data = append(p.Data, []byte(keyStr)...)
 
 	} else if 0 == off {
-		p.Data = append([]byte(ch), p.Data...)
+		p.Data = append([]byte(keyStr), p.Data...)
 
 	} else {
-		newData := make([]byte, len(p.Data)+len(ch))
+		newData := make([]byte, len(p.Data)+len(keyStr))
 		_off, i := 0, 0
 		for ; i < off; i += 1 {
 			_off += utf8.RuneLen(p.Cells[i].Ch)
 		}
 		copy(newData, p.Data[:_off])
-		copy(newData[_off:], []byte(ch))
-		copy(newData[_off+len(ch):], p.Data[_off:])
+		copy(newData[_off:], []byte(keyStr))
+		copy(newData[_off+len(keyStr):], p.Data[_off:])
 		p.Data = newData
 	}
 
-	fg, bg := p.Editor.TextFgColor, p.Editor.TextBgColor
-	cells := termui.DefaultTxBuilder.Build(ch, fg, bg)
-	p.Editor.CursorLocation.OffXCellIndex += len(cells)
+	p.Editor.CursorLocation.OffXCellIndex++
 }
 
 func (p *Line) Backspace() {

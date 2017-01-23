@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	GUIRenderLocker sync.RWMutex
+	GUIRenderLocker sync.Mutex
 )
 
 func FormatStringWithWidth(src string, width int) string {

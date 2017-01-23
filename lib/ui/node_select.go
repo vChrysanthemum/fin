@@ -50,18 +50,17 @@ type NodeSelectOption struct {
 	Data  string
 }
 
-func (p *NodeSelect) KeyPress(e termui.Event) (isExecNormalKeyPressWork bool) {
+func (p *NodeSelect) KeyPress(keyStr string) (isExecNormalKeyPressWork bool) {
 	isExecNormalKeyPressWork = true
 	defer func() {
 		if len(p.Node.KeyPressHandlers) > 0 {
 			for _, v := range p.Node.KeyPressHandlers {
-				v.Args = append(v.Args, e)
+				v.Args = append(v.Args, keyStr)
 				v.Handler(p.Node, v.Args...)
 			}
 		}
 	}()
 
-	keyStr := e.Data.(termui.EvtKbd).KeyStr
 	if "<escape>" == keyStr && false == p.DisableQuit {
 		p.Node.QuitActiveMode()
 		return

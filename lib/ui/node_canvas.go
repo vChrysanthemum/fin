@@ -1,10 +1,6 @@
 package ui
 
-import (
-	"fin/ui/canvas"
-
-	"github.com/gizak/termui"
-)
+import "fin/ui/canvas"
 
 type NodeCanvas struct {
 	*Node
@@ -33,11 +29,11 @@ func (p *Node) InitNodeCanvas() {
 	return
 }
 
-func (p *NodeCanvas) KeyPress(e termui.Event) (isExecNormalKeyPressWork bool) {
+func (p *NodeCanvas) KeyPress(keyStr string) (isExecNormalKeyPressWork bool) {
 	isExecNormalKeyPressWork = true
 	if len(p.Node.KeyPressHandlers) > 0 {
 		for _, v := range p.Node.KeyPressHandlers {
-			v.Args = append(v.Args, e)
+			v.Args = append(v.Args, keyStr)
 			v.Handler(p.Node, v.Args...)
 		}
 	}

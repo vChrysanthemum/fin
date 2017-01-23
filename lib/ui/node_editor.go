@@ -1,10 +1,6 @@
 package ui
 
-import (
-	"fin/ui/editor"
-
-	"github.com/gizak/termui"
-)
+import "fin/ui/editor"
 
 type NodeEditor struct {
 	*Node
@@ -33,23 +29,12 @@ func (p *Node) InitNodeEditor() {
 	return
 }
 
-func (p *NodeEditor) KeyPress(e termui.Event) (isExecNormalKeyPressWork bool) {
+func (p *NodeEditor) KeyPress(keyStr string) (isExecNormalKeyPressWork bool) {
 	isExecNormalKeyPressWork = false
-	defer func() {
-		if len(p.Node.KeyPressHandlers) > 0 {
-			for _, v := range p.Node.KeyPressHandlers {
-				v.Args = append(v.Args, e)
-				v.Handler(p.Node, v.Args...)
-			}
-		}
-	}()
-
-	keyStr := e.Data.(termui.EvtKbd).KeyStr
 	if true == p.Editor.Write(keyStr) {
 		p.Node.QuitActiveMode()
 		return
 	}
-
 	return
 }
 

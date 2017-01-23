@@ -8,8 +8,10 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strconv"
 
 	"github.com/gizak/termui"
+	termbox "github.com/nsf/termbox-go"
 )
 
 type ClearScreenBuffer struct {
@@ -119,4 +121,44 @@ func IsVimKeyPressRight(keyStr string) bool {
 	} else {
 		return false
 	}
+}
+
+func evt2KeyStr(e termbox.Event) string {
+	k := string(e.Ch)
+	pre := ""
+	mod := ""
+
+	if e.Mod == termbox.ModAlt {
+		mod = "M-"
+	}
+	if e.Ch == 0 {
+		if e.Key > 0xFFFF-12 {
+			k = "<f" + strconv.Itoa(0xFFFF-int(e.Key)+1) + ">"
+		} else if e.Key > 0xFFFF-25 {
+			ks := []string{"<insert>", "<delete>", "<home>", "<end>", "<previous>", "<next>", "<up>", "<down>", "<left>", "<right>"}
+			k = ks[0xFFFF-int(e.Key)-12]
+		}
+
+		if e.Key <= 0x7F {
+			pre = "C-"
+			k = string('a' - 1 + int(e.Key))
+			kmap := map[termbox.Key][2]string{
+				termbox.KeyCtrlSpace:     {"C-", "<space>"},
+				termbox.KeyBackspace:     {"", "<backspace>"},
+				termbox.KeyTab:           {"", "<tab>"},
+				termbox.KeyEnter:         {"", "<enter>"},
+				termbox.KeyEsc:           {"", "<escape>"},
+				termbox.KeyCtrlBackslash: {"C-", "\\"},
+				termbox.KeyCtrlSlash:     {"C-", "/"},
+				termbox.KeySpace:         {"", "<space>"},
+				termbox.KeyCtrl8:         {"C-", "8"},
+			}
+			if sk, ok := kmap[e.Key]; ok {
+				pre = sk[0]
+				k = sk[1]
+			}
+		}
+	}
+
+	return pre + mod + k
 }

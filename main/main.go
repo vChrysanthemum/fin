@@ -70,4 +70,5 @@ func main() {
 	}
 	page.Render()
 	page.Serve()
+	ui.MainLoop()
 }

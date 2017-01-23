@@ -1,9 +1,6 @@
 package ui
 
-import (
-	"github.com/gizak/termui"
-	"github.com/gizak/termui/extra"
-)
+import "github.com/gizak/termui/extra"
 
 type NodeTabpane struct {
 	*Node
@@ -59,18 +56,17 @@ func (p *Node) InitNodeTabpaneTab(parentNode *Node) {
 	return
 }
 
-func (p *NodeTabpane) KeyPress(e termui.Event) (isExecNormalKeyPressWork bool) {
+func (p *NodeTabpane) KeyPress(keyStr string) (isExecNormalKeyPressWork bool) {
 	isExecNormalKeyPressWork = true
 	defer func() {
 		if len(p.Node.KeyPressHandlers) > 0 {
 			for _, v := range p.Node.KeyPressHandlers {
-				v.Args = append(v.Args, e)
+				v.Args = append(v.Args, keyStr)
 				v.Handler(p.Node, v.Args...)
 			}
 		}
 	}()
 
-	keyStr := e.Data.(termui.EvtKbd).KeyStr
 	if "<escape>" == keyStr {
 		p.Node.QuitActiveMode()
 		return

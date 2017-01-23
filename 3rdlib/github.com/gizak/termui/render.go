@@ -27,6 +27,24 @@ type Bufferer interface {
 	Buffer() Buffer
 }
 
+func MiniInit() error {
+	if err := tm.Init(); err != nil {
+		return err
+	}
+
+	renderJobs = make(chan []Bufferer)
+	//RenderLock = new(sync.RWMutex)
+
+	Body = NewGrid()
+	Body.X = 0
+	Body.Y = 0
+	Body.BgColor = ThemeAttr("bg")
+	Body.Width = TermWidth()
+
+	return nil
+
+}
+
 // Init initializes termui library. This function should be called before any others.
 // After initialization, the library must be finalized by 'Close' function.
 func Init() error {
@@ -38,7 +56,7 @@ func Init() error {
 	go hookTermboxEvt()
 
 	renderJobs = make(chan []Bufferer)
-	//renderLock = new(sync.RWMutex)
+	//RenderLock = new(sync.RWMutex)
 
 	Body = NewGrid()
 	Body.X = 0
@@ -77,13 +95,13 @@ func Close() {
 	tm.Close()
 }
 
-var renderLock sync.Mutex
+var RenderLock sync.Mutex
 
 func termSync() {
-	renderLock.Lock()
+	RenderLock.Lock()
 	tm.Sync()
 	termWidth, termHeight = tm.Size()
-	renderLock.Unlock()
+	RenderLock.Unlock()
 }
 
 // TermWidth returns the current terminal's width.
@@ -121,30 +139,29 @@ func render(bs ...Bufferer) {
 			os.Exit(1)
 		}
 	}()
+
 	for _, b := range bs {
-
 		buf := b.Buffer()
-		// set cels in buf
-		for p, c := range buf.CellMap {
-			if p.In(buf.Area) {
-
-				tm.SetCell(p.X, p.Y, c.Ch, toTmAttr(c.Fg), toTmAttr(c.Bg))
-
+		if false == buf.IfNotRenderByTermUI {
+			// set cels in buf
+			for p, c := range buf.CellMap {
+				if p.In(buf.Area) {
+					tm.SetCell(p.X, p.Y, c.Ch, toTmAttr(c.Fg), toTmAttr(c.Bg))
+				}
 			}
 		}
-
 	}
 
-	renderLock.Lock()
+	RenderLock.Lock()
 	// render
 	tm.Flush()
-	renderLock.Unlock()
+	RenderLock.Unlock()
 }
 
 func Clear() {
-	renderLock.Lock()
+	RenderLock.Lock()
 	tm.Clear(tm.ColorDefault, toTmAttr(ThemeAttr("bg")))
-	renderLock.Unlock()
+	RenderLock.Unlock()
 }
 
 func clearArea(r image.Rectangle, bg Attribute) {
@@ -156,10 +173,10 @@ func clearArea(r image.Rectangle, bg Attribute) {
 }
 
 func ClearArea(r image.Rectangle, bg Attribute) {
-	renderLock.Lock()
+	RenderLock.Lock()
 	clearArea(r, bg)
 	tm.Flush()
-	renderLock.Unlock()
+	RenderLock.Unlock()
 }
 
 var renderJobs chan []Bufferer

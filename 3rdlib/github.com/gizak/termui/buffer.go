@@ -16,6 +16,8 @@ type Cell struct {
 
 // Buffer is a renderable rectangle cell data container.
 type Buffer struct {
+	IfNotRenderByTermUI bool
+
 	Area    image.Rectangle // selected drawing area
 	CellMap map[image.Point]Cell
 }
@@ -69,10 +71,12 @@ func NewCell(ch rune, fg, bg Attribute) Cell {
 // Merge merges bs Buffers onto b
 func (b *Buffer) Merge(bs ...Buffer) {
 	for _, buf := range bs {
-		for p, v := range buf.CellMap {
-			b.Set(p.X, p.Y, v)
+		if false == buf.IfNotRenderByTermUI {
+			for p, v := range buf.CellMap {
+				b.Set(p.X, p.Y, v)
+			}
+			b.SetArea(b.Area.Union(buf.Area))
 		}
-		b.SetArea(b.Area.Union(buf.Area))
 	}
 }
 

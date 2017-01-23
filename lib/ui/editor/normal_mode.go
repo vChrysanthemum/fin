@@ -1,7 +1,6 @@
 package editor
 
 import (
-	uiutils "fin/ui/utils"
 	"regexp"
 	"strconv"
 )
@@ -35,7 +34,6 @@ func (p *Editor) PrepareNormalMode() {
 
 func (p *Editor) NormalModeEnter() {
 	p.Mode = EDITOR_NORMAL_MODE
-	p.ModeWrite = p.NormalModeWrite
 }
 
 func (p *Editor) NormalModeWrite(keyStr string) {
@@ -73,8 +71,6 @@ func (p *Editor) commandMoveTop() {
 		}
 		p.CursorLocation.RefreshCursorByLine(p.CurrentLine)
 	}
-
-	uiutils.UIRender(p.Editor)
 }
 
 func (p *Editor) commandMoveBottom() {
@@ -102,8 +98,6 @@ func (p *Editor) commandMoveBottom() {
 		}
 		p.CursorLocation.RefreshCursorByLine(p.CurrentLine)
 	}
-
-	uiutils.UIRender(p.Editor)
 }
 
 func (p *Editor) commandMoveLeft() {
@@ -114,8 +108,6 @@ func (p *Editor) commandMoveLeft() {
 	} else {
 		p.CursorLocation.MoveCursorNRuneLeft(1)
 	}
-
-	uiutils.UIRender(p.Editor)
 }
 
 func (p *Editor) commandMoveRight() {
@@ -126,13 +118,10 @@ func (p *Editor) commandMoveRight() {
 	} else {
 		p.CursorLocation.MoveCursorNRuneRight(1)
 	}
-
-	uiutils.UIRender(p.Editor)
 }
 
 func (p *Editor) commandEnterEditModeBackward() {
 	p.EditModeEnter()
-	uiutils.UIRender(p.Editor)
 }
 
 func (p *Editor) commandEnterEditModeForward() {

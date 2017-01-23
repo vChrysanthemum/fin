@@ -6,12 +6,13 @@ import (
 	"path/filepath"
 
 	"github.com/gizak/termui"
-	termbox "github.com/nsf/termbox-go"
+	"github.com/nsf/termbox-go"
 )
 
 var (
 	GCurrentRenderPage *Page
 	GClearScreenBuffer *ClearScreenBuffer
+	GTermboxEvent      = make(chan termbox.Event, 20)
 )
 
 var GlobalOption = Option{
@@ -41,13 +42,12 @@ func init() {
 }
 
 func PrepareUI() {
-	err := termui.Init()
+	err := termui.MiniInit()
 	termbox.SetOutputMode(termbox.Output256)
 	if err != nil {
 		panic(err)
 	}
 	GClearScreenBuffer = NewClearScreenBuffer()
-	registerHandles()
 }
 
 func uiClear(startY, endY int) {
