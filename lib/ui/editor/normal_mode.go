@@ -49,6 +49,10 @@ func (p *Editor) NormalModeWrite(keyStr string) {
 }
 
 func (p *Editor) commandMoveTop() {
+	if p.OffXCellIndex > p.offXCellIndexForVerticalMoveCursor {
+		p.offXCellIndexForVerticalMoveCursor = p.OffXCellIndex
+	}
+
 	_n := _commandMatchRegexpMoveTop.FindSubmatch([]byte(p.NormalModeCommandStack))
 	n, err := strconv.Atoi(string(_n[1]))
 	if nil == err {
@@ -56,9 +60,28 @@ func (p *Editor) commandMoveTop() {
 	} else {
 		p.CursorLocation.MoveCursorNRuneTop(1)
 	}
+
+	if p.offXCellIndexForVerticalMoveCursor > p.OffXCellIndex {
+		if p.offXCellIndexForVerticalMoveCursor >= len(p.CurrentLine.Cells) {
+			if 0 == len(p.CurrentLine.Cells) {
+				p.OffXCellIndex = 0
+			} else {
+				p.OffXCellIndex = len(p.CurrentLine.Cells) - 1
+			}
+		} else {
+			p.OffXCellIndex = p.offXCellIndexForVerticalMoveCursor
+		}
+		p.CursorLocation.RefreshCursorByLine(p.CurrentLine)
+	}
+
+	uiutils.UIRender(p.Editor)
 }
 
 func (p *Editor) commandMoveBottom() {
+	if p.OffXCellIndex > p.offXCellIndexForVerticalMoveCursor {
+		p.offXCellIndexForVerticalMoveCursor = p.OffXCellIndex
+	}
+
 	_n := _commandMatchRegexpMoveBottom.FindSubmatch([]byte(p.NormalModeCommandStack))
 	n, err := strconv.Atoi(string(_n[1]))
 	if nil == err {
@@ -66,6 +89,21 @@ func (p *Editor) commandMoveBottom() {
 	} else {
 		p.CursorLocation.MoveCursorNRuneBottom(1)
 	}
+
+	if p.offXCellIndexForVerticalMoveCursor > p.OffXCellIndex {
+		if p.offXCellIndexForVerticalMoveCursor >= len(p.CurrentLine.Cells) {
+			if 0 == len(p.CurrentLine.Cells) {
+				p.OffXCellIndex = 0
+			} else {
+				p.OffXCellIndex = len(p.CurrentLine.Cells) - 1
+			}
+		} else {
+			p.OffXCellIndex = p.offXCellIndexForVerticalMoveCursor
+		}
+		p.CursorLocation.RefreshCursorByLine(p.CurrentLine)
+	}
+
+	uiutils.UIRender(p.Editor)
 }
 
 func (p *Editor) commandMoveLeft() {
@@ -76,6 +114,8 @@ func (p *Editor) commandMoveLeft() {
 	} else {
 		p.CursorLocation.MoveCursorNRuneLeft(1)
 	}
+
+	uiutils.UIRender(p.Editor)
 }
 
 func (p *Editor) commandMoveRight() {
@@ -86,6 +126,8 @@ func (p *Editor) commandMoveRight() {
 	} else {
 		p.CursorLocation.MoveCursorNRuneRight(1)
 	}
+
+	uiutils.UIRender(p.Editor)
 }
 
 func (p *Editor) commandEnterEditModeBackward() {

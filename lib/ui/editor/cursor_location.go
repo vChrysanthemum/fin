@@ -10,6 +10,8 @@ type CursorLocation struct {
 	IsDisplay     bool
 	OffXCellIndex int
 	Editor        *Editor
+
+	offXCellIndexForVerticalMoveCursor int
 }
 
 func NewCursorLocation(editor *Editor) *CursorLocation {
@@ -68,7 +70,6 @@ MOVE_END:
 
 	if 0 == len(p.Editor.CurrentLine.Cells) {
 		uiutils.UISetCursor(p.Editor.CurrentLine.ContentStartX, p.Editor.CurrentLine.ContentStartY)
-		uiutils.UIRender(p.Editor)
 
 	} else {
 		if p.OffXCellIndex >= len(p.Editor.CurrentLine.Cells) {
@@ -77,7 +78,6 @@ MOVE_END:
 
 		cell := p.Editor.CurrentLine.Cells[p.OffXCellIndex]
 		uiutils.UISetCursor(cell.X, cell.Y)
-		uiutils.UIRender(p.Editor)
 	}
 }
 
@@ -124,7 +124,6 @@ MOVE_END:
 
 	if 0 == len(p.Editor.CurrentLine.Cells) {
 		uiutils.UISetCursor(p.Editor.CurrentLine.ContentStartX, p.Editor.CurrentLine.ContentStartY)
-		uiutils.UIRender(p.Editor)
 
 	} else {
 		if p.OffXCellIndex >= len(p.Editor.CurrentLine.Cells) {
@@ -133,7 +132,6 @@ MOVE_END:
 
 		cell := p.Editor.CurrentLine.Cells[p.OffXCellIndex]
 		uiutils.UISetCursor(cell.X, cell.Y)
-		uiutils.UIRender(p.Editor)
 	}
 }
 
@@ -154,7 +152,6 @@ func (p *CursorLocation) MoveCursorNRuneLeft(n int) {
 
 	cell := p.Editor.CurrentLine.Cells[p.OffXCellIndex]
 	uiutils.UISetCursor(cell.X, cell.Y)
-	uiutils.UIRender(p.Editor)
 }
 
 func (p *CursorLocation) MoveCursorNRuneRight(n int) {
@@ -174,7 +171,6 @@ func (p *CursorLocation) MoveCursorNRuneRight(n int) {
 
 	cell := p.Editor.CurrentLine.Cells[p.OffXCellIndex]
 	uiutils.UISetCursor(cell.X, cell.Y)
-	uiutils.UIRender(p.Editor)
 }
 
 func (p *CursorLocation) RefreshCursorByLine(line *Line) {
