@@ -21,9 +21,6 @@ func (p *Editor) EditModeEnter() {
 	p.offXCellIndexForVerticalMoveCursor = 0
 	p.Mode = EDITOR_EDIT_MODE
 	p.ModeWrite = p.EditModeWrite
-	if nil == p.CurrentLine {
-		p.CurrentLine = p.InitNewLine()
-	}
 	p.CursorLocation.RefreshCursorByLine(p.CurrentLine)
 	uiutils.UIRender(p.Editor)
 }

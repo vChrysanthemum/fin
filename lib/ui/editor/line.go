@@ -1,6 +1,8 @@
 package editor
 
 import (
+	"fmt"
+	"strconv"
 	"unicode/utf8"
 
 	"github.com/gizak/termui"
@@ -39,6 +41,10 @@ func (p *Editor) InitNewLine() *Line {
 
 	p.LastLine = ret
 
+	if true == p.isDisplayLineNumber {
+		ret.ContentStartX = len(ret.getLinePrefix(len(p.Lines), len(p.Lines)))
+	}
+
 	return ret
 }
 
@@ -71,15 +77,23 @@ func (p *Editor) RemoveLine(line *Line) {
 	p.CursorLocation.OffXCellIndex = len(p.CurrentLine.Cells)
 }
 
-func (p *Editor) ClearLines() {
-	p.LinesLocker.Lock()
-	defer p.LinesLocker.Unlock()
+// 获取 line 内容前缀
+//
+// param:
+//		lineIndex			int		 目标 line 的相应 Editor.Lines 中的index
+//		lastLineIndex		int		 输出 line 的前缀需要与整个页面的 line 前缀对齐
+//									 lastLineIndex 为 页面中最后一条 line 的 index
+func (p *Line) getLinePrefix(lineIndex, lastLineIndex int) string {
+	if true == p.Editor.isDisplayLineNumber {
+		lineNumberWidth := len(strconv.Itoa(lastLineIndex + 1))
+		if lineNumberWidth < 3 {
+			lineNumberWidth = 3
+		}
 
-	p.FirstLine = nil
-	p.LastLine = nil
-	p.CurrentLine = nil
-	p.Lines = []*Line{}
-	p.CursorLocation.ResetLocation()
+		return fmt.Sprintf(fmt.Sprintf("%%%ds ", lineNumberWidth), strconv.Itoa(lineIndex+1))
+	}
+
+	return ""
 }
 
 func (p *Line) Write(ch string) {

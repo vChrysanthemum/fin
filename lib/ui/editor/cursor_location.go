@@ -23,14 +23,6 @@ func NewCursorLocation(editor *Editor) *CursorLocation {
 	return ret
 }
 
-func (p *CursorLocation) ResetLocation() {
-	uiutils.UISetCursor(p.Editor.Block.InnerArea.Min.X, p.Editor.Block.InnerArea.Min.Y)
-}
-
-func (p *CursorLocation) ResumeCursor() {
-	//uiutils.UISetCursor(p.Location.X, p.Location.Y)
-}
-
 func (p *CursorLocation) MoveCursorNRuneTop(n int) {
 	if n <= 0 {
 		return
@@ -69,7 +61,7 @@ MOVE_END:
 	}
 
 	if 0 == len(p.Editor.CurrentLine.Cells) {
-		uiutils.UISetCursor(p.Editor.CurrentLine.ContentStartX, p.Editor.CurrentLine.ContentStartY)
+		p.UISetCursor(p.Editor.CurrentLine.ContentStartX, p.Editor.CurrentLine.ContentStartY)
 
 	} else {
 		if p.OffXCellIndex >= len(p.Editor.CurrentLine.Cells) {
@@ -77,7 +69,7 @@ MOVE_END:
 		}
 
 		cell := p.Editor.CurrentLine.Cells[p.OffXCellIndex]
-		uiutils.UISetCursor(cell.X, cell.Y)
+		p.UISetCursor(cell.X, cell.Y)
 	}
 }
 
@@ -123,7 +115,7 @@ MOVE_END:
 	}
 
 	if 0 == len(p.Editor.CurrentLine.Cells) {
-		uiutils.UISetCursor(p.Editor.CurrentLine.ContentStartX, p.Editor.CurrentLine.ContentStartY)
+		p.UISetCursor(p.Editor.CurrentLine.ContentStartX, p.Editor.CurrentLine.ContentStartY)
 
 	} else {
 		if p.OffXCellIndex >= len(p.Editor.CurrentLine.Cells) {
@@ -131,7 +123,7 @@ MOVE_END:
 		}
 
 		cell := p.Editor.CurrentLine.Cells[p.OffXCellIndex]
-		uiutils.UISetCursor(cell.X, cell.Y)
+		p.UISetCursor(cell.X, cell.Y)
 	}
 }
 
@@ -151,7 +143,7 @@ func (p *CursorLocation) MoveCursorNRuneLeft(n int) {
 	}
 
 	cell := p.Editor.CurrentLine.Cells[p.OffXCellIndex]
-	uiutils.UISetCursor(cell.X, cell.Y)
+	p.UISetCursor(cell.X, cell.Y)
 }
 
 func (p *CursorLocation) MoveCursorNRuneRight(n int) {
@@ -170,17 +162,17 @@ func (p *CursorLocation) MoveCursorNRuneRight(n int) {
 	}
 
 	cell := p.Editor.CurrentLine.Cells[p.OffXCellIndex]
-	uiutils.UISetCursor(cell.X, cell.Y)
+	p.UISetCursor(cell.X, cell.Y)
 }
 
 func (p *CursorLocation) RefreshCursorByLine(line *Line) {
 	if nil == line {
-		uiutils.UISetCursor(p.Editor.Block.InnerArea.Min.X, p.Editor.Block.InnerArea.Min.Y)
+		p.UISetCursor(p.Editor.Block.InnerArea.Min.X, p.Editor.Block.InnerArea.Min.Y)
 		return
 	}
 
 	if 0 == len(line.Cells) {
-		uiutils.UISetCursor(line.ContentStartX, line.ContentStartY)
+		p.UISetCursor(line.ContentStartX, line.ContentStartY)
 		return
 	}
 
@@ -210,5 +202,12 @@ func (p *CursorLocation) RefreshCursorByLine(line *Line) {
 		x, y = cell.X, cell.Y
 	}
 
+	p.UISetCursor(x, y)
+}
+
+func (p *CursorLocation) UISetCursor(x, y int) {
+	if false == p.IsDisplay {
+		return
+	}
 	uiutils.UISetCursor(x, y)
 }

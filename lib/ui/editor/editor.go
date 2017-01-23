@@ -31,6 +31,8 @@ type Editor struct {
 	DisplayLinesTopIndex    int
 	DisplayLinesBottomIndex int
 	*CursorLocation
+
+	isDisplayLineNumber bool
 }
 
 func NewEditor() *Editor {
@@ -47,24 +49,11 @@ func NewEditor() *Editor {
 	ret.PrepareEditMode()
 	ret.PrepareCommandMode()
 	ret.CursorLocation = NewCursorLocation(ret)
+	ret.isDisplayLineNumber = true
 	return ret
 }
 
 func (p *Editor) UpdateCurrentLineData(line string) {
-	p.CurrentLine.Data = []byte(line)
-}
-
-func (p *Editor) WriteNewLine(line string) {
-	if 0 == len(p.Lines) {
-		p.CurrentLine = p.InitNewLine()
-	}
-
-	// 如果上一行不为空，则启用新一行
-	// 反之则利用上一行
-	if len(p.CurrentLine.Data) > 0 {
-		p.CurrentLine = p.InitNewLine()
-	}
-
 	p.CurrentLine.Data = []byte(line)
 }
 
@@ -111,6 +100,8 @@ func (p *Editor) RefreshContent() {
 		finalX, finalY int
 		y, x, n, w, k  int
 		line           *Line
+		pageLastLine   int
+		linePrefix     string
 	)
 
 REFRESH_BEGIN:
@@ -120,6 +111,8 @@ REFRESH_BEGIN:
 		p.DisplayLinesTopIndex = len(p.Lines) - 1
 		return
 	}
+
+	pageLastLine = p.DisplayLinesTopIndex + p.Block.InnerArea.Dy()
 
 	buf := p.Block.Buffer()
 	p.Buf = &buf
@@ -139,7 +132,18 @@ REFRESH_BEGIN:
 
 		p.DisplayLinesBottomIndex = k
 		line.Cells = termui.DefaultTxBuilder.Build(string(line.Data), fg, bg)
+
+		linePrefix = line.getLinePrefix(k, pageLastLine)
+		line.ContentStartX = len(linePrefix) + p.Block.InnerArea.Min.X
 		line.ContentStartY = y + p.Block.InnerArea.Min.Y
+		x = 0
+		for _, v := range linePrefix {
+			finalX = p.Block.InnerArea.Min.X + x
+			finalY = p.Block.InnerArea.Min.Y + y
+			p.Buf.Set(finalX, finalY, termui.Cell{rune(v), fg, bg, finalX, finalY})
+			x += 1
+		}
+
 		x, n = 0, 0
 		for n < len(line.Cells) {
 			w = line.Cells[n].Width()
@@ -155,7 +159,7 @@ REFRESH_BEGIN:
 				continue
 			}
 
-			finalX = p.Block.InnerArea.Min.X + x
+			finalX = line.ContentStartX + x
 			finalY = p.Block.InnerArea.Min.Y + y
 			p.Buf.Set(finalX, finalY, line.Cells[n])
 			line.Cells[n].X, line.Cells[n].Y = finalX, finalY
@@ -173,9 +177,13 @@ REFRESH_END:
 
 func (p *Editor) Buffer() termui.Buffer {
 	if nil == p.Buf {
+		if 0 == len(p.Lines) {
+			p.CurrentLine = p.InitNewLine()
+		}
 		buf := p.Block.Buffer()
 		p.Buf = &buf
 		p.RefreshContent()
+		p.CursorLocation.RefreshCursorByLine(p.CurrentLine)
 	}
 
 	p.Block.DrawBorder(*p.Buf)
@@ -187,7 +195,7 @@ func (p *Editor) Buffer() termui.Buffer {
 func (p *Editor) ActiveMode() {
 	p.EditModeEnter()
 	p.CursorLocation.IsDisplay = true
-	p.CursorLocation.ResumeCursor()
+	p.CursorLocation.RefreshCursorByLine(p.CurrentLine)
 }
 
 func (p *Editor) UnActiveMode() {
