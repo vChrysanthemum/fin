@@ -123,6 +123,7 @@ func (p *Editor) RefreshContent() {
 	var (
 		finalX, finalY int
 		y, x, n, w, k  int
+		dx             int
 		line           *Line
 		pageLastLine   int
 		linePrefix     string
@@ -140,6 +141,7 @@ REFRESH_BEGIN:
 
 	finalX, finalY = 0, 0
 	y, x, n, w = 0, 0, 0, 0
+	dx = 0
 	for k = p.DisplayLinesTopIndex; k < len(p.Lines); k++ {
 		line = p.Lines[k]
 
@@ -167,10 +169,11 @@ REFRESH_BEGIN:
 			x += 1
 		}
 
+		dx = p.Block.InnerArea.Dx() - len(linePrefix)
 		x, n = 0, 0
 		for n < len(line.Cells) {
 			w = line.Cells[n].Width()
-			if x+w > p.Block.InnerArea.Dx() {
+			if x+w > dx {
 				x = 0
 				y++
 				// 输出一行未完成 且 超过内容区域

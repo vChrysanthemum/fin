@@ -42,7 +42,8 @@ func (p *Editor) InitNewLine() *Line {
 	p.LastLine = ret
 
 	if true == p.isDisplayLineNumber {
-		ret.ContentStartX = len(ret.getLinePrefix(len(p.Lines), len(p.Lines)))
+		ret.ContentStartX = p.Block.InnerArea.Min.X +
+			len(ret.getLinePrefix(len(p.Lines), len(p.Lines)))
 	}
 
 	return ret
