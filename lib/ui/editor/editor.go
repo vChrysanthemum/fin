@@ -123,7 +123,7 @@ func (p *Editor) RefreshContent() {
 	var (
 		finalX, finalY int
 		y, x, n, w, k  int
-		dx             int
+		dx, dy         int
 		line           *Line
 		pageLastLine   int
 		linePrefix     string
@@ -137,11 +137,10 @@ REFRESH_BEGIN:
 		return
 	}
 
-	pageLastLine = p.DisplayLinesTopIndex + p.Block.InnerArea.Dy()
-
 	finalX, finalY = 0, 0
 	y, x, n, w = 0, 0, 0, 0
-	dx = 0
+	dx, dy = 0, p.Block.InnerArea.Dy()
+	pageLastLine = p.DisplayLinesTopIndex
 	for k = p.DisplayLinesTopIndex; k < len(p.Lines); k++ {
 		line = p.Lines[k]
 
@@ -188,7 +187,7 @@ REFRESH_BEGIN:
 			finalX = line.ContentStartX + x
 			finalY = p.Block.InnerArea.Min.Y + y
 			p.Buf.Set(finalX, finalY, line.Cells[n])
-			//termbox.SetCell(finalX, finalY, line.Cells[n].Ch, toTmAttr(line.Cells[n].Fg), toTmAttr(line.Cells[n].Bg))
+			termbox.SetCell(finalX, finalY, line.Cells[n].Ch, toTmAttr(line.Cells[n].Fg), toTmAttr(line.Cells[n].Bg))
 			line.Cells[n].X, line.Cells[n].Y = finalX, finalY
 
 			n++
@@ -196,6 +195,12 @@ REFRESH_BEGIN:
 		}
 
 		y++
+	}
+
+	for ; y < dy; y++ {
+		finalX = p.Block.InnerArea.Min.X
+		finalY = p.Block.InnerArea.Min.Y + y
+		p.Buf.Set(finalX, finalY, termui.Cell{'~', fg, bg, finalX, finalY})
 	}
 }
 
