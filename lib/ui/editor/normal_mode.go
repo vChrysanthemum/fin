@@ -49,9 +49,23 @@ func (p *Editor) NormalModeWrite(keyStr string) {
 }
 
 func (p *Editor) commandMoveTop() {
+	_n := _commandMatchRegexpMoveTop.FindSubmatch([]byte(p.NormalModeCommandStack))
+	n, err := strconv.Atoi(string(_n[1]))
+	if nil == err {
+		p.CursorLocation.MoveCursorNRuneTop(n)
+	} else {
+		p.CursorLocation.MoveCursorNRuneTop(1)
+	}
 }
 
 func (p *Editor) commandMoveBottom() {
+	_n := _commandMatchRegexpMoveBottom.FindSubmatch([]byte(p.NormalModeCommandStack))
+	n, err := strconv.Atoi(string(_n[1]))
+	if nil == err {
+		p.CursorLocation.MoveCursorNRuneBottom(n)
+	} else {
+		p.CursorLocation.MoveCursorNRuneBottom(1)
+	}
 }
 
 func (p *Editor) commandMoveLeft() {

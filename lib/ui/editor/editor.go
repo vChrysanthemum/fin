@@ -2,7 +2,6 @@ package editor
 
 import (
 	uiutils "fin/ui/utils"
-	"log"
 	"sync"
 
 	"github.com/gizak/termui"
@@ -27,9 +26,10 @@ type Editor struct {
 	Buf *termui.Buffer
 	termui.Block
 
-	TextFgColor          termui.Attribute
-	TextBgColor          termui.Attribute
-	DisplayLinesTopIndex int
+	TextFgColor             termui.Attribute
+	TextBgColor             termui.Attribute
+	DisplayLinesTopIndex    int
+	DisplayLinesBottomIndex int
 	*CursorLocation
 }
 
@@ -83,6 +83,7 @@ func (p *Editor) Write(keyStr string) (isQuitActiveMode bool) {
 		}
 
 		if EDITOR_EDIT_MODE == p.Mode {
+			p.EditModeQuit()
 			p.NormalModeEnter()
 			return
 		}
@@ -100,15 +101,22 @@ func (p *Editor) Write(keyStr string) (isQuitActiveMode bool) {
 }
 
 func (p *Editor) RefreshContent() {
+	if 0 == p.Block.InnerArea.Dy() {
+		return
+	}
+
 	fg, bg := p.TextFgColor, p.TextBgColor
 
 	var (
 		finalX, finalY int
-		y, x, n, w     int
+		y, x, n, w, k  int
+		line           *Line
 	)
 
-START_REFRESH:
+REFRESH_BEGIN:
+	p.DisplayLinesBottomIndex = p.DisplayLinesTopIndex
 	if p.DisplayLinesTopIndex >= len(p.Lines) {
+		p.DisplayLinesBottomIndex = p.DisplayLinesTopIndex
 		p.DisplayLinesTopIndex = len(p.Lines) - 1
 		return
 	}
@@ -117,18 +125,31 @@ START_REFRESH:
 	p.Buf = &buf
 	finalX, finalY = 0, 0
 	y, x, n, w = 0, 0, 0, 0
-	for _, line := range p.Lines[p.DisplayLinesTopIndex:] {
+	for k = p.DisplayLinesTopIndex; k < len(p.Lines); k++ {
+		line = p.Lines[k]
+
+		if y >= p.Block.InnerArea.Dy() {
+			if p.CurrentLine == line {
+				p.DisplayLinesTopIndex += 1
+				goto REFRESH_BEGIN
+			} else {
+				goto REFRESH_END
+			}
+		}
+
+		p.DisplayLinesBottomIndex = k
 		line.Cells = termui.DefaultTxBuilder.Build(string(line.Data), fg, bg)
 		line.ContentStartY = y + p.Block.InnerArea.Min.Y
 		x, n = 0, 0
 		for n < len(line.Cells) {
 			w = line.Cells[n].Width()
-			log.Println(string(line.Cells[n].Ch), w)
 			if x+w > p.Block.InnerArea.Dx() {
 				x = 0
 				y++
-				if y > p.Block.InnerArea.Dy() {
-					goto CHECK_LAST_LINE
+				// 输出一行未完成 且 超过内容区域
+				if y >= p.Block.InnerArea.Dy() {
+					p.DisplayLinesTopIndex += 1
+					goto REFRESH_BEGIN
 				}
 
 				continue
@@ -144,16 +165,6 @@ START_REFRESH:
 		}
 
 		y++
-
-	CHECK_LAST_LINE:
-		if y > p.Block.InnerArea.Dy() {
-			if p.CurrentLine == line && p.DisplayLinesTopIndex < len(p.Lines)-1 {
-				p.DisplayLinesTopIndex += 1
-				goto START_REFRESH
-			} else {
-				goto REFRESH_END
-			}
-		}
 	}
 
 REFRESH_END:
