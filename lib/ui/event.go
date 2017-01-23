@@ -139,7 +139,10 @@ func MainLoop() {
 				return
 			}
 		}
+
+		termui.RenderLock.Lock()
 		termbox.Flush()
+		termui.RenderLock.Unlock()
 	}
 }
 
