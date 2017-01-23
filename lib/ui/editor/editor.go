@@ -23,21 +23,22 @@ type Editor struct {
 	LinesLocker sync.RWMutex
 	Lines       []*Line
 
+	Buf *termui.Buffer
 	termui.Block
 
-	TextFgColor       termui.Attribute
-	TextBgColor       termui.Attribute
-	DisplayLinesRange [2]int
+	TextFgColor          termui.Attribute
+	TextBgColor          termui.Attribute
+	DisplayLinesTopIndex int
 	*CursorLocation
 }
 
 func NewEditor() *Editor {
 	ret := &Editor{
-		Lines:             []*Line{},
-		Block:             *termui.NewBlock(),
-		TextFgColor:       termui.ThemeAttr("par.text.fg"),
-		TextBgColor:       termui.ThemeAttr("par.text.bg"),
-		DisplayLinesRange: [2]int{0, 1},
+		Lines:                []*Line{},
+		Block:                *termui.NewBlock(),
+		TextFgColor:          termui.ThemeAttr("par.text.fg"),
+		TextBgColor:          termui.ThemeAttr("par.text.bg"),
+		DisplayLinesTopIndex: 0,
 	}
 	ret.Mode = EDITOR_MODE_NONE
 	ret.ModeWrite = nil
@@ -46,20 +47,6 @@ func NewEditor() *Editor {
 	ret.PrepareCommandMode()
 	ret.CursorLocation = NewCursorLocation(ret)
 	return ret
-}
-
-func (p *Editor) Text() []*Line {
-	var printLines []*Line
-	for k, line := range p.Lines {
-		if k < p.DisplayLinesRange[0] {
-			continue
-		}
-		if k >= p.DisplayLinesRange[1] {
-			continue
-		}
-		printLines = append(printLines, line)
-	}
-	return printLines
 }
 
 func (p *Editor) UpdateCurrentLineData(line string) {
@@ -111,27 +98,21 @@ func (p *Editor) Write(keyStr string) (isQuitActiveMode bool) {
 	return
 }
 
-func (p *Editor) Buffer() termui.Buffer {
-	buf := p.Block.Buffer()
-
+func (p *Editor) RefreshContent() {
 	fg, bg := p.TextFgColor, p.TextBgColor
-	lines := p.Text()
-	for k, _ := range lines {
-		lines[k].Cells = termui.DefaultTxBuilder.Build(string(lines[k].Data), fg, bg)
-	}
-
 	finalX, finalY := 0, 0
 	y, x, n, w := 0, 0, 0, 0
-	for _, line := range lines {
-		line.ContentStartY = y
+	for _, line := range p.Lines[p.DisplayLinesTopIndex:] {
+		line.Cells = termui.DefaultTxBuilder.Build(string(line.Data), fg, bg)
+		line.ContentStartY = y + p.Block.InnerArea.Min.Y
 		n = 0
 		for n < len(line.Cells) {
 			w = line.Cells[n].Width()
-			if x+w > p.InnerArea.Dx() {
+			if x+w > p.Block.InnerArea.Dx() {
 				x = 0
 				y++
-				if y >= p.InnerArea.Dy() {
-					goto BUFFER_END
+				if y >= p.Block.InnerArea.Dy() {
+					goto REFRESH_END
 				}
 
 				continue
@@ -139,7 +120,7 @@ func (p *Editor) Buffer() termui.Buffer {
 
 			finalX = p.Block.InnerArea.Min.X + x
 			finalY = p.Block.InnerArea.Min.Y + y
-			buf.Set(finalX, finalY, line.Cells[n])
+			p.Buf.Set(finalX, finalY, line.Cells[n])
 			line.Cells[n].X, line.Cells[n].Y = finalX, finalY
 
 			n++
@@ -148,13 +129,26 @@ func (p *Editor) Buffer() termui.Buffer {
 
 		x = 0
 		y++
-		if y >= p.InnerArea.Dy() {
-			goto BUFFER_END
+		if y >= p.Block.InnerArea.Dy() {
+			goto REFRESH_END
 		}
 	}
 
-BUFFER_END:
-	return buf
+REFRESH_END:
+	return
+}
+
+func (p *Editor) Buffer() termui.Buffer {
+	if nil == p.Buf {
+		buf := p.Block.Buffer()
+		p.Buf = &buf
+		p.RefreshContent()
+	}
+
+	p.Block.DrawBorder(*p.Buf)
+	p.Block.DrawBorderLabel(*p.Buf)
+
+	return *p.Buf
 }
 
 func (p *Editor) ActiveMode() {

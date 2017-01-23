@@ -1,6 +1,7 @@
 package editor
 
 import (
+	uiutils "fin/ui/utils"
 	"regexp"
 	"strconv"
 )
@@ -13,11 +14,12 @@ type NormalModeCommand struct {
 }
 
 var (
-	_commandMatchRegexpMoveTop       = regexp.MustCompile(`[^\d]*(\d*)k$`)
-	_commandMatchRegexpMoveBottom    = regexp.MustCompile(`[^\d]*(\d*)j$`)
-	_commandMatchRegexpMoveLeft      = regexp.MustCompile(`[^\d]*(\d*)h$`)
-	_commandMatchRegexpMoveRight     = regexp.MustCompile(`[^\d]*(\d*)l$`)
-	_commandMatchRegexpEnterEditMode = regexp.MustCompile(`i$`)
+	_commandMatchRegexpMoveTop               = regexp.MustCompile(`[^\d]*(\d*)k$`)
+	_commandMatchRegexpMoveBottom            = regexp.MustCompile(`[^\d]*(\d*)j$`)
+	_commandMatchRegexpMoveLeft              = regexp.MustCompile(`[^\d]*(\d*)h$`)
+	_commandMatchRegexpMoveRight             = regexp.MustCompile(`[^\d]*(\d*)l$`)
+	_commandMatchRegexpEnterEditModeBackward = regexp.MustCompile(`i$`)
+	_commandMatchRegexpEnterEditModeForward  = regexp.MustCompile(`a$`)
 )
 
 func (p *Editor) PrepareNormalMode() {
@@ -26,7 +28,8 @@ func (p *Editor) PrepareNormalMode() {
 		{_commandMatchRegexpMoveBottom, p.commandMoveBottom},
 		{_commandMatchRegexpMoveLeft, p.commandMoveLeft},
 		{_commandMatchRegexpMoveRight, p.commandMoveRight},
-		{_commandMatchRegexpEnterEditMode, p.commandEnterEditMode},
+		{_commandMatchRegexpEnterEditModeBackward, p.commandEnterEditModeBackward},
+		{_commandMatchRegexpEnterEditModeForward, p.commandEnterEditModeForward},
 	}
 }
 
@@ -71,6 +74,14 @@ func (p *Editor) commandMoveRight() {
 	}
 }
 
-func (p *Editor) commandEnterEditMode() {
+func (p *Editor) commandEnterEditModeBackward() {
+	p.EditModeEnter()
+	uiutils.UIRender(p.Editor)
+}
+
+func (p *Editor) commandEnterEditModeForward() {
+	if p.OffXCellIndex > 0 {
+		p.OffXCellIndex += 1
+	}
 	p.EditModeEnter()
 }

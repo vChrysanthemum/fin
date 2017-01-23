@@ -16,7 +16,7 @@ func (p *Node) InitNodeInputText() {
 	nodeInputText.Node = p
 	nodeInputText.Editor = editor.NewEditor()
 	nodeInputText.Editor.CurrentLine = nodeInputText.Editor.InitNewLine()
-	nodeInputText.Editor.Border = true
+	nodeInputText.Editor.Block.Border = true
 	p.Data = nodeInputText
 	p.KeyPress = nodeInputText.KeyPress
 

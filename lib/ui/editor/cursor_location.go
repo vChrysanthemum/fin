@@ -61,9 +61,9 @@ func (p *CursorLocation) MoveCursorNRuneRight(n int) {
 	uiutils.UIRender(p.Editor)
 }
 
-func (p *CursorLocation) MoveCursorAfterWrite(line *Line) {
+func (p *CursorLocation) RefreshCursorByLine(line *Line) {
 	if nil == line {
-		uiutils.UISetCursor(0, 0)
+		uiutils.UISetCursor(p.Editor.Block.InnerArea.Min.X, p.Editor.Block.InnerArea.Min.Y)
 		return
 	}
 

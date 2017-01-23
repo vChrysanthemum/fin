@@ -8,6 +8,10 @@ func (p *Editor) PrepareEditMode() {
 func (p *Editor) EditModeEnter() {
 	p.Mode = EDITOR_EDIT_MODE
 	p.ModeWrite = p.EditModeWrite
+	if nil == p.CurrentLine {
+		p.CurrentLine = p.InitNewLine()
+	}
+	p.CursorLocation.RefreshCursorByLine(p.CurrentLine)
 	uiutils.UIRender(p.Editor)
 }
 
@@ -22,7 +26,8 @@ func (p *Editor) EditModeWrite(keyStr string) {
 
 	if "<enter>" == keyStr {
 		p.CurrentLine = p.InitNewLine()
-		p.CursorLocation.MoveCursorAfterWrite(p.CurrentLine)
+		p.RefreshContent()
+		p.CursorLocation.RefreshCursorByLine(p.CurrentLine)
 		uiutils.UIRender(p.Editor)
 		return
 	}
@@ -37,8 +42,8 @@ func (p *Editor) EditModeWrite(keyStr string) {
 	}
 
 	p.CurrentLine.Write(keyStr)
-	p.Buffer()
-	p.CursorLocation.MoveCursorAfterWrite(p.CurrentLine)
+	p.RefreshContent()
+	p.CursorLocation.RefreshCursorByLine(p.CurrentLine)
 	uiutils.UIRender(p.Editor)
 	return
 }

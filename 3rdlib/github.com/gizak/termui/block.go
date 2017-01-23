@@ -41,7 +41,7 @@ func (l Vline) Buffer() Buffer {
 }
 
 // Buffer draws a box border.
-func (b Block) drawBorder(buf Buffer) {
+func (b Block) DrawBorder(buf Buffer) {
 	if !b.Border {
 		return
 	}
@@ -83,7 +83,7 @@ func (b Block) drawBorder(buf Buffer) {
 	}
 }
 
-func (b Block) drawBorderLabel(buf Buffer) {
+func (b Block) DrawBorderLabel(buf Buffer) {
 	maxTxtW := b.area.Dx() - 2
 	tx := DTrimTxCls(DefaultTxBuilder.Build(b.BorderLabel, b.BorderLabelFg, b.BorderLabelBg), maxTxtW)
 
@@ -198,8 +198,8 @@ func (b *Block) Buffer() Buffer {
 	buf.SetArea(b.area)
 	buf.Fill(' ', ColorDefault, b.Bg)
 
-	b.drawBorder(buf)
-	b.drawBorderLabel(buf)
+	b.DrawBorder(buf)
+	b.DrawBorderLabel(buf)
 
 	return buf
 }

@@ -1,11 +1,9 @@
 package editor
 
 import (
-	"math"
 	"unicode/utf8"
 
 	"github.com/gizak/termui"
-	rw "github.com/mattn/go-runewidth"
 )
 
 type Line struct {
@@ -29,7 +27,6 @@ func (p *Editor) InitNewLine() *Line {
 		Data:          make([]byte, 0),
 	}
 	p.Lines = append(p.Lines, ret)
-	p.DisplayLinesRange[1] = len(p.Lines) - 1
 
 	if nil == p.FirstLine {
 		p.FirstLine = ret
@@ -41,20 +38,6 @@ func (p *Editor) InitNewLine() *Line {
 	}
 
 	p.LastLine = ret
-
-	p.DisplayLinesRange[1] += 1
-	maxHeight := p.InnerArea.Dy()
-	maxWidth := p.InnerArea.Dx()
-	height := 1
-	index := 0
-	for i := p.DisplayLinesRange[1] - 2; i >= 0; i-- {
-		height += int(math.Ceil(float64(rw.StringWidth(string(p.Lines[i].Data))) / float64(maxWidth)))
-		if height > maxHeight {
-			break
-		}
-		index = i
-	}
-	p.DisplayLinesRange[0] = index
 
 	return ret
 }
@@ -96,7 +79,6 @@ func (p *Editor) ClearLines() {
 	p.CurrentLine = nil
 	p.Lines = []*Line{}
 	p.CursorLocation.ResetLocation()
-	p.DisplayLinesRange = [2]int{0, 1}
 }
 
 func (p *Line) Write(ch string) {

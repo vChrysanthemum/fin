@@ -1,6 +1,8 @@
 package ui
 
 import (
+	"log"
+
 	"github.com/gizak/termui"
 	"github.com/gizak/termui/extra"
 )
@@ -26,6 +28,7 @@ func termuiHandlerKBD(e termui.Event) {
 		// 关于 ActiveNode 的一般性操作
 		if true == isExecNormalKeyPressWork && nil != GCurrentRenderPage.ActiveNode {
 			if "<escape>" == keyStr {
+				log.Println(GCurrentRenderPage.ActiveNode.HtmlData)
 				GCurrentRenderPage.ActiveNode.QuitActiveMode()
 				return
 			}

@@ -2,6 +2,8 @@ package ui
 
 import (
 	"fin/ui/editor"
+	"fin/ui/utils"
+	"log"
 
 	"github.com/gizak/termui"
 )
@@ -88,6 +90,7 @@ func (p *NodeEditor) NodeDataUnActiveMode() {
 		p.Node.isCalledActiveMode = false
 		p.Node.UIBlock.BorderFg = p.Node.tmpActiveModeBorderFg
 		p.Editor.UnActiveMode()
+		log.Println(p.Node.UIBlock.BorderFg, utils.COLOR_BLUE)
 		p.Node.uiRender()
 	}
 }
