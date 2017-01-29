@@ -120,20 +120,26 @@ func (p *Line) getLinePrefix(lineIndex, lastLineIndex int) string {
 
 func (p *Line) Write(keyStr string) {
 	off := p.Editor.CursorLocation.getOffXCellIndex()
+	_off := 0
 
 	if *off >= len(p.Cells) {
+		_off = len(p.Data)
 		p.Data = append(p.Data, []byte(keyStr)...)
+		p.Cells = append(p.Cells, termui.Cell{[]rune(keyStr)[0], p.Editor.TextFgColor, p.Editor.TextBgColor, 0, 0, _off})
 
 	} else if 0 == *off {
+		_off = 0
 		p.Data = append([]byte(keyStr), p.Data...)
+		p.Cells = append(p.Cells, termui.Cell{[]rune(keyStr)[0], p.Editor.TextFgColor, p.Editor.TextBgColor, 0, 0, _off})
 
 	} else {
 		newData := make([]byte, len(p.Data)+len(keyStr))
-		_off := p.Cells[*off].BytesOff
+		_off = p.Cells[*off].BytesOff
 		copy(newData, p.Data[:_off])
 		copy(newData[_off:], []byte(keyStr))
 		copy(newData[_off+len(keyStr):], p.Data[_off:])
 		p.Data = newData
+		p.Cells = DefaultRawTextBuilder.Build(string(p.Data), p.Editor.TextFgColor, p.Editor.TextBgColor)
 	}
 
 	*off++

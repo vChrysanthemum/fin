@@ -102,10 +102,11 @@ func handleEventKey(ev termbox.Event) (isContinue bool) {
 
 	return
 }
+
 func consumeMoreEvents() bool {
 	for {
 		select {
-		case ev := <-GTermboxEvent:
+		case ev := <-GTermboxEvents:
 			if ev.Type != termbox.EventKey {
 				continue
 			}
@@ -122,13 +123,13 @@ func consumeMoreEvents() bool {
 func MainLoop() {
 	go func() {
 		for {
-			GTermboxEvent <- termbox.PollEvent()
+			GTermboxEvents <- termbox.PollEvent()
 		}
 	}()
 
 	for {
 		select {
-		case ev := <-GTermboxEvent:
+		case ev := <-GTermboxEvents:
 			if ev.Type != termbox.EventKey {
 				continue
 			}
@@ -139,10 +140,6 @@ func MainLoop() {
 				return
 			}
 		}
-
-		termui.RenderLock.Lock()
-		termbox.Flush()
-		termui.RenderLock.Unlock()
 	}
 }
 

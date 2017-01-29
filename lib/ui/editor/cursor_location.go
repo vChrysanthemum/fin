@@ -44,7 +44,7 @@ func (p *CursorLocation) getLineByMode() *Line {
 	case EDITOR_EDIT_MODE:
 		return p.Editor.CurrentLine()
 	case EDITOR_COMMAND_MODE:
-		return p.Editor.CommandModeContent
+		return p.Editor.CommandModeBuf
 	}
 	return nil
 }
@@ -68,8 +68,8 @@ func (p *CursorLocation) MoveCursorNRuneTop(n int) {
 
 	if index < p.Editor.DisplayLinesTopIndex {
 		p.Editor.DisplayLinesTopIndex = index
-		p.Editor.isEditModeContentDirty = true
-		p.Editor.RefreshBuf()
+		p.Editor.isEditModeBufDirty = true
+		p.Editor.isShouldRefreshEditModeBuf = true
 	}
 
 	if 0 == len(p.Editor.CurrentLine().Cells) {
@@ -104,8 +104,8 @@ func (p *CursorLocation) MoveCursorNRuneBottom(n int) {
 
 	if index > p.Editor.DisplayLinesBottomIndex {
 		p.Editor.DisplayLinesTopIndex += (index - p.Editor.DisplayLinesBottomIndex)
-		p.Editor.isEditModeContentDirty = true
-		p.Editor.RefreshBuf()
+		p.Editor.isEditModeBufDirty = true
+		p.Editor.isShouldRefreshEditModeBuf = true
 	}
 
 	if 0 == len(p.Editor.CurrentLine().Cells) {
@@ -220,8 +220,11 @@ func (p *CursorLocation) RefreshCursorByLine(line *Line) {
 
 		if y >= p.Editor.Block.InnerArea.Max.Y {
 			y = p.Editor.Block.InnerArea.Max.Y - 1
-			p.Editor.DisplayLinesTopIndex += 1
-			p.Editor.RefreshBuf()
+			switch p.Editor.Mode {
+			case EDITOR_EDIT_MODE:
+				p.Editor.DisplayLinesTopIndex += 1
+				p.Editor.isShouldRefreshEditModeBuf = true
+			}
 		}
 
 	} else {

@@ -12,7 +12,7 @@ import (
 var (
 	GCurrentRenderPage *Page
 	GClearScreenBuffer *ClearScreenBuffer
-	GTermboxEvent      = make(chan termbox.Event, 20)
+	GTermboxEvents     = make(chan termbox.Event, 200)
 )
 
 var GlobalOption = Option{
