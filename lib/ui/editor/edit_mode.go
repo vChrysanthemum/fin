@@ -1,14 +1,15 @@
 package editor
 
 func (p *Editor) PrepareEditMode() {
+	p.isEditModeContentDirty = true
 }
 
 func (p *Editor) EditModeQuit() {
-	if p.CursorLocation.OffXCellIndex >= len(p.CurrentLine().Cells) {
+	if p.CursorLocation.EditModeOffXCellIndex >= len(p.CurrentLine().Cells) {
 		if 0 == len(p.CurrentLine().Cells) {
-			p.CursorLocation.OffXCellIndex = 0
+			p.CursorLocation.EditModeOffXCellIndex = 0
 		} else {
-			p.CursorLocation.OffXCellIndex = len(p.CurrentLine().Cells) - 1
+			p.CursorLocation.EditModeOffXCellIndex = len(p.CurrentLine().Cells) - 1
 		}
 		p.CursorLocation.RefreshCursorByLine(p.CurrentLine())
 	}
@@ -21,8 +22,10 @@ func (p *Editor) EditModeEnter() {
 }
 
 func (p *Editor) EditModeWrite(keyStr string) {
+	p.isEditModeContentDirty = true
+
 	if "<enter>" == keyStr {
-		p.AppendNewLine()
+		p.EditModeAppendNewLine()
 
 	} else if "C-8" == keyStr {
 		p.CurrentLine().Backspace()
@@ -37,5 +40,4 @@ func (p *Editor) EditModeWrite(keyStr string) {
 	}
 
 	p.UIRender()
-	return
 }

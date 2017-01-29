@@ -16,16 +16,17 @@ type Line struct {
 	Cells  []termui.Cell
 }
 
-func (p *Editor) AppendNewLine() *Line {
-	p.LinesLocker.Lock()
-	defer p.LinesLocker.Unlock()
-
-	ret := &Line{
+func (p *Editor) NewLine() *Line {
+	return &Line{
 		Editor:        p,
 		ContentStartX: p.Block.InnerArea.Min.X,
 		ContentStartY: p.Block.InnerArea.Min.Y,
 		Data:          make([]byte, 0),
 	}
+}
+
+func (p *Editor) EditModeAppendNewLine() *Line {
+	ret := p.NewLine()
 
 	if 0 == len(p.Lines) {
 		ret.Index = 0
@@ -58,11 +59,11 @@ func (p *Editor) AppendNewLine() *Line {
 
 	if p.CurrentLineIndex > 0 {
 		line := p.Lines[p.CurrentLineIndex-1]
-		if p.OffXCellIndex < len(line.Cells) {
-			p.CurrentLine().Data = make([]byte, len(line.Data[line.Cells[p.OffXCellIndex].BytesOff:]))
-			copy(p.CurrentLine().Data, line.Data[line.Cells[p.OffXCellIndex].BytesOff:])
-			line.Data = line.Data[:line.Cells[p.OffXCellIndex].BytesOff]
-			p.OffXCellIndex = 0
+		if p.EditModeOffXCellIndex < len(line.Cells) {
+			p.CurrentLine().Data = make([]byte, len(line.Data[line.Cells[p.EditModeOffXCellIndex].BytesOff:]))
+			copy(p.CurrentLine().Data, line.Data[line.Cells[p.EditModeOffXCellIndex].BytesOff:])
+			line.Data = line.Data[:line.Cells[p.EditModeOffXCellIndex].BytesOff]
+			p.EditModeOffXCellIndex = 0
 		}
 	}
 
@@ -74,10 +75,7 @@ func (p *Editor) AppendNewLine() *Line {
 	return ret
 }
 
-func (p *Editor) RemoveCurrentLine() {
-	p.LinesLocker.Lock()
-	defer p.LinesLocker.Unlock()
-
+func (p *Editor) EditModeRemoveCurrentLine() {
 	var line *Line
 
 	if 0 == len(p.Lines) {
@@ -95,7 +93,7 @@ func (p *Editor) RemoveCurrentLine() {
 		p.CurrentLineIndex--
 	}
 
-	p.OffXCellIndex = len(p.CurrentLine().Cells)
+	p.EditModeOffXCellIndex = len(p.CurrentLine().Cells)
 	p.CurrentLine().Data = append(p.CurrentLine().Data, line.Data...)
 
 	return
@@ -121,45 +119,55 @@ func (p *Line) getLinePrefix(lineIndex, lastLineIndex int) string {
 }
 
 func (p *Line) Write(keyStr string) {
-	off := p.Editor.CursorLocation.OffXCellIndex
+	off := p.Editor.CursorLocation.getOffXCellIndex()
 
-	if off >= len(p.Cells) {
+	if *off >= len(p.Cells) {
 		p.Data = append(p.Data, []byte(keyStr)...)
 
-	} else if 0 == off {
+	} else if 0 == *off {
 		p.Data = append([]byte(keyStr), p.Data...)
 
 	} else {
 		newData := make([]byte, len(p.Data)+len(keyStr))
-		_off := p.Cells[off].BytesOff
+		_off := p.Cells[*off].BytesOff
 		copy(newData, p.Data[:_off])
 		copy(newData[_off:], []byte(keyStr))
 		copy(newData[_off+len(keyStr):], p.Data[_off:])
 		p.Data = newData
 	}
 
-	p.Editor.CursorLocation.OffXCellIndex++
+	*off++
 }
 
 func (p *Line) Backspace() {
-	if p.Editor.CursorLocation.OffXCellIndex > len(p.Cells) {
-		p.Editor.CursorLocation.OffXCellIndex = len(p.Cells)
-	}
-	off := p.Editor.CursorLocation.OffXCellIndex
+	off := p.Editor.CursorLocation.getOffXCellIndex()
 
-	if off == 0 && 1 == len(p.Editor.Lines) {
+	if *off > len(p.Cells) {
+		*off = len(p.Cells)
+	}
+
+	if *off == 0 && 1 == len(p.Editor.Lines) {
 		return
 	}
 
-	if 0 == off {
-		p.Editor.RemoveCurrentLine()
+	if 0 == *off {
+		if EDITOR_EDIT_MODE == p.Editor.Mode {
+			p.Editor.EditModeRemoveCurrentLine()
+		}
 
-	} else if off == len(p.Cells) {
-		p.Data = p.Data[:p.Cells[off-1].BytesOff]
-		p.Editor.CursorLocation.OffXCellIndex -= 1
+	} else if *off == len(p.Cells) {
+		p.Data = p.Data[:p.Cells[*off-1].BytesOff]
+		*off -= 1
 
 	} else {
-		p.Data = append(p.Data[:p.Cells[off-1].BytesOff], p.Data[p.Cells[off].BytesOff:]...)
-		p.Editor.CursorLocation.OffXCellIndex -= 1
+		p.Data = append(p.Data[:p.Cells[*off-1].BytesOff], p.Data[p.Cells[*off].BytesOff:]...)
+		*off -= 1
 	}
+}
+
+func (p *Line) CleanData() {
+	off := p.Editor.CursorLocation.getOffXCellIndex()
+	*off = 0
+	p.Data = []byte{}
+	p.Cells = []termui.Cell{}
 }

@@ -19,6 +19,7 @@ var (
 	_commandMatchRegexpMoveRight             = regexp.MustCompile(`[^\d]*(\d*)l$`)
 	_commandMatchRegexpEnterEditModeBackward = regexp.MustCompile(`i$`)
 	_commandMatchRegexpEnterEditModeForward  = regexp.MustCompile(`a$`)
+	_commandMatchRegexpEnterCommandMode      = regexp.MustCompile(`:$`)
 )
 
 func (p *Editor) PrepareNormalMode() {
@@ -29,11 +30,13 @@ func (p *Editor) PrepareNormalMode() {
 		{_commandMatchRegexpMoveRight, p.commandMoveRight},
 		{_commandMatchRegexpEnterEditModeBackward, p.commandEnterEditModeBackward},
 		{_commandMatchRegexpEnterEditModeForward, p.commandEnterEditModeForward},
+		{_commandMatchRegexpEnterCommandMode, p.commandEnterCommandMode},
 	}
 }
 
 func (p *Editor) NormalModeEnter() {
 	p.Mode = EDITOR_NORMAL_MODE
+	p.CursorLocation.RefreshCursorByLine(p.CurrentLine())
 }
 
 func (p *Editor) NormalModeWrite(keyStr string) {
@@ -47,8 +50,8 @@ func (p *Editor) NormalModeWrite(keyStr string) {
 }
 
 func (p *Editor) commandMoveTop() {
-	if p.OffXCellIndex > p.offXCellIndexForVerticalMoveCursor {
-		p.offXCellIndexForVerticalMoveCursor = p.OffXCellIndex
+	if p.EditModeOffXCellIndex > p.offXCellIndexForVerticalMoveCursor {
+		p.offXCellIndexForVerticalMoveCursor = p.EditModeOffXCellIndex
 	}
 
 	_n := _commandMatchRegexpMoveTop.FindSubmatch([]byte(p.NormalModeCommandStack))
@@ -59,23 +62,23 @@ func (p *Editor) commandMoveTop() {
 		p.CursorLocation.MoveCursorNRuneTop(1)
 	}
 
-	if p.offXCellIndexForVerticalMoveCursor > p.OffXCellIndex {
+	if p.offXCellIndexForVerticalMoveCursor > p.EditModeOffXCellIndex {
 		if p.offXCellIndexForVerticalMoveCursor >= len(p.Editor.CurrentLine().Cells) {
 			if 0 == len(p.Editor.CurrentLine().Cells) {
-				p.OffXCellIndex = 0
+				p.EditModeOffXCellIndex = 0
 			} else {
-				p.OffXCellIndex = len(p.Editor.CurrentLine().Cells) - 1
+				p.EditModeOffXCellIndex = len(p.Editor.CurrentLine().Cells) - 1
 			}
 		} else {
-			p.OffXCellIndex = p.offXCellIndexForVerticalMoveCursor
+			p.EditModeOffXCellIndex = p.offXCellIndexForVerticalMoveCursor
 		}
 		p.CursorLocation.RefreshCursorByLine(p.Editor.CurrentLine())
 	}
 }
 
 func (p *Editor) commandMoveBottom() {
-	if p.OffXCellIndex > p.offXCellIndexForVerticalMoveCursor {
-		p.offXCellIndexForVerticalMoveCursor = p.OffXCellIndex
+	if p.EditModeOffXCellIndex > p.offXCellIndexForVerticalMoveCursor {
+		p.offXCellIndexForVerticalMoveCursor = p.EditModeOffXCellIndex
 	}
 
 	_n := _commandMatchRegexpMoveBottom.FindSubmatch([]byte(p.NormalModeCommandStack))
@@ -86,15 +89,15 @@ func (p *Editor) commandMoveBottom() {
 		p.CursorLocation.MoveCursorNRuneBottom(1)
 	}
 
-	if p.offXCellIndexForVerticalMoveCursor > p.OffXCellIndex {
+	if p.offXCellIndexForVerticalMoveCursor > p.EditModeOffXCellIndex {
 		if p.offXCellIndexForVerticalMoveCursor >= len(p.Editor.CurrentLine().Cells) {
 			if 0 == len(p.Editor.CurrentLine().Cells) {
-				p.OffXCellIndex = 0
+				p.EditModeOffXCellIndex = 0
 			} else {
-				p.OffXCellIndex = len(p.Editor.CurrentLine().Cells) - 1
+				p.EditModeOffXCellIndex = len(p.Editor.CurrentLine().Cells) - 1
 			}
 		} else {
-			p.OffXCellIndex = p.offXCellIndexForVerticalMoveCursor
+			p.EditModeOffXCellIndex = p.offXCellIndexForVerticalMoveCursor
 		}
 		p.CursorLocation.RefreshCursorByLine(p.Editor.CurrentLine())
 	}
@@ -126,7 +129,11 @@ func (p *Editor) commandEnterEditModeBackward() {
 
 func (p *Editor) commandEnterEditModeForward() {
 	if len(p.CurrentLine().Cells) > 0 {
-		p.OffXCellIndex += 1
+		p.EditModeOffXCellIndex += 1
 	}
 	p.EditModeEnter()
+}
+
+func (p *Editor) commandEnterCommandMode() {
+	p.CommandModeEnter()
 }

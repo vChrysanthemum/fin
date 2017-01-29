@@ -14,6 +14,14 @@ func toTmAttr(x termui.Attribute) termbox.Attribute {
 }
 
 func (p *Editor) UIRender() {
-	p.RefreshContent()
-	p.CursorLocation.RefreshCursorByLine(p.CurrentLine())
+	p.RefreshBuf()
+
+	switch p.Mode {
+	case EDITOR_EDIT_MODE:
+		p.CursorLocation.RefreshCursorByLine(p.CurrentLine())
+	case EDITOR_NORMAL_MODE:
+		p.CursorLocation.RefreshCursorByLine(p.CurrentLine())
+	case EDITOR_COMMAND_MODE:
+		p.CursorLocation.RefreshCursorByLine(p.CommandModeContent)
+	}
 }

@@ -7,24 +7,55 @@ import (
 )
 
 type CursorLocation struct {
-	IsDisplay     bool
-	OffXCellIndex int
-	Editor        *Editor
+	IsDisplay bool
+	Editor    *Editor
 
+	EditModeOffXCellIndex              int
 	offXCellIndexForVerticalMoveCursor int
+
+	CommandModeOffXCellIndex int
 }
 
 func NewCursorLocation(editor *Editor) *CursorLocation {
 	ret := &CursorLocation{
-		IsDisplay:     false,
-		OffXCellIndex: 0,
-		Editor:        editor,
+		IsDisplay:             false,
+		EditModeOffXCellIndex: 0,
+		Editor:                editor,
 	}
 	return ret
 }
 
+func (p *CursorLocation) getOffXCellIndex() *int {
+	switch p.Editor.Mode {
+	case EDITOR_NORMAL_MODE:
+		return &p.EditModeOffXCellIndex
+	case EDITOR_EDIT_MODE:
+		return &p.EditModeOffXCellIndex
+	case EDITOR_COMMAND_MODE:
+		return &p.CommandModeOffXCellIndex
+	}
+	return nil
+}
+
+func (p *CursorLocation) getLineByMode() *Line {
+	switch p.Editor.Mode {
+	case EDITOR_NORMAL_MODE:
+		return p.Editor.CurrentLine()
+	case EDITOR_EDIT_MODE:
+		return p.Editor.CurrentLine()
+	case EDITOR_COMMAND_MODE:
+		return p.Editor.CommandModeContent
+	}
+	return nil
+}
+
 func (p *CursorLocation) MoveCursorNRuneTop(n int) {
 	if n <= 0 {
+		return
+	}
+
+	offXCellIndex := p.getOffXCellIndex()
+	if nil == offXCellIndex {
 		return
 	}
 
@@ -37,24 +68,30 @@ func (p *CursorLocation) MoveCursorNRuneTop(n int) {
 
 	if index < p.Editor.DisplayLinesTopIndex {
 		p.Editor.DisplayLinesTopIndex = index
-		p.Editor.RefreshContent()
+		p.Editor.isEditModeContentDirty = true
+		p.Editor.RefreshBuf()
 	}
 
 	if 0 == len(p.Editor.CurrentLine().Cells) {
 		p.UISetCursor(p.Editor.CurrentLine().ContentStartX, p.Editor.CurrentLine().ContentStartY)
 
 	} else {
-		if p.OffXCellIndex >= len(p.Editor.CurrentLine().Cells) {
-			p.OffXCellIndex = len(p.Editor.CurrentLine().Cells) - 1
+		if *offXCellIndex >= len(p.Editor.CurrentLine().Cells) {
+			*offXCellIndex = len(p.Editor.CurrentLine().Cells) - 1
 		}
 
-		cell := p.Editor.CurrentLine().Cells[p.OffXCellIndex]
+		cell := p.Editor.CurrentLine().Cells[*offXCellIndex]
 		p.UISetCursor(cell.X, cell.Y)
 	}
 }
 
 func (p *CursorLocation) MoveCursorNRuneBottom(n int) {
 	if n <= 0 {
+		return
+	}
+
+	offXCellIndex := p.getOffXCellIndex()
+	if nil == offXCellIndex {
 		return
 	}
 
@@ -67,18 +104,19 @@ func (p *CursorLocation) MoveCursorNRuneBottom(n int) {
 
 	if index > p.Editor.DisplayLinesBottomIndex {
 		p.Editor.DisplayLinesTopIndex += (index - p.Editor.DisplayLinesBottomIndex)
-		p.Editor.RefreshContent()
+		p.Editor.isEditModeContentDirty = true
+		p.Editor.RefreshBuf()
 	}
 
 	if 0 == len(p.Editor.CurrentLine().Cells) {
 		p.UISetCursor(p.Editor.CurrentLine().ContentStartX, p.Editor.CurrentLine().ContentStartY)
 
 	} else {
-		if p.OffXCellIndex >= len(p.Editor.CurrentLine().Cells) {
-			p.OffXCellIndex = len(p.Editor.CurrentLine().Cells) - 1
+		if *offXCellIndex >= len(p.Editor.CurrentLine().Cells) {
+			*offXCellIndex = len(p.Editor.CurrentLine().Cells) - 1
 		}
 
-		cell := p.Editor.CurrentLine().Cells[p.OffXCellIndex]
+		cell := p.Editor.CurrentLine().Cells[*offXCellIndex]
 		p.UISetCursor(cell.X, cell.Y)
 	}
 }
@@ -88,17 +126,23 @@ func (p *CursorLocation) MoveCursorNRuneLeft(n int) {
 		return
 	}
 
-	if len(p.Editor.CurrentLine().Cells) == 0 {
-		p.OffXCellIndex = 0
+	offXCellIndex := p.getOffXCellIndex()
+	if nil == offXCellIndex {
 		return
 	}
 
-	p.OffXCellIndex -= n
-	if p.OffXCellIndex < 0 {
-		p.OffXCellIndex = 0
+	line := p.getLineByMode()
+	if len(line.Cells) == 0 {
+		*offXCellIndex = 0
+		return
 	}
 
-	cell := p.Editor.CurrentLine().Cells[p.OffXCellIndex]
+	*offXCellIndex -= n
+	if *offXCellIndex < 0 {
+		*offXCellIndex = 0
+	}
+
+	cell := p.getLineByMode().Cells[*offXCellIndex]
 	p.UISetCursor(cell.X, cell.Y)
 }
 
@@ -107,21 +151,48 @@ func (p *CursorLocation) MoveCursorNRuneRight(n int) {
 		return
 	}
 
-	if len(p.Editor.CurrentLine().Cells) == 0 {
-		p.OffXCellIndex = 0
+	offXCellIndex := p.getOffXCellIndex()
+	if nil == offXCellIndex {
 		return
 	}
 
-	p.OffXCellIndex += n
-	if p.OffXCellIndex >= len(p.Editor.CurrentLine().Cells) {
-		p.OffXCellIndex = len(p.Editor.CurrentLine().Cells) - 1
+	line := p.getLineByMode()
+	if len(line.Cells) == 0 {
+		*offXCellIndex = 0
+		return
 	}
 
-	cell := p.Editor.CurrentLine().Cells[p.OffXCellIndex]
-	p.UISetCursor(cell.X, cell.Y)
+	*offXCellIndex += n
+	if *offXCellIndex >= len(line.Cells) {
+		switch p.Editor.Mode {
+		case EDITOR_NORMAL_MODE:
+			*offXCellIndex = len(line.Cells) - 1
+			cell := line.Cells[*offXCellIndex]
+			p.UISetCursor(cell.X, cell.Y)
+
+		case EDITOR_EDIT_MODE:
+			*offXCellIndex = len(line.Cells) - 1
+			cell := line.Cells[*offXCellIndex]
+			p.UISetCursor(cell.X, cell.Y)
+
+		case EDITOR_COMMAND_MODE:
+			*offXCellIndex = len(line.Cells)
+			cell := line.Cells[*offXCellIndex-1]
+			p.UISetCursor(cell.X+cell.Width(), cell.Y)
+		}
+
+	} else {
+		cell := line.Cells[*offXCellIndex]
+		p.UISetCursor(cell.X, cell.Y)
+	}
 }
 
 func (p *CursorLocation) RefreshCursorByLine(line *Line) {
+	offXCellIndex := p.getOffXCellIndex()
+	if nil == offXCellIndex {
+		return
+	}
+
 	if nil == line {
 		p.UISetCursor(p.Editor.Block.InnerArea.Min.X, p.Editor.Block.InnerArea.Min.Y)
 		return
@@ -132,14 +203,14 @@ func (p *CursorLocation) RefreshCursorByLine(line *Line) {
 		return
 	}
 
-	if p.OffXCellIndex >= len(line.Cells) {
-		p.OffXCellIndex = len(line.Cells)
+	if *offXCellIndex >= len(line.Cells) {
+		*offXCellIndex = len(line.Cells)
 	}
 
 	var x, y int
 	var cell termui.Cell
-	if p.OffXCellIndex == len(line.Cells) {
-		cell = line.Cells[p.OffXCellIndex-1]
+	if *offXCellIndex == len(line.Cells) {
+		cell = line.Cells[*offXCellIndex-1]
 		width := cell.Width()
 		if cell.X+width >= p.Editor.Block.InnerArea.Max.X {
 			x, y = line.ContentStartX, cell.Y+1
@@ -150,11 +221,11 @@ func (p *CursorLocation) RefreshCursorByLine(line *Line) {
 		if y >= p.Editor.Block.InnerArea.Max.Y {
 			y = p.Editor.Block.InnerArea.Max.Y - 1
 			p.Editor.DisplayLinesTopIndex += 1
-			p.Editor.RefreshContent()
+			p.Editor.RefreshBuf()
 		}
 
 	} else {
-		cell = line.Cells[p.OffXCellIndex]
+		cell = line.Cells[*offXCellIndex]
 		x, y = cell.X, cell.Y
 	}
 
