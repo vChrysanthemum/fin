@@ -56,14 +56,14 @@ func (p *Editor) RefreshEditorEditModeBuf() {
 	p.isEditorEditModeBufDirty = false
 
 	var (
-		finalX, finalY       int
-		y, x, n, w, k        int
-		dx, dy               int
-		line                 *EditorLine
-		pageLastEditorLine   int
-		linePrefix           string
-		ok                   bool
-		builtLinesMark map[int]bool = make(map[int]bool, 0)
+		finalX, finalY     int
+		y, x, n, w, k      int
+		dx, dy             int
+		line               *EditorLine
+		pageLastEditorLine int
+		linePrefix         string
+		ok                 bool
+		builtLinesMark     map[int]bool = make(map[int]bool, 0)
 	)
 
 REFRESH_BEGIN:
