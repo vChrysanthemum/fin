@@ -30,10 +30,10 @@ func (p *Editor) EditorCommandModeWrite(keyStr string) {
 		p.CommandModeBuf.Backspace(p.CommandModeCursorLocation)
 
 	} else if "<left>" == keyStr {
-		p.CommandModeCursorLocation.MoveCursorNRuneLeft(p.CommandModeBuf, 1)
+		p.MoveCursorNRuneLeft(p.CommandModeCursorLocation, p.CommandModeBuf, 1)
 
 	} else if "<right>" == keyStr {
-		p.CommandModeCursorLocation.MoveCursorNRuneRight(p.CommandModeBuf, 1)
+		p.MoveCursorNRuneRight(p.CommandModeCursorLocation, p.CommandModeBuf, 1)
 
 	} else {
 		if "<space>" == keyStr {

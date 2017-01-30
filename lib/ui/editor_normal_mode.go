@@ -57,9 +57,9 @@ func (p *Editor) commandMoveTop() {
 	_n := _commandMatchRegexpMoveTop.FindSubmatch([]byte(p.EditorNormalModeCommandStack))
 	n, err := strconv.Atoi(string(_n[1]))
 	if nil == err {
-		p.EditModeCursorLocation.MoveCursorNRuneTop(n)
+		p.MoveCursorNRuneTop(p.EditModeCursorLocation, n)
 	} else {
-		p.EditModeCursorLocation.MoveCursorNRuneTop(1)
+		p.MoveCursorNRuneTop(p.EditModeCursorLocation, 1)
 	}
 
 	if p.EditModeCursorLocation.OffXCellIndexVertical > p.EditModeCursorLocation.OffXCellIndex {
@@ -84,9 +84,9 @@ func (p *Editor) commandMoveBottom() {
 	_n := _commandMatchRegexpMoveBottom.FindSubmatch([]byte(p.EditorNormalModeCommandStack))
 	n, err := strconv.Atoi(string(_n[1]))
 	if nil == err {
-		p.EditModeCursorLocation.MoveCursorNRuneBottom(n)
+		p.MoveCursorNRuneBottom(p.EditModeCursorLocation, n)
 	} else {
-		p.EditModeCursorLocation.MoveCursorNRuneBottom(1)
+		p.MoveCursorNRuneBottom(p.EditModeCursorLocation, 1)
 	}
 
 	if p.EditModeCursorLocation.OffXCellIndexVertical > p.EditModeCursorLocation.OffXCellIndex {
@@ -107,9 +107,9 @@ func (p *Editor) commandMoveLeft() {
 	_n := _commandMatchRegexpMoveLeft.FindSubmatch([]byte(p.EditorNormalModeCommandStack))
 	n, err := strconv.Atoi(string(_n[1]))
 	if nil == err {
-		p.EditModeCursorLocation.MoveCursorNRuneLeft(p.CurrentLine(), n)
+		p.MoveCursorNRuneLeft(p.EditModeCursorLocation, p.CurrentLine(), n)
 	} else {
-		p.EditModeCursorLocation.MoveCursorNRuneLeft(p.CurrentLine(), 1)
+		p.MoveCursorNRuneLeft(p.EditModeCursorLocation, p.CurrentLine(), 1)
 	}
 }
 
@@ -117,9 +117,9 @@ func (p *Editor) commandMoveRight() {
 	_n := _commandMatchRegexpMoveRight.FindSubmatch([]byte(p.EditorNormalModeCommandStack))
 	n, err := strconv.Atoi(string(_n[1]))
 	if nil == err {
-		p.EditModeCursorLocation.MoveCursorNRuneRight(p.CurrentLine(), n)
+		p.MoveCursorNRuneRight(p.EditModeCursorLocation, p.CurrentLine(), n)
 	} else {
-		p.EditModeCursorLocation.MoveCursorNRuneRight(p.CurrentLine(), 1)
+		p.MoveCursorNRuneRight(p.EditModeCursorLocation, p.CurrentLine(), 1)
 	}
 }
 

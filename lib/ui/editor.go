@@ -135,14 +135,10 @@ func (p *Editor) Buffer() termui.Buffer {
 
 func (p *Editor) ActiveMode() {
 	p.EditorEditModeEnter()
-	p.EditModeCursorLocation.IsDisplay = true
-	p.CommandModeCursorLocation.IsDisplay = true
 	p.EditModeCursorLocation.RefreshCursorByEditorLine(p.CurrentLine())
 }
 
 func (p *Editor) UnActiveMode() {
 	p.Mode = EDITOR_MODE_NONE
-	p.EditModeCursorLocation.IsDisplay = false
-	p.CommandModeCursorLocation.IsDisplay = false
 	uiutils.UISetCursor(-1, -1)
 }

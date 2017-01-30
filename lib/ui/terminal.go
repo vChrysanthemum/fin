@@ -16,9 +16,9 @@ type Terminal struct {
 
 	termui.Block
 
-	TextFgColor               termui.Attribute
-	TextBgColor               termui.Attribute
-	WrapLength                int // words wrap limit. Note it may not work properly with multi-width char
+	TextFgColor       termui.Attribute
+	TextBgColor       termui.Attribute
+	WrapLength        int // words wrap limit. Note it may not work properly with multi-width char
 	DisplayLinesRange [2]int
 	*TerminalCursorLocation
 }
@@ -26,9 +26,9 @@ type Terminal struct {
 func NewTerminal() *Terminal {
 	ret := &Terminal{
 		Lines:             []*TerminalLine{},
-		Block:                     *termui.NewBlock(),
-		TextFgColor:               termui.ThemeAttr("par.text.fg"),
-		TextBgColor:               termui.ThemeAttr("par.text.bg"),
+		Block:             *termui.NewBlock(),
+		TextFgColor:       termui.ThemeAttr("par.text.fg"),
+		TextBgColor:       termui.ThemeAttr("par.text.bg"),
 		DisplayLinesRange: [2]int{0, 1},
 	}
 	ret.TerminalCursorLocation = NewTerminalCursorLocation(&ret.Block)
@@ -138,25 +138,21 @@ func (p *Terminal) Buffer() termui.Buffer {
 		x += w
 	}
 
-	if true == p.TerminalCursorLocation.IsDisplay {
-		if 0 == len(cs) {
-			p.TerminalCursorLocation.ResetLocation()
-		} else {
-			finalX = p.InnerArea.Min.X + x
-			finalY = p.InnerArea.Min.Y + y
-			p.TerminalCursorLocation.SetCursor(finalX, finalY)
-		}
+	if 0 == len(cs) {
+		p.TerminalCursorLocation.ResetLocation()
+	} else {
+		finalX = p.InnerArea.Min.X + x
+		finalY = p.InnerArea.Min.Y + y
+		p.TerminalCursorLocation.SetCursor(finalX, finalY)
 	}
 
 	return buf
 }
 
 func (p *Terminal) ActiveMode() {
-	p.TerminalCursorLocation.IsDisplay = true
 	p.TerminalCursorLocation.ResumeCursor()
 }
 
 func (p *Terminal) UnActiveMode() {
-	p.TerminalCursorLocation.IsDisplay = false
 	uiutils.UISetCursor(-1, -1)
 }

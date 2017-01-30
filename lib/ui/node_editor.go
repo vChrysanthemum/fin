@@ -70,7 +70,7 @@ func (p *NodeEditor) NodeDataUnActiveMode() {
 	if true == p.Node.isCalledActiveMode && true == p.Node.UIBlock.Border {
 		p.Node.isCalledActiveMode = false
 		p.Node.UIBlock.BorderFg = p.Node.tmpActiveModeBorderFg
-		p.Editor.UnActiveMode()
-		p.Node.uiRender()
 	}
+	p.Editor.UnActiveMode()
+	p.Node.uiRender()
 }

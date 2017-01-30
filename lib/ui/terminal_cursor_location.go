@@ -8,14 +8,12 @@ import (
 )
 
 type TerminalCursorLocation struct {
-	IsDisplay   bool
 	Location    image.Point
 	ParentBlock *termui.Block
 }
 
 func NewTerminalCursorLocation(parentBlock *termui.Block) *TerminalCursorLocation {
 	ret := &TerminalCursorLocation{
-		IsDisplay:   false,
 		Location:    image.Point{X: -1, Y: -1},
 		ParentBlock: parentBlock,
 	}
