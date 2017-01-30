@@ -1,16 +1,14 @@
 package ui
 
-import "fin/ui/editor"
-
 type NodeEditor struct {
 	*Node
-	*editor.Editor
+	*Editor
 }
 
 func (p *Node) InitNodeEditor() {
 	nodeEditor := new(NodeEditor)
 	nodeEditor.Node = p
-	nodeEditor.Editor = editor.NewEditor()
+	nodeEditor.Editor = NewEditor()
 
 	p.Data = nodeEditor
 	p.KeyPress = nodeEditor.KeyPress

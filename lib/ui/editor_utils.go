@@ -1,4 +1,4 @@
-package editor
+package ui
 
 import (
 	"github.com/gizak/termui"
@@ -16,10 +16,10 @@ func toTmAttr(x termui.Attribute) termbox.Attribute {
 func (p *Editor) UIRender() {
 	switch p.Mode {
 	case EDITOR_EDIT_MODE:
-		p.CursorLocation.RefreshCursorByLine(p.CurrentLine())
+		p.EditorCursorLocation.RefreshCursorByEditorLine(p.CurrentEditorLine())
 	case EDITOR_NORMAL_MODE:
-		p.CursorLocation.RefreshCursorByLine(p.CurrentLine())
+		p.EditorCursorLocation.RefreshCursorByEditorLine(p.CurrentEditorLine())
 	case EDITOR_COMMAND_MODE:
-		p.CursorLocation.RefreshCursorByLine(p.CommandModeBuf)
+		p.EditorCursorLocation.RefreshCursorByEditorLine(p.EditorCommandModeBuf)
 	}
 }

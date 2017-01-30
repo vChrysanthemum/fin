@@ -1,4 +1,4 @@
-package editor
+package ui
 
 import (
 	uiutils "fin/ui/utils"
@@ -6,50 +6,50 @@ import (
 	"github.com/gizak/termui"
 )
 
-type CursorLocation struct {
+type EditorCursorLocation struct {
 	IsDisplay bool
 	Editor    *Editor
 
-	EditModeOffXCellIndex              int
+	EditorEditModeOffXCellIndex        int
 	offXCellIndexForVerticalMoveCursor int
 
-	CommandModeOffXCellIndex int
+	EditorCommandModeOffXCellIndex int
 }
 
-func NewCursorLocation(editor *Editor) *CursorLocation {
-	ret := &CursorLocation{
-		IsDisplay:             false,
-		EditModeOffXCellIndex: 0,
-		Editor:                editor,
+func NewEditorCursorLocation(editor *Editor) *EditorCursorLocation {
+	ret := &EditorCursorLocation{
+		IsDisplay:                   false,
+		EditorEditModeOffXCellIndex: 0,
+		Editor: editor,
 	}
 	return ret
 }
 
-func (p *CursorLocation) getOffXCellIndex() *int {
+func (p *EditorCursorLocation) getOffXCellIndex() *int {
 	switch p.Editor.Mode {
 	case EDITOR_NORMAL_MODE:
-		return &p.EditModeOffXCellIndex
+		return &p.EditorEditModeOffXCellIndex
 	case EDITOR_EDIT_MODE:
-		return &p.EditModeOffXCellIndex
+		return &p.EditorEditModeOffXCellIndex
 	case EDITOR_COMMAND_MODE:
-		return &p.CommandModeOffXCellIndex
+		return &p.EditorCommandModeOffXCellIndex
 	}
 	return nil
 }
 
-func (p *CursorLocation) getLineByMode() *Line {
+func (p *EditorCursorLocation) getEditorLineByMode() *EditorLine {
 	switch p.Editor.Mode {
 	case EDITOR_NORMAL_MODE:
-		return p.Editor.CurrentLine()
+		return p.Editor.CurrentEditorLine()
 	case EDITOR_EDIT_MODE:
-		return p.Editor.CurrentLine()
+		return p.Editor.CurrentEditorLine()
 	case EDITOR_COMMAND_MODE:
-		return p.Editor.CommandModeBuf
+		return p.Editor.EditorCommandModeBuf
 	}
 	return nil
 }
 
-func (p *CursorLocation) MoveCursorNRuneTop(n int) {
+func (p *EditorCursorLocation) MoveCursorNRuneTop(n int) {
 	if n <= 0 {
 		return
 	}
@@ -59,33 +59,33 @@ func (p *CursorLocation) MoveCursorNRuneTop(n int) {
 		return
 	}
 
-	index := p.Editor.CurrentLineIndex - n
+	index := p.Editor.CurrentEditorLineIndex - n
 	if index < 0 {
 		index = 0
 	}
 
-	p.Editor.CurrentLineIndex = index
+	p.Editor.CurrentEditorLineIndex = index
 
-	if index < p.Editor.DisplayLinesTopIndex {
-		p.Editor.DisplayLinesTopIndex = index
-		p.Editor.isEditModeBufDirty = true
-		p.Editor.isShouldRefreshEditModeBuf = true
+	if index < p.Editor.DisplayEditorLinesTopIndex {
+		p.Editor.DisplayEditorLinesTopIndex = index
+		p.Editor.isEditorEditModeBufDirty = true
+		p.Editor.isShouldRefreshEditorEditModeBuf = true
 	}
 
-	if 0 == len(p.Editor.CurrentLine().Cells) {
-		p.UISetCursor(p.Editor.CurrentLine().ContentStartX, p.Editor.CurrentLine().ContentStartY)
+	if 0 == len(p.Editor.CurrentEditorLine().Cells) {
+		p.UISetCursor(p.Editor.CurrentEditorLine().ContentStartX, p.Editor.CurrentEditorLine().ContentStartY)
 
 	} else {
-		if *offXCellIndex >= len(p.Editor.CurrentLine().Cells) {
-			*offXCellIndex = len(p.Editor.CurrentLine().Cells) - 1
+		if *offXCellIndex >= len(p.Editor.CurrentEditorLine().Cells) {
+			*offXCellIndex = len(p.Editor.CurrentEditorLine().Cells) - 1
 		}
 
-		cell := p.Editor.CurrentLine().Cells[*offXCellIndex]
+		cell := p.Editor.CurrentEditorLine().Cells[*offXCellIndex]
 		p.UISetCursor(cell.X, cell.Y)
 	}
 }
 
-func (p *CursorLocation) MoveCursorNRuneBottom(n int) {
+func (p *EditorCursorLocation) MoveCursorNRuneBottom(n int) {
 	if n <= 0 {
 		return
 	}
@@ -95,33 +95,33 @@ func (p *CursorLocation) MoveCursorNRuneBottom(n int) {
 		return
 	}
 
-	index := p.Editor.CurrentLineIndex + n
-	if index >= len(p.Editor.Lines) {
-		index = len(p.Editor.Lines) - 1
+	index := p.Editor.CurrentEditorLineIndex + n
+	if index >= len(p.Editor.EditorLines) {
+		index = len(p.Editor.EditorLines) - 1
 	}
 
-	p.Editor.CurrentLineIndex = index
+	p.Editor.CurrentEditorLineIndex = index
 
-	if index > p.Editor.DisplayLinesBottomIndex {
-		p.Editor.DisplayLinesTopIndex += (index - p.Editor.DisplayLinesBottomIndex)
-		p.Editor.isEditModeBufDirty = true
-		p.Editor.isShouldRefreshEditModeBuf = true
+	if index > p.Editor.DisplayEditorLinesBottomIndex {
+		p.Editor.DisplayEditorLinesTopIndex += (index - p.Editor.DisplayEditorLinesBottomIndex)
+		p.Editor.isEditorEditModeBufDirty = true
+		p.Editor.isShouldRefreshEditorEditModeBuf = true
 	}
 
-	if 0 == len(p.Editor.CurrentLine().Cells) {
-		p.UISetCursor(p.Editor.CurrentLine().ContentStartX, p.Editor.CurrentLine().ContentStartY)
+	if 0 == len(p.Editor.CurrentEditorLine().Cells) {
+		p.UISetCursor(p.Editor.CurrentEditorLine().ContentStartX, p.Editor.CurrentEditorLine().ContentStartY)
 
 	} else {
-		if *offXCellIndex >= len(p.Editor.CurrentLine().Cells) {
-			*offXCellIndex = len(p.Editor.CurrentLine().Cells) - 1
+		if *offXCellIndex >= len(p.Editor.CurrentEditorLine().Cells) {
+			*offXCellIndex = len(p.Editor.CurrentEditorLine().Cells) - 1
 		}
 
-		cell := p.Editor.CurrentLine().Cells[*offXCellIndex]
+		cell := p.Editor.CurrentEditorLine().Cells[*offXCellIndex]
 		p.UISetCursor(cell.X, cell.Y)
 	}
 }
 
-func (p *CursorLocation) MoveCursorNRuneLeft(n int) {
+func (p *EditorCursorLocation) MoveCursorNRuneLeft(n int) {
 	if n <= 0 {
 		return
 	}
@@ -131,7 +131,7 @@ func (p *CursorLocation) MoveCursorNRuneLeft(n int) {
 		return
 	}
 
-	line := p.getLineByMode()
+	line := p.getEditorLineByMode()
 	if len(line.Cells) == 0 {
 		*offXCellIndex = 0
 		return
@@ -142,11 +142,11 @@ func (p *CursorLocation) MoveCursorNRuneLeft(n int) {
 		*offXCellIndex = 0
 	}
 
-	cell := p.getLineByMode().Cells[*offXCellIndex]
+	cell := p.getEditorLineByMode().Cells[*offXCellIndex]
 	p.UISetCursor(cell.X, cell.Y)
 }
 
-func (p *CursorLocation) MoveCursorNRuneRight(n int) {
+func (p *EditorCursorLocation) MoveCursorNRuneRight(n int) {
 	if n <= 0 {
 		return
 	}
@@ -156,7 +156,7 @@ func (p *CursorLocation) MoveCursorNRuneRight(n int) {
 		return
 	}
 
-	line := p.getLineByMode()
+	line := p.getEditorLineByMode()
 	if len(line.Cells) == 0 {
 		*offXCellIndex = 0
 		return
@@ -187,7 +187,7 @@ func (p *CursorLocation) MoveCursorNRuneRight(n int) {
 	}
 }
 
-func (p *CursorLocation) RefreshCursorByLine(line *Line) {
+func (p *EditorCursorLocation) RefreshCursorByEditorLine(line *EditorLine) {
 	offXCellIndex := p.getOffXCellIndex()
 	if nil == offXCellIndex {
 		return
@@ -222,8 +222,8 @@ func (p *CursorLocation) RefreshCursorByLine(line *Line) {
 			y = p.Editor.Block.InnerArea.Max.Y - 1
 			switch p.Editor.Mode {
 			case EDITOR_EDIT_MODE:
-				p.Editor.DisplayLinesTopIndex += 1
-				p.Editor.isShouldRefreshEditModeBuf = true
+				p.Editor.DisplayEditorLinesTopIndex += 1
+				p.Editor.isShouldRefreshEditorEditModeBuf = true
 			}
 		}
 
@@ -235,7 +235,7 @@ func (p *CursorLocation) RefreshCursorByLine(line *Line) {
 	p.UISetCursor(x, y)
 }
 
-func (p *CursorLocation) UISetCursor(x, y int) {
+func (p *EditorCursorLocation) UISetCursor(x, y int) {
 	if false == p.IsDisplay {
 		return
 	}

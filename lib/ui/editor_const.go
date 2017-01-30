@@ -1,4 +1,4 @@
-package editor
+package ui
 
 const (
 	EDITOR_MODE_NONE = iota
