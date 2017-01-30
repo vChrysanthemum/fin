@@ -3,7 +3,7 @@ package ui
 import "github.com/gizak/termui"
 
 func (p *Editor) PrepareEditorCommandMode() {
-	p.EditorCommandModeBuf = p.NewEditorLine()
+	p.EditorCommandModeBuf = p.NewLine()
 }
 
 func (p *Editor) EditorCommandModeQuit() {

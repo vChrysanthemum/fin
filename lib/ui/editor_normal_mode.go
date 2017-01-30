@@ -36,7 +36,7 @@ func (p *Editor) PrepareEditorNormalMode() {
 
 func (p *Editor) EditorNormalModeEnter() {
 	p.Mode = EDITOR_NORMAL_MODE
-	p.EditorCursorLocation.RefreshCursorByEditorLine(p.CurrentEditorLine())
+	p.EditorCursorLocation.RefreshCursorByEditorLine(p.CurrentLine())
 }
 
 func (p *Editor) EditorNormalModeWrite(keyStr string) {
@@ -63,16 +63,16 @@ func (p *Editor) commandMoveTop() {
 	}
 
 	if p.offXCellIndexForVerticalMoveCursor > p.EditorEditModeOffXCellIndex {
-		if p.offXCellIndexForVerticalMoveCursor >= len(p.Editor.CurrentEditorLine().Cells) {
-			if 0 == len(p.Editor.CurrentEditorLine().Cells) {
+		if p.offXCellIndexForVerticalMoveCursor >= len(p.Editor.CurrentLine().Cells) {
+			if 0 == len(p.Editor.CurrentLine().Cells) {
 				p.EditorEditModeOffXCellIndex = 0
 			} else {
-				p.EditorEditModeOffXCellIndex = len(p.Editor.CurrentEditorLine().Cells) - 1
+				p.EditorEditModeOffXCellIndex = len(p.Editor.CurrentLine().Cells) - 1
 			}
 		} else {
 			p.EditorEditModeOffXCellIndex = p.offXCellIndexForVerticalMoveCursor
 		}
-		p.EditorCursorLocation.RefreshCursorByEditorLine(p.Editor.CurrentEditorLine())
+		p.EditorCursorLocation.RefreshCursorByEditorLine(p.Editor.CurrentLine())
 	}
 }
 
@@ -90,16 +90,16 @@ func (p *Editor) commandMoveBottom() {
 	}
 
 	if p.offXCellIndexForVerticalMoveCursor > p.EditorEditModeOffXCellIndex {
-		if p.offXCellIndexForVerticalMoveCursor >= len(p.Editor.CurrentEditorLine().Cells) {
-			if 0 == len(p.Editor.CurrentEditorLine().Cells) {
+		if p.offXCellIndexForVerticalMoveCursor >= len(p.Editor.CurrentLine().Cells) {
+			if 0 == len(p.Editor.CurrentLine().Cells) {
 				p.EditorEditModeOffXCellIndex = 0
 			} else {
-				p.EditorEditModeOffXCellIndex = len(p.Editor.CurrentEditorLine().Cells) - 1
+				p.EditorEditModeOffXCellIndex = len(p.Editor.CurrentLine().Cells) - 1
 			}
 		} else {
 			p.EditorEditModeOffXCellIndex = p.offXCellIndexForVerticalMoveCursor
 		}
-		p.EditorCursorLocation.RefreshCursorByEditorLine(p.Editor.CurrentEditorLine())
+		p.EditorCursorLocation.RefreshCursorByEditorLine(p.Editor.CurrentLine())
 	}
 }
 
@@ -128,7 +128,7 @@ func (p *Editor) commandEnterEditorEditModeBackward() {
 }
 
 func (p *Editor) commandEnterEditorEditModeForward() {
-	if len(p.CurrentEditorLine().Cells) > 0 {
+	if len(p.CurrentLine().Cells) > 0 {
 		p.EditorEditModeOffXCellIndex += 1
 	}
 	p.EditorEditModeEnter()

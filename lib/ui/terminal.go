@@ -1,4 +1,4 @@
-package terminal
+package ui
 
 import (
 	uiutils "fin/ui/utils"
@@ -9,29 +9,29 @@ import (
 )
 
 type Terminal struct {
-	FirstLine, LastLine, CurrentLine *Line
+	FirstTerminalLine, LastTerminalLine, CurrentLine *TerminalLine
 
 	LinesLocker sync.RWMutex
-	Lines       []*Line
+	Lines       []*TerminalLine
 
 	termui.Block
 
-	TextFgColor       termui.Attribute
-	TextBgColor       termui.Attribute
-	WrapLength        int // words wrap limit. Note it may not work properly with multi-width char
+	TextFgColor               termui.Attribute
+	TextBgColor               termui.Attribute
+	WrapLength                int // words wrap limit. Note it may not work properly with multi-width char
 	DisplayLinesRange [2]int
-	*CursorLocation
+	*TerminalCursorLocation
 }
 
 func NewTerminal() *Terminal {
 	ret := &Terminal{
-		Lines:             []*Line{},
-		Block:             *termui.NewBlock(),
-		TextFgColor:       termui.ThemeAttr("par.text.fg"),
-		TextBgColor:       termui.ThemeAttr("par.text.bg"),
+		Lines:             []*TerminalLine{},
+		Block:                     *termui.NewBlock(),
+		TextFgColor:               termui.ThemeAttr("par.text.fg"),
+		TextBgColor:               termui.ThemeAttr("par.text.bg"),
 		DisplayLinesRange: [2]int{0, 1},
 	}
-	ret.CursorLocation = NewCursorLocation(&ret.Block)
+	ret.TerminalCursorLocation = NewTerminalCursorLocation(&ret.Block)
 	return ret
 }
 
@@ -89,7 +89,7 @@ func (p *Terminal) Write(keyStr string) {
 		if len(p.CurrentLine.Data) > 0 {
 			p.CurrentLine.Backspace()
 		} else {
-			p.RemoveLine(p.CurrentLine)
+			p.RemoveTerminalLine(p.CurrentLine)
 		}
 		return
 	}
@@ -138,13 +138,13 @@ func (p *Terminal) Buffer() termui.Buffer {
 		x += w
 	}
 
-	if true == p.CursorLocation.IsDisplay {
+	if true == p.TerminalCursorLocation.IsDisplay {
 		if 0 == len(cs) {
-			p.CursorLocation.ResetLocation()
+			p.TerminalCursorLocation.ResetLocation()
 		} else {
 			finalX = p.InnerArea.Min.X + x
 			finalY = p.InnerArea.Min.Y + y
-			p.CursorLocation.SetCursor(finalX, finalY)
+			p.TerminalCursorLocation.SetCursor(finalX, finalY)
 		}
 	}
 
@@ -152,11 +152,11 @@ func (p *Terminal) Buffer() termui.Buffer {
 }
 
 func (p *Terminal) ActiveMode() {
-	p.CursorLocation.IsDisplay = true
-	p.CursorLocation.ResumeCursor()
+	p.TerminalCursorLocation.IsDisplay = true
+	p.TerminalCursorLocation.ResumeCursor()
 }
 
 func (p *Terminal) UnActiveMode() {
-	p.CursorLocation.IsDisplay = false
+	p.TerminalCursorLocation.IsDisplay = false
 	uiutils.UISetCursor(-1, -1)
 }

@@ -1,16 +1,14 @@
 package ui
 
-import "fin/ui/terminal"
-
 type NodeInputText struct {
 	*Node
-	*terminal.Terminal
+	*Terminal
 }
 
 func (p *Node) InitNodeInputText() {
 	nodeInputText := new(NodeInputText)
 	nodeInputText.Node = p
-	nodeInputText.Terminal = terminal.NewTerminal()
+	nodeInputText.Terminal = NewTerminal()
 	nodeInputText.Terminal.CurrentLine = nodeInputText.Terminal.InitNewLine()
 	nodeInputText.Terminal.Block.Border = true
 	p.Data = nodeInputText
@@ -76,7 +74,7 @@ func (p *NodeInputText) NodeDataGetValue() (string, bool) {
 }
 
 func (p *NodeInputText) NodeDataSetValue(content string) {
-	uiBuffer := p.Node.uiBuffer.(*terminal.Terminal)
+	uiBuffer := p.Node.uiBuffer.(*Terminal)
 	if len(uiBuffer.Lines) > 0 {
 		uiBuffer.Lines[0].Data = []byte(content)
 	}

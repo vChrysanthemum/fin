@@ -1,4 +1,4 @@
-package terminal
+package ui
 
 func grow_byte_slice(s []byte, desired_cap int) []byte {
 	if cap(s) < desired_cap {

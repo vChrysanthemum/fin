@@ -16,7 +16,7 @@ type EditorLine struct {
 	Cells  []termui.Cell
 }
 
-func (p *Editor) NewEditorLine() *EditorLine {
+func (p *Editor) NewLine() *EditorLine {
 	return &EditorLine{
 		Editor:        p,
 		ContentStartX: p.Block.InnerArea.Min.X,
@@ -25,43 +25,43 @@ func (p *Editor) NewEditorLine() *EditorLine {
 	}
 }
 
-func (p *Editor) EditorEditModeAppendNewEditorLine() *EditorLine {
-	ret := p.NewEditorLine()
+func (p *Editor) EditorEditModeAppendNewLine() *EditorLine {
+	ret := p.NewLine()
 
-	if 0 == len(p.EditorLines) {
+	if 0 == len(p.Lines) {
 		ret.Index = 0
-		p.EditorLines = append(p.EditorLines, ret)
-		p.CurrentEditorLineIndex = ret.Index
+		p.Lines = append(p.Lines, ret)
+		p.CurrentLineIndex = ret.Index
 
-	} else if p.CurrentEditorLineIndex == len(p.EditorLines)-1 {
-		ret.Index = len(p.EditorLines)
-		p.EditorLines = append(p.EditorLines, ret)
-		p.CurrentEditorLineIndex = ret.Index
+	} else if p.CurrentLineIndex == len(p.Lines)-1 {
+		ret.Index = len(p.Lines)
+		p.Lines = append(p.Lines, ret)
+		p.CurrentLineIndex = ret.Index
 
 	} else {
-		for _, line := range p.EditorLines[p.CurrentEditorLineIndex+1:] {
+		for _, line := range p.Lines[p.CurrentLineIndex+1:] {
 			line.Index += 1
 		}
-		ret.Index = p.CurrentEditorLineIndex + 1
+		ret.Index = p.CurrentLineIndex + 1
 
-		n := len(p.EditorLines) + 1
-		if cap(p.EditorLines) < n {
-			_lines := make([]*EditorLine, len(p.EditorLines), n)
-			copy(_lines, p.EditorLines)
-			p.EditorLines = _lines
+		n := len(p.Lines) + 1
+		if cap(p.Lines) < n {
+			_lines := make([]*EditorLine, len(p.Lines), n)
+			copy(_lines, p.Lines)
+			p.Lines = _lines
 		}
-		p.EditorLines = p.EditorLines[:n]
+		p.Lines = p.Lines[:n]
 
-		copy(p.EditorLines[p.CurrentEditorLineIndex+2:], p.EditorLines[p.CurrentEditorLineIndex+1:])
-		copy(p.EditorLines[p.CurrentEditorLineIndex+1:], []*EditorLine{ret})
-		p.CurrentEditorLineIndex = ret.Index
+		copy(p.Lines[p.CurrentLineIndex+2:], p.Lines[p.CurrentLineIndex+1:])
+		copy(p.Lines[p.CurrentLineIndex+1:], []*EditorLine{ret})
+		p.CurrentLineIndex = ret.Index
 	}
 
-	if p.CurrentEditorLineIndex > 0 {
-		line := p.EditorLines[p.CurrentEditorLineIndex-1]
+	if p.CurrentLineIndex > 0 {
+		line := p.Lines[p.CurrentLineIndex-1]
 		if p.EditorEditModeOffXCellIndex < len(line.Cells) {
-			p.CurrentEditorLine().Data = make([]byte, len(line.Data[line.Cells[p.EditorEditModeOffXCellIndex].BytesOff:]))
-			copy(p.CurrentEditorLine().Data, line.Data[line.Cells[p.EditorEditModeOffXCellIndex].BytesOff:])
+			p.CurrentLine().Data = make([]byte, len(line.Data[line.Cells[p.EditorEditModeOffXCellIndex].BytesOff:]))
+			copy(p.CurrentLine().Data, line.Data[line.Cells[p.EditorEditModeOffXCellIndex].BytesOff:])
 			line.Data = line.Data[:line.Cells[p.EditorEditModeOffXCellIndex].BytesOff]
 			p.EditorEditModeOffXCellIndex = 0
 		}
@@ -69,32 +69,32 @@ func (p *Editor) EditorEditModeAppendNewEditorLine() *EditorLine {
 
 	if true == p.isDisplayEditorLineNumber {
 		ret.ContentStartX = p.Block.InnerArea.Min.X +
-			len(ret.getEditorLinePrefix(len(p.EditorLines), len(p.EditorLines)))
+			len(ret.getEditorLinePrefix(len(p.Lines), len(p.Lines)))
 	}
 
 	return ret
 }
 
-func (p *Editor) EditorEditModeRemoveCurrentEditorLine() {
+func (p *Editor) EditorEditModeRemoveCurrentLine() {
 	var line *EditorLine
 
-	if 0 == len(p.EditorLines) {
+	if 0 == len(p.Lines) {
 		return
 	}
 
-	for _, line = range p.EditorLines[p.CurrentEditorLineIndex:] {
+	for _, line = range p.Lines[p.CurrentLineIndex:] {
 		line.Index--
 	}
 
-	line = p.CurrentEditorLine()
+	line = p.CurrentLine()
 
-	p.EditorLines = append(p.EditorLines[:p.CurrentEditorLineIndex], p.EditorLines[p.CurrentEditorLineIndex+1:]...)
-	if p.CurrentEditorLineIndex > 0 {
-		p.CurrentEditorLineIndex--
+	p.Lines = append(p.Lines[:p.CurrentLineIndex], p.Lines[p.CurrentLineIndex+1:]...)
+	if p.CurrentLineIndex > 0 {
+		p.CurrentLineIndex--
 	}
 
-	p.EditorEditModeOffXCellIndex = len(p.CurrentEditorLine().Cells)
-	p.CurrentEditorLine().Data = append(p.CurrentEditorLine().Data, line.Data...)
+	p.EditorEditModeOffXCellIndex = len(p.CurrentLine().Cells)
+	p.CurrentLine().Data = append(p.CurrentLine().Data, line.Data...)
 
 	return
 }
@@ -102,7 +102,7 @@ func (p *Editor) EditorEditModeRemoveCurrentEditorLine() {
 // 获取 line 内容前缀
 //
 // param:
-//		lineIndex			int		 目标 line 的相应 Editor.EditorLines 中的index
+//		lineIndex			int		 目标 line 的相应 Editor.Lines 中的index
 //		lastEditorLineIndex		int		 输出 line 的前缀需要与整个页面的 line 前缀对齐
 //									 lastEditorLineIndex 为 页面中最后一条 line 的 index
 func (p *EditorLine) getEditorLinePrefix(lineIndex, lastEditorLineIndex int) string {
@@ -152,13 +152,13 @@ func (p *EditorLine) Backspace() {
 		*off = len(p.Cells)
 	}
 
-	if *off == 0 && 1 == len(p.Editor.EditorLines) {
+	if *off == 0 && 1 == len(p.Editor.Lines) {
 		return
 	}
 
 	if 0 == *off {
 		if EDITOR_EDIT_MODE == p.Editor.Mode {
-			p.Editor.EditorEditModeRemoveCurrentEditorLine()
+			p.Editor.EditorEditModeRemoveCurrentLine()
 		}
 
 	} else if *off == len(p.Cells) {

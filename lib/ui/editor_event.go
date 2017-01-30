@@ -11,8 +11,8 @@ import (
 func (p *Editor) handleKeyEvent(keyStr string) (isQuitActiveMode bool) {
 	isQuitActiveMode = false
 
-	if 0 == len(p.EditorLines) {
-		p.EditorEditModeAppendNewEditorLine()
+	if 0 == len(p.Lines) {
+		p.EditorEditModeAppendNewLine()
 	}
 
 	switch keyStr {

@@ -20,11 +20,11 @@ type Editor struct {
 	EditorNormalModeCommands     []EditorNormalModeCommand
 	EditorNormalModeCommandStack string
 
-	EditorLines []*EditorLine
+	Lines []*EditorLine
 
 	EditorCommandModeBuf *EditorLine
 
-	CurrentEditorLineIndex int
+	CurrentLineIndex int
 
 	termui.Block
 	EditorEditModeBufAreaHeight    int
@@ -33,8 +33,8 @@ type Editor struct {
 
 	TextFgColor                   termui.Attribute
 	TextBgColor                   termui.Attribute
-	DisplayEditorLinesTopIndex    int
-	DisplayEditorLinesBottomIndex int
+	DisplayLinesTopIndex    int
+	DisplayLinesBottomIndex int
 	*EditorCursorLocation
 
 	isEditorEditModeBufDirty            bool
@@ -47,11 +47,11 @@ type Editor struct {
 
 func NewEditor() *Editor {
 	ret := &Editor{
-		EditorLines:                []*EditorLine{},
+		Lines:                []*EditorLine{},
 		Block:                      *termui.NewBlock(),
 		TextFgColor:                termui.ThemeAttr("par.text.fg"),
 		TextBgColor:                termui.ThemeAttr("par.text.bg"),
-		DisplayEditorLinesTopIndex: 0,
+		DisplayLinesTopIndex: 0,
 	}
 	ret.Mode = EDITOR_MODE_NONE
 	ret.PrepareEditorNormalMode()
@@ -70,15 +70,15 @@ func (p *Editor) Close() {
 	close(p.KeyEventsResultIsQuitActiveMode)
 }
 
-func (p *Editor) CurrentEditorLine() *EditorLine {
-	if p.CurrentEditorLineIndex >= len(p.EditorLines) {
+func (p *Editor) CurrentLine() *EditorLine {
+	if p.CurrentLineIndex >= len(p.Lines) {
 		return nil
 	}
-	return p.EditorLines[p.CurrentEditorLineIndex]
+	return p.Lines[p.CurrentLineIndex]
 }
 
-func (p *Editor) UpdateCurrentEditorLineData(line string) {
-	p.CurrentEditorLine().Data = []byte(line)
+func (p *Editor) UpdateCurrentLineData(line string) {
+	p.CurrentLine().Data = []byte(line)
 }
 
 func (p *Editor) RefreshBuf() {
@@ -101,8 +101,8 @@ func (p *Editor) RefreshBuf() {
 
 func (p *Editor) Buffer() termui.Buffer {
 	if nil == p.Buf {
-		if 0 == len(p.EditorLines) {
-			p.EditorEditModeAppendNewEditorLine()
+		if 0 == len(p.Lines) {
+			p.EditorEditModeAppendNewLine()
 		}
 		buf := p.Block.Buffer()
 		p.Buf = &buf
@@ -135,7 +135,7 @@ func (p *Editor) ActiveMode() {
 	p.isEditorEditModeBufDirty = true
 	p.EditorEditModeEnter()
 	p.EditorCursorLocation.IsDisplay = true
-	p.EditorCursorLocation.RefreshCursorByEditorLine(p.CurrentEditorLine())
+	p.EditorCursorLocation.RefreshCursorByEditorLine(p.CurrentLine())
 }
 
 func (p *Editor) UnActiveMode() {

@@ -1,4 +1,4 @@
-package terminal
+package ui
 
 import (
 	"math"
@@ -7,32 +7,32 @@ import (
 	rw "github.com/mattn/go-runewidth"
 )
 
-type Line struct {
+type TerminalLine struct {
 	Data []byte
-	Next *Line
-	Prev *Line
+	Next *TerminalLine
+	Prev *TerminalLine
 }
 
-func (p *Terminal) InitNewLine() *Line {
+func (p *Terminal) InitNewLine() *TerminalLine {
 	p.LinesLocker.Lock()
 	defer p.LinesLocker.Unlock()
 
-	ret := &Line{
+	ret := &TerminalLine{
 		Data: make([]byte, 0),
 	}
 	p.Lines = append(p.Lines, ret)
 	p.DisplayLinesRange[1] = len(p.Lines) - 1
 
-	if nil == p.FirstLine {
-		p.FirstLine = ret
+	if nil == p.FirstTerminalLine {
+		p.FirstTerminalLine = ret
 	}
 
-	if nil != p.LastLine {
-		p.LastLine.Next = ret
-		ret.Prev = p.LastLine
+	if nil != p.LastTerminalLine {
+		p.LastTerminalLine.Next = ret
+		ret.Prev = p.LastTerminalLine
 	}
 
-	p.LastLine = ret
+	p.LastTerminalLine = ret
 
 	p.DisplayLinesRange[1] += 1
 	maxHeight := p.InnerArea.Dy()
@@ -53,7 +53,7 @@ func (p *Terminal) InitNewLine() *Line {
 	return ret
 }
 
-func (p *Terminal) RemoveLine(line *Line) {
+func (p *Terminal) RemoveTerminalLine(line *TerminalLine) {
 	p.LinesLocker.Lock()
 	defer p.LinesLocker.Unlock()
 
@@ -66,12 +66,12 @@ func (p *Terminal) RemoveLine(line *Line) {
 		line.Next.Prev = line.Prev
 	}
 
-	if p.FirstLine == line {
-		p.FirstLine = p.FirstLine.Next
+	if p.FirstTerminalLine == line {
+		p.FirstTerminalLine = p.FirstTerminalLine.Next
 	}
 
-	if p.LastLine == line {
-		p.LastLine = p.LastLine.Prev
+	if p.LastTerminalLine == line {
+		p.LastTerminalLine = p.LastTerminalLine.Prev
 	}
 
 	for k, v := range p.Lines {
@@ -85,19 +85,19 @@ func (p *Terminal) ClearLines() {
 	p.LinesLocker.Lock()
 	defer p.LinesLocker.Unlock()
 
-	p.FirstLine = nil
-	p.LastLine = nil
+	p.FirstTerminalLine = nil
+	p.LastTerminalLine = nil
 	p.CurrentLine = nil
-	p.Lines = []*Line{}
-	p.CursorLocation.ResetLocation()
+	p.Lines = []*TerminalLine{}
+	p.TerminalCursorLocation.ResetLocation()
 	p.DisplayLinesRange = [2]int{0, 1}
 }
 
-func (p *Line) Write(ch string) {
+func (p *TerminalLine) Write(ch string) {
 	p.Data = append(p.Data, []byte(ch)...)
 }
 
-func (p *Line) Backspace() {
+func (p *TerminalLine) Backspace() {
 	if 0 == len(p.Data) {
 		return
 	}

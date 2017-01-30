@@ -1,20 +1,20 @@
-package terminal
+package ui
 
 import (
-	"image"
 	uiutils "fin/ui/utils"
+	"image"
 
 	"github.com/gizak/termui"
 )
 
-type CursorLocation struct {
+type TerminalCursorLocation struct {
 	IsDisplay   bool
 	Location    image.Point
 	ParentBlock *termui.Block
 }
 
-func NewCursorLocation(parentBlock *termui.Block) *CursorLocation {
-	ret := &CursorLocation{
+func NewTerminalCursorLocation(parentBlock *termui.Block) *TerminalCursorLocation {
+	ret := &TerminalCursorLocation{
 		IsDisplay:   false,
 		Location:    image.Point{X: -1, Y: -1},
 		ParentBlock: parentBlock,
@@ -22,18 +22,18 @@ func NewCursorLocation(parentBlock *termui.Block) *CursorLocation {
 	return ret
 }
 
-func (p *CursorLocation) ResetLocation() {
+func (p *TerminalCursorLocation) ResetLocation() {
 	p.Location.X = p.ParentBlock.InnerArea.Min.X
 	p.Location.Y = p.ParentBlock.InnerArea.Min.Y
 	uiutils.UISetCursor(p.Location.X, p.Location.Y)
 }
 
-func (p *CursorLocation) SetCursor(x, y int) {
+func (p *TerminalCursorLocation) SetCursor(x, y int) {
 	p.Location.X = x
 	p.Location.Y = y
 	uiutils.UISetCursor(p.Location.X, p.Location.Y)
 }
 
-func (p *CursorLocation) ResumeCursor() {
+func (p *TerminalCursorLocation) ResumeCursor() {
 	uiutils.UISetCursor(p.Location.X, p.Location.Y)
 }

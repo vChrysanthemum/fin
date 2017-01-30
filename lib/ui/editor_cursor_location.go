@@ -40,9 +40,9 @@ func (p *EditorCursorLocation) getOffXCellIndex() *int {
 func (p *EditorCursorLocation) getEditorLineByMode() *EditorLine {
 	switch p.Editor.Mode {
 	case EDITOR_NORMAL_MODE:
-		return p.Editor.CurrentEditorLine()
+		return p.Editor.CurrentLine()
 	case EDITOR_EDIT_MODE:
-		return p.Editor.CurrentEditorLine()
+		return p.Editor.CurrentLine()
 	case EDITOR_COMMAND_MODE:
 		return p.Editor.EditorCommandModeBuf
 	}
@@ -59,28 +59,28 @@ func (p *EditorCursorLocation) MoveCursorNRuneTop(n int) {
 		return
 	}
 
-	index := p.Editor.CurrentEditorLineIndex - n
+	index := p.Editor.CurrentLineIndex - n
 	if index < 0 {
 		index = 0
 	}
 
-	p.Editor.CurrentEditorLineIndex = index
+	p.Editor.CurrentLineIndex = index
 
-	if index < p.Editor.DisplayEditorLinesTopIndex {
-		p.Editor.DisplayEditorLinesTopIndex = index
+	if index < p.Editor.DisplayLinesTopIndex {
+		p.Editor.DisplayLinesTopIndex = index
 		p.Editor.isEditorEditModeBufDirty = true
 		p.Editor.isShouldRefreshEditorEditModeBuf = true
 	}
 
-	if 0 == len(p.Editor.CurrentEditorLine().Cells) {
-		p.UISetCursor(p.Editor.CurrentEditorLine().ContentStartX, p.Editor.CurrentEditorLine().ContentStartY)
+	if 0 == len(p.Editor.CurrentLine().Cells) {
+		p.UISetCursor(p.Editor.CurrentLine().ContentStartX, p.Editor.CurrentLine().ContentStartY)
 
 	} else {
-		if *offXCellIndex >= len(p.Editor.CurrentEditorLine().Cells) {
-			*offXCellIndex = len(p.Editor.CurrentEditorLine().Cells) - 1
+		if *offXCellIndex >= len(p.Editor.CurrentLine().Cells) {
+			*offXCellIndex = len(p.Editor.CurrentLine().Cells) - 1
 		}
 
-		cell := p.Editor.CurrentEditorLine().Cells[*offXCellIndex]
+		cell := p.Editor.CurrentLine().Cells[*offXCellIndex]
 		p.UISetCursor(cell.X, cell.Y)
 	}
 }
@@ -95,28 +95,28 @@ func (p *EditorCursorLocation) MoveCursorNRuneBottom(n int) {
 		return
 	}
 
-	index := p.Editor.CurrentEditorLineIndex + n
-	if index >= len(p.Editor.EditorLines) {
-		index = len(p.Editor.EditorLines) - 1
+	index := p.Editor.CurrentLineIndex + n
+	if index >= len(p.Editor.Lines) {
+		index = len(p.Editor.Lines) - 1
 	}
 
-	p.Editor.CurrentEditorLineIndex = index
+	p.Editor.CurrentLineIndex = index
 
-	if index > p.Editor.DisplayEditorLinesBottomIndex {
-		p.Editor.DisplayEditorLinesTopIndex += (index - p.Editor.DisplayEditorLinesBottomIndex)
+	if index > p.Editor.DisplayLinesBottomIndex {
+		p.Editor.DisplayLinesTopIndex += (index - p.Editor.DisplayLinesBottomIndex)
 		p.Editor.isEditorEditModeBufDirty = true
 		p.Editor.isShouldRefreshEditorEditModeBuf = true
 	}
 
-	if 0 == len(p.Editor.CurrentEditorLine().Cells) {
-		p.UISetCursor(p.Editor.CurrentEditorLine().ContentStartX, p.Editor.CurrentEditorLine().ContentStartY)
+	if 0 == len(p.Editor.CurrentLine().Cells) {
+		p.UISetCursor(p.Editor.CurrentLine().ContentStartX, p.Editor.CurrentLine().ContentStartY)
 
 	} else {
-		if *offXCellIndex >= len(p.Editor.CurrentEditorLine().Cells) {
-			*offXCellIndex = len(p.Editor.CurrentEditorLine().Cells) - 1
+		if *offXCellIndex >= len(p.Editor.CurrentLine().Cells) {
+			*offXCellIndex = len(p.Editor.CurrentLine().Cells) - 1
 		}
 
-		cell := p.Editor.CurrentEditorLine().Cells[*offXCellIndex]
+		cell := p.Editor.CurrentLine().Cells[*offXCellIndex]
 		p.UISetCursor(cell.X, cell.Y)
 	}
 }
@@ -222,7 +222,7 @@ func (p *EditorCursorLocation) RefreshCursorByEditorLine(line *EditorLine) {
 			y = p.Editor.Block.InnerArea.Max.Y - 1
 			switch p.Editor.Mode {
 			case EDITOR_EDIT_MODE:
-				p.Editor.DisplayEditorLinesTopIndex += 1
+				p.Editor.DisplayLinesTopIndex += 1
 				p.Editor.isShouldRefreshEditorEditModeBuf = true
 			}
 		}

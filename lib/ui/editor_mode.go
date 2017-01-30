@@ -7,30 +7,30 @@ func (p *Editor) PrepareEditorEditMode() {
 }
 
 func (p *Editor) EditorEditModeQuit() {
-	if p.EditorCursorLocation.EditorEditModeOffXCellIndex >= len(p.CurrentEditorLine().Cells) {
-		if 0 == len(p.CurrentEditorLine().Cells) {
+	if p.EditorCursorLocation.EditorEditModeOffXCellIndex >= len(p.CurrentLine().Cells) {
+		if 0 == len(p.CurrentLine().Cells) {
 			p.EditorCursorLocation.EditorEditModeOffXCellIndex = 0
 		} else {
-			p.EditorCursorLocation.EditorEditModeOffXCellIndex = len(p.CurrentEditorLine().Cells) - 1
+			p.EditorCursorLocation.EditorEditModeOffXCellIndex = len(p.CurrentLine().Cells) - 1
 		}
-		p.EditorCursorLocation.RefreshCursorByEditorLine(p.CurrentEditorLine())
+		p.EditorCursorLocation.RefreshCursorByEditorLine(p.CurrentLine())
 	}
 }
 
 func (p *Editor) EditorEditModeEnter() {
 	p.offXCellIndexForVerticalMoveCursor = 0
 	p.Mode = EDITOR_EDIT_MODE
-	p.EditorCursorLocation.RefreshCursorByEditorLine(p.CurrentEditorLine())
+	p.EditorCursorLocation.RefreshCursorByEditorLine(p.CurrentLine())
 }
 
 func (p *Editor) EditorEditModeWrite(keyStr string) {
 	p.isEditorEditModeBufDirty = true
 
 	if "<enter>" == keyStr {
-		p.EditorEditModeAppendNewEditorLine()
+		p.EditorEditModeAppendNewLine()
 
 	} else if "C-8" == keyStr {
-		p.CurrentEditorLine().Backspace()
+		p.CurrentLine().Backspace()
 
 	} else {
 		if "<space>" == keyStr {
@@ -38,7 +38,7 @@ func (p *Editor) EditorEditModeWrite(keyStr string) {
 		} else if "<tab>" == keyStr {
 			keyStr = "\t"
 		}
-		p.CurrentEditorLine().Write(keyStr)
+		p.CurrentLine().Write(keyStr)
 	}
 
 	p.isShouldRefreshEditorEditModeBuf = true
@@ -63,7 +63,7 @@ func (p *Editor) RefreshEditorEditModeBuf() {
 		pageLastEditorLine   int
 		linePrefix           string
 		ok                   bool
-		builtEditorLinesMark map[int]bool = make(map[int]bool, 0)
+		builtLinesMark map[int]bool = make(map[int]bool, 0)
 	)
 
 REFRESH_BEGIN:
@@ -73,34 +73,34 @@ REFRESH_BEGIN:
 		}
 	}
 
-	p.DisplayEditorLinesBottomIndex = p.DisplayEditorLinesTopIndex
-	if p.DisplayEditorLinesTopIndex >= len(p.EditorLines) {
-		p.DisplayEditorLinesBottomIndex = p.DisplayEditorLinesTopIndex
-		p.DisplayEditorLinesTopIndex = len(p.EditorLines) - 1
+	p.DisplayLinesBottomIndex = p.DisplayLinesTopIndex
+	if p.DisplayLinesTopIndex >= len(p.Lines) {
+		p.DisplayLinesBottomIndex = p.DisplayLinesTopIndex
+		p.DisplayLinesTopIndex = len(p.Lines) - 1
 		return
 	}
 
 	finalX, finalY = 0, 0
 	y, x, n, w = 0, 0, 0, 0
 	dx, dy = 0, p.EditorEditModeBufAreaHeight
-	pageLastEditorLine = p.DisplayEditorLinesTopIndex
-	for k = p.DisplayEditorLinesTopIndex; k < len(p.EditorLines); k++ {
-		line = p.EditorLines[k]
-		if _, ok = builtEditorLinesMark[k]; false == ok {
+	pageLastEditorLine = p.DisplayLinesTopIndex
+	for k = p.DisplayLinesTopIndex; k < len(p.Lines); k++ {
+		line = p.Lines[k]
+		if _, ok = builtLinesMark[k]; false == ok {
 			line.Cells = DefaultRawTextBuilder.Build(string(line.Data), p.TextFgColor, p.TextBgColor)
-			builtEditorLinesMark[k] = true
+			builtLinesMark[k] = true
 		}
 
 		if y >= p.EditorEditModeBufAreaHeight {
-			if p.CurrentEditorLineIndex == line.Index {
-				p.DisplayEditorLinesTopIndex += 1
+			if p.CurrentLineIndex == line.Index {
+				p.DisplayLinesTopIndex += 1
 				goto REFRESH_BEGIN
 			} else {
 				return
 			}
 		}
 
-		p.DisplayEditorLinesBottomIndex = k
+		p.DisplayLinesBottomIndex = k
 
 		linePrefix = line.getEditorLinePrefix(k, pageLastEditorLine)
 		line.ContentStartX = len(linePrefix) + p.Block.InnerArea.Min.X
@@ -122,7 +122,7 @@ REFRESH_BEGIN:
 				y++
 				// 输出一行未完成 且 超过内容区域
 				if y >= p.EditorEditModeBufAreaHeight {
-					p.DisplayEditorLinesTopIndex += 1
+					p.DisplayLinesTopIndex += 1
 					goto REFRESH_BEGIN
 				}
 

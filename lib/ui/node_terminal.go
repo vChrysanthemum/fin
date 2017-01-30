@@ -1,7 +1,6 @@
 package ui
 
 import (
-	"fin/ui/terminal"
 	"fin/ui/utils"
 
 	"github.com/gizak/termui"
@@ -9,10 +8,10 @@ import (
 
 type NodeTerminal struct {
 	*Node
-	*terminal.Terminal
+	*Terminal
 	ActiveModeBorderColor   termui.Attribute
 	CommandPrefix           string
-	NewCommand              *terminal.Line
+	NewCommand              *TerminalLine
 	CommandHistory          []string
 	CurrentCommandLineIndex int
 }
@@ -20,7 +19,7 @@ type NodeTerminal struct {
 func (p *Node) InitNodeTerminal() {
 	nodeTerminal := new(NodeTerminal)
 	nodeTerminal.Node = p
-	nodeTerminal.Terminal = terminal.NewTerminal()
+	nodeTerminal.Terminal = NewTerminal()
 	nodeTerminal.ActiveModeBorderColor = COLOR_ACTIVE_MODE_BORDERFG
 	nodeTerminal.CommandPrefix = "> "
 	nodeTerminal.PrepareNewCommand()
