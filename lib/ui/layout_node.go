@@ -9,6 +9,7 @@ func (p *Page) normalLayoutNodeBlock(node *Node) (isFallthrough bool) {
 	if false == node.isSettedPositionX {
 		node.UIBlock.X = p.layoutingX
 	}
+
 	if false == node.isSettedPositionY {
 		node.UIBlock.Y = p.layoutingY
 	}
@@ -17,7 +18,10 @@ func (p *Page) normalLayoutNodeBlock(node *Node) (isFallthrough bool) {
 		node.UIBlock.Align()
 	}
 
-	p.layoutingY = node.UIBlock.Y + node.UIBlock.Height
+	if "absolute" == node.Position {
+	} else {
+		p.layoutingY = node.UIBlock.Y + node.UIBlock.Height
+	}
 
 	return
 }

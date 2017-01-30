@@ -37,7 +37,6 @@ func (p *Page) layoutBodyTabpane(node *Node) (isFallthrough bool) {
 }
 
 func (p *Page) layoutBodyTabpaneTab(node *Node) (isFallthrough bool) {
-
 	isFallthrough = true
 
 	p.layoutingY = node.Parent.UIBlock.Y + node.Parent.UIBlock.Height

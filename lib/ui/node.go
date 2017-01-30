@@ -69,6 +69,8 @@ type Node struct {
 	// 是否在 parse 阶段设置了位置
 	isSettedPositionY bool
 	isSettedPositionX bool
+	// absolute relative default:relative
+	Position string
 
 	HtmlAttribute map[string]html.Attribute
 
@@ -197,6 +199,7 @@ func (p *Page) newNode(htmlNode *html.Node) *Node {
 
 	ret.isShouldCalculateHeight = true
 	ret.isShouldCalculateWidth = true
+	ret.Position = "relative"
 
 	ret.HtmlAttribute = make(map[string]html.Attribute)
 

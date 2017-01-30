@@ -8,11 +8,13 @@ NodeDivTest = Node("DivTest")
 
 WindowConfirm("是否使用输入框", function(isConfirm)
   if "confirm" == isConfirm then
-    Node("InputTextTest"):SetActive()
     local id = "tryappend"
-    local content = string.format('<par top=3 border=true borderlabel="test" height=6 id="%s">test hello world</par>', id)
+    local content = string.format([[
+      <par position=absolute top=5 left=50 border=true borderlabel="test" height=6 id="%s">test hello world</par>
+    ]], id)
     NodeDivTest:Append(content)
     local NodeTestPar = Node(id)
+    Node("InputTextTest"):SetActive()
     NodeTestPar:SetValue("hello success.")
   else 
     Node("SelectTestChangeOptions"):SetActive()
@@ -28,6 +30,7 @@ InputTextTestEvent = Node("InputTextTest"):RegisterKeyPressEnterHandler(
       if "confirm" == isConfirm then
         Node("InputTextTest"):Remove()
         Node("SelectTestRemove"):Remove()
+        Node("tryappend"):Remove()
         Node("SelectTestChangeOptions"):SelectClearOptions()
         Node("GaugeTest"):SetAttribute("percent", "30") 
         Node("ParResult3"):SetAttribute("borderlabel", "测试")
