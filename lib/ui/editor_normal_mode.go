@@ -36,7 +36,7 @@ func (p *Editor) PrepareEditorNormalMode() {
 
 func (p *Editor) EditorNormalModeEnter() {
 	p.Mode = EDITOR_NORMAL_MODE
-	p.EditorCursorLocation.RefreshCursorByEditorLine(p.CurrentLine())
+	p.EditModeCursorLocation.RefreshCursorByEditorLine(p.CurrentLine())
 }
 
 func (p *Editor) EditorNormalModeWrite(keyStr string) {
@@ -50,56 +50,56 @@ func (p *Editor) EditorNormalModeWrite(keyStr string) {
 }
 
 func (p *Editor) commandMoveTop() {
-	if p.EditorEditModeOffXCellIndex > p.offXCellIndexForVerticalMoveCursor {
-		p.offXCellIndexForVerticalMoveCursor = p.EditorEditModeOffXCellIndex
+	if p.EditModeCursorLocation.OffXCellIndex > p.EditModeCursorLocation.OffXCellIndexVertical {
+		p.EditModeCursorLocation.OffXCellIndexVertical = p.EditModeCursorLocation.OffXCellIndex
 	}
 
 	_n := _commandMatchRegexpMoveTop.FindSubmatch([]byte(p.EditorNormalModeCommandStack))
 	n, err := strconv.Atoi(string(_n[1]))
 	if nil == err {
-		p.EditorCursorLocation.MoveCursorNRuneTop(n)
+		p.EditModeCursorLocation.MoveCursorNRuneTop(n)
 	} else {
-		p.EditorCursorLocation.MoveCursorNRuneTop(1)
+		p.EditModeCursorLocation.MoveCursorNRuneTop(1)
 	}
 
-	if p.offXCellIndexForVerticalMoveCursor > p.EditorEditModeOffXCellIndex {
-		if p.offXCellIndexForVerticalMoveCursor >= len(p.Editor.CurrentLine().Cells) {
-			if 0 == len(p.Editor.CurrentLine().Cells) {
-				p.EditorEditModeOffXCellIndex = 0
+	if p.EditModeCursorLocation.OffXCellIndexVertical > p.EditModeCursorLocation.OffXCellIndex {
+		if p.EditModeCursorLocation.OffXCellIndexVertical >= len(p.CurrentLine().Cells) {
+			if 0 == len(p.CurrentLine().Cells) {
+				p.EditModeCursorLocation.OffXCellIndex = 0
 			} else {
-				p.EditorEditModeOffXCellIndex = len(p.Editor.CurrentLine().Cells) - 1
+				p.EditModeCursorLocation.OffXCellIndex = len(p.CurrentLine().Cells) - 1
 			}
 		} else {
-			p.EditorEditModeOffXCellIndex = p.offXCellIndexForVerticalMoveCursor
+			p.EditModeCursorLocation.OffXCellIndex = p.EditModeCursorLocation.OffXCellIndexVertical
 		}
-		p.EditorCursorLocation.RefreshCursorByEditorLine(p.Editor.CurrentLine())
+		p.EditModeCursorLocation.RefreshCursorByEditorLine(p.CurrentLine())
 	}
 }
 
 func (p *Editor) commandMoveBottom() {
-	if p.EditorEditModeOffXCellIndex > p.offXCellIndexForVerticalMoveCursor {
-		p.offXCellIndexForVerticalMoveCursor = p.EditorEditModeOffXCellIndex
+	if p.EditModeCursorLocation.OffXCellIndex > p.EditModeCursorLocation.OffXCellIndexVertical {
+		p.EditModeCursorLocation.OffXCellIndexVertical = p.EditModeCursorLocation.OffXCellIndex
 	}
 
 	_n := _commandMatchRegexpMoveBottom.FindSubmatch([]byte(p.EditorNormalModeCommandStack))
 	n, err := strconv.Atoi(string(_n[1]))
 	if nil == err {
-		p.EditorCursorLocation.MoveCursorNRuneBottom(n)
+		p.EditModeCursorLocation.MoveCursorNRuneBottom(n)
 	} else {
-		p.EditorCursorLocation.MoveCursorNRuneBottom(1)
+		p.EditModeCursorLocation.MoveCursorNRuneBottom(1)
 	}
 
-	if p.offXCellIndexForVerticalMoveCursor > p.EditorEditModeOffXCellIndex {
-		if p.offXCellIndexForVerticalMoveCursor >= len(p.Editor.CurrentLine().Cells) {
-			if 0 == len(p.Editor.CurrentLine().Cells) {
-				p.EditorEditModeOffXCellIndex = 0
+	if p.EditModeCursorLocation.OffXCellIndexVertical > p.EditModeCursorLocation.OffXCellIndex {
+		if p.EditModeCursorLocation.OffXCellIndexVertical >= len(p.CurrentLine().Cells) {
+			if 0 == len(p.CurrentLine().Cells) {
+				p.EditModeCursorLocation.OffXCellIndex = 0
 			} else {
-				p.EditorEditModeOffXCellIndex = len(p.Editor.CurrentLine().Cells) - 1
+				p.EditModeCursorLocation.OffXCellIndex = len(p.CurrentLine().Cells) - 1
 			}
 		} else {
-			p.EditorEditModeOffXCellIndex = p.offXCellIndexForVerticalMoveCursor
+			p.EditModeCursorLocation.OffXCellIndex = p.EditModeCursorLocation.OffXCellIndexVertical
 		}
-		p.EditorCursorLocation.RefreshCursorByEditorLine(p.Editor.CurrentLine())
+		p.EditModeCursorLocation.RefreshCursorByEditorLine(p.CurrentLine())
 	}
 }
 
@@ -107,9 +107,9 @@ func (p *Editor) commandMoveLeft() {
 	_n := _commandMatchRegexpMoveLeft.FindSubmatch([]byte(p.EditorNormalModeCommandStack))
 	n, err := strconv.Atoi(string(_n[1]))
 	if nil == err {
-		p.EditorCursorLocation.MoveCursorNRuneLeft(n)
+		p.EditModeCursorLocation.MoveCursorNRuneLeft(p.CurrentLine(), n)
 	} else {
-		p.EditorCursorLocation.MoveCursorNRuneLeft(1)
+		p.EditModeCursorLocation.MoveCursorNRuneLeft(p.CurrentLine(), 1)
 	}
 }
 
@@ -117,9 +117,9 @@ func (p *Editor) commandMoveRight() {
 	_n := _commandMatchRegexpMoveRight.FindSubmatch([]byte(p.EditorNormalModeCommandStack))
 	n, err := strconv.Atoi(string(_n[1]))
 	if nil == err {
-		p.EditorCursorLocation.MoveCursorNRuneRight(n)
+		p.EditModeCursorLocation.MoveCursorNRuneRight(p.CurrentLine(), n)
 	} else {
-		p.EditorCursorLocation.MoveCursorNRuneRight(1)
+		p.EditModeCursorLocation.MoveCursorNRuneRight(p.CurrentLine(), 1)
 	}
 }
 
@@ -129,7 +129,7 @@ func (p *Editor) commandEnterEditorEditModeBackward() {
 
 func (p *Editor) commandEnterEditorEditModeForward() {
 	if len(p.CurrentLine().Cells) > 0 {
-		p.EditorEditModeOffXCellIndex += 1
+		p.EditModeCursorLocation.OffXCellIndex += 1
 	}
 	p.EditorEditModeEnter()
 }

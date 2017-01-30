@@ -3,37 +3,37 @@ package ui
 import "github.com/gizak/termui"
 
 func (p *Editor) PrepareEditorCommandMode() {
-	p.EditorCommandModeBuf = p.NewLine()
+	p.CommandModeBuf = p.NewLine()
 }
 
 func (p *Editor) EditorCommandModeQuit() {
-	p.isEditorCommandModeBufDirty = true
-	p.EditorCommandModeBuf.CleanData()
+	p.isCommandModeBufDirty = true
+	p.CommandModeBuf.CleanData(p.CommandModeCursorLocation)
 }
 
 func (p *Editor) EditorCommandModeEnter() {
 	p.Mode = EDITOR_COMMAND_MODE
-	p.EditorCommandModeBuf.CleanData()
+	p.CommandModeBuf.CleanData(p.CommandModeCursorLocation)
 	p.EditorCommandModeWrite(":")
 }
 
 func (p *Editor) EditorCommandModeWrite(keyStr string) {
-	p.isEditorCommandModeBufDirty = true
-	p.EditorCommandModeBuf.ContentStartX = p.InnerArea.Min.X
-	p.EditorCommandModeBuf.ContentStartY = p.EditorCommandModeBufAreaY
+	p.isCommandModeBufDirty = true
+	p.CommandModeBuf.ContentStartX = p.InnerArea.Min.X
+	p.CommandModeBuf.ContentStartY = p.CommandModeBufAreaY
 
 	if "<enter>" == keyStr {
 		p.EditorCommandModeQuit()
 		p.EditorNormalModeEnter()
 
 	} else if "C-8" == keyStr {
-		p.EditorCommandModeBuf.Backspace()
+		p.CommandModeBuf.Backspace(p.CommandModeCursorLocation)
 
 	} else if "<left>" == keyStr {
-		p.EditorCursorLocation.MoveCursorNRuneLeft(1)
+		p.CommandModeCursorLocation.MoveCursorNRuneLeft(p.CommandModeBuf, 1)
 
 	} else if "<right>" == keyStr {
-		p.EditorCursorLocation.MoveCursorNRuneRight(1)
+		p.CommandModeCursorLocation.MoveCursorNRuneRight(p.CommandModeBuf, 1)
 
 	} else {
 		if "<space>" == keyStr {
@@ -41,38 +41,38 @@ func (p *Editor) EditorCommandModeWrite(keyStr string) {
 		} else if "<tab>" == keyStr {
 			keyStr = "\t"
 		}
-		p.EditorCommandModeBuf.Write(keyStr)
+		p.CommandModeBuf.Write(p.CommandModeCursorLocation, keyStr)
 	}
 
-	p.isShouldRefreshEditorCommandModeBuf = true
+	p.isShouldRefreshCommandModeBuf = true
 }
 
-func (p *Editor) RefreshEditorCommandModeBuf() {
-	if false == p.isEditorCommandModeBufDirty {
+func (p *Editor) RefreshCommandModeBuf() {
+	if false == p.isCommandModeBufDirty {
 		return
 	}
 
-	p.isEditorCommandModeBufDirty = false
+	p.isCommandModeBufDirty = false
 
 	var x, y, n int
 
-	maxY := p.EditorCommandModeBufAreaY + p.EditorCommandModeBufAreaHeight
+	maxY := p.CommandModeBufAreaY + p.CommandModeBufAreaHeight
 	for x = p.Buf.Area.Min.X + 1; x < p.Buf.Area.Max.X-1; x++ {
-		for y = p.EditorCommandModeBufAreaY; y < maxY; y++ {
+		for y = p.CommandModeBufAreaY; y < maxY; y++ {
 			p.Buf.Set(x, y, termui.Cell{' ', p.TextFgColor, p.TextBgColor, 0, 0, 0})
 		}
 	}
 
-	p.EditorCommandModeBuf.Cells =
-		DefaultRawTextBuilder.Build(string(p.EditorCommandModeBuf.Data), p.TextFgColor, p.TextBgColor)
+	p.CommandModeBuf.Cells =
+		DefaultRawTextBuilder.Build(string(p.CommandModeBuf.Data), p.TextFgColor, p.TextBgColor)
 
 	x = p.Block.InnerArea.Min.X
-	y = p.EditorCommandModeBufAreaY
+	y = p.CommandModeBufAreaY
 	n = 0
-	for n < len(p.EditorCommandModeBuf.Cells) {
-		p.Buf.Set(x, y, p.EditorCommandModeBuf.Cells[n])
-		p.EditorCommandModeBuf.Cells[n].X, p.EditorCommandModeBuf.Cells[n].Y = x, y
-		x += p.EditorCommandModeBuf.Cells[n].Width()
+	for n < len(p.CommandModeBuf.Cells) {
+		p.Buf.Set(x, y, p.CommandModeBuf.Cells[n])
+		p.CommandModeBuf.Cells[n].X, p.CommandModeBuf.Cells[n].Y = x, y
+		x += p.CommandModeBuf.Cells[n].Width()
 		n += 1
 	}
 }

@@ -25,7 +25,7 @@ func (p *Editor) NewLine() *EditorLine {
 	}
 }
 
-func (p *Editor) EditorEditModeAppendNewLine() *EditorLine {
+func (p *Editor) EditorEditModeAppendNewLine(cursorLocation *EditorCursorLocation) *EditorLine {
 	ret := p.NewLine()
 
 	if 0 == len(p.Lines) {
@@ -59,11 +59,11 @@ func (p *Editor) EditorEditModeAppendNewLine() *EditorLine {
 
 	if p.CurrentLineIndex > 0 {
 		line := p.Lines[p.CurrentLineIndex-1]
-		if p.EditorEditModeOffXCellIndex < len(line.Cells) {
-			p.CurrentLine().Data = make([]byte, len(line.Data[line.Cells[p.EditorEditModeOffXCellIndex].BytesOff:]))
-			copy(p.CurrentLine().Data, line.Data[line.Cells[p.EditorEditModeOffXCellIndex].BytesOff:])
-			line.Data = line.Data[:line.Cells[p.EditorEditModeOffXCellIndex].BytesOff]
-			p.EditorEditModeOffXCellIndex = 0
+		if cursorLocation.OffXCellIndex < len(line.Cells) {
+			p.CurrentLine().Data = make([]byte, len(line.Data[line.Cells[cursorLocation.OffXCellIndex].BytesOff:]))
+			copy(p.CurrentLine().Data, line.Data[line.Cells[cursorLocation.OffXCellIndex].BytesOff:])
+			line.Data = line.Data[:line.Cells[cursorLocation.OffXCellIndex].BytesOff]
+			cursorLocation.OffXCellIndex = 0
 		}
 	}
 
@@ -75,7 +75,7 @@ func (p *Editor) EditorEditModeAppendNewLine() *EditorLine {
 	return ret
 }
 
-func (p *Editor) EditorEditModeRemoveCurrentLine() {
+func (p *Editor) EditorEditModeRemoveCurrentLine(cursorLocation *EditorCursorLocation) {
 	var line *EditorLine
 
 	if 0 == len(p.Lines) {
@@ -93,7 +93,7 @@ func (p *Editor) EditorEditModeRemoveCurrentLine() {
 		p.CurrentLineIndex--
 	}
 
-	p.EditorEditModeOffXCellIndex = len(p.CurrentLine().Cells)
+	cursorLocation.OffXCellIndex = len(p.CurrentLine().Cells)
 	p.CurrentLine().Data = append(p.CurrentLine().Data, line.Data...)
 
 	return
@@ -118,8 +118,8 @@ func (p *EditorLine) getEditorLinePrefix(lineIndex, lastEditorLineIndex int) str
 	return ""
 }
 
-func (p *EditorLine) Write(keyStr string) {
-	off := p.Editor.EditorCursorLocation.getOffXCellIndex()
+func (p *EditorLine) Write(cursorLocation *EditorCursorLocation, keyStr string) {
+	off := &cursorLocation.OffXCellIndex
 	_off := 0
 
 	if *off >= len(p.Cells) {
@@ -145,8 +145,8 @@ func (p *EditorLine) Write(keyStr string) {
 	*off++
 }
 
-func (p *EditorLine) Backspace() {
-	off := p.Editor.EditorCursorLocation.getOffXCellIndex()
+func (p *EditorLine) Backspace(cursorLocation *EditorCursorLocation) {
+	off := &cursorLocation.OffXCellIndex
 
 	if *off > len(p.Cells) {
 		*off = len(p.Cells)
@@ -158,7 +158,7 @@ func (p *EditorLine) Backspace() {
 
 	if 0 == *off {
 		if EDITOR_EDIT_MODE == p.Editor.Mode {
-			p.Editor.EditorEditModeRemoveCurrentLine()
+			p.Editor.EditorEditModeRemoveCurrentLine(cursorLocation)
 		}
 
 	} else if *off == len(p.Cells) {
@@ -171,8 +171,8 @@ func (p *EditorLine) Backspace() {
 	}
 }
 
-func (p *EditorLine) CleanData() {
-	off := p.Editor.EditorCursorLocation.getOffXCellIndex()
+func (p *EditorLine) CleanData(cursorLocation *EditorCursorLocation) {
+	off := &cursorLocation.OffXCellIndex
 	*off = 0
 	p.Data = []byte{}
 	p.Cells = []termui.Cell{}

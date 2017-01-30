@@ -22,42 +22,44 @@ type Editor struct {
 
 	Lines []*EditorLine
 
-	EditorCommandModeBuf *EditorLine
+	CommandModeBuf *EditorLine
 
 	CurrentLineIndex int
 
 	termui.Block
-	EditorEditModeBufAreaHeight    int
-	EditorCommandModeBufAreaY      int
-	EditorCommandModeBufAreaHeight int
+	EditModeBufAreaHeight    int
+	CommandModeBufAreaY      int
+	CommandModeBufAreaHeight int
 
-	TextFgColor                   termui.Attribute
-	TextBgColor                   termui.Attribute
-	DisplayLinesTopIndex    int
-	DisplayLinesBottomIndex int
-	*EditorCursorLocation
+	TextFgColor               termui.Attribute
+	TextBgColor               termui.Attribute
+	DisplayLinesTopIndex      int
+	DisplayLinesBottomIndex   int
+	EditModeCursorLocation    *EditorCursorLocation
+	CommandModeCursorLocation *EditorCursorLocation
 
-	isEditorEditModeBufDirty            bool
-	isEditorCommandModeBufDirty         bool
-	isShouldRefreshEditorEditModeBuf    bool
-	isShouldRefreshEditorCommandModeBuf bool
-	KeyEvents                           chan string
-	KeyEventsResultIsQuitActiveMode     chan bool
+	isEditModeBufDirty              bool
+	isCommandModeBufDirty           bool
+	isShouldRefreshEditModeBuf      bool
+	isShouldRefreshCommandModeBuf   bool
+	KeyEvents                       chan string
+	KeyEventsResultIsQuitActiveMode chan bool
 }
 
 func NewEditor() *Editor {
 	ret := &Editor{
 		Lines:                []*EditorLine{},
-		Block:                      *termui.NewBlock(),
-		TextFgColor:                termui.ThemeAttr("par.text.fg"),
-		TextBgColor:                termui.ThemeAttr("par.text.bg"),
+		Block:                *termui.NewBlock(),
+		TextFgColor:          termui.ThemeAttr("par.text.fg"),
+		TextBgColor:          termui.ThemeAttr("par.text.bg"),
 		DisplayLinesTopIndex: 0,
 	}
 	ret.Mode = EDITOR_MODE_NONE
 	ret.PrepareEditorNormalMode()
 	ret.PrepareEditorEditMode()
 	ret.PrepareEditorCommandMode()
-	ret.EditorCursorLocation = NewEditorCursorLocation(ret)
+	ret.EditModeCursorLocation = NewEditorCursorLocation(ret)
+	ret.CommandModeCursorLocation = NewEditorCursorLocation(ret)
 	ret.isDisplayEditorLineNumber = true
 	ret.KeyEvents = make(chan string, 200)
 	ret.KeyEventsResultIsQuitActiveMode = make(chan bool)
@@ -82,15 +84,15 @@ func (p *Editor) UpdateCurrentLineData(line string) {
 }
 
 func (p *Editor) RefreshBuf() {
-	if true == p.isShouldRefreshEditorCommandModeBuf {
-		p.RefreshEditorCommandModeBuf()
+	if true == p.isShouldRefreshCommandModeBuf {
+		p.RefreshCommandModeBuf()
 	}
 
-	if true == p.isShouldRefreshEditorEditModeBuf {
-		p.RefreshEditorEditModeBuf()
+	if true == p.isShouldRefreshEditModeBuf {
+		p.RefreshEditModeBuf()
 	}
 
-	if true == p.isShouldRefreshEditorCommandModeBuf || true == p.isShouldRefreshEditorEditModeBuf {
+	if true == p.isShouldRefreshCommandModeBuf || true == p.isShouldRefreshEditModeBuf {
 		for point, c := range p.Buf.CellMap {
 			termbox.SetCell(point.X, point.Y, c.Ch, toTmAttr(c.Fg), toTmAttr(c.Bg))
 		}
@@ -102,19 +104,19 @@ func (p *Editor) RefreshBuf() {
 func (p *Editor) Buffer() termui.Buffer {
 	if nil == p.Buf {
 		if 0 == len(p.Lines) {
-			p.EditorEditModeAppendNewLine()
+			p.EditorEditModeAppendNewLine(p.EditModeCursorLocation)
 		}
 		buf := p.Block.Buffer()
 		p.Buf = &buf
 		p.Buf.IfNotRenderByTermUI = true
-		p.EditorCommandModeBufAreaY = p.Block.InnerArea.Max.Y - 1
-		p.EditorCommandModeBufAreaHeight = 1
-		p.EditorEditModeBufAreaHeight = p.Block.InnerArea.Dy() - p.EditorCommandModeBufAreaHeight
-		p.isShouldRefreshEditorEditModeBuf = true
-		p.isShouldRefreshEditorCommandModeBuf = true
+		p.CommandModeBufAreaY = p.Block.InnerArea.Max.Y - 1
+		p.CommandModeBufAreaHeight = 1
+		p.EditModeBufAreaHeight = p.Block.InnerArea.Dy() - p.CommandModeBufAreaHeight
+		p.isShouldRefreshEditModeBuf = true
+		p.isShouldRefreshCommandModeBuf = true
 	} else {
-		p.isShouldRefreshEditorEditModeBuf = true
-		p.isShouldRefreshEditorCommandModeBuf = true
+		p.isShouldRefreshEditModeBuf = true
+		p.isShouldRefreshCommandModeBuf = true
 	}
 
 	if true == p.Block.Border {
@@ -132,15 +134,15 @@ func (p *Editor) Buffer() termui.Buffer {
 }
 
 func (p *Editor) ActiveMode() {
-	p.isEditorEditModeBufDirty = true
 	p.EditorEditModeEnter()
-	p.EditorCursorLocation.IsDisplay = true
-	p.EditorCursorLocation.RefreshCursorByEditorLine(p.CurrentLine())
+	p.EditModeCursorLocation.IsDisplay = true
+	p.CommandModeCursorLocation.IsDisplay = true
+	p.EditModeCursorLocation.RefreshCursorByEditorLine(p.CurrentLine())
 }
 
 func (p *Editor) UnActiveMode() {
-	p.isEditorEditModeBufDirty = true
 	p.Mode = EDITOR_MODE_NONE
-	p.EditorCursorLocation.IsDisplay = false
+	p.EditModeCursorLocation.IsDisplay = false
+	p.CommandModeCursorLocation.IsDisplay = false
 	uiutils.UISetCursor(-1, -1)
 }

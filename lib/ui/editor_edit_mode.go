@@ -3,34 +3,34 @@ package ui
 import "github.com/gizak/termui"
 
 func (p *Editor) PrepareEditorEditMode() {
-	p.isEditorEditModeBufDirty = true
+	p.isEditModeBufDirty = true
 }
 
 func (p *Editor) EditorEditModeQuit() {
-	if p.EditorCursorLocation.EditorEditModeOffXCellIndex >= len(p.CurrentLine().Cells) {
+	if p.EditModeCursorLocation.OffXCellIndex >= len(p.CurrentLine().Cells) {
 		if 0 == len(p.CurrentLine().Cells) {
-			p.EditorCursorLocation.EditorEditModeOffXCellIndex = 0
+			p.EditModeCursorLocation.OffXCellIndex = 0
 		} else {
-			p.EditorCursorLocation.EditorEditModeOffXCellIndex = len(p.CurrentLine().Cells) - 1
+			p.EditModeCursorLocation.OffXCellIndex = len(p.CurrentLine().Cells) - 1
 		}
-		p.EditorCursorLocation.RefreshCursorByEditorLine(p.CurrentLine())
+		p.EditModeCursorLocation.RefreshCursorByEditorLine(p.CurrentLine())
 	}
 }
 
 func (p *Editor) EditorEditModeEnter() {
-	p.offXCellIndexForVerticalMoveCursor = 0
+	p.EditModeCursorLocation.OffXCellIndexVertical = 0
 	p.Mode = EDITOR_EDIT_MODE
-	p.EditorCursorLocation.RefreshCursorByEditorLine(p.CurrentLine())
+	p.EditModeCursorLocation.RefreshCursorByEditorLine(p.CurrentLine())
 }
 
 func (p *Editor) EditorEditModeWrite(keyStr string) {
-	p.isEditorEditModeBufDirty = true
+	p.isEditModeBufDirty = true
 
 	if "<enter>" == keyStr {
-		p.EditorEditModeAppendNewLine()
+		p.EditorEditModeAppendNewLine(p.EditModeCursorLocation)
 
 	} else if "C-8" == keyStr {
-		p.CurrentLine().Backspace()
+		p.CurrentLine().Backspace(p.EditModeCursorLocation)
 
 	} else {
 		if "<space>" == keyStr {
@@ -38,22 +38,22 @@ func (p *Editor) EditorEditModeWrite(keyStr string) {
 		} else if "<tab>" == keyStr {
 			keyStr = "\t"
 		}
-		p.CurrentLine().Write(keyStr)
+		p.CurrentLine().Write(p.EditModeCursorLocation, keyStr)
 	}
 
-	p.isShouldRefreshEditorEditModeBuf = true
+	p.isShouldRefreshEditModeBuf = true
 }
 
-func (p *Editor) RefreshEditorEditModeBuf() {
-	if 0 == p.EditorEditModeBufAreaHeight {
+func (p *Editor) RefreshEditModeBuf() {
+	if 0 == p.EditModeBufAreaHeight {
 		return
 	}
 
-	if false == p.isEditorEditModeBufDirty {
+	if false == p.isEditModeBufDirty {
 		return
 	}
 
-	p.isEditorEditModeBufDirty = false
+	p.isEditModeBufDirty = false
 
 	var (
 		finalX, finalY     int
@@ -82,7 +82,7 @@ REFRESH_BEGIN:
 
 	finalX, finalY = 0, 0
 	y, x, n, w = 0, 0, 0, 0
-	dx, dy = 0, p.EditorEditModeBufAreaHeight
+	dx, dy = 0, p.EditModeBufAreaHeight
 	pageLastEditorLine = p.DisplayLinesTopIndex
 	for k = p.DisplayLinesTopIndex; k < len(p.Lines); k++ {
 		line = p.Lines[k]
@@ -91,7 +91,7 @@ REFRESH_BEGIN:
 			builtLinesMark[k] = true
 		}
 
-		if y >= p.EditorEditModeBufAreaHeight {
+		if y >= p.EditModeBufAreaHeight {
 			if p.CurrentLineIndex == line.Index {
 				p.DisplayLinesTopIndex += 1
 				goto REFRESH_BEGIN
@@ -121,7 +121,7 @@ REFRESH_BEGIN:
 				x = 0
 				y++
 				// 输出一行未完成 且 超过内容区域
-				if y >= p.EditorEditModeBufAreaHeight {
+				if y >= p.EditModeBufAreaHeight {
 					p.DisplayLinesTopIndex += 1
 					goto REFRESH_BEGIN
 				}
