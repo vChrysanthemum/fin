@@ -20,7 +20,7 @@ func (p *Node) InitNodeLineChart() {
 	p.Data = nodeLineChart
 
 	uiBuffer := termui.NewLineChart()
-	p.uiBuffer = uiBuffer
+	p.UIBuffer = uiBuffer
 	p.UIBlock = &uiBuffer.Block
 	p.Display = &p.UIBlock.Display
 
@@ -36,7 +36,7 @@ func (p *Node) InitNodeLineChart() {
 }
 
 func (p *NodeLineChart) NodeDataSetValue(content string) {
-	uiBuffer := p.Node.uiBuffer.(*termui.LineChart)
+	uiBuffer := p.Node.UIBuffer.(*termui.LineChart)
 	var (
 		_arr []string
 		arr  []float64
@@ -57,5 +57,5 @@ func (p *NodeLineChart) NodeDataSetValue(content string) {
 }
 
 func (p *NodeLineChart) NodeDataGetValue() (string, bool) {
-	return fmt.Sprintf("%v", p.Node.uiBuffer.(*termui.LineChart).Data), true
+	return fmt.Sprintf("%v", p.Node.UIBuffer.(*termui.LineChart).Data), true
 }

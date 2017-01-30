@@ -31,7 +31,7 @@ func (p *Node) InitNodeSelect() {
 	p.Data = nodeSelect
 
 	uiBuffer := termui.NewList()
-	p.uiBuffer = uiBuffer
+	p.UIBuffer = uiBuffer
 	p.UIBlock = &uiBuffer.Block
 	p.Display = &p.UIBlock.Display
 

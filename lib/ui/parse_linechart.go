@@ -20,7 +20,7 @@ func (p *NodeLineChart) NodeDataParseAttribute(attr []html.Attribute) (isUIChang
 	isUIChange = false
 	isNeedReRenderPage = false
 
-	uiBuffer := p.Node.uiBuffer.(*termui.LineChart)
+	uiBuffer := p.Node.UIBuffer.(*termui.LineChart)
 
 	for _, v := range attr {
 		switch v.Key {

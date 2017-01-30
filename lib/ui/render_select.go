@@ -34,13 +34,13 @@ func (p *Node) refreshUiBufferItems() {
 		}
 	}
 
-	p.uiBuffer.(*termui.List).Items = items
+	p.UIBuffer.(*termui.List).Items = items
 }
 
 func (p *Page) renderBodySelect(node *Node) {
 	nodeSelect := node.Data.(*NodeSelect)
 
-	uiBuffer := node.uiBuffer.(*termui.List)
+	uiBuffer := node.UIBuffer.(*termui.List)
 
 	p.normalRenderNodeBlock(node)
 

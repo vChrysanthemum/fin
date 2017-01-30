@@ -52,6 +52,24 @@ func (p *Page) DumpNodesHtmlData() {
 	p.dumpNodesHtmlData(p.FirstChildNode)
 }
 
+func (p *Page) AppendNode(node *Node, content string) error {
+	childNode, err := ParseNode(content)
+	if nil != err {
+		return err
+	}
+
+	idToNodeMap := childNode.ExtractChildsMapIdNodes()
+	for k, v := range idToNodeMap {
+		p.IdToNodeMap[k] = v
+	}
+
+	node.addChild(childNode)
+
+	p.ReRender()
+
+	return nil
+}
+
 func (p *Page) RemoveNode(node *Node) {
 	if nodeDataOnRemover, ok := node.Data.(NodeDataOnRemover); true == ok {
 		nodeDataOnRemover.NodeDataOnRemove()

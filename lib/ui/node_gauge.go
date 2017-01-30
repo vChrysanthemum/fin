@@ -16,7 +16,7 @@ func (p *Node) InitNodeGauge() {
 	p.Data = nodeGauge
 
 	uiBuffer := termui.NewGauge()
-	p.uiBuffer = uiBuffer
+	p.UIBuffer = uiBuffer
 	p.UIBlock = &uiBuffer.Block
 	p.Display = &p.UIBlock.Display
 

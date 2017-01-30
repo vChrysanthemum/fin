@@ -3,7 +3,7 @@ package ui
 import "github.com/gizak/termui"
 
 func (p *Page) renderBodyLineChart(node *Node) {
-	uiBuffer := node.uiBuffer.(*termui.LineChart)
+	uiBuffer := node.UIBuffer.(*termui.LineChart)
 
 	p.normalRenderNodeBlock(node)
 

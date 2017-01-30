@@ -15,7 +15,7 @@ func (p *Node) InitNodeCanvas() {
 	p.Data = nodeCanvas
 	p.KeyPress = nodeCanvas.KeyPress
 
-	p.uiBuffer = nodeCanvas.Canvas
+	p.UIBuffer = nodeCanvas.Canvas
 	p.UIBlock = &nodeCanvas.Canvas.Block
 	p.Display = &p.UIBlock.Display
 

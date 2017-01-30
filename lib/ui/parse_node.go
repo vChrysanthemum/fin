@@ -131,32 +131,32 @@ func (p *Node) ParseAttribute(attr []html.Attribute) (isUIChange, isNeedReRender
 				p.isShouldCalculateWidth = false
 
 			case "tabfg":
-				if nil != p.uiBuffer {
-					if uiBuffer, ok := p.uiBuffer.(*extra.Tabpane); true == ok {
+				if nil != p.UIBuffer {
+					if uiBuffer, ok := p.UIBuffer.(*extra.Tabpane); true == ok {
 						isUIChange = true
 						uiBuffer.TabFg = uiutils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_TAB_FG)
 					}
 				}
 
 			case "tabbg":
-				if nil != p.uiBuffer {
-					if uiBuffer, ok := p.uiBuffer.(*extra.Tabpane); true == ok {
+				if nil != p.UIBuffer {
+					if uiBuffer, ok := p.UIBuffer.(*extra.Tabpane); true == ok {
 						isUIChange = true
 						uiBuffer.TabBg = uiutils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_TAB_BG)
 					}
 				}
 
 			case "activetabfg":
-				if nil != p.uiBuffer {
-					if uiBuffer, ok := p.uiBuffer.(*extra.Tabpane); true == ok {
+				if nil != p.UIBuffer {
+					if uiBuffer, ok := p.UIBuffer.(*extra.Tabpane); true == ok {
 						isUIChange = true
 						uiBuffer.ActiveTabFg = uiutils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_ACTIVE_TAB_FG)
 					}
 				}
 
 			case "activetabbg":
-				if nil != p.uiBuffer {
-					if uiBuffer, ok := p.uiBuffer.(*extra.Tabpane); true == ok {
+				if nil != p.UIBuffer {
+					if uiBuffer, ok := p.UIBuffer.(*extra.Tabpane); true == ok {
 						isUIChange = true
 						uiBuffer.ActiveTabBg = uiutils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_ACTIVE_TAB_BG)
 					}

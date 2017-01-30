@@ -8,7 +8,7 @@ import (
 )
 
 func (p *Page) renderBodyPar(node *Node) {
-	uiBuffer := node.uiBuffer.(*termui.Par)
+	uiBuffer := node.UIBuffer.(*termui.Par)
 
 	p.normalRenderNodeBlock(node)
 

@@ -147,7 +147,7 @@ func (p *Page) pushWorkingNode(node *Node) {
 	if false == node.CheckIfDisplay() {
 		return
 	}
-	if uiBuffer, ok := node.uiBuffer.(*extra.Tabpane); true == ok {
+	if uiBuffer, ok := node.UIBuffer.(*extra.Tabpane); true == ok {
 		if true == uiBuffer.IsHideMenu {
 			return
 		}

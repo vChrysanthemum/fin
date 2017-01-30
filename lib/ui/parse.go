@@ -182,3 +182,13 @@ func Parse(content string) (ret *Page, err error) {
 
 	return ret, err
 }
+
+func ParseNode(content string) (ret *Node, err error) {
+	tmpPage := newPage()
+
+	tmpPage.doc, err = html.Parse(strings.NewReader(content))
+	tmpPage.filter(tmpPage.doc)
+	tmpPage.parse(tmpPage.doc)
+
+	return tmpPage.FirstChildNode.FirstChild, nil
+}

@@ -27,7 +27,7 @@ func (p *Node) InitNodeTerminal() {
 	p.Data = nodeTerminal
 	p.KeyPress = nodeTerminal.KeyPress
 
-	p.uiBuffer = nodeTerminal.Terminal
+	p.UIBuffer = nodeTerminal.Terminal
 	p.UIBlock = &nodeTerminal.Terminal.Block
 	p.Display = &p.UIBlock.Display
 

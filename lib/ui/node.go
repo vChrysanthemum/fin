@@ -61,7 +61,7 @@ type Node struct {
 
 	// 是否要渲染子节点
 	// 子节点将根据其父节点
-	// Node.isShouldTermuiRenderChild 来决定是否 将 node.uiBuffer append 进 page.Bufferers
+	// Node.isShouldTermuiRenderChild 来决定是否 将 node.UIBuffer append 进 page.Bufferers
 	// 例: TableTrTd 将用到该字段
 	isShouldTermuiRenderChild bool
 	isShouldCalculateHeight   bool
@@ -93,7 +93,7 @@ type Node struct {
 	ColorBg string
 
 	Display  *bool
-	uiBuffer interface{}
+	UIBuffer interface{}
 	UIBlock  *termui.Block
 
 	HtmlData string
@@ -115,40 +115,6 @@ type NodeJob struct {
 }
 
 type NodeBody struct{}
-
-func (p *Node) InitNodeBody() *NodeBody {
-	nodeBody := new(NodeBody)
-	p.Data = nodeBody
-	p.UIBlock = nil
-	p.Display = new(bool)
-	*p.Display = true
-	return nodeBody
-}
-
-type NodeDiv struct{}
-
-func (p *Node) InitNodeDiv() *NodeDiv {
-	nodeDiv := new(NodeDiv)
-	p.Data = nodeDiv
-	return nodeDiv
-}
-
-func (p *Page) newNode(htmlNode *html.Node) *Node {
-	ret := new(Node)
-	ret.page = p
-	ret.HtmlData = htmlNode.Data
-	ret.LuaActiveModeHandlers = make(map[string]NodeJob, 0)
-	ret.KeyPressHandlers = make(map[string]NodeJob, 0)
-	ret.KeyPressEnterHandlers = make(map[string]NodeJob, 0)
-
-	ret.isShouldCalculateHeight = true
-	ret.isShouldCalculateWidth = true
-
-	ret.HtmlAttribute = make(map[string]html.Attribute)
-
-	ret.EditorCursorLocation = image.Point{-1, -1}
-	return ret
-}
 
 func (p *Node) addChild(child *Node) {
 	if nil == p {
@@ -179,10 +145,63 @@ func (p *Node) uiRender() {
 	if false == p.CheckIfDisplay() {
 		return
 	}
-	if nil == p.uiBuffer {
+	if nil == p.UIBuffer {
 		return
 	}
-	uiutils.UIRender(p.uiBuffer.(termui.Bufferer))
+	uiutils.UIRender(p.UIBuffer.(termui.Bufferer))
+}
+
+func (p *Node) extractChildsMapIdNodes(ret *map[string]*Node) {
+	var childNode *Node
+	for childNode = p.FirstChild; childNode != nil; childNode = childNode.NextSibling {
+		childNode.extractChildsMapIdNodes(ret)
+	}
+
+	if "" != p.Id {
+		(*ret)[p.Id] = p
+	}
+}
+
+func (p *Node) ExtractChildsMapIdNodes() map[string]*Node {
+	ret := make(map[string]*Node)
+	p.extractChildsMapIdNodes(&ret)
+	return ret
+}
+
+func (p *Node) InitNodeBody() *NodeBody {
+	nodeBody := new(NodeBody)
+	p.Data = nodeBody
+	p.UIBlock = nil
+	p.Display = new(bool)
+	*p.Display = true
+	return nodeBody
+}
+
+type NodeDiv struct{}
+
+func (p *Node) InitNodeDiv() *NodeDiv {
+	nodeDiv := new(NodeDiv)
+	p.Data = nodeDiv
+	return nodeDiv
+}
+
+func (p *Page) newNode(htmlNode *html.Node) *Node {
+	ret := new(Node)
+	ret.Display = new(bool)
+	*ret.Display = true
+	ret.page = p
+	ret.HtmlData = htmlNode.Data
+	ret.LuaActiveModeHandlers = make(map[string]NodeJob, 0)
+	ret.KeyPressHandlers = make(map[string]NodeJob, 0)
+	ret.KeyPressEnterHandlers = make(map[string]NodeJob, 0)
+
+	ret.isShouldCalculateHeight = true
+	ret.isShouldCalculateWidth = true
+
+	ret.HtmlAttribute = make(map[string]html.Attribute)
+
+	ret.EditorCursorLocation = image.Point{-1, -1}
+	return ret
 }
 
 // 设定 光标
@@ -225,7 +244,7 @@ func (p *Node) CheckIfDisplay() bool {
 		return false
 	}
 
-	if nil != p.Tab && p.Tab.Index != p.Tab.NodeTabpane.Node.uiBuffer.(*extra.Tabpane).GetActiveIndex() {
+	if nil != p.Tab && p.Tab.Index != p.Tab.NodeTabpane.Node.UIBuffer.(*extra.Tabpane).GetActiveIndex() {
 		return false
 	}
 

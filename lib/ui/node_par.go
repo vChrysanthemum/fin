@@ -17,7 +17,7 @@ func (p *Node) InitNodePar() {
 	p.Data = nodePar
 
 	uiBuffer := termui.NewPar("")
-	p.uiBuffer = uiBuffer
+	p.UIBuffer = uiBuffer
 	p.UIBlock = &uiBuffer.Block
 	p.Display = &p.UIBlock.Display
 
@@ -31,7 +31,7 @@ func (p *Node) InitNodePar() {
 }
 
 func (p *NodePar) NodeDataSetValue(content string) {
-	uiBuffer := p.Node.uiBuffer.(*termui.Par)
+	uiBuffer := p.Node.UIBuffer.(*termui.Par)
 	uiBuffer.Text = content
 
 	height := uiutils.CalculateTextHeight(content, uiBuffer.Width)
@@ -45,5 +45,5 @@ func (p *NodePar) NodeDataSetValue(content string) {
 }
 
 func (p *NodePar) NodeDataGetValue() (string, bool) {
-	return p.Node.uiBuffer.(*termui.Par).Text, true
+	return p.Node.UIBuffer.(*termui.Par).Text, true
 }

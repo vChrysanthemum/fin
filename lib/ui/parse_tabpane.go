@@ -26,7 +26,7 @@ func (p *Page) parseBodyTabpaneTab(parentNode *Node, htmlNode *html.Node) (ret *
 	ret.InitNodeTabpaneTab(parentNode)
 
 	nodeTabpaneTab := ret.Data.(*NodeTabpaneTab)
-	uiBuffer := ret.uiBuffer.(*extra.Tab)
+	uiBuffer := ret.UIBuffer.(*extra.Tab)
 	for index := 0; index < len(nodeTabpaneTab.NodeTabpane.Tabs); index++ {
 		if uiBuffer == nodeTabpaneTab.NodeTabpane.Tabs[index] {
 			nodeTabpaneTab.Index = index
@@ -43,7 +43,7 @@ func (p *NodeTabpane) NodeDataParseAttribute(attr []html.Attribute) (isUIChange,
 	isUIChange = false
 	isNeedReRenderPage = false
 
-	uiBuffer := p.Node.uiBuffer.(*extra.Tabpane)
+	uiBuffer := p.Node.UIBuffer.(*extra.Tabpane)
 
 	for _, v := range attr {
 		switch v.Key {
@@ -93,7 +93,7 @@ func (p *NodeTabpaneTab) NodeDataParseAttribute(attr []html.Attribute) (isUIChan
 	isUIChange = false
 	isNeedReRenderPage = false
 
-	uiBuffer := p.Node.uiBuffer.(*extra.Tab)
+	uiBuffer := p.Node.UIBuffer.(*extra.Tab)
 
 	for _, v := range attr {
 		switch v.Key {

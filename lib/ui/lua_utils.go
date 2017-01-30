@@ -68,6 +68,11 @@ func (p *Script) luaFuncWindowConfirm(L *lua.LState) int {
 			_paramData = lua.LString(_ret)
 		}
 
+		_page.Clear()
+		_mainPage.SetActiveNode(nil)
+		_mainPage.ReRender()
+		_node.RemoveKeyPressEnterHandler(_key)
+
 		if err := p.Script.LuaCallByParam(_L, lua.P{
 			Fn:      _callback,
 			NRet:    0,
@@ -75,10 +80,7 @@ func (p *Script) luaFuncWindowConfirm(L *lua.LState) int {
 		}, _paramData); err != nil {
 			panic(err)
 		}
-		_page.Clear()
-		_mainPage.SetActiveNode(nil)
-		_mainPage.ReRender()
-		go _node.RemoveKeyPressEnterHandler(_key)
+
 	}, L, callback, page, p.page)
 	_job := nodeSelect.KeyPressEnterHandlers[key]
 	_job.Args = append(_job.Args, key)

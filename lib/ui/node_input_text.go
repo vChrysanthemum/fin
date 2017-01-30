@@ -14,7 +14,7 @@ func (p *Node) InitNodeInputText() {
 	p.Data = nodeInputText
 	p.KeyPress = nodeInputText.KeyPress
 
-	p.uiBuffer = nodeInputText.Terminal
+	p.UIBuffer = nodeInputText.Terminal
 	p.UIBlock = &nodeInputText.Terminal.Block
 	p.Display = &p.UIBlock.Display
 
@@ -74,7 +74,7 @@ func (p *NodeInputText) NodeDataGetValue() (string, bool) {
 }
 
 func (p *NodeInputText) NodeDataSetValue(content string) {
-	uiBuffer := p.Node.uiBuffer.(*Terminal)
+	uiBuffer := p.Node.UIBuffer.(*Terminal)
 	if len(uiBuffer.Lines) > 0 {
 		uiBuffer.Lines[0].Data = []byte(content)
 	}

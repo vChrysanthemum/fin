@@ -59,7 +59,7 @@ func (p *Page) _renderBodyTableOneRow(nodeTr *Node) []*termui.Row {
 			if _, ok = nodeTdChild.Data.(*NodeTableTr); true == ok {
 				nodeTdChildren = append(nodeTdChildren, termui.NewRow(p._renderBodyTableOneRow(nodeTdChild)...))
 			} else {
-				nodeTdChildren = append(nodeTdChildren, nodeTdChild.uiBuffer.(termui.GridBufferer))
+				nodeTdChildren = append(nodeTdChildren, nodeTdChild.UIBuffer.(termui.GridBufferer))
 			}
 		}
 		if len(nodeTdChildren) > 0 {

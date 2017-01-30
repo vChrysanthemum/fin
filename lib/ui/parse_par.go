@@ -13,7 +13,7 @@ func (p *Page) parseBodyPar(parentNode *Node, htmlNode *html.Node) (ret *Node, i
 	ret.InitNodePar()
 
 	if nil != htmlNode.FirstChild {
-		uiBuffer := ret.uiBuffer.(*termui.Par)
+		uiBuffer := ret.UIBuffer.(*termui.Par)
 		uiBuffer.Text = htmlNode.FirstChild.Data
 	}
 

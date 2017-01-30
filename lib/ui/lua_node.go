@@ -452,3 +452,23 @@ func (p *Script) luaFuncNodeRemove(L *lua.LState) int {
 
 	return 0
 }
+
+func (p *Script) luaFuncNodeAppend(L *lua.LState) int {
+	if L.GetTop() < 2 {
+		return 0
+	}
+
+	lu := L.ToUserData(1)
+	node := p._getNodePointerFromUserData(L, lu)
+	content := L.ToString(2)
+	if nil == node {
+		return 0
+	}
+
+	err := p.page.AppendNode(node, content)
+	if nil != err {
+		L.Push(lua.LString(err.Error()))
+	}
+
+	return 0
+}

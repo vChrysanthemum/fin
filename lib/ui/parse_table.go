@@ -61,7 +61,7 @@ func (p *NodeTable) NodeDataParseAttribute(attr []html.Attribute) (isUIChange, i
 	isUIChange = false
 	isNeedReRenderPage = false
 
-	uiBuffer := p.Node.uiBuffer.(*termui.Grid)
+	uiBuffer := p.Node.UIBuffer.(*termui.Grid)
 
 	for _, v := range attr {
 		switch v.Key {

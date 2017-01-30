@@ -12,10 +12,7 @@ end
 
 function WindowConfirm(title, callback)
     content = string.format([[
-    <table>
-        <tr>
-            <td offset=4 cols=4><par height=6></par></td>
-        </tr>
+    <table top=6>
         <tr>
             <td offset=5 cols=2>
                 <select id="SelectConfirm" borderlabel="%s">
@@ -137,6 +134,10 @@ end
 
 function _Node.Remove(self)
     return base.NodeRemove(self.nodePointer)
+end
+
+function _Node.Append(self, content)
+    return base.NodeAppend(self.nodePointer, content)
 end
 
 function _Node.CanvasClean(self)

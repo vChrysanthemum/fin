@@ -13,7 +13,7 @@ func (p *Node) InitNodeEditor() {
 	p.Data = nodeEditor
 	p.KeyPress = nodeEditor.KeyPress
 
-	p.uiBuffer = nodeEditor.Editor
+	p.UIBuffer = nodeEditor.Editor
 	p.UIBlock = &nodeEditor.Editor.Block
 	p.Display = &p.UIBlock.Display
 

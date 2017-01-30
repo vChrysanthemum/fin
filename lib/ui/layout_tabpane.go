@@ -19,7 +19,7 @@ func (p *Page) layoutBodyTabpane(node *Node) (isFallthrough bool) {
 		node.UIBlock.Y = 0
 	}
 
-	uiBuffer := node.uiBuffer.(*extra.Tabpane)
+	uiBuffer := node.UIBuffer.(*extra.Tabpane)
 	if true == uiBuffer.IsHideMenu {
 		node.UIBlock.Height = 0
 	} else {

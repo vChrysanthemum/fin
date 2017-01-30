@@ -1,11 +1,12 @@
 package ui
 
 import (
-	"fmt"
 	"fin/ui"
+	"fmt"
 	"log"
 	"testing"
 
+	"github.com/gizak/termui"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -91,4 +92,47 @@ func TestParseId(t *testing.T) {
 
 	ul := page.IdToNodeMap[id].Data.(*ui.NodeSelect)
 	assert.Equal(t, ul.Children[0].Data, title)
+}
+
+func TestParseNode(t *testing.T) {
+	id2 := "child"
+	title := "Hello World!"
+
+	s2 := fmt.Sprintf(`
+	<par id="%s">%s</par>
+	`, id2, title)
+
+	node, err := ParseNode(s2)
+	assert.Nil(t, err)
+	assert.Equal(t, node.HtmlData, "par")
+	assert.Equal(t, node.Id, id2)
+}
+
+func TestAppendNode(t *testing.T) {
+	id1 := "menu"
+	id2 := "child"
+	title := "Hello World!"
+
+	s1 := fmt.Sprintf(`
+	<html>
+    <body>
+        <div id="%s">
+		</div>
+	</body>
+	</html>
+	`, id1)
+	page, err := ui.Parse(s1)
+	assert.NotNil(t, page)
+	assert.Nil(t, err)
+
+	assert.NotNil(t, page.IdToNodeMap[id1])
+
+	s2 := fmt.Sprintf(`
+	<par id="%s">%s</par>
+	`, id2, title)
+
+	err = page.AppendNode(page.IdToNodeMap[id1], s2)
+	assert.Nil(t, err)
+	assert.Equal(t, page.IdToNodeMap[id2].HtmlData, "par")
+	assert.Equal(t, page.IdToNodeMap[id2].UIBuffer.(*termui.Par).Text, title)
 }

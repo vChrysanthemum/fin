@@ -21,7 +21,7 @@ func (p *Page) parseBodyGauge(parentNode *Node, htmlNode *html.Node) (ret *Node,
 func (p *NodeGauge) NodeDataParseAttribute(attr []html.Attribute) (isUIChange, isNeedReRenderPage bool) {
 	isUIChange = false
 	isNeedReRenderPage = false
-	uiBuffer := p.Node.uiBuffer.(*termui.Gauge)
+	uiBuffer := p.Node.UIBuffer.(*termui.Gauge)
 
 	for _, v := range attr {
 		switch v.Key {
