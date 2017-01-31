@@ -10,32 +10,30 @@ import (
 type EditorMode int
 
 type Editor struct {
+	termui.Block
+	Buf         *termui.Buffer
+	TextFgColor termui.Attribute
+	TextBgColor termui.Attribute
+
 	Mode EditorMode
 
-	Buf *termui.Buffer
+	// NormalMode
+	NormalModeCommands     []EditorNormalModeCommand
+	NormalModeCommandStack string
 
+	// EditMode
 	isDisplayEditorLineNumber bool
-
-	// EditorNormalMode
-	EditorNormalModeCommands     []EditorNormalModeCommand
-	EditorNormalModeCommandStack string
-
-	Lines []*EditorLine
-
-	CommandModeBuf *EditorLine
-
-	CurrentLineIndex int
-
-	termui.Block
-	EditModeBufAreaHeight    int
-	CommandModeBufAreaY      int
-	CommandModeBufAreaHeight int
-
-	TextFgColor               termui.Attribute
-	TextBgColor               termui.Attribute
+	CurrentLineIndex          int
+	EditModeBufAreaHeight     int
+	Lines                     []*EditorLine
+	EditModeCursorLocation    *EditorCursorLocation
 	DisplayLinesTopIndex      int
 	DisplayLinesBottomIndex   int
-	EditModeCursorLocation    *EditorCursorLocation
+
+	// CommandMode
+	CommandModeBufAreaY       int
+	CommandModeBufAreaHeight  int
+	CommandModeBuf            *EditorLine
 	CommandModeCursorLocation *EditorCursorLocation
 
 	isEditModeBufDirty              bool

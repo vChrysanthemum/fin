@@ -23,7 +23,7 @@ var (
 )
 
 func (p *Editor) PrepareEditorNormalMode() {
-	p.EditorNormalModeCommands = []EditorNormalModeCommand{
+	p.NormalModeCommands = []EditorNormalModeCommand{
 		{_commandMatchRegexpMoveTop, p.commandMoveTop},
 		{_commandMatchRegexpMoveBottom, p.commandMoveBottom},
 		{_commandMatchRegexpMoveLeft, p.commandMoveLeft},
@@ -40,11 +40,11 @@ func (p *Editor) EditorNormalModeEnter() {
 }
 
 func (p *Editor) EditorNormalModeWrite(keyStr string) {
-	p.EditorNormalModeCommandStack += keyStr
-	for _, cmd := range p.EditorNormalModeCommands {
-		if true == cmd.MatchRegexp.Match([]byte(p.EditorNormalModeCommandStack)) {
+	p.NormalModeCommandStack += keyStr
+	for _, cmd := range p.NormalModeCommands {
+		if true == cmd.MatchRegexp.Match([]byte(p.NormalModeCommandStack)) {
 			cmd.Handler()
-			p.EditorNormalModeCommandStack = ""
+			p.NormalModeCommandStack = ""
 		}
 	}
 }
@@ -54,7 +54,7 @@ func (p *Editor) commandMoveTop() {
 		p.EditModeCursorLocation.OffXCellIndexVertical = p.EditModeCursorLocation.OffXCellIndex
 	}
 
-	_n := _commandMatchRegexpMoveTop.FindSubmatch([]byte(p.EditorNormalModeCommandStack))
+	_n := _commandMatchRegexpMoveTop.FindSubmatch([]byte(p.NormalModeCommandStack))
 	n, err := strconv.Atoi(string(_n[1]))
 	if nil == err {
 		p.MoveCursorNRuneTop(p.EditModeCursorLocation, n)
@@ -81,7 +81,7 @@ func (p *Editor) commandMoveBottom() {
 		p.EditModeCursorLocation.OffXCellIndexVertical = p.EditModeCursorLocation.OffXCellIndex
 	}
 
-	_n := _commandMatchRegexpMoveBottom.FindSubmatch([]byte(p.EditorNormalModeCommandStack))
+	_n := _commandMatchRegexpMoveBottom.FindSubmatch([]byte(p.NormalModeCommandStack))
 	n, err := strconv.Atoi(string(_n[1]))
 	if nil == err {
 		p.MoveCursorNRuneBottom(p.EditModeCursorLocation, n)
@@ -104,7 +104,7 @@ func (p *Editor) commandMoveBottom() {
 }
 
 func (p *Editor) commandMoveLeft() {
-	_n := _commandMatchRegexpMoveLeft.FindSubmatch([]byte(p.EditorNormalModeCommandStack))
+	_n := _commandMatchRegexpMoveLeft.FindSubmatch([]byte(p.NormalModeCommandStack))
 	n, err := strconv.Atoi(string(_n[1]))
 	if nil == err {
 		p.MoveCursorNRuneLeft(p.EditModeCursorLocation, p.CurrentLine(), n)
@@ -114,7 +114,7 @@ func (p *Editor) commandMoveLeft() {
 }
 
 func (p *Editor) commandMoveRight() {
-	_n := _commandMatchRegexpMoveRight.FindSubmatch([]byte(p.EditorNormalModeCommandStack))
+	_n := _commandMatchRegexpMoveRight.FindSubmatch([]byte(p.NormalModeCommandStack))
 	n, err := strconv.Atoi(string(_n[1]))
 	if nil == err {
 		p.MoveCursorNRuneRight(p.EditModeCursorLocation, p.CurrentLine(), n)
