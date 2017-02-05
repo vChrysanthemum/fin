@@ -127,8 +127,8 @@ func (p *EditorActionInsert) Redo(editModeCursor *EditorCursor) {
 	editModeCursor.CellOffX = p.StartCellOffX
 
 	line = editModeCursor.Line()
-	if len(line.Data) > 0 && editModeCursor.CellOffX >= len(line.Data) {
-		editModeCursor.CellOffX = len(line.Data) - 1
+	if len(line.Cells) > 0 && editModeCursor.CellOffX >= len(line.Cells) {
+		editModeCursor.CellOffX = len(line.Cells) - 1
 	}
 
 	p.Editor.isShouldRefreshEditModeBuf = true
@@ -188,8 +188,8 @@ func (p *EditorActionInsert) Undo(editModeCursor *EditorCursor) {
 	editModeCursor.CellOffX = p.StartCellOffX
 
 	line = editModeCursor.Line()
-	if len(line.Data) > 0 && editModeCursor.CellOffX >= len(line.Data) {
-		editModeCursor.CellOffX = len(line.Data) - 1
+	if len(line.Cells) > 0 && editModeCursor.CellOffX >= len(line.Cells) {
+		editModeCursor.CellOffX = len(line.Cells) - 1
 	}
 
 	p.Editor.isShouldRefreshEditModeBuf = true

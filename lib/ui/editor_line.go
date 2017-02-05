@@ -203,8 +203,8 @@ func (p *EditorLine) CutAway(offStart, offEnd int) {
 		} else {
 			p.Data = append(p.Data[:offStart], p.Data[offEnd:]...)
 		}
+		p.Cells = DefaultRawTextBuilder.Build(string(p.Data), p.Editor.TextFgColor, p.Editor.TextBgColor)
 	}
-
 }
 
 func (p *EditorLine) CleanData(editModeCursor *EditorCursor) {
