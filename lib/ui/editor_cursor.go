@@ -280,6 +280,17 @@ func (p *Editor) MoveCursorNRuneRight(cursor *EditorCursor, line *EditorLine, n 
 	cursor.CellOffXVertical = cursor.CellOffX
 }
 
+func (p *Editor) RefreshCursorByEditorLine() {
+	switch p.Mode {
+	case EDITOR_EDIT_MODE:
+		p.EditModeCursor.RefreshCursorByEditorLine(p.EditModeCursor.Line())
+	case EDITOR_NORMAL_MODE:
+		p.EditModeCursor.RefreshCursorByEditorLine(p.EditModeCursor.Line())
+	case EDITOR_COMMAND_MODE:
+		p.CommandModeCursor.RefreshCursorByEditorLine(p.CommandModeBuf)
+	}
+}
+
 func (p *EditorCursor) RefreshCursorByEditorLine(line *EditorLine) {
 	if nil == line {
 		p.UISetCursor(p.Editor.Block.InnerArea.Min.X, p.Editor.Block.InnerArea.Min.Y)
@@ -287,6 +298,7 @@ func (p *EditorCursor) RefreshCursorByEditorLine(line *EditorLine) {
 	}
 
 	if 0 == len(line.Cells) {
+		p.CellOffX = 0
 		p.UISetCursor(line.ContentStartX, line.ContentStartY)
 		return
 	}

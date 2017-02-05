@@ -123,7 +123,7 @@ func (p *Editor) Buffer() termui.Buffer {
 	}
 
 	p.RefreshBuf()
-	p.UIRender()
+	p.RefreshCursorByEditorLine()
 
 	return *p.Buf
 }

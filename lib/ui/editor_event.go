@@ -61,7 +61,7 @@ func (p *Editor) RegisterKeyEventHandlers() {
 			}
 
 			p.RefreshBuf()
-			p.UIRender()
+			p.RefreshCursorByEditorLine()
 
 			termui.RenderLock.Lock()
 			termbox.Flush()

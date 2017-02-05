@@ -30,9 +30,7 @@ func NewEditorActionGroup(editor *Editor) *EditorActionGroup {
 }
 
 func (p *EditorActionGroup) makeStatePrepareWrite() {
-	if EDITOR_ACTION_STATE_PREPARE_WRITE != p.State {
-		p.State = EDITOR_ACTION_STATE_PREPARE_WRITE
-	}
+	p.State = EDITOR_ACTION_STATE_PREPARE_WRITE
 }
 
 func (p *EditorActionGroup) Write(editModeCursor *EditorCursor, keyStr string) (isQuitActiveMode bool) {
@@ -40,7 +38,7 @@ func (p *EditorActionGroup) Write(editModeCursor *EditorCursor, keyStr string) (
 
 	switch keyStr {
 	case "<escape>":
-		p.State = EDITOR_ACTION_STATE_PREPARE_WRITE
+		p.makeStatePrepareWrite()
 
 		switch p.Mode {
 		case EDITOR_NORMAL_MODE:
@@ -82,19 +80,20 @@ func (p *EditorActionGroup) Write(editModeCursor *EditorCursor, keyStr string) (
 				p.EditModeMoveCursorNRuneDown(editModeCursor, 1)
 
 			default:
-				editModeCursor.CellOffXVertical = 0
-				if EDITOR_ACTION_STATE_PREPARE_WRITE == p.State {
-					p.AllocNewEditorActionInsert(editModeCursor)
-					p.State = EDITOR_ACTION_STATE_WRITE
-				}
-
 				if "<space>" == keyStr {
 					keyStr = " "
 				} else if "<tab>" == keyStr {
 					keyStr = "\t"
 				}
 
-				p.Actions.Back().Value.(EditorAction).Apply(editModeCursor, keyStr)
+				editModeCursor.CellOffXVertical = 0
+
+				if EDITOR_ACTION_STATE_WRITE != p.State {
+					p.AllocNewEditorActionInsert(editModeCursor)
+					p.State = EDITOR_ACTION_STATE_WRITE
+				}
+				p.CurrentUndoAction.Value.(EditorAction).Apply(editModeCursor, keyStr)
+
 				p.EditModeWrite(editModeCursor, keyStr)
 			}
 

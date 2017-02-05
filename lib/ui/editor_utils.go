@@ -12,14 +12,3 @@ func str2runes(s string) []rune {
 func toTmAttr(x termui.Attribute) termbox.Attribute {
 	return termbox.Attribute(x)
 }
-
-func (p *Editor) UIRender() {
-	switch p.Mode {
-	case EDITOR_EDIT_MODE:
-		p.EditModeCursor.RefreshCursorByEditorLine(p.EditModeCursor.Line())
-	case EDITOR_NORMAL_MODE:
-		p.EditModeCursor.RefreshCursorByEditorLine(p.EditModeCursor.Line())
-	case EDITOR_COMMAND_MODE:
-		p.CommandModeCursor.RefreshCursorByEditorLine(p.CommandModeBuf)
-	}
-}
