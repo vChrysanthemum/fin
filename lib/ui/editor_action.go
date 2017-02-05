@@ -123,7 +123,6 @@ func (p *EditorActionGroup) Undo(editModeCursor *EditorCursor) {
 	if editModeCursor.LineIndex > editModeCursor.DisplayLinesBottomIndex {
 		editModeCursor.DisplayLinesTopIndex = editModeCursor.LineIndex
 	}
-
 }
 
 func (p *EditorActionGroup) Redo(editModeCursor *EditorCursor) {

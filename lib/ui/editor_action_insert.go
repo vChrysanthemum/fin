@@ -74,6 +74,11 @@ func (p *EditorActionInsert) Apply(editModeCursor *EditorCursor, keyStr string) 
 }
 
 func (p *EditorActionInsert) Redo(editModeCursor *EditorCursor) {
+	if p.StartLineIndex > editModeCursor.DisplayLinesBottomIndex {
+		editModeCursor.DisplayLinesTopIndex = p.StartLineIndex
+		p.Editor.RefreshEditModeBuf(editModeCursor)
+	}
+
 	var (
 		offStart, offEnd int
 		n                = 0
@@ -135,6 +140,11 @@ func (p *EditorActionInsert) Redo(editModeCursor *EditorCursor) {
 }
 
 func (p *EditorActionInsert) Undo(editModeCursor *EditorCursor) {
+	if p.StartLineIndex > editModeCursor.DisplayLinesBottomIndex {
+		editModeCursor.DisplayLinesTopIndex = p.StartLineIndex
+		p.Editor.RefreshEditModeBuf(editModeCursor)
+	}
+
 	var (
 		offStart, offEnd int
 		n                = 0
