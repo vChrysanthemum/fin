@@ -72,7 +72,6 @@ func (p *Editor) EditModeMoveCursorNRuneUp(cursor *EditorCursor, n int) {
 		} else {
 			cursor.CellOffX = cursor.CellOffXVertical
 		}
-		cursor.RefreshCursorByEditorLine(line)
 	}
 }
 
@@ -120,7 +119,6 @@ func (p *Editor) NormalModeMoveCursorNRuneUp(cursor *EditorCursor, n int) {
 		} else {
 			cursor.CellOffX = cursor.CellOffXVertical
 		}
-		cursor.RefreshCursorByEditorLine(line)
 	}
 }
 
@@ -170,7 +168,6 @@ func (p *Editor) EditModeMoveCursorNRuneDown(cursor *EditorCursor, n int) {
 		} else {
 			cursor.CellOffX = cursor.CellOffXVertical
 		}
-		cursor.RefreshCursorByEditorLine(line)
 	}
 }
 
@@ -218,7 +215,6 @@ func (p *Editor) NormalModeMoveCursorNRuneDown(cursor *EditorCursor, n int) {
 		} else {
 			cursor.CellOffX = cursor.CellOffXVertical
 		}
-		cursor.RefreshCursorByEditorLine(line)
 	}
 }
 
@@ -293,7 +289,6 @@ func (p *Editor) RefreshCursorByEditorLine() {
 
 func (p *EditorCursor) RefreshCursorByEditorLine(line *EditorLine) {
 	if nil == line {
-		p.UISetCursor(p.Editor.Block.InnerArea.Min.X, p.Editor.Block.InnerArea.Min.Y)
 		return
 	}
 
@@ -332,6 +327,9 @@ func (p *EditorCursor) RefreshCursorByEditorLine(line *EditorLine) {
 		x, y = cell.X, cell.Y
 	}
 
+	if 0 == y && 0 == x {
+		x, y = line.ContentStartX, line.ContentStartY
+	}
 	p.UISetCursor(x, y)
 }
 

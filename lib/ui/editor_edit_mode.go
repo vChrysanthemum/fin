@@ -8,7 +8,6 @@ func (p *Editor) PrepareEditMode() {
 func (p *Editor) EditModeEnter(editModeCursor *EditorCursor) {
 	editModeCursor.CellOffXVertical = 0
 	p.Mode = EDITOR_EDIT_MODE
-	editModeCursor.RefreshCursorByEditorLine(editModeCursor.Line())
 }
 
 func (p *Editor) EditModeWrite(editModeCursor *EditorCursor, keyStr string) {

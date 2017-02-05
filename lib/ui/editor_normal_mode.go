@@ -53,7 +53,6 @@ func (p *Editor) NormalModeEnter(editModeCursor *EditorCursor) {
 			editModeCursor.CellOffX = len(editModeCursor.Line().Cells) - 1
 		}
 	}
-	editModeCursor.RefreshCursorByEditorLine(editModeCursor.Line())
 }
 
 func (p *Editor) NormalModeWrite(editModeCursor *EditorCursor, keyStr string) {

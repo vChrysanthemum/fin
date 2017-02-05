@@ -124,13 +124,13 @@ func (p *Editor) Buffer() termui.Buffer {
 
 	p.RefreshBuf()
 	p.RefreshCursorByEditorLine()
+	p.RefreshBuf()
 
 	return *p.Buf
 }
 
 func (p *Editor) ActiveMode() {
 	p.EditModeEnter(p.EditModeCursor)
-	p.EditModeCursor.RefreshCursorByEditorLine(p.EditModeCursor.Line())
 }
 
 func (p *Editor) UnActiveMode() {
