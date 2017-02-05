@@ -46,6 +46,7 @@ func (p *Editor) PrepareNormalMode() {
 
 func (p *Editor) NormalModeEnter(editModeCursor *EditorCursor) {
 	p.Mode = EDITOR_NORMAL_MODE
+	p.NormalModeCommandStack = ""
 	if editModeCursor.CellOffX >= len(editModeCursor.Line().Cells) {
 		if 0 == len(editModeCursor.Line().Cells) {
 			editModeCursor.CellOffX = 0
