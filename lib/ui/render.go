@@ -3,7 +3,7 @@ package ui
 import (
 	"container/list"
 
-	uiutils "fin/ui/utils"
+	"fin/ui/utils"
 
 	"github.com/gizak/termui"
 )
@@ -194,7 +194,7 @@ func (p *Page) uiRender() error {
 		}
 	}
 
-	uiutils.UIRender(p.Bufferers...)
+	utils.UIRender(p.Bufferers...)
 
 	return nil
 }
@@ -236,7 +236,7 @@ func (p *Page) ReRender() {
 // 清空 page 中所有元素，但不清空屏幕
 func (p *Page) Clear() {
 	p.Bufferers = make([]termui.Bufferer, 0)
-	uiutils.UISetCursor(-1, -1)
+	utils.UISetCursor(-1, -1)
 	p.FocusNode = nil
 	p.WorkingNodes = list.New()
 	p.ActiveNode = nil

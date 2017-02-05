@@ -2,7 +2,7 @@ package ui
 
 import (
 	"container/list"
-	uiutils "fin/ui/utils"
+	"fin/ui/utils"
 	"image"
 
 	"github.com/gizak/termui"
@@ -106,7 +106,7 @@ type Node struct {
 	KeyPressHandlers      map[string]NodeJob
 	KeyPressEnterHandlers map[string]NodeJob
 
-	EditorCursorLocation image.Point
+	EditorCursor image.Point
 }
 
 type NodeJobHandler func(node *Node, args ...interface{})
@@ -150,7 +150,7 @@ func (p *Node) uiRender() {
 	if nil == p.UIBuffer {
 		return
 	}
-	uiutils.UIRender(p.UIBuffer.(termui.Bufferer))
+	utils.UIRender(p.UIBuffer.(termui.Bufferer))
 }
 
 func (p *Node) extractChildsMapIdNodes(ret *map[string]*Node) {
@@ -203,7 +203,7 @@ func (p *Page) newNode(htmlNode *html.Node) *Node {
 
 	ret.HtmlAttribute = make(map[string]html.Attribute)
 
-	ret.EditorCursorLocation = image.Point{-1, -1}
+	ret.EditorCursor = image.Point{-1, -1}
 	return ret
 }
 
@@ -224,21 +224,21 @@ func (p *Node) SetRelativeCursor(relativeX, relativeY int) (int, int) {
 		relativeY = maxHeight - 1
 	}
 
-	p.EditorCursorLocation.X = p.UIBlock.InnerArea.Min.X + p.UIBlock.X + relativeX
-	p.EditorCursorLocation.Y = p.UIBlock.InnerArea.Min.Y + p.UIBlock.Y + relativeY
+	p.EditorCursor.X = p.UIBlock.InnerArea.Min.X + p.UIBlock.X + relativeX
+	p.EditorCursor.Y = p.UIBlock.InnerArea.Min.Y + p.UIBlock.Y + relativeY
 
-	uiutils.UISetCursor(p.EditorCursorLocation.X, p.EditorCursorLocation.Y)
+	utils.UISetCursor(p.EditorCursor.X, p.EditorCursor.Y)
 	p.uiRender()
 	return relativeX, relativeY
 }
 
 func (p *Node) ResumeCursor() {
-	uiutils.UISetCursor(p.EditorCursorLocation.X, p.EditorCursorLocation.Y)
+	utils.UISetCursor(p.EditorCursor.X, p.EditorCursor.Y)
 	p.uiRender()
 }
 
 func (p *Node) HideCursor() {
-	uiutils.UISetCursor(-1, -1)
+	utils.UISetCursor(-1, -1)
 	p.uiRender()
 }
 

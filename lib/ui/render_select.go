@@ -1,7 +1,7 @@
 package ui
 
 import (
-	uiutils "fin/ui/utils"
+	"fin/ui/utils"
 
 	"github.com/gizak/termui"
 )
@@ -21,7 +21,7 @@ func (p *Node) refreshUiBufferItems() {
 	var str string
 	for index, nodeOption := range nodeSelect.Children {
 		if nodeSelect.DisplayLinesRange[0] <= index && index < nodeSelect.DisplayLinesRange[1] {
-			str = uiutils.FormatStringWithWidth(nodeOption.Data, nodeSelect.ChildrenMaxStringWidth)
+			str = utils.FormatStringWithWidth(nodeOption.Data, nodeSelect.ChildrenMaxStringWidth)
 			// str = fmt.Sprintf("%-"+strconv.Itoa(p.UIBlock.InnerArea.Dx())+"s", str)
 			if index == nodeSelect.SelectedOptionIndex {
 				str = "[" + str + "]" +

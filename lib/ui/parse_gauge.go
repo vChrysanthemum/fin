@@ -1,7 +1,7 @@
 package ui
 
 import (
-	uiutils "fin/ui/utils"
+	"fin/ui/utils"
 	"strconv"
 
 	"github.com/gizak/termui"
@@ -27,16 +27,16 @@ func (p *NodeGauge) NodeDataParseAttribute(attr []html.Attribute) (isUIChange, i
 		switch v.Key {
 		case "barcolor":
 			isUIChange = true
-			uiBuffer.BarColor = uiutils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_GAUGE_BARCOLOR)
+			uiBuffer.BarColor = utils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_GAUGE_BARCOLOR)
 
 		case "percentcolor":
 			isUIChange = true
-			uiBuffer.PercentColor = uiutils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_GAUGE_PERCENTCOLOR)
+			uiBuffer.PercentColor = utils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_GAUGE_PERCENTCOLOR)
 
 		case "percentcolor_highlighted":
 			isUIChange = true
 			uiBuffer.PercentColorHighlighted =
-				uiutils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_GAUGE_PERCENTCOLOR_HIGHLIGHTED)
+				utils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_GAUGE_PERCENTCOLOR_HIGHLIGHTED)
 
 		case "percent":
 			isUIChange = true

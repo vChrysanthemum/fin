@@ -1,7 +1,7 @@
 package ui
 
 import (
-	uiutils "fin/ui/utils"
+	"fin/ui/utils"
 
 	"github.com/gizak/termui"
 )
@@ -34,7 +34,7 @@ func (p *NodePar) NodeDataSetValue(content string) {
 	uiBuffer := p.Node.UIBuffer.(*termui.Par)
 	uiBuffer.Text = content
 
-	height := uiutils.CalculateTextHeight(content, uiBuffer.Width)
+	height := utils.CalculateTextHeight(content, uiBuffer.Width)
 
 	if height > uiBuffer.InnerArea.Dy() {
 		p.Node.page.ReRender()

@@ -1,7 +1,7 @@
 package ui
 
 import (
-	uiutils "fin/ui/utils"
+	"fin/ui/utils"
 
 	"github.com/gizak/termui"
 	rw "github.com/mattn/go-runewidth"
@@ -14,9 +14,9 @@ func (p *Page) renderBodyPar(node *Node) {
 
 	if true == node.isShouldCalculateHeight {
 		if true == node.UIBlock.Border {
-			node.UIBlock.Height = uiutils.CalculateTextHeight(uiBuffer.Text, node.UIBlock.Width) + 2
+			node.UIBlock.Height = utils.CalculateTextHeight(uiBuffer.Text, node.UIBlock.Width) + 2
 		} else {
-			node.UIBlock.Height = uiutils.CalculateTextHeight(uiBuffer.Text, node.UIBlock.Width)
+			node.UIBlock.Height = utils.CalculateTextHeight(uiBuffer.Text, node.UIBlock.Width)
 		}
 		node.UIBlock.Height += node.UIBlock.PaddingTop
 		node.UIBlock.Height += node.UIBlock.PaddingBottom
@@ -31,10 +31,10 @@ func (p *Page) renderBodyPar(node *Node) {
 	}
 
 	if "" != node.ColorFg {
-		uiBuffer.TextFgColor = uiutils.ColorToTermuiAttribute(node.ColorFg, uiutils.COLOR_DEFAULT)
+		uiBuffer.TextFgColor = utils.ColorToTermuiAttribute(node.ColorFg, utils.COLOR_DEFAULT)
 	}
 	if "" != node.ColorBg {
-		uiBuffer.TextBgColor = uiutils.ColorToTermuiAttribute(node.ColorBg, uiutils.COLOR_DEFAULT)
+		uiBuffer.TextBgColor = utils.ColorToTermuiAttribute(node.ColorBg, utils.COLOR_DEFAULT)
 	}
 
 	p.BufferersAppend(node, uiBuffer)

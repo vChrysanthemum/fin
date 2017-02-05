@@ -57,7 +57,7 @@ func (p *Terminal) RemoveTerminalLine(line *TerminalLine) {
 	p.LinesLocker.Lock()
 	defer p.LinesLocker.Unlock()
 
-	p.CurrentLine = line.Prev
+	p.Cursor.Line = line.Prev
 
 	if nil != line.Prev {
 		line.Prev.Next = line.Next
@@ -87,10 +87,11 @@ func (p *Terminal) ClearLines() {
 
 	p.FirstTerminalLine = nil
 	p.LastTerminalLine = nil
-	p.CurrentLine = nil
 	p.Lines = []*TerminalLine{}
-	p.TerminalCursorLocation.ResetLocation()
 	p.DisplayLinesRange = [2]int{0, 1}
+
+	p.Cursor.ResetLocation()
+	p.Cursor.Line = nil
 }
 
 func (p *TerminalLine) Write(ch string) {

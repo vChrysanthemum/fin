@@ -1,7 +1,7 @@
 package ui
 
 import (
-	uiutils "fin/ui/utils"
+	"fin/ui/utils"
 	"strconv"
 
 	"github.com/gizak/termui"
@@ -87,7 +87,7 @@ func (p *Node) ParseAttribute(attr []html.Attribute) (isUIChange, isNeedReRender
 
 			case "borderlabelfg":
 				isUIChange = true
-				p.UIBlock.BorderLabelFg = uiutils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_BORDER_LABEL_FG)
+				p.UIBlock.BorderLabelFg = utils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_BORDER_LABEL_FG)
 
 			case "borderlabel":
 				isUIChange = true
@@ -95,27 +95,27 @@ func (p *Node) ParseAttribute(attr []html.Attribute) (isUIChange, isNeedReRender
 
 			case "borderfg":
 				isUIChange = true
-				p.UIBlock.BorderFg = uiutils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_BORDER_FG)
+				p.UIBlock.BorderFg = utils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_BORDER_FG)
 
 			case "border":
 				isUIChange = true
-				p.UIBlock.Border = uiutils.StringToBool(v.Val, p.UIBlock.Border)
+				p.UIBlock.Border = utils.StringToBool(v.Val, p.UIBlock.Border)
 
 			case "borderleft":
 				isUIChange = true
-				p.UIBlock.BorderLeft = uiutils.StringToBool(v.Val, p.UIBlock.BorderLeft)
+				p.UIBlock.BorderLeft = utils.StringToBool(v.Val, p.UIBlock.BorderLeft)
 
 			case "borderright":
 				isUIChange = true
-				p.UIBlock.BorderRight = uiutils.StringToBool(v.Val, p.UIBlock.BorderRight)
+				p.UIBlock.BorderRight = utils.StringToBool(v.Val, p.UIBlock.BorderRight)
 
 			case "bordertop":
 				isUIChange = true
-				p.UIBlock.BorderTop = uiutils.StringToBool(v.Val, p.UIBlock.BorderTop)
+				p.UIBlock.BorderTop = utils.StringToBool(v.Val, p.UIBlock.BorderTop)
 
 			case "borderbottom":
 				isUIChange = true
-				p.UIBlock.BorderBottom = uiutils.StringToBool(v.Val, p.UIBlock.BorderBottom)
+				p.UIBlock.BorderBottom = utils.StringToBool(v.Val, p.UIBlock.BorderBottom)
 
 			case "height":
 				isUIChange = true
@@ -139,7 +139,7 @@ func (p *Node) ParseAttribute(attr []html.Attribute) (isUIChange, isNeedReRender
 				if nil != p.UIBuffer {
 					if uiBuffer, ok := p.UIBuffer.(*extra.Tabpane); true == ok {
 						isUIChange = true
-						uiBuffer.TabFg = uiutils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_TAB_FG)
+						uiBuffer.TabFg = utils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_TAB_FG)
 					}
 				}
 
@@ -147,7 +147,7 @@ func (p *Node) ParseAttribute(attr []html.Attribute) (isUIChange, isNeedReRender
 				if nil != p.UIBuffer {
 					if uiBuffer, ok := p.UIBuffer.(*extra.Tabpane); true == ok {
 						isUIChange = true
-						uiBuffer.TabBg = uiutils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_TAB_BG)
+						uiBuffer.TabBg = utils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_TAB_BG)
 					}
 				}
 
@@ -155,7 +155,7 @@ func (p *Node) ParseAttribute(attr []html.Attribute) (isUIChange, isNeedReRender
 				if nil != p.UIBuffer {
 					if uiBuffer, ok := p.UIBuffer.(*extra.Tabpane); true == ok {
 						isUIChange = true
-						uiBuffer.ActiveTabFg = uiutils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_ACTIVE_TAB_FG)
+						uiBuffer.ActiveTabFg = utils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_ACTIVE_TAB_FG)
 					}
 				}
 
@@ -163,7 +163,7 @@ func (p *Node) ParseAttribute(attr []html.Attribute) (isUIChange, isNeedReRender
 				if nil != p.UIBuffer {
 					if uiBuffer, ok := p.UIBuffer.(*extra.Tabpane); true == ok {
 						isUIChange = true
-						uiBuffer.ActiveTabBg = uiutils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_ACTIVE_TAB_BG)
+						uiBuffer.ActiveTabBg = utils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_ACTIVE_TAB_BG)
 					}
 				}
 			}

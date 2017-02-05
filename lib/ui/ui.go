@@ -1,7 +1,7 @@
 package ui
 
 import (
-	uiutils "fin/ui/utils"
+	"fin/ui/utils"
 	"os"
 	"path/filepath"
 
@@ -31,12 +31,12 @@ func Init(option Option) {
 
 func init() {
 	termui.ColorMap = map[string]termui.Attribute{
-		"fg":           uiutils.COLOR_WHITE,
-		"bg":           uiutils.COLOR_DEFAULT,
-		"border.fg":    uiutils.COLOR_WHITE,
-		"label.fg":     uiutils.COLOR_WHITE,
-		"par.fg":       uiutils.COLOR_YELLOW,
-		"par.label.bg": uiutils.COLOR_WHITE,
+		"fg":           utils.COLOR_WHITE,
+		"bg":           utils.COLOR_DEFAULT,
+		"border.fg":    utils.COLOR_WHITE,
+		"label.fg":     utils.COLOR_WHITE,
+		"par.fg":       utils.COLOR_YELLOW,
+		"par.label.bg": utils.COLOR_WHITE,
 	}
 
 }
@@ -55,5 +55,5 @@ func uiClear(startY, endY int) {
 	if endY > 0 {
 		GClearScreenBuffer.Buf.Area.Max.Y = endY
 	}
-	uiutils.UIRender(GClearScreenBuffer)
+	utils.UIRender(GClearScreenBuffer)
 }

@@ -1,7 +1,7 @@
 package ui
 
 import (
-	uiutils "fin/ui/utils"
+	"fin/ui/utils"
 	"unicode/utf8"
 
 	"github.com/gizak/termui"
@@ -68,13 +68,13 @@ func (p *Script) luaFuncNodeCanvasSet(L *lua.LState) int {
 	}
 
 	ch, _ := utf8.DecodeRuneInString(L.ToString(4))
-	colorFg := uiutils.COLOR_DEFAULT
-	colorBg := uiutils.COLOR_BLUE
+	colorFg := utils.COLOR_DEFAULT
+	colorBg := utils.COLOR_BLUE
 	if params >= 5 {
-		colorFg = uiutils.ColorToTermuiAttribute(L.ToString(5), uiutils.COLOR_BLUE)
+		colorFg = utils.ColorToTermuiAttribute(L.ToString(5), utils.COLOR_BLUE)
 	}
 	if params >= 6 {
-		colorBg = uiutils.ColorToTermuiAttribute(L.ToString(6), uiutils.COLOR_DEFAULT)
+		colorBg = utils.ColorToTermuiAttribute(L.ToString(6), utils.COLOR_DEFAULT)
 	}
 	nodeCanvas.Canvas.Set(L.ToInt(2), L.ToInt(3), &termui.Cell{ch, colorFg, colorBg, 0, 0, 0})
 	return 0

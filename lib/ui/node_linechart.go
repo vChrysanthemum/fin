@@ -1,7 +1,7 @@
 package ui
 
 import (
-	uiutils "fin/ui/utils"
+	"fin/ui/utils"
 	"fmt"
 	"strconv"
 	"strings"
@@ -29,8 +29,8 @@ func (p *Node) InitNodeLineChart() {
 	p.UIBlock.Width = 10
 
 	uiBuffer.Mode = "braille"
-	uiBuffer.AxesColor = uiutils.COLOR_WHITE
-	uiBuffer.LineColor = uiutils.COLOR_BLUE | termui.AttrBold
+	uiBuffer.AxesColor = utils.COLOR_WHITE
+	uiBuffer.LineColor = utils.COLOR_BLUE | termui.AttrBold
 
 	return
 }

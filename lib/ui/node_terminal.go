@@ -57,9 +57,9 @@ func (p *NodeTerminal) KeyPress(keyStr string) (isExecNormalKeyPressWork bool) {
 	}
 
 	// 禁止删除一行
-	if "C-8" == keyStr && (nil == p.CurrentLine || len(p.CurrentLine.Data) <= len(p.CommandPrefix)) {
+	if "C-8" == keyStr && (nil == p.Terminal.Cursor.Line || len(p.Terminal.Cursor.Line.Data) <= len(p.CommandPrefix)) {
 		utils.Beep()
-		p.Terminal.ResumeCursor()
+		p.Terminal.Cursor.ResumeCursor()
 		p.Node.uiRender()
 		return
 	}
@@ -83,9 +83,9 @@ func (p *NodeTerminal) KeyPress(keyStr string) (isExecNormalKeyPressWork bool) {
 			}
 
 			if len(p.CommandHistory) <= p.CurrentCommandLineIndex {
-				p.Terminal.UpdateCurrentLineData(p.CommandPrefix)
+				p.Terminal.UpdateCursorLineData(p.CommandPrefix)
 			} else {
-				p.Terminal.UpdateCurrentLineData(p.CommandPrefix + p.CommandHistory[p.CurrentCommandLineIndex])
+				p.Terminal.UpdateCursorLineData(p.CommandPrefix + p.CommandHistory[p.CurrentCommandLineIndex])
 			}
 
 			p.Node.uiRender()
@@ -94,15 +94,15 @@ func (p *NodeTerminal) KeyPress(keyStr string) (isExecNormalKeyPressWork bool) {
 	}
 
 	if "C-c" == keyStr {
-		p.Terminal.UpdateCurrentLineData(p.CommandPrefix)
+		p.Terminal.UpdateCursorLineData(p.CommandPrefix)
 		p.Node.uiRender()
 		return
 	}
 
 	// 获取新的命令行
 	if "<enter>" == keyStr {
-		if nil != p.Terminal.CurrentLine {
-			p.NewCommand = p.Terminal.CurrentLine
+		if nil != p.Terminal.Cursor.Line {
+			p.NewCommand = p.Terminal.Cursor.Line
 			if nil != p.NewCommand &&
 				nil != p.NewCommand.Data &&
 				len(p.NewCommand.Data) > len(p.CommandPrefix) &&
@@ -147,12 +147,12 @@ func (p *NodeTerminal) PopNewCommand() (ret []byte) {
 }
 
 func (p *NodeTerminal) WriteString(data string) {
-	p.Terminal.CurrentLine.Write(data)
+	p.Terminal.Cursor.Line.Write(data)
 }
 
 func (p *NodeTerminal) WriteNewLine(line string) {
 	p.Terminal.WriteNewLine(line)
-	p.Terminal.CurrentLine = p.InitNewLine()
+	p.Terminal.Cursor.Line = p.InitNewLine()
 }
 
 func (p *NodeTerminal) ClearLines() {

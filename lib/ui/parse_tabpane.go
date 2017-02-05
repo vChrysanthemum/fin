@@ -1,7 +1,7 @@
 package ui
 
 import (
-	uiutils "fin/ui/utils"
+	"fin/ui/utils"
 
 	"github.com/gizak/termui/extra"
 
@@ -62,27 +62,27 @@ func (p *NodeTabpane) NodeDataParseAttribute(attr []html.Attribute) (isUIChange,
 
 		case "tabpanefg":
 			isUIChange = true
-			uiBuffer.TabpaneFg = uiutils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_TABPANE_FG)
+			uiBuffer.TabpaneFg = utils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_TABPANE_FG)
 
 		case "tabpanebg":
 			isUIChange = true
-			uiBuffer.TabpaneBg = uiutils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_TABPANE_BG)
+			uiBuffer.TabpaneBg = utils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_TABPANE_BG)
 
 		case "tabfg":
 			isUIChange = true
-			uiBuffer.TabFg = uiutils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_TAB_FG)
+			uiBuffer.TabFg = utils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_TAB_FG)
 
 		case "tabbg":
 			isUIChange = true
-			uiBuffer.TabBg = uiutils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_TAB_BG)
+			uiBuffer.TabBg = utils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_TAB_BG)
 
 		case "activetabfg":
 			isUIChange = true
-			uiBuffer.ActiveTabFg = uiutils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_ACTIVE_TAB_FG)
+			uiBuffer.ActiveTabFg = utils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_ACTIVE_TAB_FG)
 
 		case "activetabbg":
 			isUIChange = true
-			uiBuffer.ActiveTabBg = uiutils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_ACTIVE_TAB_BG)
+			uiBuffer.ActiveTabBg = utils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_ACTIVE_TAB_BG)
 		}
 	}
 

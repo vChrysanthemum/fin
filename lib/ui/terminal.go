@@ -1,7 +1,7 @@
 package ui
 
 import (
-	uiutils "fin/ui/utils"
+	"fin/ui/utils"
 	"strings"
 	"sync"
 
@@ -9,7 +9,7 @@ import (
 )
 
 type Terminal struct {
-	FirstTerminalLine, LastTerminalLine, CurrentLine *TerminalLine
+	FirstTerminalLine, LastTerminalLine *TerminalLine
 
 	LinesLocker sync.RWMutex
 	Lines       []*TerminalLine
@@ -20,7 +20,7 @@ type Terminal struct {
 	TextBgColor       termui.Attribute
 	WrapLength        int // words wrap limit. Note it may not work properly with multi-width char
 	DisplayLinesRange [2]int
-	*TerminalCursorLocation
+	Cursor            *TerminalCursor
 }
 
 func NewTerminal() *Terminal {
@@ -31,7 +31,7 @@ func NewTerminal() *Terminal {
 		TextBgColor:       termui.ThemeAttr("par.text.bg"),
 		DisplayLinesRange: [2]int{0, 1},
 	}
-	ret.TerminalCursorLocation = NewTerminalCursorLocation(&ret.Block)
+	ret.Cursor = NewTerminalCursor(&ret.Block)
 	return ret
 }
 
@@ -49,27 +49,27 @@ func (p *Terminal) Text() string {
 	return strings.Join(printLines, "\n")
 }
 
-func (p *Terminal) UpdateCurrentLineData(line string) {
-	p.CurrentLine.Data = []byte(line)
+func (p *Terminal) UpdateCursorLineData(line string) {
+	p.Cursor.Line.Data = []byte(line)
 }
 
 func (p *Terminal) WriteNewLine(line string) {
 	if 0 == len(p.Lines) {
-		p.CurrentLine = p.InitNewLine()
+		p.Cursor.Line = p.InitNewLine()
 	}
 
 	// 如果上一行不为空，则启用新一行
 	// 反之则利用上一行
-	if len(p.CurrentLine.Data) > 0 {
-		p.CurrentLine = p.InitNewLine()
+	if len(p.Cursor.Line.Data) > 0 {
+		p.Cursor.Line = p.InitNewLine()
 	}
 
-	p.CurrentLine.Data = []byte(line)
+	p.Cursor.Line.Data = []byte(line)
 }
 
 func (p *Terminal) Write(keyStr string) {
 	if 0 == len(p.Lines) {
-		p.CurrentLine = p.InitNewLine()
+		p.Cursor.Line = p.InitNewLine()
 	}
 
 	if "<space>" == keyStr {
@@ -81,20 +81,20 @@ func (p *Terminal) Write(keyStr string) {
 	}
 
 	if "<enter>" == keyStr {
-		p.CurrentLine = p.InitNewLine()
+		p.Cursor.Line = p.InitNewLine()
 		return
 	}
 
 	if "C-8" == keyStr {
-		if len(p.CurrentLine.Data) > 0 {
-			p.CurrentLine.Backspace()
+		if len(p.Cursor.Line.Data) > 0 {
+			p.Cursor.Line.Backspace()
 		} else {
-			p.RemoveTerminalLine(p.CurrentLine)
+			p.RemoveTerminalLine(p.Cursor.Line)
 		}
 		return
 	}
 
-	p.CurrentLine.Write(keyStr)
+	p.Cursor.Line.Write(keyStr)
 }
 
 func (p *Terminal) Buffer() termui.Buffer {
@@ -139,20 +139,20 @@ func (p *Terminal) Buffer() termui.Buffer {
 	}
 
 	if 0 == len(cs) {
-		p.TerminalCursorLocation.ResetLocation()
+		p.Cursor.ResetLocation()
 	} else {
 		finalX = p.InnerArea.Min.X + x
 		finalY = p.InnerArea.Min.Y + y
-		p.TerminalCursorLocation.SetCursor(finalX, finalY)
+		p.Cursor.SetCursor(finalX, finalY)
 	}
 
 	return buf
 }
 
 func (p *Terminal) ActiveMode() {
-	p.TerminalCursorLocation.ResumeCursor()
+	p.Cursor.ResumeCursor()
 }
 
 func (p *Terminal) UnActiveMode() {
-	uiutils.UISetCursor(-1, -1)
+	utils.UISetCursor(-1, -1)
 }

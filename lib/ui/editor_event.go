@@ -1,52 +1,20 @@
 package ui
 
 import (
-	uiutils "fin/ui/utils"
 	"time"
 
 	"github.com/gizak/termui"
-	termbox "github.com/nsf/termbox-go"
+	"github.com/nsf/termbox-go"
 )
 
 func (p *Editor) handleKeyEvent(keyStr string) (isQuitActiveMode bool) {
 	isQuitActiveMode = false
 
 	if 0 == len(p.Lines) {
-		p.EditorEditModeAppendNewLine(p.EditModeCursorLocation)
+		p.EditModeAppendNewLine(p.EditModeCursor)
 	}
 
-	switch keyStr {
-	case "<escape>":
-		switch p.Mode {
-		case EDITOR_NORMAL_MODE:
-			isQuitActiveMode = true
-			uiutils.UISetCursor(-1, -1)
-
-		case EDITOR_EDIT_MODE:
-			p.EditorEditModeQuit()
-			p.EditorNormalModeEnter()
-
-		case EDITOR_COMMAND_MODE:
-			p.EditorCommandModeQuit()
-			p.EditorNormalModeEnter()
-		}
-
-	default:
-		switch p.Mode {
-		case EDITOR_MODE_NONE:
-
-		case EDITOR_EDIT_MODE:
-			p.isShouldRefreshCommandModeBuf = true
-			p.EditorEditModeWrite(keyStr)
-
-		case EDITOR_NORMAL_MODE:
-			p.isShouldRefreshCommandModeBuf = true
-			p.EditorNormalModeWrite(keyStr)
-
-		case EDITOR_COMMAND_MODE:
-			p.EditorCommandModeWrite(keyStr)
-		}
-	}
+	isQuitActiveMode = p.ActionGroup.Write(p.EditModeCursor, keyStr)
 
 	if "<escape>" == keyStr || "<enter>" == keyStr {
 		p.KeyEventsResultIsQuitActiveMode <- isQuitActiveMode

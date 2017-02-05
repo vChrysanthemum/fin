@@ -1,7 +1,7 @@
 package ui
 
 import (
-	uiutils "fin/ui/utils"
+	"fin/ui/utils"
 	"github.com/gizak/termui"
 	"golang.org/x/net/html"
 )
@@ -36,11 +36,11 @@ func (p *NodeLineChart) NodeDataParseAttribute(attr []html.Attribute) (isUIChang
 
 		case "axescolor":
 			isUIChange = true
-			uiBuffer.AxesColor = uiutils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_LINE_CHART_AXES)
+			uiBuffer.AxesColor = utils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_LINE_CHART_AXES)
 
 		case "linecolor":
 			isUIChange = true
-			uiBuffer.LineColor = uiutils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_LINE_CHART_LINE)
+			uiBuffer.LineColor = utils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_LINE_CHART_LINE)
 		}
 	}
 

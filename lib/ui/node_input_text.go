@@ -9,7 +9,7 @@ func (p *Node) InitNodeInputText() {
 	nodeInputText := new(NodeInputText)
 	nodeInputText.Node = p
 	nodeInputText.Terminal = NewTerminal()
-	nodeInputText.Terminal.CurrentLine = nodeInputText.Terminal.InitNewLine()
+	nodeInputText.Terminal.Cursor.Line = nodeInputText.Terminal.InitNewLine()
 	nodeInputText.Terminal.Block.Border = true
 	p.Data = nodeInputText
 	p.KeyPress = nodeInputText.KeyPress
@@ -55,7 +55,7 @@ func (p *NodeInputText) KeyPress(keyStr string) (isExecNormalKeyPressWork bool) 
 	}
 
 	if "C-8" == keyStr {
-		if len(p.Terminal.CurrentLine.Data) == 0 {
+		if len(p.Terminal.Cursor.Line.Data) == 0 {
 			return
 		}
 	}

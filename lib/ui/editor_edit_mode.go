@@ -2,58 +2,33 @@ package ui
 
 import "github.com/gizak/termui"
 
-func (p *Editor) PrepareEditorEditMode() {
-	p.isEditModeBufDirty = true
+func (p *Editor) PrepareEditMode() {
 }
 
-func (p *Editor) EditorEditModeQuit() {
-	if p.EditModeCursorLocation.OffXCellIndex >= len(p.CurrentLine().Cells) {
-		if 0 == len(p.CurrentLine().Cells) {
-			p.EditModeCursorLocation.OffXCellIndex = 0
-		} else {
-			p.EditModeCursorLocation.OffXCellIndex = len(p.CurrentLine().Cells) - 1
-		}
-		p.EditModeCursorLocation.RefreshCursorByEditorLine(p.CurrentLine())
-	}
-}
-
-func (p *Editor) EditorEditModeEnter() {
-	p.EditModeCursorLocation.OffXCellIndexVertical = 0
+func (p *Editor) EditModeEnter(editModeCursor *EditorCursor) {
+	editModeCursor.CellOffXVertical = 0
 	p.Mode = EDITOR_EDIT_MODE
-	p.EditModeCursorLocation.RefreshCursorByEditorLine(p.CurrentLine())
+	editModeCursor.RefreshCursorByEditorLine(editModeCursor.Line())
 }
 
-func (p *Editor) EditorEditModeWrite(keyStr string) {
-	p.isEditModeBufDirty = true
-
+func (p *Editor) EditModeWrite(editModeCursor *EditorCursor, keyStr string) {
 	if "<enter>" == keyStr {
-		p.EditorEditModeAppendNewLine(p.EditModeCursorLocation)
+		p.EditModeAppendNewLine(editModeCursor)
 
 	} else if "C-8" == keyStr {
-		p.CurrentLine().Backspace(p.EditModeCursorLocation)
+		editModeCursor.Line().EditModeBackspace(editModeCursor)
 
 	} else {
-		if "<space>" == keyStr {
-			keyStr = " "
-		} else if "<tab>" == keyStr {
-			keyStr = "\t"
-		}
-		p.CurrentLine().Write(p.EditModeCursorLocation, keyStr)
+		editModeCursor.Line().Write(editModeCursor, keyStr)
 	}
 
 	p.isShouldRefreshEditModeBuf = true
 }
 
-func (p *Editor) RefreshEditModeBuf() {
+func (p *Editor) RefreshEditModeBuf(editModeCursor *EditorCursor) {
 	if 0 == p.EditModeBufAreaHeight {
 		return
 	}
-
-	if false == p.isEditModeBufDirty {
-		return
-	}
-
-	p.isEditModeBufDirty = false
 
 	var (
 		finalX, finalY     int
@@ -73,18 +48,18 @@ REFRESH_BEGIN:
 		}
 	}
 
-	p.DisplayLinesBottomIndex = p.DisplayLinesTopIndex
-	if p.DisplayLinesTopIndex >= len(p.Lines) {
-		p.DisplayLinesBottomIndex = p.DisplayLinesTopIndex
-		p.DisplayLinesTopIndex = len(p.Lines) - 1
+	editModeCursor.DisplayLinesBottomIndex = editModeCursor.DisplayLinesTopIndex
+	if editModeCursor.DisplayLinesTopIndex >= len(p.Lines) {
+		editModeCursor.DisplayLinesBottomIndex = editModeCursor.DisplayLinesTopIndex
+		editModeCursor.DisplayLinesTopIndex = len(p.Lines) - 1
 		return
 	}
 
 	finalX, finalY = 0, 0
 	y, x, n, w = 0, 0, 0, 0
 	dx, dy = 0, p.EditModeBufAreaHeight
-	pageLastEditorLine = p.DisplayLinesTopIndex
-	for k = p.DisplayLinesTopIndex; k < len(p.Lines); k++ {
+	pageLastEditorLine = editModeCursor.DisplayLinesTopIndex
+	for k = editModeCursor.DisplayLinesTopIndex; k < len(p.Lines); k++ {
 		line = p.Lines[k]
 		if _, ok = builtLinesMark[k]; false == ok {
 			line.Cells = DefaultRawTextBuilder.Build(string(line.Data), p.TextFgColor, p.TextBgColor)
@@ -92,15 +67,15 @@ REFRESH_BEGIN:
 		}
 
 		if y >= p.EditModeBufAreaHeight {
-			if p.CurrentLineIndex == line.Index {
-				p.DisplayLinesTopIndex += 1
+			if editModeCursor.LineIndex == line.Index {
+				editModeCursor.DisplayLinesTopIndex += 1
 				goto REFRESH_BEGIN
 			} else {
 				return
 			}
 		}
 
-		p.DisplayLinesBottomIndex = k
+		editModeCursor.DisplayLinesBottomIndex = k
 
 		linePrefix = line.getEditorLinePrefix(k, pageLastEditorLine)
 		line.ContentStartX = len(linePrefix) + p.Block.InnerArea.Min.X
@@ -122,7 +97,7 @@ REFRESH_BEGIN:
 				y++
 				// 输出一行未完成 且 超过内容区域
 				if y >= p.EditModeBufAreaHeight {
-					p.DisplayLinesTopIndex += 1
+					editModeCursor.DisplayLinesTopIndex += 1
 					goto REFRESH_BEGIN
 				}
 

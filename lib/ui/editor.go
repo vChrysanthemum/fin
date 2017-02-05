@@ -1,7 +1,7 @@
 package ui
 
 import (
-	uiutils "fin/ui/utils"
+	"fin/ui/utils"
 
 	"github.com/gizak/termui"
 	"github.com/nsf/termbox-go"
@@ -21,23 +21,19 @@ type Editor struct {
 	NormalModeCommands     []EditorNormalModeCommand
 	NormalModeCommandStack string
 
+	// CommandMode
+	CommandModeBufAreaY      int
+	CommandModeBufAreaHeight int
+	CommandModeBuf           *EditorLine
+	CommandModeCursor        *EditorCursor
+
 	// EditMode
 	isDisplayEditorLineNumber bool
-	CurrentLineIndex          int
-	EditModeBufAreaHeight     int
 	Lines                     []*EditorLine
-	EditModeCursorLocation    *EditorCursorLocation
-	DisplayLinesTopIndex      int
-	DisplayLinesBottomIndex   int
+	EditModeCursor            *EditorCursor
+	EditModeBufAreaHeight     int
+	ActionGroup               *EditorActionGroup
 
-	// CommandMode
-	CommandModeBufAreaY       int
-	CommandModeBufAreaHeight  int
-	CommandModeBuf            *EditorLine
-	CommandModeCursorLocation *EditorCursorLocation
-
-	isEditModeBufDirty              bool
-	isCommandModeBufDirty           bool
 	isShouldRefreshEditModeBuf      bool
 	isShouldRefreshCommandModeBuf   bool
 	KeyEvents                       chan string
@@ -46,22 +42,29 @@ type Editor struct {
 
 func NewEditor() *Editor {
 	ret := &Editor{
-		Lines:                []*EditorLine{},
-		Block:                *termui.NewBlock(),
-		TextFgColor:          termui.ThemeAttr("par.text.fg"),
-		TextBgColor:          termui.ThemeAttr("par.text.bg"),
-		DisplayLinesTopIndex: 0,
+		Lines:       []*EditorLine{},
+		Block:       *termui.NewBlock(),
+		TextFgColor: termui.ThemeAttr("par.text.fg"),
+		TextBgColor: termui.ThemeAttr("par.text.bg"),
 	}
+
 	ret.Mode = EDITOR_MODE_NONE
-	ret.PrepareEditorNormalMode()
-	ret.PrepareEditorEditMode()
-	ret.PrepareEditorCommandMode()
-	ret.EditModeCursorLocation = NewEditorCursorLocation(ret)
-	ret.CommandModeCursorLocation = NewEditorCursorLocation(ret)
+
+	ret.PrepareNormalMode()
+	ret.PrepareEditMode()
+	ret.PrepareCommandMode()
+
+	ret.EditModeCursor = NewEditorCursor(ret)
+	ret.CommandModeCursor = NewEditorCursor(ret)
+
+	ret.ActionGroup = NewEditorActionGroup(ret)
+
 	ret.isDisplayEditorLineNumber = true
+
 	ret.KeyEvents = make(chan string, 200)
 	ret.KeyEventsResultIsQuitActiveMode = make(chan bool)
 	ret.RegisterKeyEventHandlers()
+
 	return ret
 }
 
@@ -70,24 +73,13 @@ func (p *Editor) Close() {
 	close(p.KeyEventsResultIsQuitActiveMode)
 }
 
-func (p *Editor) CurrentLine() *EditorLine {
-	if p.CurrentLineIndex >= len(p.Lines) {
-		return nil
-	}
-	return p.Lines[p.CurrentLineIndex]
-}
-
-func (p *Editor) UpdateCurrentLineData(line string) {
-	p.CurrentLine().Data = []byte(line)
-}
-
 func (p *Editor) RefreshBuf() {
 	if true == p.isShouldRefreshCommandModeBuf {
-		p.RefreshCommandModeBuf()
+		p.RefreshCommandModeBuf(p.CommandModeCursor)
 	}
 
 	if true == p.isShouldRefreshEditModeBuf {
-		p.RefreshEditModeBuf()
+		p.RefreshEditModeBuf(p.EditModeCursor)
 	}
 
 	if true == p.isShouldRefreshCommandModeBuf || true == p.isShouldRefreshEditModeBuf {
@@ -96,13 +88,18 @@ func (p *Editor) RefreshBuf() {
 		}
 	}
 
+	editModeCursor := p.EditModeCursor
+	if editModeCursor.LineIndex > editModeCursor.DisplayLinesBottomIndex {
+		editModeCursor.LineIndex = editModeCursor.DisplayLinesBottomIndex
+	}
+
 	return
 }
 
 func (p *Editor) Buffer() termui.Buffer {
 	if nil == p.Buf {
 		if 0 == len(p.Lines) {
-			p.EditorEditModeAppendNewLine(p.EditModeCursorLocation)
+			p.EditModeAppendNewLine(p.EditModeCursor)
 		}
 		buf := p.Block.Buffer()
 		p.Buf = &buf
@@ -132,11 +129,11 @@ func (p *Editor) Buffer() termui.Buffer {
 }
 
 func (p *Editor) ActiveMode() {
-	p.EditorEditModeEnter()
-	p.EditModeCursorLocation.RefreshCursorByEditorLine(p.CurrentLine())
+	p.EditModeEnter(p.EditModeCursor)
+	p.EditModeCursor.RefreshCursorByEditorLine(p.EditModeCursor.Line())
 }
 
 func (p *Editor) UnActiveMode() {
 	p.Mode = EDITOR_MODE_NONE
-	uiutils.UISetCursor(-1, -1)
+	utils.UISetCursor(-1, -1)
 }
