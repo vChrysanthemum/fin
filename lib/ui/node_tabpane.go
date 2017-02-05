@@ -67,8 +67,10 @@ func (p *NodeTabpane) KeyPress(keyStr string) (isExecNormalKeyPressWork bool) {
 		}
 	}()
 
-	if "<escape>" == keyStr {
-		p.Node.QuitActiveMode()
+	if "<escape>" == keyStr || "<enter>" == keyStr {
+		p.NodeDataUnActiveMode()
+		p.Node.page.Render()
+		p.Node.page.uiRender()
 		return
 	}
 
@@ -81,8 +83,8 @@ func (p *NodeTabpane) KeyPress(keyStr string) (isExecNormalKeyPressWork bool) {
 	if true == IsVimKeyPressLeft(keyStr) {
 		if true == uiBuffer.SetActiveLeft() {
 			uiClear(p.Node.UIBlock.Height, -1)
-			p.NodeDataUnActiveMode()
 			p.Node.page.Render()
+			p.Node.page.SetActiveNode(p.Node)
 			p.Node.page.uiRender()
 		}
 		return
@@ -91,8 +93,8 @@ func (p *NodeTabpane) KeyPress(keyStr string) (isExecNormalKeyPressWork bool) {
 	if true == IsVimKeyPressRight(keyStr) {
 		if true == uiBuffer.SetActiveRight() {
 			uiClear(p.Node.UIBlock.Height, -1)
-			p.NodeDataUnActiveMode()
 			p.Node.page.Render()
+			p.Node.page.SetActiveNode(p.Node)
 			p.Node.page.uiRender()
 		}
 		return
