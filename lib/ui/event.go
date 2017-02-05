@@ -6,15 +6,30 @@ import (
 	"github.com/nsf/termbox-go"
 )
 
-func handleEventKey(ev termbox.Event) (isContinue bool) {
-	isContinue = true
+func handleEvent(ev termbox.Event) (isContinueLoop, isRerender bool) {
+	switch ev.Type {
+	case termbox.EventKey:
+		return handleEventKey(ev), false
+	case termbox.EventResize:
+		if nil != GCurrentRenderPage {
+			return true, true
+		} else {
+			return true, false
+		}
+	}
+
+	return true, false
+}
+
+func handleEventKey(ev termbox.Event) (isContinueLoop bool) {
+	isContinueLoop = true
 	keyStr := evt2KeyStr(ev)
 	GCurrentRenderPage.KeyPressHandleLocker.Lock()
 	defer GCurrentRenderPage.KeyPressHandleLocker.Unlock()
 
 	if "C-c" == keyStr {
 		termui.Close()
-		isContinue = false
+		isContinueLoop = false
 		return
 	}
 
@@ -103,19 +118,21 @@ func handleEventKey(ev termbox.Event) (isContinue bool) {
 	return
 }
 
-func consumeMoreEvents() bool {
+func consumeMoreEvents() (isContinueLoop, isRerender bool) {
 	for {
 		select {
 		case ev := <-GTermboxEvents:
-			if ev.Type != termbox.EventKey {
-				continue
+			if true == isRerender {
+				isContinueLoop, _ = handleEvent(ev)
+			} else {
+				isContinueLoop, isRerender = handleEvent(ev)
 			}
-			ok := handleEventKey(ev)
-			if !ok {
-				return false
+			if false == isContinueLoop {
+				return isContinueLoop, isRerender
 			}
+
 		default:
-			return true
+			return true, false
 		}
 	}
 }
@@ -127,17 +144,32 @@ func MainLoop() {
 		}
 	}()
 
+	var (
+		isContinueLoop, isRerender bool
+	)
+
 	for {
 		select {
 		case ev := <-GTermboxEvents:
-			if ev.Type != termbox.EventKey {
-				continue
-			}
-			if false == handleEventKey(ev) {
+			isContinueLoop, isRerender = handleEvent(ev)
+			if false == isContinueLoop {
 				return
 			}
-			if false == consumeMoreEvents() {
+
+			if true == isRerender {
+				isContinueLoop, _ = consumeMoreEvents()
+			} else {
+				isContinueLoop, isRerender = consumeMoreEvents()
+			}
+
+			if false == isContinueLoop {
 				return
+			}
+
+			if true == isRerender {
+				uiClear(0, -1)
+				termui.Body.Width = ev.Width
+				GCurrentRenderPage.ReRender()
 			}
 		}
 	}

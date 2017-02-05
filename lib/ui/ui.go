@@ -51,9 +51,13 @@ func PrepareUI() {
 }
 
 func uiClear(startY, endY int) {
-	GClearScreenBuffer.Buf.Area.Min.Y = startY
-	if endY > 0 {
+	if 0 == startY && -1 == endY {
+		termui.Clear()
+	} else {
+		GClearScreenBuffer.Buf.Area.Min.X = 0
+		GClearScreenBuffer.Buf.Area.Max.X = termui.TermWidth()
+		GClearScreenBuffer.Buf.Area.Min.Y = startY
 		GClearScreenBuffer.Buf.Area.Max.Y = endY
+		utils.UIRender(GClearScreenBuffer)
 	}
-	utils.UIRender(GClearScreenBuffer)
 }
