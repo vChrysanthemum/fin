@@ -118,6 +118,12 @@ func (p *EditorActionGroup) Undo(editModeCursor *EditorCursor) {
 	p.CurrentUndoAction.Value.(EditorAction).Undo(editModeCursor)
 	p.CurrentRedoAction = p.CurrentUndoAction
 	p.CurrentUndoAction = p.CurrentUndoAction.Prev()
+	p.Editor.isShouldRefreshEditModeBuf = true
+
+	if editModeCursor.LineIndex > editModeCursor.DisplayLinesBottomIndex {
+		editModeCursor.DisplayLinesTopIndex = editModeCursor.LineIndex
+	}
+
 }
 
 func (p *EditorActionGroup) Redo(editModeCursor *EditorCursor) {
@@ -128,4 +134,9 @@ func (p *EditorActionGroup) Redo(editModeCursor *EditorCursor) {
 	p.CurrentRedoAction.Value.(EditorAction).Redo(editModeCursor)
 	p.CurrentUndoAction = p.CurrentRedoAction
 	p.CurrentRedoAction = p.CurrentRedoAction.Next()
+	p.Editor.isShouldRefreshEditModeBuf = true
+
+	if editModeCursor.LineIndex > editModeCursor.DisplayLinesBottomIndex {
+		editModeCursor.DisplayLinesTopIndex = editModeCursor.LineIndex
+	}
 }
