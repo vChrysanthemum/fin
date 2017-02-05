@@ -3,20 +3,32 @@
   <title>Test</title>
 </head>
 <body colorfg="blue">
+  <tabpane id="TabpaneMain" tabpanefg="black|underline"
+                            tabpanebg="black" border=false tabbg="gray" tabfg="black|underline" activetabfg="white">
+
+  <tab name="main" label="test.a">
   <table>
     <tr>
-      <td>
-        <editor border=false height=6></editor>
-      </td>
-    </tr>
-    <tr>
       <td cols=6>
-        <editor border=true height=6></editor>
+        <editor border=true height=10></editor>
       </td>
       <td cols=6>
         <editor border=true  height=30></editor>
       </td>
     </tr>
   </table>
+  </tab>
+
+  <tab name="main" label="test.b">
+  <table>
+    <tr>
+      <td>
+        <editor border=false height=30></editor>
+      </td>
+    </tr>
+  </table>
+  </tab>
+
+  </tabpane>
 </body>
 </html>
