@@ -68,3 +68,8 @@ func (p *Editor) RefreshCommandModeBuf(commandModeCursor *EditorCursor) {
 		n++
 	}
 }
+
+func (p *Editor) CommandShowError(err error) {
+	p.isShouldRefreshCommandModeBuf = true
+	p.CommandModeBuf.Data = []byte(err.Error())
+}

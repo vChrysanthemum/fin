@@ -86,15 +86,21 @@ func (p *EditorActionGroup) Write(editModeCursor *EditorCursor, keyStr string) (
 					keyStr = "\t"
 				}
 
-				editModeCursor.CellOffXVertical = 0
+				if false == p.Editor.IsModifiable {
+					p.CommandShowError(EditorErrNotModifiable)
+					p.NormalModeEnter(editModeCursor)
 
-				if EditorActionStateWrite != p.State {
-					p.AllocNewEditorActionInsert(editModeCursor)
-					p.State = EditorActionStateWrite
+				} else {
+					editModeCursor.CellOffXVertical = 0
+
+					if EditorActionStateWrite != p.State {
+						p.AllocNewEditorActionInsert(editModeCursor)
+						p.State = EditorActionStateWrite
+					}
+					p.CurrentUndoAction.Value.(EditorAction).Apply(editModeCursor, keyStr)
+
+					p.EditModeWrite(editModeCursor, keyStr)
 				}
-				p.CurrentUndoAction.Value.(EditorAction).Apply(editModeCursor, keyStr)
-
-				p.EditModeWrite(editModeCursor, keyStr)
 			}
 
 		case EditorNormalMode:

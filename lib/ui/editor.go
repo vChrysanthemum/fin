@@ -38,14 +38,17 @@ type Editor struct {
 	isShouldRefreshCommandModeBuf   bool
 	KeyEvents                       chan string
 	KeyEventsResultIsQuitActiveMode chan bool
+
+	IsModifiable bool
 }
 
 func NewEditor() *Editor {
 	ret := &Editor{
-		Lines:       []*EditorLine{},
-		Block:       *termui.NewBlock(),
-		TextFgColor: termui.ThemeAttr("par.text.fg"),
-		TextBgColor: termui.ThemeAttr("par.text.bg"),
+		Lines:        []*EditorLine{},
+		Block:        *termui.NewBlock(),
+		TextFgColor:  termui.ThemeAttr("par.text.fg"),
+		TextBgColor:  termui.ThemeAttr("par.text.bg"),
+		IsModifiable: true,
 	}
 
 	ret.Mode = EditorModeNone

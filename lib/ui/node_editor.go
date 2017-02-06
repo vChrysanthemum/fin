@@ -1,5 +1,7 @@
 package ui
 
+import "golang.org/x/net/html"
+
 type NodeEditor struct {
 	*Node
 	*Editor
@@ -73,4 +75,23 @@ func (p *NodeEditor) NodeDataUnActiveMode() {
 	}
 	p.Editor.UnActiveMode()
 	p.Node.uiRender()
+}
+
+func (p *NodeEditor) NodeDataParseAttribute(attr []html.Attribute) (isUIChange, isNeedReRenderPage bool) {
+	isUIChange = false
+	isNeedReRenderPage = false
+
+	uiBuffer := p.Node.UIBuffer.(*Editor)
+
+	for _, v := range attr {
+		switch v.Key {
+		case "modifiable":
+			if "true" == v.Val {
+			} else {
+				uiBuffer.IsModifiable = false
+			}
+		}
+	}
+
+	return
 }

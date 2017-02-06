@@ -6,8 +6,14 @@ func (p *Editor) PrepareEditMode() {
 }
 
 func (p *Editor) EditModeEnter(editModeCursor *EditorCursor) {
-	editModeCursor.CellOffXVertical = 0
-	p.Mode = EditorEditMode
+	if false == p.IsModifiable {
+		p.CommandShowError(EditorErrNotModifiable)
+		p.NormalModeEnter(editModeCursor)
+
+	} else {
+		editModeCursor.CellOffXVertical = 0
+		p.Mode = EditorEditMode
+	}
 }
 
 func (p *Editor) EditModeWrite(editModeCursor *EditorCursor, keyStr string) {
