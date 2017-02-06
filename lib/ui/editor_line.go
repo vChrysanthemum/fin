@@ -121,22 +121,22 @@ func (p *EditorLine) getEditorLinePrefix(lineIndex, lastEditorLineIndex int) str
 	return ""
 }
 
-func (p *EditorLine) Write(cursor *EditorCursor, keyStr string) {
+func (p *EditorLine) Write(editModeCursor *EditorCursor, keyStr string) {
 	_off := 0
 
-	if cursor.CellOffX >= len(p.Cells) {
+	if editModeCursor.CellOffX >= len(p.Cells) {
 		_off = len(p.Data)
 		p.Data = append(p.Data, []byte(keyStr)...)
 		p.Cells = append(p.Cells, termui.Cell{[]rune(keyStr)[0], p.Editor.TextFgColor, p.Editor.TextBgColor, 0, 0, _off})
 
-	} else if 0 == cursor.CellOffX {
+	} else if 0 == editModeCursor.CellOffX {
 		_off = 0
 		p.Data = append([]byte(keyStr), p.Data...)
 		p.Cells = DefaultRawTextBuilder.Build(string(p.Data), p.Editor.TextFgColor, p.Editor.TextBgColor)
 
 	} else {
 		newData := make([]byte, len(p.Data)+len(keyStr))
-		_off = p.Cells[cursor.CellOffX].BytesOff
+		_off = p.Cells[editModeCursor.CellOffX].BytesOff
 		copy(newData, p.Data[:_off])
 		copy(newData[_off:], []byte(keyStr))
 		copy(newData[_off+len(keyStr):], p.Data[_off:])
@@ -144,7 +144,7 @@ func (p *EditorLine) Write(cursor *EditorCursor, keyStr string) {
 		p.Cells = DefaultRawTextBuilder.Build(string(p.Data), p.Editor.TextFgColor, p.Editor.TextBgColor)
 	}
 
-	cursor.CellOffX++
+	editModeCursor.CellOffX++
 }
 
 func (p *EditorLine) CommandModeBackspace(commandModeCursor *EditorCursor) {
