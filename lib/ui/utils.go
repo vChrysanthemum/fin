@@ -11,7 +11,7 @@ import (
 	"strconv"
 
 	"github.com/gizak/termui"
-	termbox "github.com/nsf/termbox-go"
+	"github.com/nsf/termbox-go"
 )
 
 type ClearScreenBuffer struct {
@@ -24,7 +24,7 @@ func NewClearScreenBuffer() *ClearScreenBuffer {
 		image.Point{0, 0},
 		image.Point{termui.TermWidth(), termui.TermHeight()},
 	})
-	buf.Fill(' ', utils.COLOR_DEFAULT, utils.COLOR_DEFAULT)
+	buf.Fill(' ', utils.ColorDefault, utils.ColorDefault)
 	return &ClearScreenBuffer{
 		Buf: buf,
 	}
@@ -41,15 +41,15 @@ func (p *ClearScreenBuffer) RefreshArea() {
 	})
 }
 
-func (p *Page) dumpNodesHtmlData(node *Node) {
-	log.Println(node.HtmlData)
+func (p *Page) dumpNodesHTMLData(node *Node) {
+	log.Println(node.HTMLData)
 	for childNode := node.FirstChild; childNode != nil; childNode = childNode.NextSibling {
-		p.dumpNodesHtmlData(childNode)
+		p.dumpNodesHTMLData(childNode)
 	}
 }
 
-func (p *Page) DumpNodesHtmlData() {
-	p.dumpNodesHtmlData(p.FirstChildNode)
+func (p *Page) DumpNodesHTMLData() {
+	p.dumpNodesHTMLData(p.FirstChildNode)
 }
 
 func (p *Page) AppendNode(node *Node, content string) error {
@@ -58,9 +58,9 @@ func (p *Page) AppendNode(node *Node, content string) error {
 		return err
 	}
 
-	idToNodeMap := childNode.ExtractChildsMapIdNodes()
+	idToNodeMap := childNode.ExtractChildsMapIDNodes()
 	for k, v := range idToNodeMap {
-		p.IdToNodeMap[k] = v
+		p.IDToNodeMap[k] = v
 	}
 
 	node.addChild(childNode)
@@ -75,7 +75,7 @@ func (p *Page) RemoveNode(node *Node) {
 		nodeDataOnRemover.NodeDataOnRemove()
 	}
 
-	delete(p.IdToNodeMap, node.Id)
+	delete(p.IDToNodeMap, node.ID)
 
 	if nil != node.PrevSibling {
 		node.PrevSibling.NextSibling = node.NextSibling
@@ -86,7 +86,7 @@ func (p *Page) RemoveNode(node *Node) {
 	}
 
 	if nil != node.Parent {
-		node.Parent.ChildrenCount -= 1
+		node.Parent.ChildrenCount--
 		if node.Parent.FirstChild == node {
 			node.Parent.FirstChild = node.NextSibling
 		}
@@ -112,33 +112,29 @@ func GetFileContent(path string) ([]byte, error) {
 func IsVimKeyPressUp(keyStr string) bool {
 	if "k" == keyStr || "<up>" == keyStr {
 		return true
-	} else {
-		return false
 	}
+	return false
 }
 
 func IsVimKeyPressDown(keyStr string) bool {
 	if "j" == keyStr || "<down>" == keyStr {
 		return true
-	} else {
-		return false
 	}
+	return false
 }
 
 func IsVimKeyPressLeft(keyStr string) bool {
 	if "h" == keyStr || "<left>" == keyStr {
 		return true
-	} else {
-		return false
 	}
+	return false
 }
 
 func IsVimKeyPressRight(keyStr string) bool {
 	if "l" == keyStr || "<right>" == keyStr {
 		return true
-	} else {
-		return false
 	}
+	return false
 }
 
 func evt2KeyStr(e termbox.Event) string {

@@ -1,8 +1,8 @@
 package script
 
 import (
-	"fmt"
 	"fin/script"
+	"fmt"
 	"log"
 	"path/filepath"
 	"testing"

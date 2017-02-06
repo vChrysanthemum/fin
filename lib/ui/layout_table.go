@@ -37,9 +37,8 @@ func (p *Page) _layoutBodyTableGetPrevSiblingNodeBottomY(node *Node) int {
 	if nil != node.Parent {
 		if nil != node.Parent.UIBlock {
 			return node.Parent.UIBlock.Y + node.Parent.UIBlock.Height
-		} else {
-			return p._layoutBodyTableGetPrevSiblingNodeBottomY(node.Parent)
 		}
+		return p._layoutBodyTableGetPrevSiblingNodeBottomY(node.Parent)
 	}
 
 	return 0

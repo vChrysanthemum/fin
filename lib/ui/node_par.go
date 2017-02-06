@@ -25,7 +25,7 @@ func (p *Node) InitNodePar() {
 	p.isShouldCalculateHeight = true
 	p.UIBlock.Border = false
 
-	uiBuffer.TextFgColor = COLOR_DEFAULT_TEXT_COLOR_FG
+	uiBuffer.TextFgColor = ColorDefaultTextColorFg
 
 	return
 }

@@ -7,7 +7,7 @@ func (p *Page) renderBodyInputText(node *Node) {
 
 	p.normalRenderNodeBlock(node)
 
-	uiBuffer.TextFgColor = utils.COLOR_BLUE
+	uiBuffer.TextFgColor = utils.ColorBlue
 
 	p.BufferersAppend(node, uiBuffer)
 

@@ -15,11 +15,11 @@ func (p *Node) ParseAttribute(attr []html.Attribute) (isUIChange, isNeedReRender
 	isNeedReRenderPage = false
 
 	if nil != p.UIBlock {
-		p.UIBlock.BorderLabelFg = COLOR_DEFAULT_BORDER_LABEL_FG
-		p.UIBlock.BorderFg = COLOR_DEFAULT_BORDER_FG
+		p.UIBlock.BorderLabelFg = ColorDefaultBorderLabelFg
+		p.UIBlock.BorderFg = ColorDefaultBorderFg
 
 		for _, v := range attr {
-			p.HtmlAttribute[v.Key] = v
+			p.HTMLAttribute[v.Key] = v
 			switch v.Key {
 			case "position":
 				if "absolute" == v.Val {
@@ -87,7 +87,7 @@ func (p *Node) ParseAttribute(attr []html.Attribute) (isUIChange, isNeedReRender
 
 			case "borderlabelfg":
 				isUIChange = true
-				p.UIBlock.BorderLabelFg = utils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_BORDER_LABEL_FG)
+				p.UIBlock.BorderLabelFg = utils.ColorToTermuiAttribute(v.Val, ColorDefaultBorderLabelFg)
 
 			case "borderlabel":
 				isUIChange = true
@@ -95,7 +95,7 @@ func (p *Node) ParseAttribute(attr []html.Attribute) (isUIChange, isNeedReRender
 
 			case "borderfg":
 				isUIChange = true
-				p.UIBlock.BorderFg = utils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_BORDER_FG)
+				p.UIBlock.BorderFg = utils.ColorToTermuiAttribute(v.Val, ColorDefaultBorderFg)
 
 			case "border":
 				isUIChange = true
@@ -139,7 +139,7 @@ func (p *Node) ParseAttribute(attr []html.Attribute) (isUIChange, isNeedReRender
 				if nil != p.UIBuffer {
 					if uiBuffer, ok := p.UIBuffer.(*extra.Tabpane); true == ok {
 						isUIChange = true
-						uiBuffer.TabFg = utils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_TAB_FG)
+						uiBuffer.TabFg = utils.ColorToTermuiAttribute(v.Val, ColorDefaultTabFg)
 					}
 				}
 
@@ -147,7 +147,7 @@ func (p *Node) ParseAttribute(attr []html.Attribute) (isUIChange, isNeedReRender
 				if nil != p.UIBuffer {
 					if uiBuffer, ok := p.UIBuffer.(*extra.Tabpane); true == ok {
 						isUIChange = true
-						uiBuffer.TabBg = utils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_TAB_BG)
+						uiBuffer.TabBg = utils.ColorToTermuiAttribute(v.Val, ColorDefaultTabBg)
 					}
 				}
 
@@ -155,7 +155,7 @@ func (p *Node) ParseAttribute(attr []html.Attribute) (isUIChange, isNeedReRender
 				if nil != p.UIBuffer {
 					if uiBuffer, ok := p.UIBuffer.(*extra.Tabpane); true == ok {
 						isUIChange = true
-						uiBuffer.ActiveTabFg = utils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_ACTIVE_TAB_FG)
+						uiBuffer.ActiveTabFg = utils.ColorToTermuiAttribute(v.Val, ColorDefaultActiveTabFg)
 					}
 				}
 
@@ -163,7 +163,7 @@ func (p *Node) ParseAttribute(attr []html.Attribute) (isUIChange, isNeedReRender
 				if nil != p.UIBuffer {
 					if uiBuffer, ok := p.UIBuffer.(*extra.Tabpane); true == ok {
 						isUIChange = true
-						uiBuffer.ActiveTabBg = utils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_ACTIVE_TAB_BG)
+						uiBuffer.ActiveTabBg = utils.ColorToTermuiAttribute(v.Val, ColorDefaultActiveTabBg)
 					}
 				}
 			}

@@ -252,17 +252,17 @@ func (p *Editor) MoveCursorNRuneRight(cursor *EditorCursor, line *EditorLine, n 
 	cursor.CellOffX += n
 	if cursor.CellOffX >= len(line.Cells) {
 		switch p.Mode {
-		case EDITOR_NORMAL_MODE:
+		case EditorNormalMode:
 			cursor.CellOffX = len(line.Cells) - 1
 			cell := line.Cells[cursor.CellOffX]
 			cursor.UISetCursor(cell.X, cell.Y)
 
-		case EDITOR_EDIT_MODE:
+		case EditorEditMode:
 			cursor.CellOffX = len(line.Cells)
 			cell := line.Cells[cursor.CellOffX-1]
 			cursor.UISetCursor(cell.X+cell.Width(), cell.Y)
 
-		case EDITOR_COMMAND_MODE:
+		case EditorCommandMode:
 			cursor.CellOffX = len(line.Cells)
 			cell := line.Cells[cursor.CellOffX-1]
 			cursor.UISetCursor(cell.X+cell.Width(), cell.Y)
@@ -278,11 +278,11 @@ func (p *Editor) MoveCursorNRuneRight(cursor *EditorCursor, line *EditorLine, n 
 
 func (p *Editor) RefreshCursorByEditorLine() {
 	switch p.Mode {
-	case EDITOR_EDIT_MODE:
+	case EditorEditMode:
 		p.EditModeCursor.RefreshCursorByEditorLine(p.EditModeCursor.Line())
-	case EDITOR_NORMAL_MODE:
+	case EditorNormalMode:
 		p.EditModeCursor.RefreshCursorByEditorLine(p.EditModeCursor.Line())
-	case EDITOR_COMMAND_MODE:
+	case EditorCommandMode:
 		p.CommandModeCursor.RefreshCursorByEditorLine(p.CommandModeBuf)
 	}
 }
@@ -316,8 +316,8 @@ func (p *EditorCursor) RefreshCursorByEditorLine(line *EditorLine) {
 		if y >= p.Editor.Block.InnerArea.Max.Y {
 			y = p.Editor.Block.InnerArea.Max.Y - 1
 			switch p.Editor.Mode {
-			case EDITOR_EDIT_MODE:
-				p.DisplayLinesTopIndex += 1
+			case EditorEditMode:
+				p.DisplayLinesTopIndex++
 				p.Editor.isShouldRefreshEditModeBuf = true
 			}
 		}

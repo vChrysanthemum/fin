@@ -22,7 +22,7 @@ type EditorAction interface {
 func NewEditorActionGroup(editor *Editor) *EditorActionGroup {
 	ret := &EditorActionGroup{
 		Editor:  editor,
-		State:   EDITOR_ACTION_STATE_PREPARE_WRITE,
+		State:   EditorActionStatePrepareWrite,
 		Actions: list.New(),
 	}
 
@@ -30,7 +30,7 @@ func NewEditorActionGroup(editor *Editor) *EditorActionGroup {
 }
 
 func (p *EditorActionGroup) makeStatePrepareWrite() {
-	p.State = EDITOR_ACTION_STATE_PREPARE_WRITE
+	p.State = EditorActionStatePrepareWrite
 }
 
 func (p *EditorActionGroup) Write(editModeCursor *EditorCursor, keyStr string) (isQuitActiveMode bool) {
@@ -41,14 +41,14 @@ func (p *EditorActionGroup) Write(editModeCursor *EditorCursor, keyStr string) (
 		p.makeStatePrepareWrite()
 
 		switch p.Mode {
-		case EDITOR_NORMAL_MODE:
+		case EditorNormalMode:
 			isQuitActiveMode = true
 			utils.UISetCursor(-1, -1)
 
-		case EDITOR_EDIT_MODE:
+		case EditorEditMode:
 			p.NormalModeEnter(editModeCursor)
 
-		case EDITOR_COMMAND_MODE:
+		case EditorCommandMode:
 			p.CommandModeQuit()
 			p.NormalModeEnter(editModeCursor)
 		}
@@ -57,9 +57,9 @@ func (p *EditorActionGroup) Write(editModeCursor *EditorCursor, keyStr string) (
 
 	default:
 		switch p.Mode {
-		case EDITOR_MODE_NONE:
+		case EditorModeNone:
 
-		case EDITOR_EDIT_MODE:
+		case EditorEditMode:
 			switch keyStr {
 			case "<left>":
 				editModeCursor.CellOffXVertical = 0
@@ -88,20 +88,20 @@ func (p *EditorActionGroup) Write(editModeCursor *EditorCursor, keyStr string) (
 
 				editModeCursor.CellOffXVertical = 0
 
-				if EDITOR_ACTION_STATE_WRITE != p.State {
+				if EditorActionStateWrite != p.State {
 					p.AllocNewEditorActionInsert(editModeCursor)
-					p.State = EDITOR_ACTION_STATE_WRITE
+					p.State = EditorActionStateWrite
 				}
 				p.CurrentUndoAction.Value.(EditorAction).Apply(editModeCursor, keyStr)
 
 				p.EditModeWrite(editModeCursor, keyStr)
 			}
 
-		case EDITOR_NORMAL_MODE:
+		case EditorNormalMode:
 			p.makeStatePrepareWrite()
 			p.NormalModeWrite(p.EditModeCursor, keyStr)
 
-		case EDITOR_COMMAND_MODE:
+		case EditorCommandMode:
 			p.makeStatePrepareWrite()
 			p.CommandModeWrite(p.EditModeCursor, p.CommandModeCursor, keyStr)
 		}

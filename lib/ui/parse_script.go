@@ -2,7 +2,7 @@ package ui
 
 import "golang.org/x/net/html"
 
-func (p *Page) parseHtmlScript(parentNode *Node, htmlNode *html.Node) (ret *Node, isFallthrough bool) {
+func (p *Page) parseHTMLScript(parentNode *Node, htmlNode *html.Node) (ret *Node, isFallthrough bool) {
 	ret = nil
 	isFallthrough = false
 

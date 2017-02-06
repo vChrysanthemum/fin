@@ -48,7 +48,7 @@ func NewEditor() *Editor {
 		TextBgColor: termui.ThemeAttr("par.text.bg"),
 	}
 
-	ret.Mode = EDITOR_MODE_NONE
+	ret.Mode = EditorModeNone
 
 	ret.PrepareNormalMode()
 	ret.PrepareEditMode()
@@ -134,6 +134,6 @@ func (p *Editor) ActiveMode() {
 }
 
 func (p *Editor) UnActiveMode() {
-	p.Mode = EDITOR_MODE_NONE
+	p.Mode = EditorModeNone
 	utils.UISetCursor(-1, -1)
 }

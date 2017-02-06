@@ -38,7 +38,7 @@ func (p *Script) luaFuncWindowConfirm(L *lua.LState) int {
 		return 0
 	}
 
-	nodeSelect, _ := page.IdToNodeMap["SelectConfirm"]
+	nodeSelect, _ := page.IDToNodeMap["SelectConfirm"]
 	if nil == nodeSelect {
 		return 0
 	}

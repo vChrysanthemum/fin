@@ -13,9 +13,8 @@ func handleEvent(ev termbox.Event) (isContinueLoop, isRerender bool) {
 	case termbox.EventResize:
 		if nil != GCurrentRenderPage {
 			return true, true
-		} else {
-			return true, false
 		}
+		return true, false
 	}
 
 	return true, false

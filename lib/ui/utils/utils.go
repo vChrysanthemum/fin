@@ -10,7 +10,7 @@ import (
 
 	"github.com/gizak/termui"
 	rw "github.com/mattn/go-runewidth"
-	termbox "github.com/nsf/termbox-go"
+	"github.com/nsf/termbox-go"
 )
 
 var (
@@ -51,23 +51,23 @@ func ColorToTermuiAttribute(colorsStr string, defaultColor termui.Attribute) ter
 
 		switch colorStr {
 		case "white":
-			color |= COLOR_WHITE
+			color |= ColorWhite
 		case "black":
-			color |= COLOR_BLACK
+			color |= ColorBlack
 		case "red":
-			color |= COLOR_RED
+			color |= ColorRed
 		case "green":
-			color |= COLOR_GREEN
+			color |= ColorGreen
 		case "yellow":
-			color |= COLOR_YELLOW
+			color |= ColorYellow
 		case "blue":
-			color |= COLOR_BLUE
+			color |= ColorBlue
 		case "magenta":
-			color |= COLOR_MAGENTA
+			color |= ColorMagenta
 		case "cyan":
-			color |= COLOR_CYAN
+			color |= ColorCyan
 		case "gray":
-			color |= COLOR_GRAY
+			color |= ColorGray
 		case "bold":
 			color |= termui.AttrBold
 		case "underline":
@@ -104,7 +104,7 @@ func CalculateTextHeight(text string, widthLimited int) (height int) {
 		buf = buf[w:]
 		if ch == '\n' || x+w > widthLimited {
 			x = 0 // set x = 0
-			height += 1
+			height++
 			continue
 		}
 

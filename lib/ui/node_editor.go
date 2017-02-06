@@ -42,7 +42,7 @@ func (p *NodeEditor) NodeDataFocusMode() {
 		p.Node.tmpFocusModeBorder = p.Node.UIBlock.Border
 		p.Node.tmpFocusModeBorderFg = p.Node.UIBlock.BorderFg
 		p.Node.UIBlock.Border = true
-		p.Node.UIBlock.BorderFg = COLOR_FOCUS_MODE_BORDERFG
+		p.Node.UIBlock.BorderFg = ColorFocusModeBorderFg
 		p.Node.uiRender()
 	}
 }
@@ -60,7 +60,7 @@ func (p *NodeEditor) NodeDataActiveMode() {
 	if false == p.Node.isCalledActiveMode && true == p.Node.UIBlock.Border {
 		p.Node.isCalledActiveMode = true
 		p.Node.tmpActiveModeBorderFg = p.Node.UIBlock.BorderFg
-		p.Node.UIBlock.BorderFg = COLOR_ACTIVE_MODE_BORDERFG
+		p.Node.UIBlock.BorderFg = ColorActiveModeBorderFg
 	}
 	p.Editor.ActiveMode()
 	p.Node.uiRender()

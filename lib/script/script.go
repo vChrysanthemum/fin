@@ -57,7 +57,7 @@ func (p *Script) RegisterBaseTable(L *lua.LState, baseTable *lua.LTable) {
 	L.SetField(baseTable, "DBRowsNext", L.NewFunction(p.DBRowsNext))
 	L.SetField(baseTable, "DBRowsClose", L.NewFunction(p.DBRowsClose))
 	L.SetField(baseTable, "DBExec", L.NewFunction(p.DBExec))
-	L.SetField(baseTable, "DBResultLastInsertId", L.NewFunction(p.DBResultLastInsertId))
+	L.SetField(baseTable, "DBResultLastInsertID", L.NewFunction(p.DBResultLastInsertID))
 	L.SetField(baseTable, "DBResultRowsAffected", L.NewFunction(p.DBResultRowsAffected))
 
 	L.SetField(baseTable, "NewRWMutex", L.NewFunction(p.NewRWMutex))

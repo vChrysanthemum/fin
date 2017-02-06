@@ -62,27 +62,27 @@ func (p *NodeTabpane) NodeDataParseAttribute(attr []html.Attribute) (isUIChange,
 
 		case "tabpanefg":
 			isUIChange = true
-			uiBuffer.TabpaneFg = utils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_TABPANE_FG)
+			uiBuffer.TabpaneFg = utils.ColorToTermuiAttribute(v.Val, ColorDefaultTabpaneFg)
 
 		case "tabpanebg":
 			isUIChange = true
-			uiBuffer.TabpaneBg = utils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_TABPANE_BG)
+			uiBuffer.TabpaneBg = utils.ColorToTermuiAttribute(v.Val, ColorDefaultTabpaneBg)
 
 		case "tabfg":
 			isUIChange = true
-			uiBuffer.TabFg = utils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_TAB_FG)
+			uiBuffer.TabFg = utils.ColorToTermuiAttribute(v.Val, ColorDefaultTabFg)
 
 		case "tabbg":
 			isUIChange = true
-			uiBuffer.TabBg = utils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_TAB_BG)
+			uiBuffer.TabBg = utils.ColorToTermuiAttribute(v.Val, ColorDefaultTabBg)
 
 		case "activetabfg":
 			isUIChange = true
-			uiBuffer.ActiveTabFg = utils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_ACTIVE_TAB_FG)
+			uiBuffer.ActiveTabFg = utils.ColorToTermuiAttribute(v.Val, ColorDefaultActiveTabFg)
 
 		case "activetabbg":
 			isUIChange = true
-			uiBuffer.ActiveTabBg = utils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_ACTIVE_TAB_BG)
+			uiBuffer.ActiveTabBg = utils.ColorToTermuiAttribute(v.Val, ColorDefaultActiveTabBg)
 		}
 	}
 

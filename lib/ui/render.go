@@ -32,7 +32,7 @@ func (p *Page) prepareRender() {
 	}
 }
 
-func (p *Page) checkIfHtmlNodeMatchRenderAgentPath(node *Node, renderAgent *RenderAgent, index int) bool {
+func (p *Page) checkIfHTMLNodeMatchRenderAgentPath(node *Node, renderAgent *RenderAgent, index int) bool {
 	if index < 0 {
 		return true
 	}
@@ -41,10 +41,10 @@ func (p *Page) checkIfHtmlNodeMatchRenderAgentPath(node *Node, renderAgent *Rend
 		return false
 	}
 
-	if node.HtmlData == renderAgent.path[index] {
+	if node.HTMLData == renderAgent.path[index] {
 		index--
 	}
-	return p.checkIfHtmlNodeMatchRenderAgentPath(node.Parent, renderAgent, index)
+	return p.checkIfHTMLNodeMatchRenderAgentPath(node.Parent, renderAgent, index)
 }
 
 func (p *Page) fetchRenderAgentByNode(node *Node) (ret *RenderAgent) {
@@ -52,11 +52,11 @@ func (p *Page) fetchRenderAgentByNode(node *Node) (ret *RenderAgent) {
 
 	ret = nil
 	for _, renderAgent = range p.renderAgentMap {
-		if renderAgent.path[len(renderAgent.path)-1] != node.HtmlData {
+		if renderAgent.path[len(renderAgent.path)-1] != node.HTMLData {
 			continue
 		}
 
-		if true == p.checkIfHtmlNodeMatchRenderAgentPath(node, renderAgent, len(renderAgent.path)-1) {
+		if true == p.checkIfHTMLNodeMatchRenderAgentPath(node, renderAgent, len(renderAgent.path)-1) {
 			ret = renderAgent
 			break
 		}
@@ -209,7 +209,7 @@ func (p *Page) BufferersAppend(node *Node, buffer termui.Bufferer) {
 	p.Bufferers = append(p.Bufferers, buffer)
 }
 
-// 渲染 page 中所有元素，但不输出到屏幕
+// Render 渲染 page 中所有元素，但不输出到屏幕
 func (p *Page) Render() error {
 	p.Clear()
 
@@ -226,14 +226,14 @@ func (p *Page) Render() error {
 	return nil
 }
 
-// 重新渲染 page 并刷新内容到屏幕
+// ReRender 重新渲染 page 并刷新内容到屏幕
 func (p *Page) ReRender() {
 	uiClear(0, -1)
 	p.Render()
 	p.uiRender()
 }
 
-// 清空 page 中所有元素，但不清空屏幕
+// Clear 清空 page 中所有元素，但不清空屏幕
 func (p *Page) Clear() {
 	p.Bufferers = make([]termui.Bufferer, 0)
 	utils.UISetCursor(-1, -1)

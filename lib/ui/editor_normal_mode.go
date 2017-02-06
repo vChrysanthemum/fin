@@ -45,7 +45,7 @@ func (p *Editor) PrepareNormalMode() {
 }
 
 func (p *Editor) NormalModeEnter(editModeCursor *EditorCursor) {
-	p.Mode = EDITOR_NORMAL_MODE
+	p.Mode = EditorNormalMode
 	p.NormalModeCommandStack = ""
 	if editModeCursor.CellOffX >= len(editModeCursor.Line().Cells) {
 		if 0 == len(editModeCursor.Line().Cells) {
@@ -91,7 +91,7 @@ func (p *Editor) commandEnterEditModeBackward(editModeCursor *EditorCursor) {
 
 func (p *Editor) commandEnterEditModeForward(editModeCursor *EditorCursor) {
 	if len(editModeCursor.Line().Cells) > 0 {
-		editModeCursor.CellOffX += 1
+		editModeCursor.CellOffX++
 	}
 	p.EditModeEnter(editModeCursor)
 }

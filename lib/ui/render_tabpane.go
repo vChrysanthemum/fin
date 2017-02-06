@@ -35,7 +35,7 @@ func (p *Page) renderBodyTabpane(node *Node) {
 		nodeTab.Data.(*NodeTabpaneTab).Index = index
 		p._renderBodyTabpaneOneTab(nodeTab)
 		nodeDataTabpane.Tabs = append(nodeDataTabpane.Tabs, nodeTab.UIBuffer.(*extra.Tab))
-		index += 1
+		index++
 	}
 
 	uiBuffer.SetTabs(nodeDataTabpane.Tabs...)

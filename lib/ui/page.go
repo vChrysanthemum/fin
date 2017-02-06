@@ -15,7 +15,7 @@ type Page struct {
 
 	Title string
 
-	IdToNodeMap map[string]*Node
+	IDToNodeMap map[string]*Node
 
 	Bufferers []termui.Bufferer
 
@@ -46,7 +46,7 @@ type Page struct {
 func newPage() *Page {
 	ret := new(Page)
 
-	ret.IdToNodeMap = make(map[string]*Node, 0)
+	ret.IDToNodeMap = make(map[string]*Node, 0)
 
 	ret.parsingNodesStack = list.New()
 	ret.WorkingNodes = list.New()

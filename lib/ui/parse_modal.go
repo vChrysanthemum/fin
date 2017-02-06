@@ -38,7 +38,7 @@ func (p *Page) parseBodyModal(parentNode *Node, htmlNode *html.Node) (ret *Node,
 	ret = node
 	parentNode.addChild(ret)
 
-	p.Modals[node.Id] = node.Data.(*NodeModal)
+	p.Modals[node.ID] = node.Data.(*NodeModal)
 
 	return
 }

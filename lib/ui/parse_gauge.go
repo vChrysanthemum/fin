@@ -27,16 +27,16 @@ func (p *NodeGauge) NodeDataParseAttribute(attr []html.Attribute) (isUIChange, i
 		switch v.Key {
 		case "barcolor":
 			isUIChange = true
-			uiBuffer.BarColor = utils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_GAUGE_BARCOLOR)
+			uiBuffer.BarColor = utils.ColorToTermuiAttribute(v.Val, ColorDefaultGaugeBarcolor)
 
 		case "percentcolor":
 			isUIChange = true
-			uiBuffer.PercentColor = utils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_GAUGE_PERCENTCOLOR)
+			uiBuffer.PercentColor = utils.ColorToTermuiAttribute(v.Val, ColorDefaultGaugePercentcolor)
 
 		case "percentcolor_highlighted":
 			isUIChange = true
 			uiBuffer.PercentColorHighlighted =
-				utils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_GAUGE_PERCENTCOLOR_HIGHLIGHTED)
+				utils.ColorToTermuiAttribute(v.Val, ColorDefaultGaugePercentColorHighlighted)
 
 		case "percent":
 			isUIChange = true

@@ -57,7 +57,7 @@ func (p *Page) prepareScript() {
 	s.luaState.SetField(luaBase, "NodeSetAttribute", s.luaState.NewFunction(s.luaFuncNodeSetAttribute))
 	s.luaState.SetField(luaBase, "NodeSetActive", s.luaState.NewFunction(s.luaFuncNodeSetActive))
 
-	s.luaState.SetField(luaBase, "NodeGetHtmlData", s.luaState.NewFunction(s.luaFuncNodeGetHtmlData))
+	s.luaState.SetField(luaBase, "NodeGetHTMLData", s.luaState.NewFunction(s.luaFuncNodeGetHTMLData))
 	s.luaState.SetField(luaBase, "NodeSetValue", s.luaState.NewFunction(s.luaFuncNodeSetValue))
 	s.luaState.SetField(luaBase, "NodeGetValue", s.luaState.NewFunction(s.luaFuncNodeGetValue))
 

@@ -20,7 +20,7 @@ func (p *Node) InitNodeTerminal() {
 	nodeTerminal := new(NodeTerminal)
 	nodeTerminal.Node = p
 	nodeTerminal.Terminal = NewTerminal()
-	nodeTerminal.ActiveModeBorderColor = COLOR_ACTIVE_MODE_BORDERFG
+	nodeTerminal.ActiveModeBorderColor = ColorActiveModeBorderFg
 	nodeTerminal.CommandPrefix = "> "
 	nodeTerminal.PrepareNewCommand()
 
@@ -71,12 +71,12 @@ func (p *NodeTerminal) KeyPress(keyStr string) (isExecNormalKeyPressWork bool) {
 	if "<up>" == keyStr || "<down>" == keyStr {
 		if len(p.CommandHistory) > 0 {
 			if "<up>" == keyStr {
-				p.CurrentCommandLineIndex -= 1
+				p.CurrentCommandLineIndex--
 				if p.CurrentCommandLineIndex <= 0 {
 					p.CurrentCommandLineIndex = 0
 				}
 			} else if "<down>" == keyStr {
-				p.CurrentCommandLineIndex += 1
+				p.CurrentCommandLineIndex++
 				if p.CurrentCommandLineIndex >= len(p.CommandHistory) {
 					p.CurrentCommandLineIndex = len(p.CommandHistory)
 				}
@@ -141,9 +141,8 @@ func (p *NodeTerminal) PopNewCommand() (ret []byte) {
 	p.NewCommand = nil
 	if len(p.CommandPrefix) > 0 {
 		return ret[len(p.CommandPrefix):]
-	} else {
-		return ret
 	}
+	return ret
 }
 
 func (p *NodeTerminal) WriteString(data string) {
@@ -170,7 +169,7 @@ func (p *NodeTerminal) NodeDataFocusMode() {
 		p.Node.tmpFocusModeBorder = p.Node.UIBlock.Border
 		p.Node.tmpFocusModeBorderFg = p.Node.UIBlock.BorderFg
 		p.Node.UIBlock.Border = true
-		p.Node.UIBlock.BorderFg = COLOR_FOCUS_MODE_BORDERFG
+		p.Node.UIBlock.BorderFg = ColorFocusModeBorderFg
 		p.Node.uiRender()
 	}
 }
@@ -188,7 +187,7 @@ func (p *NodeTerminal) NodeDataActiveMode() {
 	if false == p.Node.isCalledActiveMode && true == p.Node.UIBlock.Border {
 		p.Node.isCalledActiveMode = true
 		p.Node.tmpActiveModeBorderFg = p.Node.UIBlock.BorderFg
-		p.Node.UIBlock.BorderFg = COLOR_ACTIVE_MODE_BORDERFG
+		p.Node.UIBlock.BorderFg = ColorActiveModeBorderFg
 	}
 	p.Terminal.ActiveMode()
 	p.Node.uiRender()

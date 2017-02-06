@@ -22,8 +22,8 @@ func (p *Node) InitNodeTabpane() {
 
 	p.isShouldCalculateWidth = true
 	uiBuffer.Border = false
-	uiBuffer.TabpaneBg = COLOR_DEFAULT_TABPANE_FG
-	uiBuffer.TabpaneBg = COLOR_DEFAULT_TABPANE_BG
+	uiBuffer.TabpaneBg = ColorDefaultTabpaneFg
+	uiBuffer.TabpaneBg = ColorDefaultTabpaneBg
 
 	p.isWorkNode = true
 
@@ -122,11 +122,11 @@ func (p *NodeTabpane) NodeDataFocusMode() {
 			p.Node.tmpFocusModeBorder = p.Node.UIBlock.Border
 			p.Node.tmpFocusModeBorderFg = p.Node.UIBlock.BorderFg
 			p.Node.UIBlock.Border = true
-			p.Node.UIBlock.BorderFg = COLOR_FOCUS_MODE_BORDERFG
+			p.Node.UIBlock.BorderFg = ColorFocusModeBorderFg
 			p.Node.uiRender()
 		} else {
 			p.Node.tmpFocusModeBorderFg = p.Node.UIBuffer.(*extra.Tabpane).TabpaneBg
-			p.Node.UIBuffer.(*extra.Tabpane).TabpaneBg = COLOR_FOCUS_MODE_BORDERFG
+			p.Node.UIBuffer.(*extra.Tabpane).TabpaneBg = ColorFocusModeBorderFg
 			p.Node.uiRender()
 		}
 	}
@@ -151,11 +151,11 @@ func (p *NodeTabpane) NodeDataActiveMode() {
 		p.Node.isCalledActiveMode = true
 		if true == p.Node.UIBlock.Border {
 			p.Node.tmpActiveModeBorderFg = p.Node.UIBlock.BorderFg
-			p.Node.UIBlock.BorderFg = COLOR_ACTIVE_MODE_BORDERFG
+			p.Node.UIBlock.BorderFg = ColorActiveModeBorderFg
 			p.Node.uiRender()
 		} else {
 			p.Node.tmpActiveModeBorderBg = p.Node.UIBuffer.(*extra.Tabpane).TabpaneBg
-			p.Node.UIBuffer.(*extra.Tabpane).TabpaneBg = COLOR_ACTIVE_MODE_BORDERBG
+			p.Node.UIBuffer.(*extra.Tabpane).TabpaneBg = ColorActiveModeBorderbg
 			p.Node.uiRender()
 		}
 	}

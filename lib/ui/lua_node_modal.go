@@ -44,9 +44,8 @@ func (p *Script) luaFuncNodeModalDoString(L *lua.LState) int {
 	if nil != err {
 		L.Push(lua.LString(err.Error()))
 		return 1
-	} else {
-		return 0
 	}
+	return 0
 }
 
 func (p *Script) luaFuncNodeModalShow(L *lua.LState) int {
@@ -99,7 +98,6 @@ func (p *Script) luaFuncMainPageDoString(L *lua.LState) int {
 	if nil != err {
 		L.Push(lua.LString(err.Error()))
 		return 1
-	} else {
-		return 0
 	}
+	return 0
 }

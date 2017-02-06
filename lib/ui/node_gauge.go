@@ -24,9 +24,9 @@ func (p *Node) InitNodeGauge() {
 	p.isShouldCalculateHeight = false
 	p.UIBlock.Height = 3
 
-	uiBuffer.BarColor = COLOR_DEFAULT_GAUGE_BARCOLOR
-	uiBuffer.PercentColor = COLOR_DEFAULT_GAUGE_PERCENTCOLOR
-	uiBuffer.PercentColorHighlighted = COLOR_DEFAULT_GAUGE_PERCENTCOLOR_HIGHLIGHTED
+	uiBuffer.BarColor = ColorDefaultGaugeBarcolor
+	uiBuffer.PercentColor = ColorDefaultGaugePercentcolor
+	uiBuffer.PercentColorHighlighted = ColorDefaultGaugePercentColorHighlighted
 
 	return
 }

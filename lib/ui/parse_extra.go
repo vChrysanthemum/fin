@@ -17,7 +17,7 @@ func (p *Page) parseBody(parentNode *Node, htmlNode *html.Node) (ret *Node, isFa
 	parentNode.addChild(ret)
 	isFallthrough = true
 
-	ret.ColorFg = COLOR_BODY_DEFAULT_COLORFG
+	ret.ColorFg = ColorBodyDefaultColorFg
 
 	ret.InitNodeBody()
 

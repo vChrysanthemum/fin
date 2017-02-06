@@ -70,7 +70,7 @@ func TestParseHtmlBodySelect(t *testing.T) {
 	check(page.FirstChildNode)
 }
 
-func TestParseId(t *testing.T) {
+func TestParseID(t *testing.T) {
 	id := "menu"
 	title := "Hello World!"
 	s := fmt.Sprintf(`
@@ -88,9 +88,9 @@ func TestParseId(t *testing.T) {
 	assert.NotNil(t, page)
 	assert.Nil(t, err)
 
-	assert.NotNil(t, page.IdToNodeMap[id])
+	assert.NotNil(t, page.IDToNodeMap[id])
 
-	ul := page.IdToNodeMap[id].Data.(*ui.NodeSelect)
+	ul := page.IDToNodeMap[id].Data.(*ui.NodeSelect)
 	assert.Equal(t, ul.Children[0].Data, title)
 }
 
@@ -104,8 +104,8 @@ func TestParseNode(t *testing.T) {
 
 	node, err := ParseNode(s2)
 	assert.Nil(t, err)
-	assert.Equal(t, node.HtmlData, "par")
-	assert.Equal(t, node.Id, id2)
+	assert.Equal(t, node.HTMLData, "par")
+	assert.Equal(t, node.ID, id2)
 }
 
 func TestAppendNode(t *testing.T) {
@@ -125,14 +125,14 @@ func TestAppendNode(t *testing.T) {
 	assert.NotNil(t, page)
 	assert.Nil(t, err)
 
-	assert.NotNil(t, page.IdToNodeMap[id1])
+	assert.NotNil(t, page.IDToNodeMap[id1])
 
 	s2 := fmt.Sprintf(`
 	<par id="%s">%s</par>
 	`, id2, title)
 
-	err = page.AppendNode(page.IdToNodeMap[id1], s2)
+	err = page.AppendNode(page.IDToNodeMap[id1], s2)
 	assert.Nil(t, err)
-	assert.Equal(t, page.IdToNodeMap[id2].HtmlData, "par")
-	assert.Equal(t, page.IdToNodeMap[id2].UIBuffer.(*termui.Par).Text, title)
+	assert.Equal(t, page.IDToNodeMap[id2].HTMLData, "par")
+	assert.Equal(t, page.IDToNodeMap[id2].UIBuffer.(*termui.Par).Text, title)
 }

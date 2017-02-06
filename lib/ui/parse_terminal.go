@@ -24,7 +24,7 @@ func (p *NodeTerminal) NodeDataParseAttribute(attr []html.Attribute) (isUIChange
 		switch v.Key {
 		case "active_borderfg":
 			isUIChange = true
-			p.ActiveModeBorderColor = utils.ColorToTermuiAttribute(v.Val, COLOR_ACTIVE_MODE_BORDERFG)
+			p.ActiveModeBorderColor = utils.ColorToTermuiAttribute(v.Val, ColorActiveModeBorderFg)
 		}
 	}
 

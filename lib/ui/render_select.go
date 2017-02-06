@@ -6,7 +6,7 @@ import (
 	"github.com/gizak/termui"
 )
 
-func (p *Node) refreshUiBufferItems() {
+func (p *Node) refreshUIBufferItems() {
 	nodeSelect := p.Data.(*NodeSelect)
 
 	if nodeSelect.SelectedOptionIndex < nodeSelect.DisplayLinesRange[0] {
@@ -17,7 +17,7 @@ func (p *Node) refreshUiBufferItems() {
 		nodeSelect.DisplayLinesRange[1] = nodeSelect.SelectedOptionIndex + 1
 	}
 
-	items := make([]string, 0)
+	var items []string
 	var str string
 	for index, nodeOption := range nodeSelect.Children {
 		if nodeSelect.DisplayLinesRange[0] <= index && index < nodeSelect.DisplayLinesRange[1] {
@@ -76,7 +76,7 @@ func (p *Page) renderBodySelect(node *Node) {
 		}
 	}
 
-	nodeSelect.refreshUiBufferItems()
+	nodeSelect.refreshUIBufferItems()
 
 	p.BufferersAppend(node, uiBuffer)
 

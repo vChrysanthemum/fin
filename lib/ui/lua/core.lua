@@ -80,8 +80,8 @@ function _Node.SetActive(self)
     return base.NodeSetActive(self.nodePointer)
 end
 
-function _Node.GetHtmlData(self)
-    return base.NodeGetHtmlData(self.nodePointer)
+function _Node.GetHTMLData(self)
+    return base.NodeGetHTMLData(self.nodePointer)
 end
 
 function _Node.SetValue(self, text)

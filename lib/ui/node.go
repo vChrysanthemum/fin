@@ -48,7 +48,7 @@ type NodeDataParseAttributer interface {
 }
 
 type Node struct {
-	Id   string
+	ID   string
 	Tab  *NodeTabpaneTab
 	page *Page
 
@@ -72,7 +72,7 @@ type Node struct {
 	// absolute relative default:relative
 	Position string
 
-	HtmlAttribute map[string]html.Attribute
+	HTMLAttribute map[string]html.Attribute
 
 	// FocusMode
 	isCalledFocusMode    bool
@@ -98,7 +98,7 @@ type Node struct {
 	UIBuffer interface{}
 	UIBlock  *termui.Block
 
-	HtmlData string
+	HTMLData string
 	// NodeData 譬如 NodeTerminal
 	Data interface{}
 
@@ -124,7 +124,7 @@ func (p *Node) addChild(child *Node) {
 	}
 
 	child.Parent = p
-	child.Parent.ChildrenCount += 1
+	child.Parent.ChildrenCount++
 
 	child.FirstChild = nil
 	child.LastChild = nil
@@ -153,20 +153,20 @@ func (p *Node) uiRender() {
 	utils.UIRender(p.UIBuffer.(termui.Bufferer))
 }
 
-func (p *Node) extractChildsMapIdNodes(ret *map[string]*Node) {
+func (p *Node) extractChildsMapIDNodes(ret *map[string]*Node) {
 	var childNode *Node
 	for childNode = p.FirstChild; childNode != nil; childNode = childNode.NextSibling {
-		childNode.extractChildsMapIdNodes(ret)
+		childNode.extractChildsMapIDNodes(ret)
 	}
 
-	if "" != p.Id {
-		(*ret)[p.Id] = p
+	if "" != p.ID {
+		(*ret)[p.ID] = p
 	}
 }
 
-func (p *Node) ExtractChildsMapIdNodes() map[string]*Node {
+func (p *Node) ExtractChildsMapIDNodes() map[string]*Node {
 	ret := make(map[string]*Node)
-	p.extractChildsMapIdNodes(&ret)
+	p.extractChildsMapIDNodes(&ret)
 	return ret
 }
 
@@ -192,7 +192,7 @@ func (p *Page) newNode(htmlNode *html.Node) *Node {
 	ret.Display = new(bool)
 	*ret.Display = true
 	ret.page = p
-	ret.HtmlData = htmlNode.Data
+	ret.HTMLData = htmlNode.Data
 	ret.LuaActiveModeHandlers = make(map[string]NodeJob, 0)
 	ret.KeyPressHandlers = make(map[string]NodeJob, 0)
 	ret.KeyPressEnterHandlers = make(map[string]NodeJob, 0)
@@ -201,13 +201,13 @@ func (p *Page) newNode(htmlNode *html.Node) *Node {
 	ret.isShouldCalculateWidth = true
 	ret.Position = "relative"
 
-	ret.HtmlAttribute = make(map[string]html.Attribute)
+	ret.HTMLAttribute = make(map[string]html.Attribute)
 
 	ret.EditorCursor = image.Point{-1, -1}
 	return ret
 }
 
-// 设定 光标
+// SetRelativeCursor 设定 光标
 // relativeX relativeY 为相对 node 位置
 func (p *Node) SetRelativeCursor(relativeX, relativeY int) (int, int) {
 	maxWidth := p.UIBlock.InnerArea.Dx()

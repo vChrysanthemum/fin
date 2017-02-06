@@ -178,7 +178,7 @@ func (p *Script) DBExec(L *lua.LState) int {
 	return 1
 }
 
-func (p *Script) DBResultLastInsertId(L *lua.LState) int {
+func (p *Script) DBResultLastInsertID(L *lua.LState) int {
 	if L.GetTop() < 1 {
 		L.Push(lua.LNil)
 		return 1

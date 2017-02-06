@@ -32,7 +32,7 @@ func (p *Page) _renderBodyTableOneRow(nodeTr *Node) []*termui.Row {
 	}
 
 	if len(needCalculateColNodeTdList) > 0 {
-		_cols = (TABLE_TR_COLS - _cols) / len(needCalculateColNodeTdList)
+		_cols = (TableTrCols - _cols) / len(needCalculateColNodeTdList)
 		if _cols <= 0 {
 			_cols = 1
 		}

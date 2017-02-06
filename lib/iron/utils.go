@@ -30,7 +30,7 @@ func SafePage(page int) int {
 func CalculatePages(count, perPageCount int) int {
 	ret := count / perPageCount
 	if count%perPageCount > 0 {
-		ret += 1
+		ret++
 	}
 	return ret
 }
@@ -160,7 +160,7 @@ func FileExt(filename string) string {
 	return filename[index+1:]
 }
 
-func InitId() string {
+func InitID() string {
 	now := time.Now()
 	r := r.New(r.NewSource(now.UnixNano()))
 	return fmt.Sprintf("%d%d", time.Now().UnixNano(), r.Intn(100000))

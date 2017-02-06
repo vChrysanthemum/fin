@@ -11,7 +11,7 @@ func (p *Editor) CommandModeQuit() {
 }
 
 func (p *Editor) CommandModeEnter() {
-	p.Mode = EDITOR_COMMAND_MODE
+	p.Mode = EditorCommandMode
 	p.CommandModeBuf.CleanData(p.CommandModeCursor)
 	p.CommandModeWrite(p.EditModeCursor, p.CommandModeCursor, ":")
 }
@@ -65,6 +65,6 @@ func (p *Editor) RefreshCommandModeBuf(commandModeCursor *EditorCursor) {
 		p.Buf.Set(x, y, p.CommandModeBuf.Cells[n])
 		p.CommandModeBuf.Cells[n].X, p.CommandModeBuf.Cells[n].Y = x, y
 		x += p.CommandModeBuf.Cells[n].Width()
-		n += 1
+		n++
 	}
 }

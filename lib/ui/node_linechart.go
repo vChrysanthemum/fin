@@ -29,8 +29,8 @@ func (p *Node) InitNodeLineChart() {
 	p.UIBlock.Width = 10
 
 	uiBuffer.Mode = "braille"
-	uiBuffer.AxesColor = utils.COLOR_WHITE
-	uiBuffer.LineColor = utils.COLOR_BLUE | termui.AttrBold
+	uiBuffer.AxesColor = utils.ColorWhite
+	uiBuffer.LineColor = utils.ColorBlue | termui.AttrBold
 
 	return
 }

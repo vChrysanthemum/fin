@@ -31,12 +31,12 @@ func Init(option Option) {
 
 func init() {
 	termui.ColorMap = map[string]termui.Attribute{
-		"fg":           utils.COLOR_WHITE,
-		"bg":           utils.COLOR_DEFAULT,
-		"border.fg":    utils.COLOR_WHITE,
-		"label.fg":     utils.COLOR_WHITE,
-		"par.fg":       utils.COLOR_YELLOW,
-		"par.label.bg": utils.COLOR_WHITE,
+		"fg":           utils.ColorWhite,
+		"bg":           utils.ColorDefault,
+		"border.fg":    utils.ColorWhite,
+		"label.fg":     utils.ColorWhite,
+		"par.fg":       utils.ColorYellow,
+		"par.label.bg": utils.ColorWhite,
 	}
 
 }

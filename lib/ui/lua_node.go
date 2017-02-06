@@ -24,14 +24,14 @@ func (p *Script) luaFuncGetNodePointer(L *lua.LState) int {
 		return 0
 	}
 
-	nodeId := L.ToString(1)
+	nodeID := L.ToString(1)
 
 	var (
 		node *Node
 		ok   bool
 	)
 
-	node, ok = p.page.IdToNodeMap[nodeId]
+	node, ok = p.page.IDToNodeMap[nodeID]
 
 	if true == ok {
 		luaNode := L.NewUserData()
@@ -114,12 +114,11 @@ func (p *Script) luaFuncNodeGetAttribute(L *lua.LState) int {
 	if nil == node {
 		return 0
 	}
-	if attr, ok := node.HtmlAttribute[L.ToString(2)]; true == ok {
+	if attr, ok := node.HTMLAttribute[L.ToString(2)]; true == ok {
 		L.Push(lua.LString(attr.Val))
 		return 1
-	} else {
-		return 0
 	}
+	return 0
 }
 
 func (p *Script) luaFuncNodeSetAttribute(L *lua.LState) int {
@@ -161,7 +160,7 @@ func (p *Script) luaFuncNodeSetActive(L *lua.LState) int {
 	return 0
 }
 
-func (p *Script) luaFuncNodeGetHtmlData(L *lua.LState) int {
+func (p *Script) luaFuncNodeGetHTMLData(L *lua.LState) int {
 	if L.GetTop() < 1 {
 		return 0
 	}
@@ -172,7 +171,7 @@ func (p *Script) luaFuncNodeGetHtmlData(L *lua.LState) int {
 		return 0
 	}
 
-	L.Push(lua.LString(node.HtmlData))
+	L.Push(lua.LString(node.HTMLData))
 	return 1
 }
 

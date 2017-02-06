@@ -34,7 +34,7 @@ func (p *Terminal) InitNewLine() *TerminalLine {
 
 	p.LastTerminalLine = ret
 
-	p.DisplayLinesRange[1] += 1
+	p.DisplayLinesRange[1]++
 	maxHeight := p.InnerArea.Dy()
 	maxWidth := p.InnerArea.Dx()
 	height := 1

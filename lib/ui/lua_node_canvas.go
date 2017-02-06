@@ -68,13 +68,13 @@ func (p *Script) luaFuncNodeCanvasSet(L *lua.LState) int {
 	}
 
 	ch, _ := utf8.DecodeRuneInString(L.ToString(4))
-	colorFg := utils.COLOR_DEFAULT
-	colorBg := utils.COLOR_BLUE
+	colorFg := utils.ColorDefault
+	colorBg := utils.ColorBlue
 	if params >= 5 {
-		colorFg = utils.ColorToTermuiAttribute(L.ToString(5), utils.COLOR_BLUE)
+		colorFg = utils.ColorToTermuiAttribute(L.ToString(5), utils.ColorBlue)
 	}
 	if params >= 6 {
-		colorBg = utils.ColorToTermuiAttribute(L.ToString(6), utils.COLOR_DEFAULT)
+		colorBg = utils.ColorToTermuiAttribute(L.ToString(6), utils.ColorDefault)
 	}
 	nodeCanvas.Canvas.Set(L.ToInt(2), L.ToInt(3), &termui.Cell{ch, colorFg, colorBg, 0, 0, 0})
 	return 0

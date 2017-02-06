@@ -2,7 +2,7 @@ package ui
 
 import "container/list"
 
-// 计算 Node 的布局函数
+// LayoutExecFunc 计算 Node 的布局函数
 // isFallthrough 计算完该 Node 布局，是否继续计算 ChildNodes 布局
 type LayoutExecFunc func(node *Node) (isFallthrough bool)
 
@@ -19,7 +19,7 @@ func (p *Page) prepareLayout() {
 	}
 }
 
-func (p *Page) checkIfHtmlNodeMatchLayoutAgentPath(node *Node, layoutAgent *LayoutAgent, index int) bool {
+func (p *Page) checkIfHTMLNodeMatchLayoutAgentPath(node *Node, layoutAgent *LayoutAgent, index int) bool {
 	if index < 0 {
 		return true
 	}
@@ -28,10 +28,10 @@ func (p *Page) checkIfHtmlNodeMatchLayoutAgentPath(node *Node, layoutAgent *Layo
 		return false
 	}
 
-	if node.HtmlData == layoutAgent.path[index] {
+	if node.HTMLData == layoutAgent.path[index] {
 		index--
 	}
-	return p.checkIfHtmlNodeMatchLayoutAgentPath(node.Parent, layoutAgent, index)
+	return p.checkIfHTMLNodeMatchLayoutAgentPath(node.Parent, layoutAgent, index)
 }
 
 func (p *Page) fetchLayoutAgentByNode(node *Node) (ret *LayoutAgent) {
@@ -39,11 +39,11 @@ func (p *Page) fetchLayoutAgentByNode(node *Node) (ret *LayoutAgent) {
 
 	ret = nil
 	for _, layoutAgent = range p.layoutAgentMap {
-		if layoutAgent.path[len(layoutAgent.path)-1] != node.HtmlData {
+		if layoutAgent.path[len(layoutAgent.path)-1] != node.HTMLData {
 			continue
 		}
 
-		if true == p.checkIfHtmlNodeMatchLayoutAgentPath(node, layoutAgent, len(layoutAgent.path)-1) {
+		if true == p.checkIfHTMLNodeMatchLayoutAgentPath(node, layoutAgent, len(layoutAgent.path)-1) {
 			ret = layoutAgent
 			break
 		}
@@ -90,7 +90,7 @@ func (p *Page) layout(node *Node) error {
 	return nil
 }
 
-// 计算 page 中所有元素的布局
+// Layout 计算 page 中所有元素的布局
 func (p *Page) Layout() error {
 	p.layoutingX = 0
 	p.layoutingY = 0

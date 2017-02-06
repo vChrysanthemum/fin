@@ -40,7 +40,7 @@ func (p *Editor) EditModeAppendNewLine(editModeCursor *EditorCursor) *EditorLine
 
 	} else {
 		for _, line := range p.Lines[editModeCursor.LineIndex+1:] {
-			line.Index += 1
+			line.Index++
 		}
 		ret.Index = editModeCursor.LineIndex + 1
 
@@ -80,7 +80,7 @@ func (p *Editor) EditModeAppendNewLine(editModeCursor *EditorCursor) *EditorLine
 	return ret
 }
 
-// 缩减指定行
+// EditModeReduceLine 缩减指定行
 // 该操作将指定行数据追加到上一行中，然后删除指定行
 func (p *Editor) EditModeReduceLine(lineIndex int) {
 	var line *EditorLine
@@ -158,12 +158,12 @@ func (p *EditorLine) CommandModeBackspace(commandModeCursor *EditorCursor) {
 
 	if commandModeCursor.CellOffX == len(p.Cells) {
 		p.Data = p.Data[:p.Cells[commandModeCursor.CellOffX-1].BytesOff]
-		commandModeCursor.CellOffX -= 1
+		commandModeCursor.CellOffX--
 
 	} else {
 		p.Data = append(p.Data[:p.Cells[commandModeCursor.CellOffX-1].BytesOff],
 			p.Data[p.Cells[commandModeCursor.CellOffX].BytesOff:]...)
-		commandModeCursor.CellOffX -= 1
+		commandModeCursor.CellOffX--
 	}
 }
 
@@ -185,12 +185,12 @@ func (p *EditorLine) EditModeBackspace(editModeCursor *EditorCursor) {
 
 	} else if editModeCursor.CellOffX == len(p.Cells) {
 		p.Data = p.Data[:p.Cells[editModeCursor.CellOffX-1].BytesOff]
-		editModeCursor.CellOffX -= 1
+		editModeCursor.CellOffX--
 
 	} else {
 		p.Data = append(p.Data[:p.Cells[editModeCursor.CellOffX-1].BytesOff],
 			p.Data[p.Cells[editModeCursor.CellOffX].BytesOff:]...)
-		editModeCursor.CellOffX -= 1
+		editModeCursor.CellOffX--
 	}
 }
 

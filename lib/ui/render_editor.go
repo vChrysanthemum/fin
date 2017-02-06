@@ -8,10 +8,10 @@ func (p *Page) renderBodyEditor(node *Node) {
 	p.normalRenderNodeBlock(node)
 
 	if "" != node.ColorFg {
-		uiBuffer.TextFgColor = utils.ColorToTermuiAttribute(node.ColorFg, utils.COLOR_DEFAULT)
+		uiBuffer.TextFgColor = utils.ColorToTermuiAttribute(node.ColorFg, utils.ColorDefault)
 	}
 	if "" != node.ColorBg {
-		uiBuffer.TextBgColor = utils.ColorToTermuiAttribute(node.ColorBg, utils.COLOR_DEFAULT)
+		uiBuffer.TextBgColor = utils.ColorToTermuiAttribute(node.ColorBg, utils.ColorDefault)
 	}
 
 	p.BufferersAppend(node, uiBuffer)

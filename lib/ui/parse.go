@@ -6,7 +6,7 @@ import (
 	"golang.org/x/net/html"
 )
 
-// 解析 Node 的函数
+// ParseExecFunc 解析 Node 的函数
 // isFallthrough 解析完该 Node ，是否继续解析 ChildNodes
 // isFallthrough 例: parseBodyTable 用到该参数
 type ParseExecFunc func(parentNode *Node, htmlNode *html.Node) (ret *Node, isFallthrough bool)
@@ -19,7 +19,7 @@ type ParseAgent struct {
 func (p *Page) prepareParse() {
 	p.parseAgentMap = []*ParseAgent{
 		&ParseAgent{[]string{"html"}, nil},
-		&ParseAgent{[]string{"html", "script"}, p.parseHtmlScript},
+		&ParseAgent{[]string{"html", "script"}, p.parseHTMLScript},
 		&ParseAgent{[]string{"head"}, nil},
 		&ParseAgent{[]string{"head", "title"}, p.parseHeadTitle},
 		&ParseAgent{[]string{"body"}, p.parseBody},
@@ -61,7 +61,7 @@ func (p *Page) popParsingNodesStack() *Node {
 	return ent.Value.(*Node)
 }
 
-func (p *Page) checkIfHtmlNodeMatchParseAgentPath(htmlNode *html.Node, parseAgent *ParseAgent, index int) bool {
+func (p *Page) checkIfHTMLNodeMatchParseAgentPath(htmlNode *html.Node, parseAgent *ParseAgent, index int) bool {
 	if index < 0 {
 		return true
 	}
@@ -73,7 +73,7 @@ func (p *Page) checkIfHtmlNodeMatchParseAgentPath(htmlNode *html.Node, parseAgen
 	if htmlNode.Data == parseAgent.path[index] {
 		index--
 	}
-	return p.checkIfHtmlNodeMatchParseAgentPath(htmlNode.Parent, parseAgent, index)
+	return p.checkIfHTMLNodeMatchParseAgentPath(htmlNode.Parent, parseAgent, index)
 }
 
 func (p *Page) fetchParseAgentByNode(htmlNode *html.Node) (ret *ParseAgent) {
@@ -85,7 +85,7 @@ func (p *Page) fetchParseAgentByNode(htmlNode *html.Node) (ret *ParseAgent) {
 			continue
 		}
 
-		if true == p.checkIfHtmlNodeMatchParseAgentPath(htmlNode, parseAgent, len(parseAgent.path)-1) {
+		if true == p.checkIfHTMLNodeMatchParseAgentPath(htmlNode, parseAgent, len(parseAgent.path)-1) {
 			ret = parseAgent
 			break
 		}
@@ -95,15 +95,15 @@ func (p *Page) fetchParseAgentByNode(htmlNode *html.Node) (ret *ParseAgent) {
 }
 
 func (p *Page) filter(htmlNode *html.Node) {
-	var childHtmlNode *html.Node
+	var childHTMLNode *html.Node
 
-	for childHtmlNode = htmlNode.FirstChild; childHtmlNode != nil; childHtmlNode = childHtmlNode.NextSibling {
-		childHtmlNode.Data = strings.Trim(childHtmlNode.Data, " \r\n\t")
-		p.filter(childHtmlNode)
+	for childHTMLNode = htmlNode.FirstChild; childHTMLNode != nil; childHTMLNode = childHTMLNode.NextSibling {
+		childHTMLNode.Data = strings.Trim(childHTMLNode.Data, " \r\n\t")
+		p.filter(childHTMLNode)
 	}
 }
 
-func (p *Page) parseHtmlNodeToNode(htmlNode *html.Node) (ret *Node, isFallthrough bool) {
+func (p *Page) parseHTMLNodeToNode(htmlNode *html.Node) (ret *Node, isFallthrough bool) {
 	var (
 		parentNode *Node
 		parseAgent *ParseAgent
@@ -134,8 +134,8 @@ func (p *Page) parseNodeAttribute(node *Node, attr []html.Attribute) {
 	for _, v := range attr {
 		switch v.Key {
 		case "id":
-			p.IdToNodeMap[v.Val] = node
-			node.Id = v.Val
+			p.IDToNodeMap[v.Val] = node
+			node.ID = v.Val
 		}
 	}
 
@@ -148,12 +148,12 @@ func (p *Page) parseNodeAttribute(node *Node, attr []html.Attribute) {
 
 func (p *Page) parse(htmlNode *html.Node) *Node {
 	var (
-		childHtmlNode *html.Node
+		childHTMLNode *html.Node
 		node          *Node
 		isFallthrough bool
 	)
 
-	node, isFallthrough = p.parseHtmlNodeToNode(htmlNode)
+	node, isFallthrough = p.parseHTMLNodeToNode(htmlNode)
 	if nil != node {
 		p.pushParsingNodesStack(node)
 
@@ -161,8 +161,8 @@ func (p *Page) parse(htmlNode *html.Node) *Node {
 	}
 
 	if true == isFallthrough {
-		for childHtmlNode = htmlNode.FirstChild; childHtmlNode != nil; childHtmlNode = childHtmlNode.NextSibling {
-			p.parse(childHtmlNode)
+		for childHTMLNode = htmlNode.FirstChild; childHTMLNode != nil; childHTMLNode = childHTMLNode.NextSibling {
+			p.parse(childHTMLNode)
 		}
 	}
 

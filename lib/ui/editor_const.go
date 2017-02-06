@@ -1,14 +1,14 @@
 package ui
 
 const (
-	EDITOR_MODE_NONE = iota
-	EDITOR_NORMAL_MODE
-	EDITOR_EDIT_MODE
-	EDITOR_COMMAND_MODE
+	EditorModeNone = iota
+	EditorNormalMode
+	EditorEditMode
+	EditorCommandMode
 
-	EDITOR_ACTION_STATE_PREPARE_WRITE = iota
-	EDITOR_ACTION_STATE_WRITE
+	EditorActionStatePrepareWrite = iota
+	EditorActionStateWrite
 
-	EDITOR_ACTION_TYPE_INSERT = iota
-	EDITOR_ACTION_TYPE_DELETE
+	EditorActionTypeInsert = iota
+	EditorActionTypeDelete
 )

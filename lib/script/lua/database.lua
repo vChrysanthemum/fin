@@ -53,8 +53,8 @@ function _DBRows.Close(self)
     return base.DBRowsClose(self.dbRowsPointer)
 end
 
-function _DBResult.LastInsertId(self)
-    return base.DBResultLastInsertId(self.dbResultPointer)
+function _DBResult.LastInsertID(self)
+    return base.DBResultLastInsertID(self.dbResultPointer)
 end
 
 function _DBResult.RowsAffected(self)

@@ -68,9 +68,8 @@ func (p *NodeInputText) KeyPress(keyStr string) (isExecNormalKeyPressWork bool) 
 func (p *NodeInputText) NodeDataGetValue() (string, bool) {
 	if len(p.Terminal.Lines) == 0 {
 		return "", false
-	} else {
-		return string(p.Terminal.Lines[0].Data), true
 	}
+	return string(p.Terminal.Lines[0].Data), true
 }
 
 func (p *NodeInputText) NodeDataSetValue(content string) {
@@ -88,7 +87,7 @@ func (p *NodeInputText) NodeDataFocusMode() {
 		p.Node.tmpFocusModeBorder = p.Node.UIBlock.Border
 		p.Node.tmpFocusModeBorderFg = p.Node.UIBlock.BorderFg
 		p.Node.UIBlock.Border = true
-		p.Node.UIBlock.BorderFg = COLOR_FOCUS_MODE_BORDERFG
+		p.Node.UIBlock.BorderFg = ColorFocusModeBorderFg
 		p.Node.uiRender()
 	}
 }
@@ -106,7 +105,7 @@ func (p *NodeInputText) NodeDataActiveMode() {
 	if false == p.Node.isCalledActiveMode && true == p.Node.UIBlock.Border {
 		p.Node.isCalledActiveMode = true
 		p.Node.tmpActiveModeBorderFg = p.Node.UIBlock.BorderFg
-		p.Node.UIBlock.BorderFg = COLOR_ACTIVE_MODE_BORDERFG
+		p.Node.UIBlock.BorderFg = ColorActiveModeBorderFg
 	}
 	p.Terminal.ActiveMode()
 	p.Node.uiRender()

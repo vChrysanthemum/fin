@@ -7,7 +7,7 @@ func (p *Editor) PrepareEditMode() {
 
 func (p *Editor) EditModeEnter(editModeCursor *EditorCursor) {
 	editModeCursor.CellOffXVertical = 0
-	p.Mode = EDITOR_EDIT_MODE
+	p.Mode = EditorEditMode
 }
 
 func (p *Editor) EditModeWrite(editModeCursor *EditorCursor, keyStr string) {
@@ -37,7 +37,7 @@ func (p *Editor) RefreshEditModeBuf(editModeCursor *EditorCursor) {
 		pageLastEditorLine int
 		linePrefix         string
 		ok                 bool
-		builtLinesMark     map[int]bool = make(map[int]bool, 0)
+		builtLinesMark     = make(map[int]bool, 0)
 	)
 
 REFRESH_BEGIN:
@@ -67,7 +67,7 @@ REFRESH_BEGIN:
 
 		if y >= p.EditModeBufAreaHeight {
 			if editModeCursor.LineIndex == line.Index {
-				editModeCursor.DisplayLinesTopIndex += 1
+				editModeCursor.DisplayLinesTopIndex++
 				goto REFRESH_BEGIN
 			} else {
 				return
@@ -84,7 +84,7 @@ REFRESH_BEGIN:
 			finalX = p.Block.InnerArea.Min.X + x
 			finalY = p.Block.InnerArea.Min.Y + y
 			p.Buf.Set(finalX, finalY, termui.Cell{rune(v), p.TextFgColor, p.TextBgColor, finalX, finalY, 0})
-			x += 1
+			x++
 		}
 
 		dx = p.Block.InnerArea.Dx() - len(linePrefix)
@@ -96,7 +96,7 @@ REFRESH_BEGIN:
 				y++
 				// 输出一行未完成 且 超过内容区域
 				if y >= p.EditModeBufAreaHeight {
-					editModeCursor.DisplayLinesTopIndex += 1
+					editModeCursor.DisplayLinesTopIndex++
 					goto REFRESH_BEGIN
 				}
 

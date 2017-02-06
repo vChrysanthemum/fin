@@ -36,11 +36,11 @@ func (p *NodeLineChart) NodeDataParseAttribute(attr []html.Attribute) (isUIChang
 
 		case "axescolor":
 			isUIChange = true
-			uiBuffer.AxesColor = utils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_LINE_CHART_AXES)
+			uiBuffer.AxesColor = utils.ColorToTermuiAttribute(v.Val, ColorDefaultLineChartAxes)
 
 		case "linecolor":
 			isUIChange = true
-			uiBuffer.LineColor = utils.ColorToTermuiAttribute(v.Val, COLOR_DEFAULT_LINE_CHART_LINE)
+			uiBuffer.LineColor = utils.ColorToTermuiAttribute(v.Val, ColorDefaultLineChartLine)
 		}
 	}
 
