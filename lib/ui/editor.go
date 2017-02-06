@@ -11,62 +11,36 @@ type EditorMode int
 
 type Editor struct {
 	termui.Block
-	Buf         *termui.Buffer
-	TextFgColor termui.Attribute
-	TextBgColor termui.Attribute
-
-	Mode EditorMode
-
-	// NormalMode
-	NormalModeCommands     []EditorNormalModeCommand
-	NormalModeCommandStack string
+	Buf *termui.Buffer
 
 	// CommandMode
 	CommandModeBufAreaY      int
 	CommandModeBufAreaHeight int
 	CommandModeBuf           *EditorLine
-	CommandModeCursor        *EditorCursor
+	CommandModeCursor        *EditorCommandCursor
 
-	// EditMode
-	isDisplayEditorLineNumber bool
-	Lines                     []*EditorLine
-	EditModeCursor            *EditorCursor
-	EditModeBufAreaHeight     int
-	ActionGroup               *EditorActionGroup
-
-	isShouldRefreshEditModeBuf      bool
-	isShouldRefreshCommandModeBuf   bool
 	KeyEvents                       chan string
 	KeyEventsResultIsQuitActiveMode chan bool
 
-	IsModifiable bool
+	Views []*EditorView
+	*EditorView
 }
 
 func NewEditor() *Editor {
 	ret := &Editor{
-		Lines:        []*EditorLine{},
-		Block:        *termui.NewBlock(),
-		TextFgColor:  termui.ThemeAttr("par.text.fg"),
-		TextBgColor:  termui.ThemeAttr("par.text.bg"),
-		IsModifiable: true,
+		Block: *termui.NewBlock(),
 	}
 
-	ret.Mode = EditorModeNone
-
-	ret.PrepareNormalMode()
-	ret.PrepareEditMode()
 	ret.PrepareCommandMode()
 
-	ret.EditModeCursor = NewEditorCursor(ret)
-	ret.CommandModeCursor = NewEditorCursor(ret)
-
-	ret.ActionGroup = NewEditorActionGroup(ret)
-
-	ret.isDisplayEditorLineNumber = true
+	ret.CommandModeCursor = NewEditorCommandCursor(ret)
 
 	ret.KeyEvents = make(chan string, 200)
 	ret.KeyEventsResultIsQuitActiveMode = make(chan bool)
 	ret.RegisterKeyEventHandlers()
+
+	ret.Views = append(ret.Views, NewEditorView(ret))
+	ret.EditorView = ret.Views[0]
 
 	return ret
 }
@@ -74,29 +48,6 @@ func NewEditor() *Editor {
 func (p *Editor) Close() {
 	close(p.KeyEvents)
 	close(p.KeyEventsResultIsQuitActiveMode)
-}
-
-func (p *Editor) RefreshBuf() {
-	if true == p.isShouldRefreshCommandModeBuf {
-		p.RefreshCommandModeBuf(p.CommandModeCursor)
-	}
-
-	if true == p.isShouldRefreshEditModeBuf {
-		p.RefreshEditModeBuf(p.EditModeCursor)
-	}
-
-	if true == p.isShouldRefreshCommandModeBuf || true == p.isShouldRefreshEditModeBuf {
-		for point, c := range p.Buf.CellMap {
-			termbox.SetCell(point.X, point.Y, c.Ch, toTmAttr(c.Fg), toTmAttr(c.Bg))
-		}
-	}
-
-	editModeCursor := p.EditModeCursor
-	if editModeCursor.LineIndex > editModeCursor.DisplayLinesBottomIndex {
-		editModeCursor.LineIndex = editModeCursor.DisplayLinesBottomIndex
-	}
-
-	return
 }
 
 func (p *Editor) Buffer() termui.Buffer {
@@ -130,6 +81,17 @@ func (p *Editor) Buffer() termui.Buffer {
 	p.RefreshBuf()
 
 	return *p.Buf
+}
+
+func (p *Editor) RefreshCursorByEditorLine() {
+	switch p.Mode {
+	case EditorEditMode:
+		p.EditModeCursor.RefreshCursorByEditorLine(p.EditModeCursor.Line())
+	case EditorNormalMode:
+		p.EditModeCursor.RefreshCursorByEditorLine(p.EditModeCursor.Line())
+	case EditorCommandMode:
+		p.CommandModeCursor.RefreshCursorByEditorLine(p.CommandModeBuf)
+	}
 }
 
 func (p *Editor) ActiveMode() {

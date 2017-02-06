@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"fin/ui/utils"
 	"time"
 
 	"github.com/gizak/termui"
@@ -14,7 +15,34 @@ func (p *Editor) handleKeyEvent(keyStr string) (isQuitActiveMode bool) {
 		p.EditModeAppendNewLine(p.EditModeCursor)
 	}
 
-	isQuitActiveMode = p.ActionGroup.Write(p.EditModeCursor, keyStr)
+	switch keyStr {
+	case "<escape>":
+		p.ActionGroup.makeStatePrepareWrite()
+
+		switch p.EditorView.Mode {
+		case EditorNormalMode:
+			isQuitActiveMode = true
+			utils.UISetCursor(-1, -1)
+
+		case EditorEditMode:
+			p.NormalModeEnter(p.EditModeCursor)
+
+		case EditorCommandMode:
+			p.CommandModeQuit()
+			p.NormalModeEnter(p.EditModeCursor)
+		}
+
+		p.isShouldRefreshCommandModeBuf = true
+
+	default:
+		switch p.Mode {
+		case EditorCommandMode:
+			p.CommandModeWrite(p.EditModeCursor, p.CommandModeCursor, keyStr)
+		default:
+			p.ActionGroup.Write(p.EditModeCursor, keyStr)
+		}
+
+	}
 
 	if "<escape>" == keyStr || "<enter>" == keyStr {
 		p.KeyEventsResultIsQuitActiveMode <- isQuitActiveMode

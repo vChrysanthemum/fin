@@ -2,12 +2,12 @@ package ui
 
 import "github.com/gizak/termui"
 
-func (p *Editor) PrepareEditMode() {
+func (p *EditorView) PrepareEditMode() {
 }
 
-func (p *Editor) EditModeEnter(editModeCursor *EditorCursor) {
+func (p *EditorView) EditModeEnter(editModeCursor *EditorViewCursor) {
 	if false == p.IsModifiable {
-		p.CommandShowError(EditorErrNotModifiable)
+		p.Editor.CommandShowError(EditorErrNotModifiable)
 		p.NormalModeEnter(editModeCursor)
 
 	} else {
@@ -16,7 +16,7 @@ func (p *Editor) EditModeEnter(editModeCursor *EditorCursor) {
 	}
 }
 
-func (p *Editor) EditModeWrite(editModeCursor *EditorCursor, keyStr string) {
+func (p *EditorView) EditModeWrite(editModeCursor *EditorViewCursor, keyStr string) {
 	if "<enter>" == keyStr {
 		p.EditModeAppendNewLine(editModeCursor)
 
@@ -24,13 +24,13 @@ func (p *Editor) EditModeWrite(editModeCursor *EditorCursor, keyStr string) {
 		editModeCursor.Line().EditModeBackspace(editModeCursor)
 
 	} else {
-		editModeCursor.Line().Write(editModeCursor, keyStr)
+		editModeCursor.Line().Write(editModeCursor.EditorCursor, keyStr)
 	}
 
 	p.isShouldRefreshEditModeBuf = true
 }
 
-func (p *Editor) RefreshEditModeBuf(editModeCursor *EditorCursor) {
+func (p *EditorView) RefreshEditModeBuf(editModeCursor *EditorViewCursor) {
 	if 0 == p.EditModeBufAreaHeight {
 		return
 	}
@@ -49,7 +49,7 @@ func (p *Editor) RefreshEditModeBuf(editModeCursor *EditorCursor) {
 REFRESH_BEGIN:
 	for x = p.InnerArea.Min.X; x < p.InnerArea.Max.X; x++ {
 		for y = p.InnerArea.Min.Y; y < p.InnerArea.Max.Y; y++ {
-			p.Buf.Set(x, y, termui.Cell{' ', p.TextFgColor, p.TextBgColor, 0, 0, 0})
+			p.Editor.Buf.Set(x, y, termui.Cell{' ', p.TextFgColor, p.TextBgColor, 0, 0, 0})
 		}
 	}
 
@@ -89,7 +89,7 @@ REFRESH_BEGIN:
 		for _, v := range linePrefix {
 			finalX = p.Block.InnerArea.Min.X + x
 			finalY = p.Block.InnerArea.Min.Y + y
-			p.Buf.Set(finalX, finalY, termui.Cell{rune(v), p.TextFgColor, p.TextBgColor, finalX, finalY, 0})
+			p.Editor.Buf.Set(finalX, finalY, termui.Cell{rune(v), p.TextFgColor, p.TextBgColor, finalX, finalY, 0})
 			x++
 		}
 
@@ -111,7 +111,7 @@ REFRESH_BEGIN:
 
 			finalX = line.ContentStartX + x
 			finalY = p.Block.InnerArea.Min.Y + y
-			p.Buf.Set(finalX, finalY, line.Cells[n])
+			p.Editor.Buf.Set(finalX, finalY, line.Cells[n])
 			line.Cells[n].X, line.Cells[n].Y = finalX, finalY
 
 			n++
@@ -124,6 +124,6 @@ REFRESH_BEGIN:
 	for ; y < dy; y++ {
 		finalX = p.Block.InnerArea.Min.X
 		finalY = p.Block.InnerArea.Min.Y + y
-		p.Buf.Set(finalX, finalY, termui.Cell{'~', p.TextFgColor, p.TextBgColor, finalX, finalY, 0})
+		p.Editor.Buf.Set(finalX, finalY, termui.Cell{'~', p.TextFgColor, p.TextBgColor, finalX, finalY, 0})
 	}
 }

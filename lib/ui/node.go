@@ -106,7 +106,7 @@ type Node struct {
 	KeyPressHandlers      map[string]NodeJob
 	KeyPressEnterHandlers map[string]NodeJob
 
-	EditorCursor image.Point
+	Cursor image.Point
 }
 
 type NodeJobHandler func(node *Node, args ...interface{})
@@ -203,7 +203,7 @@ func (p *Page) newNode(htmlNode *html.Node) *Node {
 
 	ret.HTMLAttribute = make(map[string]html.Attribute)
 
-	ret.EditorCursor = image.Point{-1, -1}
+	ret.Cursor = image.Point{-1, -1}
 	return ret
 }
 
@@ -224,16 +224,16 @@ func (p *Node) SetRelativeCursor(relativeX, relativeY int) (int, int) {
 		relativeY = maxHeight - 1
 	}
 
-	p.EditorCursor.X = p.UIBlock.InnerArea.Min.X + p.UIBlock.X + relativeX
-	p.EditorCursor.Y = p.UIBlock.InnerArea.Min.Y + p.UIBlock.Y + relativeY
+	p.Cursor.X = p.UIBlock.InnerArea.Min.X + p.UIBlock.X + relativeX
+	p.Cursor.Y = p.UIBlock.InnerArea.Min.Y + p.UIBlock.Y + relativeY
 
-	utils.UISetCursor(p.EditorCursor.X, p.EditorCursor.Y)
+	utils.UISetCursor(p.Cursor.X, p.Cursor.Y)
 	p.uiRender()
 	return relativeX, relativeY
 }
 
 func (p *Node) ResumeCursor() {
-	utils.UISetCursor(p.EditorCursor.X, p.EditorCursor.Y)
+	utils.UISetCursor(p.Cursor.X, p.Cursor.Y)
 	p.uiRender()
 }
 

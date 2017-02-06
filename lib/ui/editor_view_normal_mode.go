@@ -5,7 +5,7 @@ import (
 	"strconv"
 )
 
-type NormalModeCommandHandler func(editModeCursor *EditorCursor)
+type NormalModeCommandHandler func(editModeCursor *EditorViewCursor)
 
 type EditorNormalModeCommand struct {
 	MatchKey interface{}
@@ -27,7 +27,7 @@ var (
 	_commandMatchKeyMoveRight             = regexp.MustCompile(`[^\d]*(\d*)l$`)
 )
 
-func (p *Editor) PrepareNormalMode() {
+func (p *EditorView) PrepareNormalMode() {
 	p.NormalModeCommands = []EditorNormalModeCommand{
 		{_commandMatchKeyEnterEditModeBackward, p.commandEnterEditModeBackward},
 		{_commandMatchKeyEnterEditModeForward, p.commandEnterEditModeForward},
@@ -44,7 +44,7 @@ func (p *Editor) PrepareNormalMode() {
 	}
 }
 
-func (p *Editor) NormalModeEnter(editModeCursor *EditorCursor) {
+func (p *EditorView) NormalModeEnter(editModeCursor *EditorViewCursor) {
 	p.Mode = EditorNormalMode
 	p.NormalModeCommandStack = ""
 	if editModeCursor.CellOffX >= len(editModeCursor.Line().Cells) {
@@ -56,7 +56,7 @@ func (p *Editor) NormalModeEnter(editModeCursor *EditorCursor) {
 	}
 }
 
-func (p *Editor) NormalModeWrite(editModeCursor *EditorCursor, keyStr string) {
+func (p *EditorView) NormalModeWrite(editModeCursor *EditorViewCursor, keyStr string) {
 	p.NormalModeCommandStack += keyStr
 	for _, cmd := range p.NormalModeCommands {
 		switch cmd.MatchKey.(type) {
@@ -85,77 +85,77 @@ func (p *Editor) NormalModeWrite(editModeCursor *EditorCursor, keyStr string) {
 	}
 }
 
-func (p *Editor) commandEnterEditModeBackward(editModeCursor *EditorCursor) {
+func (p *EditorView) commandEnterEditModeBackward(editModeCursor *EditorViewCursor) {
 	p.EditModeEnter(editModeCursor)
 }
 
-func (p *Editor) commandEnterEditModeForward(editModeCursor *EditorCursor) {
+func (p *EditorView) commandEnterEditModeForward(editModeCursor *EditorViewCursor) {
 	if len(editModeCursor.Line().Cells) > 0 {
 		editModeCursor.CellOffX++
 	}
 	p.EditModeEnter(editModeCursor)
 }
 
-func (p *Editor) commandEnterCommandMode(editModeCursor *EditorCursor) {
-	p.CommandModeEnter()
+func (p *EditorView) commandEnterCommandMode(editModeCursor *EditorViewCursor) {
+	p.Editor.CommandModeEnter()
 }
 
-func (p *Editor) commandUndo(editModeCursor *EditorCursor) {
+func (p *EditorView) commandUndo(editModeCursor *EditorViewCursor) {
 	p.ActionGroup.Undo(editModeCursor)
 }
 
-func (p *Editor) commandRedo(editModeCursor *EditorCursor) {
+func (p *EditorView) commandRedo(editModeCursor *EditorViewCursor) {
 	p.ActionGroup.Redo(editModeCursor)
 }
 
-func (p *Editor) commandMoveUpOneStep(editModeCursor *EditorCursor) {
-	p.NormalModeMoveCursorNRuneUp(editModeCursor, 1)
+func (p *EditorView) commandMoveUpOneStep(editModeCursor *EditorViewCursor) {
+	p.NormalModeMoveCursorUp(editModeCursor, 1)
 }
 
-func (p *Editor) commandMoveDownOneStep(editModeCursor *EditorCursor) {
-	p.NormalModeMoveCursorNRuneDown(editModeCursor, 1)
+func (p *EditorView) commandMoveDownOneStep(editModeCursor *EditorViewCursor) {
+	p.NormalModeMoveCursorDown(editModeCursor, 1)
 }
 
-func (p *Editor) commandBackspace(editModeCursor *EditorCursor) {
-	p.MoveCursorNRuneLeft(editModeCursor, editModeCursor.Line(), 1)
+func (p *EditorView) commandBackspace(editModeCursor *EditorViewCursor) {
+	p.MoveCursorLeft(editModeCursor, editModeCursor.Line(), 1)
 }
 
-func (p *Editor) commandMoveUp(editModeCursor *EditorCursor) {
+func (p *EditorView) commandMoveUp(editModeCursor *EditorViewCursor) {
 	_n := _commandMatchKeyMoveUp.FindSubmatch([]byte(p.NormalModeCommandStack))
 	n, err := strconv.Atoi(string(_n[1]))
 	if nil == err {
-		p.NormalModeMoveCursorNRuneUp(editModeCursor, n)
+		p.NormalModeMoveCursorUp(editModeCursor, n)
 	} else {
-		p.NormalModeMoveCursorNRuneUp(editModeCursor, 1)
+		p.NormalModeMoveCursorUp(editModeCursor, 1)
 	}
 }
 
-func (p *Editor) commandMoveDown(editModeCursor *EditorCursor) {
+func (p *EditorView) commandMoveDown(editModeCursor *EditorViewCursor) {
 	_n := _commandMatchKeyMoveDown.FindSubmatch([]byte(p.NormalModeCommandStack))
 	n, err := strconv.Atoi(string(_n[1]))
 	if nil == err {
-		p.NormalModeMoveCursorNRuneDown(editModeCursor, n)
+		p.NormalModeMoveCursorDown(editModeCursor, n)
 	} else {
-		p.NormalModeMoveCursorNRuneDown(editModeCursor, 1)
+		p.NormalModeMoveCursorDown(editModeCursor, 1)
 	}
 }
 
-func (p *Editor) commandMoveLeft(editModeCursor *EditorCursor) {
+func (p *EditorView) commandMoveLeft(editModeCursor *EditorViewCursor) {
 	_n := _commandMatchKeyMoveLeft.FindSubmatch([]byte(p.NormalModeCommandStack))
 	n, err := strconv.Atoi(string(_n[1]))
 	if nil == err {
-		p.MoveCursorNRuneLeft(editModeCursor, editModeCursor.Line(), n)
+		p.MoveCursorLeft(editModeCursor, editModeCursor.Line(), n)
 	} else {
-		p.MoveCursorNRuneLeft(editModeCursor, editModeCursor.Line(), 1)
+		p.MoveCursorLeft(editModeCursor, editModeCursor.Line(), 1)
 	}
 }
 
-func (p *Editor) commandMoveRight(editModeCursor *EditorCursor) {
+func (p *EditorView) commandMoveRight(editModeCursor *EditorViewCursor) {
 	_n := _commandMatchKeyMoveRight.FindSubmatch([]byte(p.NormalModeCommandStack))
 	n, err := strconv.Atoi(string(_n[1]))
 	if nil == err {
-		p.MoveCursorNRuneRight(editModeCursor, editModeCursor.Line(), n)
+		p.MoveCursorRight(editModeCursor, editModeCursor.Line(), n)
 	} else {
-		p.MoveCursorNRuneRight(editModeCursor, editModeCursor.Line(), 1)
+		p.MoveCursorRight(editModeCursor, editModeCursor.Line(), 1)
 	}
 }

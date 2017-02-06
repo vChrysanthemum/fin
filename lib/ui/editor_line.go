@@ -25,8 +25,8 @@ func (p *Editor) NewLine() *EditorLine {
 	}
 }
 
-func (p *Editor) EditModeAppendNewLine(editModeCursor *EditorCursor) *EditorLine {
-	ret := p.NewLine()
+func (p *EditorView) EditModeAppendNewLine(editModeCursor *EditorViewCursor) *EditorLine {
+	ret := p.Editor.NewLine()
 
 	if 0 == len(p.Lines) {
 		ret.Index = 0
@@ -82,7 +82,7 @@ func (p *Editor) EditModeAppendNewLine(editModeCursor *EditorCursor) *EditorLine
 
 // EditModeReduceLine 缩减指定行
 // 该操作将指定行数据追加到上一行中，然后删除指定行
-func (p *Editor) EditModeReduceLine(lineIndex int) {
+func (p *EditorView) EditModeReduceLine(lineIndex int) {
 	var line *EditorLine
 
 	if lineIndex <= 0 || lineIndex >= len(p.Lines) {
@@ -121,33 +121,20 @@ func (p *EditorLine) getEditorLinePrefix(lineIndex, lastEditorLineIndex int) str
 	return ""
 }
 
-func (p *EditorLine) Write(editModeCursor *EditorCursor, keyStr string) {
-	_off := 0
-
-	if editModeCursor.CellOffX >= len(p.Cells) {
-		_off = len(p.Data)
-		p.Data = append(p.Data, []byte(keyStr)...)
-		p.Cells = append(p.Cells, termui.Cell{[]rune(keyStr)[0], p.Editor.TextFgColor, p.Editor.TextBgColor, 0, 0, _off})
-
-	} else if 0 == editModeCursor.CellOffX {
-		_off = 0
-		p.Data = append([]byte(keyStr), p.Data...)
-		p.Cells = DefaultRawTextBuilder.Build(string(p.Data), p.Editor.TextFgColor, p.Editor.TextBgColor)
-
-	} else {
-		newData := make([]byte, len(p.Data)+len(keyStr))
-		_off = p.Cells[editModeCursor.CellOffX].BytesOff
-		copy(newData, p.Data[:_off])
-		copy(newData[_off:], []byte(keyStr))
-		copy(newData[_off+len(keyStr):], p.Data[_off:])
-		p.Data = newData
+func (p *EditorLine) CutAway(offStart, offEnd int) {
+	if offEnd > offStart {
+		if offEnd >= len(p.Data) {
+			p.Data = p.Data[:offStart]
+		} else if 0 == offStart {
+			p.Data = p.Data[offEnd:]
+		} else {
+			p.Data = append(p.Data[:offStart], p.Data[offEnd:]...)
+		}
 		p.Cells = DefaultRawTextBuilder.Build(string(p.Data), p.Editor.TextFgColor, p.Editor.TextBgColor)
 	}
-
-	editModeCursor.CellOffX++
 }
 
-func (p *EditorLine) CommandModeBackspace(commandModeCursor *EditorCursor) {
+func (p *EditorLine) CommandModeBackspace(commandModeCursor *EditorCommandCursor) {
 	if commandModeCursor.CellOffX > len(p.Cells) {
 		commandModeCursor.CellOffX = len(p.Cells)
 	}
@@ -167,7 +154,7 @@ func (p *EditorLine) CommandModeBackspace(commandModeCursor *EditorCursor) {
 	}
 }
 
-func (p *EditorLine) EditModeBackspace(editModeCursor *EditorCursor) {
+func (p *EditorLine) EditModeBackspace(editModeCursor *EditorViewCursor) {
 	if editModeCursor.CellOffX > len(p.Cells) {
 		editModeCursor.CellOffX = len(p.Cells)
 	}
@@ -194,17 +181,30 @@ func (p *EditorLine) EditModeBackspace(editModeCursor *EditorCursor) {
 	}
 }
 
-func (p *EditorLine) CutAway(offStart, offEnd int) {
-	if offEnd > offStart {
-		if offEnd >= len(p.Data) {
-			p.Data = p.Data[:offStart]
-		} else if 0 == offStart {
-			p.Data = p.Data[offEnd:]
-		} else {
-			p.Data = append(p.Data[:offStart], p.Data[offEnd:]...)
-		}
+func (p *EditorLine) Write(cursor *EditorCursor, keyStr string) {
+	_off := 0
+
+	if cursor.CellOffX >= len(p.Cells) {
+		_off = len(p.Data)
+		p.Data = append(p.Data, []byte(keyStr)...)
+		p.Cells = append(p.Cells, termui.Cell{[]rune(keyStr)[0], p.Editor.TextFgColor, p.Editor.TextBgColor, 0, 0, _off})
+
+	} else if 0 == cursor.CellOffX {
+		_off = 0
+		p.Data = append([]byte(keyStr), p.Data...)
+		p.Cells = DefaultRawTextBuilder.Build(string(p.Data), p.Editor.TextFgColor, p.Editor.TextBgColor)
+
+	} else {
+		newData := make([]byte, len(p.Data)+len(keyStr))
+		_off = p.Cells[cursor.CellOffX].BytesOff
+		copy(newData, p.Data[:_off])
+		copy(newData[_off:], []byte(keyStr))
+		copy(newData[_off+len(keyStr):], p.Data[_off:])
+		p.Data = newData
 		p.Cells = DefaultRawTextBuilder.Build(string(p.Data), p.Editor.TextFgColor, p.Editor.TextBgColor)
 	}
+
+	cursor.CellOffX++
 }
 
 func (p *EditorLine) CleanData(editModeCursor *EditorCursor) {

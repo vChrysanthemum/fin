@@ -7,16 +7,19 @@ func (p *Editor) PrepareCommandMode() {
 }
 
 func (p *Editor) CommandModeQuit() {
-	p.CommandModeBuf.CleanData(p.CommandModeCursor)
+	p.CommandModeBuf.CleanData(p.CommandModeCursor.EditorCursor)
 }
 
 func (p *Editor) CommandModeEnter() {
 	p.Mode = EditorCommandMode
-	p.CommandModeBuf.CleanData(p.CommandModeCursor)
+	p.CommandModeBuf.CleanData(p.CommandModeCursor.EditorCursor)
 	p.CommandModeWrite(p.EditModeCursor, p.CommandModeCursor, ":")
 }
 
-func (p *Editor) CommandModeWrite(editModeCursor, commandModeCursor *EditorCursor, keyStr string) {
+func (p *Editor) CommandModeWrite(
+	editModeCursor *EditorViewCursor,
+	commandModeCursor *EditorCommandCursor,
+	keyStr string) {
 	p.CommandModeBuf.ContentStartX = p.InnerArea.Min.X
 	p.CommandModeBuf.ContentStartY = p.CommandModeBufAreaY
 
@@ -28,10 +31,10 @@ func (p *Editor) CommandModeWrite(editModeCursor, commandModeCursor *EditorCurso
 		p.CommandModeBuf.CommandModeBackspace(commandModeCursor)
 
 	} else if "<left>" == keyStr {
-		p.MoveCursorNRuneLeft(commandModeCursor, p.CommandModeBuf, 1)
+		p.MoveCommandCursorLeft(commandModeCursor, p.CommandModeBuf, 1)
 
 	} else if "<right>" == keyStr {
-		p.MoveCursorNRuneRight(commandModeCursor, p.CommandModeBuf, 1)
+		p.MoveCommandCursorRight(commandModeCursor, p.CommandModeBuf, 1)
 
 	} else {
 		if "<space>" == keyStr {
@@ -39,13 +42,13 @@ func (p *Editor) CommandModeWrite(editModeCursor, commandModeCursor *EditorCurso
 		} else if "<tab>" == keyStr {
 			keyStr = "\t"
 		}
-		p.CommandModeBuf.Write(commandModeCursor, keyStr)
+		p.CommandModeBuf.Write(commandModeCursor.EditorCursor, keyStr)
 	}
 
 	p.isShouldRefreshCommandModeBuf = true
 }
 
-func (p *Editor) RefreshCommandModeBuf(commandModeCursor *EditorCursor) {
+func (p *Editor) RefreshCommandModeBuf(commandModeCursor *EditorCommandCursor) {
 	var x, y, n int
 
 	maxY := p.CommandModeBufAreaY + p.CommandModeBufAreaHeight
