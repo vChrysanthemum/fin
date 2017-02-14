@@ -25,24 +25,24 @@ func (p *Editor) NewLine() *EditorLine {
 	}
 }
 
-func (p *EditorView) EditModeAppendNewLine(editModeCursor *EditorViewCursor) *EditorLine {
+func (p *EditorView) InputModeAppendNewLine(inputModeCursor *EditorViewCursor) *EditorLine {
 	ret := p.Editor.NewLine()
 
 	if 0 == len(p.Lines) {
 		ret.Index = 0
 		p.Lines = append(p.Lines, ret)
-		editModeCursor.LineIndex = ret.Index
+		inputModeCursor.LineIndex = ret.Index
 
-	} else if editModeCursor.LineIndex == len(p.Lines)-1 {
+	} else if inputModeCursor.LineIndex == len(p.Lines)-1 {
 		ret.Index = len(p.Lines)
 		p.Lines = append(p.Lines, ret)
-		editModeCursor.LineIndex = ret.Index
+		inputModeCursor.LineIndex = ret.Index
 
 	} else {
-		for _, line := range p.Lines[editModeCursor.LineIndex+1:] {
+		for _, line := range p.Lines[inputModeCursor.LineIndex+1:] {
 			line.Index++
 		}
-		ret.Index = editModeCursor.LineIndex + 1
+		ret.Index = inputModeCursor.LineIndex + 1
 
 		n := len(p.Lines) + 1
 		if cap(p.Lines) < n {
@@ -52,23 +52,23 @@ func (p *EditorView) EditModeAppendNewLine(editModeCursor *EditorViewCursor) *Ed
 		}
 		p.Lines = p.Lines[:n]
 
-		copy(p.Lines[editModeCursor.LineIndex+2:], p.Lines[editModeCursor.LineIndex+1:])
-		copy(p.Lines[editModeCursor.LineIndex+1:], []*EditorLine{ret})
-		editModeCursor.LineIndex = ret.Index
+		copy(p.Lines[inputModeCursor.LineIndex+2:], p.Lines[inputModeCursor.LineIndex+1:])
+		copy(p.Lines[inputModeCursor.LineIndex+1:], []*EditorLine{ret})
+		inputModeCursor.LineIndex = ret.Index
 	}
 
-	if editModeCursor.LineIndex > 0 {
-		line := p.Lines[editModeCursor.LineIndex-1]
-		if editModeCursor.CellOffX < len(line.Cells) {
-			editModeCursor.Line().Data =
-				make([]byte, len(line.Data[line.Cells[editModeCursor.CellOffX].BytesOff:]))
+	if inputModeCursor.LineIndex > 0 {
+		line := p.Lines[inputModeCursor.LineIndex-1]
+		if inputModeCursor.CellOffX < len(line.Cells) {
+			inputModeCursor.Line().Data =
+				make([]byte, len(line.Data[line.Cells[inputModeCursor.CellOffX].BytesOff:]))
 
 			copy(
-				editModeCursor.Line().Data,
-				line.Data[line.Cells[editModeCursor.CellOffX].BytesOff:])
+				inputModeCursor.Line().Data,
+				line.Data[line.Cells[inputModeCursor.CellOffX].BytesOff:])
 
-			line.Data = line.Data[:line.Cells[editModeCursor.CellOffX].BytesOff]
-			editModeCursor.CellOffX = 0
+			line.Data = line.Data[:line.Cells[inputModeCursor.CellOffX].BytesOff]
+			inputModeCursor.CellOffX = 0
 		}
 	}
 
@@ -80,9 +80,9 @@ func (p *EditorView) EditModeAppendNewLine(editModeCursor *EditorViewCursor) *Ed
 	return ret
 }
 
-// EditModeReduceLine 缩减指定行
+// InputModeReduceLine 缩减指定行
 // 该操作将指定行数据追加到上一行中，然后删除指定行
-func (p *EditorView) EditModeReduceLine(lineIndex int) {
+func (p *EditorView) InputModeReduceLine(lineIndex int) {
 	var line *EditorLine
 
 	if lineIndex <= 0 || lineIndex >= len(p.Lines) {
@@ -102,7 +102,29 @@ func (p *EditorView) EditModeReduceLine(lineIndex int) {
 	return
 }
 
-// 获取 line 内容前缀
+// RemoveLines 删除 Editor.Lines 中的几行
+func (p *EditorView) RemoveLines(lineIndex, linesNum int) {
+	if linesNum <= 0 || lineIndex >= len(p.Lines) {
+		return
+	}
+
+	if lineIndex+linesNum > len(p.Lines) {
+		linesNum = len(p.Lines) - lineIndex
+	}
+
+	for _, line := range p.Lines[lineIndex:] {
+		line.Index -= linesNum
+	}
+
+	if 0 == lineIndex {
+		p.Lines = []*EditorLine{p.Lines[0]}
+		p.Lines[0].Data = []byte{}
+	} else {
+		p.Lines = append(p.Lines[:lineIndex], p.Lines[lineIndex+linesNum:]...)
+	}
+}
+
+// getEditorLinePrefix 获取 line 内容前缀
 //
 // param:
 //		lineIndex				int		 目标 line 的相应 Editor.Lines 中的index
@@ -134,50 +156,50 @@ func (p *EditorLine) CutAway(offStart, offEnd int) {
 	}
 }
 
-func (p *EditorLine) CommandModeBackspace(commandModeCursor *EditorCommandCursor) {
-	if commandModeCursor.CellOffX > len(p.Cells) {
-		commandModeCursor.CellOffX = len(p.Cells)
+func (p *EditorLine) LastLineModeBackspace(lastLineModeCursor *EditorCommandCursor) {
+	if lastLineModeCursor.CellOffX > len(p.Cells) {
+		lastLineModeCursor.CellOffX = len(p.Cells)
 	}
 
-	if commandModeCursor.CellOffX <= 1 {
+	if lastLineModeCursor.CellOffX <= 1 {
 		return
 	}
 
-	if commandModeCursor.CellOffX == len(p.Cells) {
-		p.Data = p.Data[:p.Cells[commandModeCursor.CellOffX-1].BytesOff]
-		commandModeCursor.CellOffX--
+	if lastLineModeCursor.CellOffX == len(p.Cells) {
+		p.Data = p.Data[:p.Cells[lastLineModeCursor.CellOffX-1].BytesOff]
+		lastLineModeCursor.CellOffX--
 
 	} else {
-		p.Data = append(p.Data[:p.Cells[commandModeCursor.CellOffX-1].BytesOff],
-			p.Data[p.Cells[commandModeCursor.CellOffX].BytesOff:]...)
-		commandModeCursor.CellOffX--
+		p.Data = append(p.Data[:p.Cells[lastLineModeCursor.CellOffX-1].BytesOff],
+			p.Data[p.Cells[lastLineModeCursor.CellOffX].BytesOff:]...)
+		lastLineModeCursor.CellOffX--
 	}
 }
 
-func (p *EditorLine) EditModeBackspace(editModeCursor *EditorViewCursor) {
-	if editModeCursor.CellOffX > len(p.Cells) {
-		editModeCursor.CellOffX = len(p.Cells)
+func (p *EditorLine) InputModeBackspace(inputModeCursor *EditorViewCursor) {
+	if inputModeCursor.CellOffX > len(p.Cells) {
+		inputModeCursor.CellOffX = len(p.Cells)
 	}
 
-	if len(p.Editor.Lines) <= 1 && 0 == editModeCursor.CellOffX {
+	if len(p.Editor.Lines) <= 1 && 0 == inputModeCursor.CellOffX {
 		return
 	}
 
-	if 0 == editModeCursor.CellOffX {
-		if editModeCursor.LineIndex > 0 {
-			p.Editor.EditModeReduceLine(editModeCursor.LineIndex)
-			editModeCursor.LineIndex--
-			editModeCursor.CellOffX = len(editModeCursor.Line().Cells)
+	if 0 == inputModeCursor.CellOffX {
+		if inputModeCursor.LineIndex > 0 {
+			p.Editor.InputModeReduceLine(inputModeCursor.LineIndex)
+			inputModeCursor.LineIndex--
+			inputModeCursor.CellOffX = len(inputModeCursor.Line().Cells)
 		}
 
-	} else if editModeCursor.CellOffX == len(p.Cells) {
-		p.Data = p.Data[:p.Cells[editModeCursor.CellOffX-1].BytesOff]
-		editModeCursor.CellOffX--
+	} else if inputModeCursor.CellOffX == len(p.Cells) {
+		p.Data = p.Data[:p.Cells[inputModeCursor.CellOffX-1].BytesOff]
+		inputModeCursor.CellOffX--
 
 	} else {
-		p.Data = append(p.Data[:p.Cells[editModeCursor.CellOffX-1].BytesOff],
-			p.Data[p.Cells[editModeCursor.CellOffX].BytesOff:]...)
-		editModeCursor.CellOffX--
+		p.Data = append(p.Data[:p.Cells[inputModeCursor.CellOffX-1].BytesOff],
+			p.Data[p.Cells[inputModeCursor.CellOffX].BytesOff:]...)
+		inputModeCursor.CellOffX--
 	}
 }
 
@@ -207,8 +229,8 @@ func (p *EditorLine) Write(cursor *EditorCursor, keyStr string) {
 	cursor.CellOffX++
 }
 
-func (p *EditorLine) CleanData(editModeCursor *EditorCursor) {
-	editModeCursor.CellOffX = 0
+func (p *EditorLine) CleanData(inputModeCursor *EditorCursor) {
+	inputModeCursor.CellOffX = 0
 	p.Data = []byte{}
 	p.Cells = []termui.Cell{}
 }

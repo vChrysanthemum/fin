@@ -11,9 +11,9 @@ type EditorActionGroup struct {
 }
 
 type EditorAction interface {
-	Apply(editModeCursor *EditorViewCursor, keyStr string)
-	Redo(editModeCursor *EditorViewCursor)
-	Undo(editModeCursor *EditorViewCursor)
+	Apply(inputModeCursor *EditorViewCursor, keyStr string)
+	Redo(inputModeCursor *EditorViewCursor)
+	Undo(inputModeCursor *EditorViewCursor)
 }
 
 func NewEditorActionGroup(editorView *EditorView) *EditorActionGroup {
@@ -30,27 +30,27 @@ func (p *EditorActionGroup) makeStatePrepareWrite() {
 	p.State = EditorActionStatePrepareWrite
 }
 
-func (p *EditorActionGroup) Write(editModeCursor *EditorViewCursor, keyStr string) {
+func (p *EditorActionGroup) Write(inputModeCursor *EditorViewCursor, keyStr string) {
 	switch p.EditorView.Mode {
-	case EditorEditMode:
+	case EditorInputMode:
 		switch keyStr {
 		case "<left>":
-			editModeCursor.CellOffXVertical = 0
+			inputModeCursor.CellOffXVertical = 0
 			p.makeStatePrepareWrite()
-			p.EditorView.MoveCursorLeft(editModeCursor, editModeCursor.Line(), 1)
+			p.EditorView.MoveCursorLeft(inputModeCursor, inputModeCursor.Line(), 1)
 
 		case "<right>":
-			editModeCursor.CellOffXVertical = 0
+			inputModeCursor.CellOffXVertical = 0
 			p.makeStatePrepareWrite()
-			p.EditorView.MoveCursorRight(editModeCursor, editModeCursor.Line(), 1)
+			p.EditorView.MoveCursorRight(inputModeCursor, inputModeCursor.Line(), 1)
 
 		case "<up>":
 			p.makeStatePrepareWrite()
-			p.EditorView.EditModeMoveCursorUp(editModeCursor, 1)
+			p.EditorView.InputModeMoveCursorUp(inputModeCursor, 1)
 
 		case "<down>":
 			p.makeStatePrepareWrite()
-			p.EditorView.EditModeMoveCursorDown(editModeCursor, 1)
+			p.EditorView.InputModeMoveCursorDown(inputModeCursor, 1)
 
 		default:
 			if "<space>" == keyStr {
@@ -61,52 +61,52 @@ func (p *EditorActionGroup) Write(editModeCursor *EditorViewCursor, keyStr strin
 
 			if false == p.EditorView.IsModifiable {
 				p.EditorView.Editor.CommandShowError(EditorErrNotModifiable)
-				p.EditorView.NormalModeEnter(editModeCursor)
+				p.EditorView.CommandModeEnter(inputModeCursor)
 
 			} else {
-				editModeCursor.CellOffXVertical = 0
+				inputModeCursor.CellOffXVertical = 0
 
 				if EditorActionStateWrite != p.State {
-					p.AllocNewEditorActionInsert(editModeCursor)
+					p.AllocNewEditorActionInsert(inputModeCursor)
 					p.State = EditorActionStateWrite
 				}
-				p.CurrentUndoAction.Value.(EditorAction).Apply(editModeCursor, keyStr)
+				p.CurrentUndoAction.Value.(EditorAction).Apply(inputModeCursor, keyStr)
 
-				p.EditorView.EditModeWrite(editModeCursor, keyStr)
+				p.EditorView.InputModeWrite(inputModeCursor, keyStr)
 			}
 		}
 
-	case EditorNormalMode:
-		p.EditorView.NormalModeWrite(p.EditorView.EditModeCursor, keyStr)
+	case EditorCommandMode:
+		p.EditorView.CommandModeWrite(p.EditorView.InputModeCursor, keyStr)
 	}
 }
 
-func (p *EditorActionGroup) Undo(editModeCursor *EditorViewCursor) {
+func (p *EditorActionGroup) Undo(inputModeCursor *EditorViewCursor) {
 	if p.Actions.Len() <= 0 || nil == p.CurrentUndoAction {
 		return
 	}
 
-	p.CurrentUndoAction.Value.(EditorAction).Undo(editModeCursor)
+	p.CurrentUndoAction.Value.(EditorAction).Undo(inputModeCursor)
 	p.CurrentRedoAction = p.CurrentUndoAction
 	p.CurrentUndoAction = p.CurrentUndoAction.Prev()
-	p.EditorView.isShouldRefreshEditModeBuf = true
+	p.EditorView.isShouldRefreshInputModeBuf = true
 
-	if editModeCursor.LineIndex > editModeCursor.DisplayLinesBottomIndex {
-		editModeCursor.DisplayLinesTopIndex = editModeCursor.LineIndex
+	if inputModeCursor.LineIndex > inputModeCursor.DisplayLinesBottomIndex {
+		inputModeCursor.DisplayLinesTopIndex = inputModeCursor.LineIndex
 	}
 }
 
-func (p *EditorActionGroup) Redo(editModeCursor *EditorViewCursor) {
+func (p *EditorActionGroup) Redo(inputModeCursor *EditorViewCursor) {
 	if p.Actions.Len() <= 0 || nil == p.CurrentRedoAction {
 		return
 	}
 
-	p.CurrentRedoAction.Value.(EditorAction).Redo(editModeCursor)
+	p.CurrentRedoAction.Value.(EditorAction).Redo(inputModeCursor)
 	p.CurrentUndoAction = p.CurrentRedoAction
 	p.CurrentRedoAction = p.CurrentRedoAction.Next()
-	p.EditorView.isShouldRefreshEditModeBuf = true
+	p.EditorView.isShouldRefreshInputModeBuf = true
 
-	if editModeCursor.LineIndex > editModeCursor.DisplayLinesBottomIndex {
-		editModeCursor.DisplayLinesTopIndex = editModeCursor.LineIndex
+	if inputModeCursor.LineIndex > inputModeCursor.DisplayLinesBottomIndex {
+		inputModeCursor.DisplayLinesTopIndex = inputModeCursor.LineIndex
 	}
 }

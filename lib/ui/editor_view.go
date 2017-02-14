@@ -13,19 +13,20 @@ type EditorView struct {
 
 	Mode EditorMode
 
-	// NormalMode
-	NormalModeCommands     []EditorNormalModeCommand
-	NormalModeCommandStack string
+	// CommandMode
+	CommandModeCommands     []EditorCommandModeCommand
+	CommandModeCommandStack string
+	TmpLinesBuf             *EditorTmpLinesBuf
 
-	// EditMode
+	// InputMode
 	isDisplayEditorLineNumber bool
 	Lines                     []*EditorLine
-	EditModeCursor            *EditorViewCursor
-	EditModeBufAreaHeight     int
+	InputModeCursor           *EditorViewCursor
+	InputModeBufAreaHeight    int
 	ActionGroup               *EditorActionGroup
 
-	isShouldRefreshEditModeBuf    bool
-	isShouldRefreshCommandModeBuf bool
+	isShouldRefreshInputModeBuf    bool
+	isShouldRefreshLastLineModeBuf bool
 
 	IsModifiable bool
 }
@@ -42,10 +43,10 @@ func NewEditorView(editor *Editor) *EditorView {
 
 	ret.Mode = EditorModeNone
 
-	ret.PrepareNormalMode()
-	ret.PrepareEditMode()
+	ret.PrepareCommandMode()
+	ret.PrepareInputMode()
 
-	ret.EditModeCursor = NewEditorViewCursor(ret)
+	ret.InputModeCursor = NewEditorViewCursor(ret)
 
 	ret.ActionGroup = NewEditorActionGroup(ret)
 
@@ -55,23 +56,23 @@ func NewEditorView(editor *Editor) *EditorView {
 }
 
 func (p *EditorView) RefreshBuf() {
-	if true == p.isShouldRefreshCommandModeBuf {
-		p.Editor.RefreshCommandModeBuf(p.Editor.CommandModeCursor)
+	if true == p.isShouldRefreshLastLineModeBuf {
+		p.Editor.RefreshLastLineModeBuf(p.Editor.LastLineModeCursor)
 	}
 
-	if true == p.isShouldRefreshEditModeBuf {
-		p.RefreshEditModeBuf(p.EditModeCursor)
+	if true == p.isShouldRefreshInputModeBuf {
+		p.RefreshInputModeBuf(p.InputModeCursor)
 	}
 
-	if true == p.isShouldRefreshCommandModeBuf || true == p.isShouldRefreshEditModeBuf {
+	if true == p.isShouldRefreshLastLineModeBuf || true == p.isShouldRefreshInputModeBuf {
 		for point, c := range p.Editor.Buf.CellMap {
 			termbox.SetCell(point.X, point.Y, c.Ch, toTmAttr(c.Fg), toTmAttr(c.Bg))
 		}
 	}
 
-	editModeCursor := p.EditModeCursor
-	if editModeCursor.LineIndex > editModeCursor.DisplayLinesBottomIndex {
-		editModeCursor.LineIndex = editModeCursor.DisplayLinesBottomIndex
+	inputModeCursor := p.InputModeCursor
+	if inputModeCursor.LineIndex > inputModeCursor.DisplayLinesBottomIndex {
+		inputModeCursor.LineIndex = inputModeCursor.DisplayLinesBottomIndex
 	}
 
 	return

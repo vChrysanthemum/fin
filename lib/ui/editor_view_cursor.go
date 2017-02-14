@@ -26,7 +26,7 @@ func NewEditorViewCursor(editorView *EditorView) *EditorViewCursor {
 	return ret
 }
 
-func (p *EditorView) EditModeMoveCursorUp(cursor *EditorViewCursor, runenum int) {
+func (p *EditorView) InputModeMoveCursorUp(cursor *EditorViewCursor, runenum int) {
 	if runenum <= 0 {
 		return
 	}
@@ -45,7 +45,7 @@ func (p *EditorView) EditModeMoveCursorUp(cursor *EditorViewCursor, runenum int)
 
 	if index < cursor.DisplayLinesTopIndex {
 		cursor.DisplayLinesTopIndex = index
-		p.isShouldRefreshEditModeBuf = true
+		p.isShouldRefreshInputModeBuf = true
 	}
 
 	if 0 == len(line.Cells) {
@@ -75,7 +75,7 @@ func (p *EditorView) EditModeMoveCursorUp(cursor *EditorViewCursor, runenum int)
 	}
 }
 
-func (p *EditorView) NormalModeMoveCursorUp(cursor *EditorViewCursor, runenum int) {
+func (p *EditorView) CommandModeMoveCursorUp(cursor *EditorViewCursor, runenum int) {
 	if runenum <= 0 {
 		return
 	}
@@ -94,7 +94,7 @@ func (p *EditorView) NormalModeMoveCursorUp(cursor *EditorViewCursor, runenum in
 
 	if index < cursor.DisplayLinesTopIndex {
 		cursor.DisplayLinesTopIndex = index
-		p.isShouldRefreshEditModeBuf = true
+		p.isShouldRefreshInputModeBuf = true
 	}
 
 	if 0 == len(line.Cells) {
@@ -122,7 +122,7 @@ func (p *EditorView) NormalModeMoveCursorUp(cursor *EditorViewCursor, runenum in
 	}
 }
 
-func (p *EditorView) EditModeMoveCursorDown(cursor *EditorViewCursor, runenum int) {
+func (p *EditorView) InputModeMoveCursorDown(cursor *EditorViewCursor, runenum int) {
 	if runenum <= 0 {
 		return
 	}
@@ -141,7 +141,7 @@ func (p *EditorView) EditModeMoveCursorDown(cursor *EditorViewCursor, runenum in
 
 	if index > cursor.DisplayLinesBottomIndex {
 		cursor.DisplayLinesTopIndex += (index - cursor.DisplayLinesBottomIndex)
-		p.isShouldRefreshEditModeBuf = true
+		p.isShouldRefreshInputModeBuf = true
 	}
 
 	if 0 == len(line.Cells) {
@@ -171,7 +171,7 @@ func (p *EditorView) EditModeMoveCursorDown(cursor *EditorViewCursor, runenum in
 	}
 }
 
-func (p *EditorView) NormalModeMoveCursorDown(cursor *EditorViewCursor, runenum int) {
+func (p *EditorView) CommandModeMoveCursorDown(cursor *EditorViewCursor, runenum int) {
 	if runenum <= 0 {
 		return
 	}
@@ -190,7 +190,7 @@ func (p *EditorView) NormalModeMoveCursorDown(cursor *EditorViewCursor, runenum 
 
 	if index > cursor.DisplayLinesBottomIndex {
 		cursor.DisplayLinesTopIndex += (index - cursor.DisplayLinesBottomIndex)
-		p.isShouldRefreshEditModeBuf = true
+		p.isShouldRefreshInputModeBuf = true
 	}
 
 	if 0 == len(line.Cells) {
@@ -252,12 +252,12 @@ func (p *EditorView) MoveCursorRight(cursor *EditorViewCursor, line *EditorLine,
 	cursor.CellOffX += runenum
 	if cursor.CellOffX >= len(line.Cells) {
 		switch p.Mode {
-		case EditorNormalMode:
+		case EditorCommandMode:
 			cursor.CellOffX = len(line.Cells) - 1
 			cell := line.Cells[cursor.CellOffX]
 			cursor.UISetCursor(cell.X, cell.Y)
 
-		case EditorEditMode:
+		case EditorInputMode:
 			cursor.CellOffX = len(line.Cells)
 			cell := line.Cells[cursor.CellOffX-1]
 			cursor.UISetCursor(cell.X+cell.Width(), cell.Y)
@@ -300,9 +300,9 @@ func (p *EditorViewCursor) RefreshCursorByEditorLine(line *EditorLine) {
 		if y >= p.EditorView.Block.InnerArea.Max.Y {
 			y = p.EditorView.Block.InnerArea.Max.Y - 1
 			switch p.EditorView.Mode {
-			case EditorEditMode:
+			case EditorInputMode:
 				p.DisplayLinesTopIndex++
-				p.EditorView.isShouldRefreshEditModeBuf = true
+				p.EditorView.isShouldRefreshInputModeBuf = true
 			}
 		}
 

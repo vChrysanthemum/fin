@@ -4,15 +4,18 @@ import "errors"
 
 const (
 	EditorModeNone = iota
-	EditorNormalMode
-	EditorEditMode
 	EditorCommandMode
+	EditorInputMode
+	EditorLastLineMode
 
 	EditorActionStatePrepareWrite = iota
 	EditorActionStateWrite
 
 	EditorActionTypeInsert = iota
 	EditorActionTypeDelete
+
+	EditorErrNotModifiableTypeLines = iota
+	EditorErrNotModifiableTypeMark
 )
 
 var (

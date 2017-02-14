@@ -11,12 +11,12 @@ type EditorActionInsert struct {
 	DeletedData       []string
 }
 
-func (p *EditorActionGroup) AllocNewEditorActionInsert(editModeCursor *EditorViewCursor) *EditorActionInsert {
+func (p *EditorActionGroup) AllocNewEditorActionInsert(inputModeCursor *EditorViewCursor) *EditorActionInsert {
 	ret := &EditorActionInsert{
 		EditorView:        p.EditorView,
 		EditorActionGroup: p,
-		StartCellOffX:     editModeCursor.CellOffX,
-		StartLineIndex:    editModeCursor.LineIndex,
+		StartCellOffX:     inputModeCursor.CellOffX,
+		StartLineIndex:    inputModeCursor.LineIndex,
 	}
 
 	if nil == p.CurrentUndoAction && p.Actions.Len() > 0 {
@@ -33,19 +33,19 @@ func (p *EditorActionGroup) AllocNewEditorActionInsert(editModeCursor *EditorVie
 	return ret
 }
 
-func (p *EditorActionInsert) Apply(editModeCursor *EditorViewCursor, keyStr string) {
+func (p *EditorActionInsert) Apply(inputModeCursor *EditorViewCursor, keyStr string) {
 	if "C-8" == keyStr {
 		if len(p.InsertData) > 0 {
 			p.InsertData = p.InsertData[:len(p.InsertData)-1]
 
 		} else {
-			if editModeCursor.CellOffX == 0 && 1 == len(p.EditorView.Lines) {
+			if inputModeCursor.CellOffX == 0 && 1 == len(p.EditorView.Lines) {
 
-			} else if editModeCursor.CellOffX == 0 && len(p.EditorView.Lines) > 1 {
+			} else if inputModeCursor.CellOffX == 0 && len(p.EditorView.Lines) > 1 {
 				p.DeletedData = append([]string{"<enter>"}, p.DeletedData...)
 
-			} else if editModeCursor.CellOffX > 0 {
-				cursor := editModeCursor
+			} else if inputModeCursor.CellOffX > 0 {
+				cursor := inputModeCursor
 				line := cursor.Line()
 				var str string
 				if cursor.CellOffX >= len(line.Cells) {
@@ -73,10 +73,10 @@ func (p *EditorActionInsert) Apply(editModeCursor *EditorViewCursor, keyStr stri
 	}
 }
 
-func (p *EditorActionInsert) Redo(editModeCursor *EditorViewCursor) {
-	if p.StartLineIndex > editModeCursor.DisplayLinesBottomIndex {
-		editModeCursor.DisplayLinesTopIndex = p.StartLineIndex
-		p.EditorView.RefreshEditModeBuf(editModeCursor)
+func (p *EditorActionInsert) Redo(inputModeCursor *EditorViewCursor) {
+	if p.StartLineIndex > inputModeCursor.DisplayLinesBottomIndex {
+		inputModeCursor.DisplayLinesTopIndex = p.StartLineIndex
+		p.EditorView.RefreshInputModeBuf(inputModeCursor)
 	}
 
 	var (
@@ -99,7 +99,7 @@ func (p *EditorActionInsert) Redo(editModeCursor *EditorViewCursor) {
 	for n < len(p.DeletedData) {
 		for _, ch := range p.DeletedData[n:] {
 			if "<enter>" == ch {
-				p.EditorView.EditModeReduceLine(lineIndex + 1)
+				p.EditorView.InputModeReduceLine(lineIndex + 1)
 				line.CutAway(offStart, offEnd)
 
 				offEnd = offStart
@@ -118,31 +118,31 @@ func (p *EditorActionInsert) Redo(editModeCursor *EditorViewCursor) {
 	INSERT_DATA_NEXT_LINE:
 	}
 
-	editModeCursor.LineIndex = p.StartLineIndex
-	editModeCursor.CellOffX = p.StartCellOffX
+	inputModeCursor.LineIndex = p.StartLineIndex
+	inputModeCursor.CellOffX = p.StartCellOffX
 	for _, ch := range p.InsertData {
 		if "<enter>" == ch {
-			p.EditorView.EditModeAppendNewLine(editModeCursor)
+			p.EditorView.InputModeAppendNewLine(inputModeCursor)
 		} else {
-			editModeCursor.Line().Write(editModeCursor.EditorCursor, ch)
+			inputModeCursor.Line().Write(inputModeCursor.EditorCursor, ch)
 		}
 	}
 
-	editModeCursor.LineIndex = p.StartLineIndex
-	editModeCursor.CellOffX = p.StartCellOffX
+	inputModeCursor.LineIndex = p.StartLineIndex
+	inputModeCursor.CellOffX = p.StartCellOffX
 
-	line = editModeCursor.Line()
-	if len(line.Cells) > 0 && editModeCursor.CellOffX >= len(line.Cells) {
-		editModeCursor.CellOffX = len(line.Cells) - 1
+	line = inputModeCursor.Line()
+	if len(line.Cells) > 0 && inputModeCursor.CellOffX >= len(line.Cells) {
+		inputModeCursor.CellOffX = len(line.Cells) - 1
 	}
 
-	p.EditorView.isShouldRefreshEditModeBuf = true
+	p.EditorView.isShouldRefreshInputModeBuf = true
 }
 
-func (p *EditorActionInsert) Undo(editModeCursor *EditorViewCursor) {
-	if p.StartLineIndex > editModeCursor.DisplayLinesBottomIndex {
-		editModeCursor.DisplayLinesTopIndex = p.StartLineIndex
-		p.EditorView.RefreshEditModeBuf(editModeCursor)
+func (p *EditorActionInsert) Undo(inputModeCursor *EditorViewCursor) {
+	if p.StartLineIndex > inputModeCursor.DisplayLinesBottomIndex {
+		inputModeCursor.DisplayLinesTopIndex = p.StartLineIndex
+		p.EditorView.RefreshInputModeBuf(inputModeCursor)
 	}
 
 	var (
@@ -165,7 +165,7 @@ func (p *EditorActionInsert) Undo(editModeCursor *EditorViewCursor) {
 	for n < len(p.InsertData) {
 		for _, ch := range p.InsertData[n:] {
 			if "<enter>" == ch {
-				p.EditorView.EditModeReduceLine(lineIndex + 1)
+				p.EditorView.InputModeReduceLine(lineIndex + 1)
 				line.CutAway(offStart, offEnd)
 
 				offEnd = offStart
@@ -184,23 +184,23 @@ func (p *EditorActionInsert) Undo(editModeCursor *EditorViewCursor) {
 	INSERT_DATA_NEXT_LINE:
 	}
 
-	editModeCursor.LineIndex = p.StartLineIndex
-	editModeCursor.CellOffX = p.StartCellOffX
+	inputModeCursor.LineIndex = p.StartLineIndex
+	inputModeCursor.CellOffX = p.StartCellOffX
 	for _, ch := range p.DeletedData {
 		if "<enter>" == ch {
-			p.EditorView.EditModeAppendNewLine(editModeCursor)
+			p.EditorView.InputModeAppendNewLine(inputModeCursor)
 		} else {
-			editModeCursor.Line().Write(editModeCursor.EditorCursor, ch)
+			inputModeCursor.Line().Write(inputModeCursor.EditorCursor, ch)
 		}
 	}
 
-	editModeCursor.LineIndex = p.StartLineIndex
-	editModeCursor.CellOffX = p.StartCellOffX
+	inputModeCursor.LineIndex = p.StartLineIndex
+	inputModeCursor.CellOffX = p.StartCellOffX
 
-	line = editModeCursor.Line()
-	if len(line.Cells) > 0 && editModeCursor.CellOffX >= len(line.Cells) {
-		editModeCursor.CellOffX = len(line.Cells) - 1
+	line = inputModeCursor.Line()
+	if len(line.Cells) > 0 && inputModeCursor.CellOffX >= len(line.Cells) {
+		inputModeCursor.CellOffX = len(line.Cells) - 1
 	}
 
-	p.EditorView.isShouldRefreshEditModeBuf = true
+	p.EditorView.isShouldRefreshInputModeBuf = true
 }

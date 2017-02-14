@@ -12,7 +12,7 @@ func (p *Editor) handleKeyEvent(keyStr string) (isQuitActiveMode bool) {
 	isQuitActiveMode = false
 
 	if 0 == len(p.Lines) {
-		p.EditModeAppendNewLine(p.EditModeCursor)
+		p.InputModeAppendNewLine(p.InputModeCursor)
 	}
 
 	switch keyStr {
@@ -20,26 +20,26 @@ func (p *Editor) handleKeyEvent(keyStr string) (isQuitActiveMode bool) {
 		p.ActionGroup.makeStatePrepareWrite()
 
 		switch p.EditorView.Mode {
-		case EditorNormalMode:
+		case EditorCommandMode:
 			isQuitActiveMode = true
 			utils.UISetCursor(-1, -1)
 
-		case EditorEditMode:
-			p.NormalModeEnter(p.EditModeCursor)
+		case EditorInputMode:
+			p.CommandModeEnter(p.InputModeCursor)
 
-		case EditorCommandMode:
-			p.CommandModeQuit()
-			p.NormalModeEnter(p.EditModeCursor)
+		case EditorLastLineMode:
+			p.LastLineModeQuit()
+			p.CommandModeEnter(p.InputModeCursor)
 		}
 
-		p.isShouldRefreshCommandModeBuf = true
+		p.isShouldRefreshLastLineModeBuf = true
 
 	default:
 		switch p.Mode {
-		case EditorCommandMode:
-			p.CommandModeWrite(p.EditModeCursor, p.CommandModeCursor, keyStr)
+		case EditorLastLineMode:
+			p.LastLineModeWrite(p.InputModeCursor, p.LastLineModeCursor, keyStr)
 		default:
-			p.ActionGroup.Write(p.EditModeCursor, keyStr)
+			p.ActionGroup.Write(p.InputModeCursor, keyStr)
 		}
 
 	}
@@ -71,8 +71,8 @@ func (p *Editor) RegisterKeyEventHandlers() {
 	go func() {
 		var keyStr string
 		for {
-			p.isShouldRefreshEditModeBuf = false
-			p.isShouldRefreshCommandModeBuf = false
+			p.isShouldRefreshInputModeBuf = false
+			p.isShouldRefreshLastLineModeBuf = false
 
 			select {
 			case keyStr = <-p.KeyEvents:
