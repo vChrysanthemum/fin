@@ -1,7 +1,5 @@
 package ui
 
-import "container/list"
-
 type EditorActionInsert struct {
 	EditorView        *EditorView
 	EditorActionGroup *EditorActionGroup
@@ -11,7 +9,7 @@ type EditorActionInsert struct {
 	DeletedData       []string
 }
 
-func (p *EditorActionGroup) AllocNewEditorActionInsert(inputModeCursor *EditorViewCursor) *EditorActionInsert {
+func (p *EditorActionGroup) NewEditorActionInsert(inputModeCursor *EditorViewCursor) *EditorActionInsert {
 	ret := &EditorActionInsert{
 		EditorView:        p.EditorView,
 		EditorActionGroup: p,
@@ -19,21 +17,11 @@ func (p *EditorActionGroup) AllocNewEditorActionInsert(inputModeCursor *EditorVi
 		StartLineIndex:    inputModeCursor.LineIndex,
 	}
 
-	if nil == p.CurrentUndoAction && p.Actions.Len() > 0 {
-		p.Actions = list.New()
-	}
-
-	if nil != p.CurrentUndoAction {
-		for e := p.Actions.Back(); e != p.CurrentUndoAction; e = p.Actions.Back() {
-			p.Actions.Remove(e)
-		}
-	}
-	p.CurrentUndoAction = p.Actions.PushBack(ret)
-	p.CurrentRedoAction = nil
 	return ret
 }
 
-func (p *EditorActionInsert) Apply(inputModeCursor *EditorViewCursor, keyStr string) {
+func (p *EditorActionInsert) Apply(inputModeCursor *EditorViewCursor, param ...interface{}) {
+	keyStr := param[0].(string)
 	if "C-8" == keyStr {
 		if len(p.InsertData) > 0 {
 			p.InsertData = p.InsertData[:len(p.InsertData)-1]
@@ -71,6 +59,8 @@ func (p *EditorActionInsert) Apply(inputModeCursor *EditorViewCursor, keyStr str
 	} else {
 		p.InsertData = append(p.InsertData, keyStr)
 	}
+
+	p.EditorView.InputModeWrite(inputModeCursor, keyStr)
 }
 
 func (p *EditorActionInsert) Redo(inputModeCursor *EditorViewCursor) {

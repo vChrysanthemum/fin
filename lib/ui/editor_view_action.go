@@ -11,7 +11,7 @@ type EditorActionGroup struct {
 }
 
 type EditorAction interface {
-	Apply(inputModeCursor *EditorViewCursor, keyStr string)
+	Apply(inputModeCursor *EditorViewCursor, param ...interface{})
 	Redo(inputModeCursor *EditorViewCursor)
 	Undo(inputModeCursor *EditorViewCursor)
 }
@@ -67,18 +67,31 @@ func (p *EditorActionGroup) Write(inputModeCursor *EditorViewCursor, keyStr stri
 				inputModeCursor.CellOffXVertical = 0
 
 				if EditorActionStateWrite != p.State {
-					p.AllocNewEditorActionInsert(inputModeCursor)
+					p.EditorView.ActionGroup.AppendEditorAction(
+						p.EditorView.ActionGroup.NewEditorActionInsert(inputModeCursor))
 					p.State = EditorActionStateWrite
 				}
 				p.CurrentUndoAction.Value.(EditorAction).Apply(inputModeCursor, keyStr)
-
-				p.EditorView.InputModeWrite(inputModeCursor, keyStr)
 			}
 		}
 
 	case EditorCommandMode:
 		p.EditorView.CommandModeWrite(p.EditorView.InputModeCursor, keyStr)
 	}
+}
+
+func (p *EditorActionGroup) AppendEditorAction(action EditorAction) {
+	if nil == p.CurrentUndoAction && p.Actions.Len() > 0 {
+		p.Actions = list.New()
+	}
+
+	if nil != p.CurrentUndoAction {
+		for e := p.Actions.Back(); e != p.CurrentUndoAction; e = p.Actions.Back() {
+			p.Actions.Remove(e)
+		}
+	}
+	p.CurrentUndoAction = p.Actions.PushBack(action)
+	p.CurrentRedoAction = nil
 }
 
 func (p *EditorActionGroup) Undo(inputModeCursor *EditorViewCursor) {

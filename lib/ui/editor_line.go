@@ -25,6 +25,17 @@ func (p *Editor) NewLine() *EditorLine {
 	}
 }
 
+func (p *EditorView) AppendLines(lineIndex int, lines []*EditorLine) {
+	for _, line := range p.Lines[lineIndex:] {
+		line.Index += len(lines)
+	}
+
+	_lines := make([]*EditorLine, len(p.Lines[lineIndex:]))
+	copy(_lines, p.Lines[lineIndex:])
+	p.Lines = append(p.Lines[:lineIndex], lines...)
+	p.Lines = append(p.Lines, _lines...)
+}
+
 func (p *EditorView) InputModeAppendNewLine(inputModeCursor *EditorViewCursor) *EditorLine {
 	ret := p.Editor.NewLine()
 
@@ -104,7 +115,8 @@ func (p *EditorView) InputModeReduceLine(lineIndex int) {
 
 // RemoveLines 删除 Editor.Lines 中的几行
 func (p *EditorView) RemoveLines(lineIndex, linesNum int) {
-	if linesNum <= 0 || lineIndex >= len(p.Lines) {
+	if linesNum <= 0 || lineIndex >= len(p.Lines) ||
+		(1 == len(p.Lines) && 0 == len(p.Lines[0].Data)) {
 		return
 	}
 
@@ -112,11 +124,11 @@ func (p *EditorView) RemoveLines(lineIndex, linesNum int) {
 		linesNum = len(p.Lines) - lineIndex
 	}
 
-	for _, line := range p.Lines[lineIndex:] {
+	for _, line := range p.Lines[lineIndex+linesNum:] {
 		line.Index -= linesNum
 	}
 
-	if 0 == lineIndex {
+	if 0 == lineIndex && 1 == linesNum {
 		p.Lines = []*EditorLine{p.Lines[0]}
 		p.Lines[0].Data = []byte{}
 	} else {

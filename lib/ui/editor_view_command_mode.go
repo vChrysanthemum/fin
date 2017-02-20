@@ -165,19 +165,25 @@ func (p *EditorView) commandMoveRight(inputModeCursor *EditorViewCursor) {
 
 func (p *EditorView) commandCut(inputModeCursor *EditorViewCursor) {
 	_n := _commandMatchKeyCut.FindSubmatch([]byte(p.CommandModeCommandStack))
-	n, err := strconv.Atoi(string(_n[1]))
+	linesNum, err := strconv.Atoi(string(_n[1]))
 	if nil != err {
-		n = 1
+		linesNum = 1
+	}
+
+	if linesNum <= 0 || inputModeCursor.LineIndex >= len(p.Lines) ||
+		(1 == len(p.Lines) && 0 == len(p.Lines[0].Data)) {
+		return
 	}
 
 	p.TmpLinesBuf = NewEditorTmpLinesBuf()
-	if n+inputModeCursor.LineIndex < len(p.Lines) {
-		p.TmpLinesBuf.CopyLines(p.Lines[inputModeCursor.LineIndex : inputModeCursor.LineIndex+n])
+	if linesNum+inputModeCursor.LineIndex < len(p.Lines) {
+		p.TmpLinesBuf.CopyLines(p.Lines[inputModeCursor.LineIndex : inputModeCursor.LineIndex+linesNum])
 	} else {
 		p.TmpLinesBuf.CopyLines(p.Lines[inputModeCursor.LineIndex:])
 	}
 
-	p.RemoveLines(inputModeCursor.LineIndex, n)
+	p.ActionGroup.AppendEditorAction(p.ActionGroup.NewEditorActionRemoveLines())
+	p.ActionGroup.CurrentUndoAction.Value.(EditorAction).Apply(inputModeCursor, linesNum)
 
 	p.isShouldRefreshInputModeBuf = true
 }
