@@ -12,15 +12,15 @@ type EditorViewCursor struct {
 	DisplayLinesTopIndex    int
 	DisplayLinesBottomIndex int
 
+	cellOffXVertical int
 	LineIndex        int
-	CellOffXVertical int
 	*EditorCursor
 }
 
 func NewEditorViewCursor(editorView *EditorView) *EditorViewCursor {
 	ret := &EditorViewCursor{
 		EditorView:       editorView,
-		CellOffXVertical: 0,
+		cellOffXVertical: 0,
 		EditorCursor:     NewEditorCursor(),
 	}
 	return ret
@@ -31,8 +31,8 @@ func (p *EditorView) InputModeMoveCursorUp(cursor *EditorViewCursor, runenum int
 		return
 	}
 
-	if cursor.CellOffX > cursor.CellOffXVertical {
-		cursor.CellOffXVertical = cursor.CellOffX
+	if cursor.CellOffX > cursor.cellOffXVertical {
+		cursor.cellOffXVertical = cursor.CellOffX
 	}
 
 	index := cursor.LineIndex - runenum
@@ -62,15 +62,15 @@ func (p *EditorView) InputModeMoveCursorUp(cursor *EditorViewCursor, runenum int
 		}
 	}
 
-	if cursor.CellOffXVertical > cursor.CellOffX {
-		if cursor.CellOffXVertical >= len(line.Cells) {
+	if cursor.cellOffXVertical > cursor.CellOffX {
+		if cursor.cellOffXVertical >= len(line.Cells) {
 			if 0 == len(line.Cells) {
 				cursor.CellOffX = 0
 			} else {
 				cursor.CellOffX = len(line.Cells)
 			}
 		} else {
-			cursor.CellOffX = cursor.CellOffXVertical
+			cursor.CellOffX = cursor.cellOffXVertical
 		}
 	}
 }
@@ -80,8 +80,8 @@ func (p *EditorView) CommandModeMoveCursorUp(cursor *EditorViewCursor, runenum i
 		return
 	}
 
-	if cursor.CellOffX > cursor.CellOffXVertical {
-		cursor.CellOffXVertical = cursor.CellOffX
+	if cursor.CellOffX > cursor.cellOffXVertical {
+		cursor.cellOffXVertical = cursor.CellOffX
 	}
 
 	index := cursor.LineIndex - runenum
@@ -109,15 +109,15 @@ func (p *EditorView) CommandModeMoveCursorUp(cursor *EditorViewCursor, runenum i
 		cursor.UISetCursor(cell.X, cell.Y)
 	}
 
-	if cursor.CellOffXVertical > cursor.CellOffX {
-		if cursor.CellOffXVertical >= len(line.Cells) {
+	if cursor.cellOffXVertical > cursor.CellOffX {
+		if cursor.cellOffXVertical >= len(line.Cells) {
 			if 0 == len(line.Cells) {
 				cursor.CellOffX = 0
 			} else {
 				cursor.CellOffX = len(line.Cells) - 1
 			}
 		} else {
-			cursor.CellOffX = cursor.CellOffXVertical
+			cursor.CellOffX = cursor.cellOffXVertical
 		}
 	}
 }
@@ -127,8 +127,8 @@ func (p *EditorView) InputModeMoveCursorDown(cursor *EditorViewCursor, runenum i
 		return
 	}
 
-	if cursor.CellOffX > cursor.CellOffXVertical {
-		cursor.CellOffXVertical = cursor.CellOffX
+	if cursor.CellOffX > cursor.cellOffXVertical {
+		cursor.cellOffXVertical = cursor.CellOffX
 	}
 
 	index := cursor.LineIndex + runenum
@@ -158,15 +158,15 @@ func (p *EditorView) InputModeMoveCursorDown(cursor *EditorViewCursor, runenum i
 		}
 	}
 
-	if cursor.CellOffXVertical > cursor.CellOffX {
-		if cursor.CellOffXVertical >= len(line.Cells) {
+	if cursor.cellOffXVertical > cursor.CellOffX {
+		if cursor.cellOffXVertical >= len(line.Cells) {
 			if 0 == len(line.Cells) {
 				cursor.CellOffX = 0
 			} else {
 				cursor.CellOffX = len(line.Cells)
 			}
 		} else {
-			cursor.CellOffX = cursor.CellOffXVertical
+			cursor.CellOffX = cursor.cellOffXVertical
 		}
 	}
 }
@@ -176,8 +176,8 @@ func (p *EditorView) CommandModeMoveCursorDown(cursor *EditorViewCursor, runenum
 		return
 	}
 
-	if cursor.CellOffX > cursor.CellOffXVertical {
-		cursor.CellOffXVertical = cursor.CellOffX
+	if cursor.CellOffX > cursor.cellOffXVertical {
+		cursor.cellOffXVertical = cursor.CellOffX
 	}
 
 	index := cursor.LineIndex + runenum
@@ -205,17 +205,29 @@ func (p *EditorView) CommandModeMoveCursorDown(cursor *EditorViewCursor, runenum
 		cursor.UISetCursor(cell.X, cell.Y)
 	}
 
-	if cursor.CellOffXVertical > cursor.CellOffX {
-		if cursor.CellOffXVertical >= len(line.Cells) {
+	if cursor.cellOffXVertical > cursor.CellOffX {
+		if cursor.cellOffXVertical >= len(line.Cells) {
 			if 0 == len(line.Cells) {
 				cursor.CellOffX = 0
 			} else {
 				cursor.CellOffX = len(line.Cells) - 1
 			}
 		} else {
-			cursor.CellOffX = cursor.CellOffXVertical
+			cursor.CellOffX = cursor.cellOffXVertical
 		}
 	}
+}
+
+func (p *EditorView) MoveCursorLeftmost(cursor *EditorViewCursor, line *EditorLine) {
+	cursor.CellOffX = 0
+
+	if len(line.Cells) == 0 {
+		return
+	}
+
+	cell := line.Cells[cursor.CellOffX]
+	cursor.UISetCursor(cell.X, cell.Y)
+	cursor.cellOffXVertical = cursor.CellOffX
 }
 
 func (p *EditorView) MoveCursorLeft(cursor *EditorViewCursor, line *EditorLine, runenum int) {
@@ -235,8 +247,7 @@ func (p *EditorView) MoveCursorLeft(cursor *EditorViewCursor, line *EditorLine, 
 
 	cell := line.Cells[cursor.CellOffX]
 	cursor.UISetCursor(cell.X, cell.Y)
-
-	cursor.CellOffXVertical = cursor.CellOffX
+	cursor.cellOffXVertical = cursor.CellOffX
 }
 
 func (p *EditorView) MoveCursorRight(cursor *EditorViewCursor, line *EditorLine, runenum int) {
@@ -268,7 +279,7 @@ func (p *EditorView) MoveCursorRight(cursor *EditorViewCursor, line *EditorLine,
 		cursor.UISetCursor(cell.X, cell.Y)
 	}
 
-	cursor.CellOffXVertical = cursor.CellOffX
+	cursor.cellOffXVertical = cursor.CellOffX
 }
 
 func (p *EditorViewCursor) RefreshCursorByEditorLine(line *EditorLine) {

@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/gizak/termui"
-	"github.com/nsf/termbox-go"
+	termbox "github.com/nsf/termbox-go"
 )
 
 func (p *Editor) handleKeyEvent(keyStr string) (isQuitActiveMode bool) {

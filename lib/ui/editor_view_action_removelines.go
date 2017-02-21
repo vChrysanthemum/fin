@@ -39,5 +39,5 @@ func (p *EditorActionRemoveLines) Redo(inputModeCursor *EditorViewCursor) {
 }
 
 func (p *EditorActionRemoveLines) Undo(inputModeCursor *EditorViewCursor) {
-	p.EditorView.AppendLines(p.StartLineIndex, p.DeletedData)
+	p.EditorView.InsertPointerLines(p.StartLineIndex, p.DeletedData)
 }

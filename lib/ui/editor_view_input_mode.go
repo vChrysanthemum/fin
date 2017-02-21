@@ -11,7 +11,7 @@ func (p *EditorView) InputModeEnter(inputModeCursor *EditorViewCursor) {
 		p.CommandModeEnter(inputModeCursor)
 
 	} else {
-		inputModeCursor.CellOffXVertical = 0
+		inputModeCursor.cellOffXVertical = 0
 		p.Mode = EditorInputMode
 	}
 }

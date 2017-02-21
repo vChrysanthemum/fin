@@ -185,15 +185,34 @@ func (p *EditorView) commandCut(inputModeCursor *EditorViewCursor) {
 	p.ActionGroup.AppendEditorAction(p.ActionGroup.NewEditorActionRemoveLines())
 	p.ActionGroup.CurrentUndoAction.Value.(EditorAction).Apply(inputModeCursor, linesNum)
 
+	if inputModeCursor.LineIndex >= len(p.Lines) {
+		inputModeCursor.LineIndex = len(p.Lines) - 1
+	}
+	p.MoveCursorLeftmost(inputModeCursor, inputModeCursor.Line())
+
 	p.isShouldRefreshInputModeBuf = true
 }
 
 func (p *EditorView) commandPaste(inputModeCursor *EditorViewCursor) {
-	/*
-		_n := _commandMatchKeyCut.FindSubmatch([]byte(p.CommandModeCommandStack))
-		n, err := strconv.Atoi(string(_n[1]))
+	var (
+		copyNum int
+		err     error
+	)
+
+	_n := _commandMatchKeyPaste.FindSubmatch([]byte(p.CommandModeCommandStack))
+	if len(_n) > 1 {
+		copyNum, err = strconv.Atoi(string(_n[1]))
 		if nil != err {
-			n = 1
+			copyNum = 1
 		}
-	*/
+	} else {
+		copyNum = 1
+	}
+
+	p.ActionGroup.AppendEditorAction(p.ActionGroup.NewEditorActionInsertLines())
+	p.ActionGroup.CurrentUndoAction.Value.(EditorAction).Apply(inputModeCursor, p.TmpLinesBuf.Lines, copyNum)
+
+	inputModeCursor.LineIndex++
+	p.MoveCursorLeftmost(inputModeCursor, inputModeCursor.Line())
+	p.isShouldRefreshInputModeBuf = true
 }

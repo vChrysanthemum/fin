@@ -21,19 +21,7 @@ func (p *Editor) NewLine() *EditorLine {
 		Editor:        p,
 		ContentStartX: p.Block.InnerArea.Min.X,
 		ContentStartY: p.Block.InnerArea.Min.Y,
-		Data:          make([]byte, 0),
 	}
-}
-
-func (p *EditorView) AppendLines(lineIndex int, lines []*EditorLine) {
-	for _, line := range p.Lines[lineIndex:] {
-		line.Index += len(lines)
-	}
-
-	_lines := make([]*EditorLine, len(p.Lines[lineIndex:]))
-	copy(_lines, p.Lines[lineIndex:])
-	p.Lines = append(p.Lines[:lineIndex], lines...)
-	p.Lines = append(p.Lines, _lines...)
 }
 
 func (p *EditorView) InputModeAppendNewLine(inputModeCursor *EditorViewCursor) *EditorLine {
@@ -113,7 +101,7 @@ func (p *EditorView) InputModeReduceLine(lineIndex int) {
 	return
 }
 
-// RemoveLines 删除 Editor.Lines 中的几行
+// RemoveLines 删除 EditorView.Lines 中的几行
 func (p *EditorView) RemoveLines(lineIndex, linesNum int) {
 	if linesNum <= 0 || lineIndex >= len(p.Lines) ||
 		(1 == len(p.Lines) && 0 == len(p.Lines[0].Data)) {
@@ -131,15 +119,51 @@ func (p *EditorView) RemoveLines(lineIndex, linesNum int) {
 	if 0 == lineIndex && 1 == linesNum {
 		p.Lines = []*EditorLine{p.Lines[0]}
 		p.Lines[0].Data = []byte{}
+	} else if linesNum == len(p.Lines) {
+		p.Lines = []*EditorLine{p.Editor.NewLine()}
 	} else {
 		p.Lines = append(p.Lines[:lineIndex], p.Lines[lineIndex+linesNum:]...)
 	}
 }
 
+// InsertLines 在 EditorView.Lines 中插入几行数据
+func (p *EditorView) InsertLines(lineIndex int, lines []EditorLine) {
+	for _, line := range p.Lines[lineIndex:] {
+		line.Index += len(lines)
+	}
+
+	paramlines := make([]*EditorLine, len(lines))
+	for k, line := range lines {
+		paramlines[k] = line.Copy()
+		paramlines[k].Index = lineIndex + k
+	}
+
+	tmpLines := make([]*EditorLine, len(p.Lines[lineIndex:]))
+	copy(tmpLines, p.Lines[lineIndex:])
+	p.Lines = append(p.Lines[:lineIndex], paramlines...)
+	p.Lines = append(p.Lines, tmpLines...)
+}
+
+// InsertPointerLines 在 EditorView.Lines 中插入几行数据
+func (p *EditorView) InsertPointerLines(lineIndex int, lines []*EditorLine) {
+	for _, line := range p.Lines[lineIndex:] {
+		line.Index += len(lines)
+	}
+
+	for k, line := range lines {
+		line.Index = lineIndex + k
+	}
+
+	_lines := make([]*EditorLine, len(p.Lines[lineIndex:]))
+	copy(_lines, p.Lines[lineIndex:])
+	p.Lines = append(p.Lines[:lineIndex], lines...)
+	p.Lines = append(p.Lines, _lines...)
+}
+
 // getEditorLinePrefix 获取 line 内容前缀
 //
 // param:
-//		lineIndex				int		 目标 line 的相应 Editor.Lines 中的index
+//		lineIndex				int		 目标 line 的相应 EditorView.Lines 中的index
 //		lastEditorLineIndex		int		 输出 line 的前缀需要与整个页面的 line 前缀对齐
 //									 	 lastEditorLineIndex 为 页面中最后一条 line 的 index
 func (p *EditorLine) getEditorLinePrefix(lineIndex, lastEditorLineIndex int) string {
@@ -153,6 +177,20 @@ func (p *EditorLine) getEditorLinePrefix(lineIndex, lastEditorLineIndex int) str
 	}
 
 	return ""
+}
+
+func (p *EditorLine) Copy() *EditorLine {
+	ret := &EditorLine{
+		ContentStartX: p.ContentStartX,
+		ContentStartY: p.ContentStartY,
+		Index:         p.Index,
+		Editor:        p.Editor,
+	}
+	ret.Data = make([]byte, len(p.Data))
+	copy(ret.Data, p.Data)
+	ret.Cells = make([]termui.Cell, len(p.Cells))
+	copy(ret.Cells, p.Cells)
+	return ret
 }
 
 func (p *EditorLine) CutAway(offStart, offEnd int) {

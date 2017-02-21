@@ -35,12 +35,12 @@ func (p *EditorActionGroup) Write(inputModeCursor *EditorViewCursor, keyStr stri
 	case EditorInputMode:
 		switch keyStr {
 		case "<left>":
-			inputModeCursor.CellOffXVertical = 0
+			inputModeCursor.cellOffXVertical = 0
 			p.makeStatePrepareWrite()
 			p.EditorView.MoveCursorLeft(inputModeCursor, inputModeCursor.Line(), 1)
 
 		case "<right>":
-			inputModeCursor.CellOffXVertical = 0
+			inputModeCursor.cellOffXVertical = 0
 			p.makeStatePrepareWrite()
 			p.EditorView.MoveCursorRight(inputModeCursor, inputModeCursor.Line(), 1)
 
@@ -64,7 +64,7 @@ func (p *EditorActionGroup) Write(inputModeCursor *EditorViewCursor, keyStr stri
 				p.EditorView.CommandModeEnter(inputModeCursor)
 
 			} else {
-				inputModeCursor.CellOffXVertical = 0
+				inputModeCursor.cellOffXVertical = 0
 
 				if EditorActionStateWrite != p.State {
 					p.EditorView.ActionGroup.AppendEditorAction(
