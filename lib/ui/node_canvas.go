@@ -47,7 +47,7 @@ func (p *NodeCanvas) NodeDataFocusMode() {
 		p.Node.tmpFocusModeBorderFg = p.Node.UIBlock.BorderFg
 		p.Node.UIBlock.Border = true
 		p.Node.UIBlock.BorderFg = ColorFocusModeBorderFg
-		p.Node.uiRender()
+		p.Node.UIRender()
 	}
 }
 
@@ -56,7 +56,7 @@ func (p *NodeCanvas) NodeDataUnFocusMode() {
 		p.Node.isCalledFocusMode = false
 		p.Node.UIBlock.Border = p.Node.tmpFocusModeBorder
 		p.Node.UIBlock.BorderFg = p.Node.tmpFocusModeBorderFg
-		p.Node.uiRender()
+		p.Node.UIRender()
 	}
 }
 

@@ -3,7 +3,8 @@ package ui
 import "github.com/gizak/termui"
 
 func (p *Editor) PrepareLastLineMode() {
-	p.LastLineModeBuf = p.NewLine()
+	editorView := p.NewEditorView()
+	p.LastLineModeBuf = p.NewLine(editorView)
 }
 
 func (p *Editor) LastLineModeQuit() {
@@ -21,7 +22,7 @@ func (p *Editor) LastLineModeWrite(
 	lastLineModeCursor *EditorCommandCursor,
 	keyStr string) {
 	p.LastLineModeBuf.ContentStartX = p.InnerArea.Min.X
-	p.LastLineModeBuf.ContentStartY = p.LastLineModeBufAreaY
+	p.LastLineModeBuf.ContentStartY = p.LastLineModeBufAreaY()
 
 	if "<enter>" == keyStr {
 		p.LastLineModeQuit()
@@ -51,9 +52,9 @@ func (p *Editor) LastLineModeWrite(
 func (p *Editor) RefreshLastLineModeBuf(lastLineModeCursor *EditorCommandCursor) {
 	var x, y, n int
 
-	maxY := p.LastLineModeBufAreaY + p.LastLineModeBufAreaHeight
+	maxY := p.LastLineModeBufAreaY() + p.LastLineModeBufAreaHeight
 	for x = p.Buf.Area.Min.X + 1; x < p.Buf.Area.Max.X-1; x++ {
-		for y = p.LastLineModeBufAreaY; y < maxY; y++ {
+		for y = p.LastLineModeBufAreaY(); y < maxY; y++ {
 			p.Buf.Set(x, y, termui.Cell{' ', p.TextFgColor, p.TextBgColor, 0, 0, 0})
 		}
 	}
@@ -62,7 +63,7 @@ func (p *Editor) RefreshLastLineModeBuf(lastLineModeCursor *EditorCommandCursor)
 		DefaultRawTextBuilder.Build(string(p.LastLineModeBuf.Data), p.TextFgColor, p.TextBgColor)
 
 	x = p.Block.InnerArea.Min.X
-	y = p.LastLineModeBufAreaY
+	y = p.LastLineModeBufAreaY()
 	n = 0
 	for n < len(p.LastLineModeBuf.Cells) {
 		p.Buf.Set(x, y, p.LastLineModeBuf.Cells[n])

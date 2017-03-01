@@ -60,7 +60,7 @@ func (p *NodeTerminal) KeyPress(keyStr string) (isExecNormalKeyPressWork bool) {
 	if "C-8" == keyStr && (nil == p.Terminal.Cursor.Line || len(p.Terminal.Cursor.Line.Data) <= len(p.CommandPrefix)) {
 		utils.Beep()
 		p.Terminal.Cursor.ResumeCursor()
-		p.Node.uiRender()
+		p.Node.UIRender()
 		return
 	}
 
@@ -88,14 +88,14 @@ func (p *NodeTerminal) KeyPress(keyStr string) (isExecNormalKeyPressWork bool) {
 				p.Terminal.UpdateCursorLineData(p.CommandPrefix + p.CommandHistory[p.CurrentCommandLineIndex])
 			}
 
-			p.Node.uiRender()
+			p.Node.UIRender()
 		}
 		return
 	}
 
 	if "C-c" == keyStr {
 		p.Terminal.UpdateCursorLineData(p.CommandPrefix)
-		p.Node.uiRender()
+		p.Node.UIRender()
 		return
 	}
 
@@ -119,12 +119,12 @@ func (p *NodeTerminal) KeyPress(keyStr string) (isExecNormalKeyPressWork bool) {
 		}
 
 		p.PrepareNewCommand()
-		p.Node.uiRender()
+		p.Node.UIRender()
 		return
 	}
 
 	p.Terminal.Write(keyStr)
-	p.Node.uiRender()
+	p.Node.UIRender()
 	return
 }
 
@@ -170,7 +170,7 @@ func (p *NodeTerminal) NodeDataFocusMode() {
 		p.Node.tmpFocusModeBorderFg = p.Node.UIBlock.BorderFg
 		p.Node.UIBlock.Border = true
 		p.Node.UIBlock.BorderFg = ColorFocusModeBorderFg
-		p.Node.uiRender()
+		p.Node.UIRender()
 	}
 }
 
@@ -179,7 +179,7 @@ func (p *NodeTerminal) NodeDataUnFocusMode() {
 		p.Node.isCalledFocusMode = false
 		p.Node.UIBlock.Border = p.Node.tmpFocusModeBorder
 		p.Node.UIBlock.BorderFg = p.Node.tmpFocusModeBorderFg
-		p.Node.uiRender()
+		p.Node.UIRender()
 	}
 }
 
@@ -190,7 +190,7 @@ func (p *NodeTerminal) NodeDataActiveMode() {
 		p.Node.UIBlock.BorderFg = ColorActiveModeBorderFg
 	}
 	p.Terminal.ActiveMode()
-	p.Node.uiRender()
+	p.Node.UIRender()
 }
 
 func (p *NodeTerminal) NodeDataUnActiveMode() {
@@ -198,6 +198,6 @@ func (p *NodeTerminal) NodeDataUnActiveMode() {
 		p.Node.isCalledActiveMode = false
 		p.Node.UIBlock.BorderFg = p.Node.tmpActiveModeBorderFg
 		p.Terminal.UnActiveMode()
-		p.Node.uiRender()
+		p.Node.UIRender()
 	}
 }

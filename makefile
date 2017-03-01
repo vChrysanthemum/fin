@@ -4,7 +4,8 @@ all:clean test build_fin
 
 install:
 	@mkdir -p "$(HOME)/.fin"
-	@ln -sf "$(pwd)/lua" "$(HOME)/.fin/lua"
+	@rm -f "$(HOME)/.fin/res"
+	@ln -sf "$(pwd)/res" "$(HOME)/.fin/res"
 	@echo "success."
 
 clean:

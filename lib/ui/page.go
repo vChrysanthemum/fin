@@ -2,7 +2,6 @@ package ui
 
 import (
 	"container/list"
-	"sync"
 
 	"github.com/gizak/termui"
 	"golang.org/x/net/html"
@@ -38,9 +37,7 @@ type Page struct {
 	layoutingX int
 	layoutingY int
 
-	recoverVal interface{}
-
-	KeyPressHandleLocker sync.RWMutex
+	HookersAfterFirstUIRender []Hooker
 }
 
 func newPage() *Page {
@@ -61,15 +58,10 @@ func newPage() *Page {
 }
 
 func (p *Page) Serve() {
-	p.uiRender()
-
-	go func() {
-		defer func() {
-			if r := recover(); nil != r {
-				termui.StopLoop()
-				p.recoverVal = r
-			}
-		}()
-		p.Script.Run()
-	}()
+	p.UIRender()
+	go p.Script.Run()
+	for k, _ := range p.HookersAfterFirstUIRender {
+		p.HookersAfterFirstUIRender[k].Do(p.HookersAfterFirstUIRender[k].Arg)
+	}
+	MainLoop()
 }

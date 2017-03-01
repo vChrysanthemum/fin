@@ -90,6 +90,6 @@ func (p *Script) luaFuncNodeCanvasDraw(L *lua.LState) int {
 	if nil == nodeCanvas {
 		return 0
 	}
-	nodeCanvas.Node.uiRender()
+	nodeCanvas.Node.UIRender()
 	return 0
 }

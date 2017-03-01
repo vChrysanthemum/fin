@@ -140,7 +140,7 @@ func (p *Script) luaFuncNodeSetAttribute(L *lua.LState) int {
 	if true == isNeedReRenderPage {
 		p.page.ReRender()
 	} else {
-		node.uiRender()
+		node.UIRender()
 	}
 	return 0
 }
@@ -156,7 +156,7 @@ func (p *Script) luaFuncNodeSetActive(L *lua.LState) int {
 		return 0
 	}
 	p.page.SetActiveNode(node)
-	node.uiRender()
+	node.UIRender()
 	return 0
 }
 

@@ -196,6 +196,10 @@ function _Node.TerminalClearCommandHistory(self)
     return base.NodeTerminalClearCommandHistory(self.nodePointer)
 end
 
+function _Node.EditorLoadFile(self, filePath)
+    return base.NodeEditorLoadFile(self.nodePointer, filePath)
+end
+
 function _Node.TabpaneSetActiveTab(self, name)
     return base.NodeTabpaneSetActiveTab(self.nodePointer, name)
 end

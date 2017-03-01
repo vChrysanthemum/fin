@@ -87,7 +87,7 @@ func (p *Page) render(node *Node) error {
 // 更新 FocusNode
 // 更新 ActiveNode
 // 更新 FocusNode / ActiveNode / WorkingNodes内元素之间方向关系
-func (p *Page) uiRender() error {
+func (p *Page) UIRender() error {
 	GCurrentRenderPage = p
 	if 0 == len(p.Bufferers) {
 		return nil
@@ -230,7 +230,7 @@ func (p *Page) Render() error {
 func (p *Page) ReRender() {
 	uiClear(0, -1)
 	p.Render()
-	p.uiRender()
+	p.UIRender()
 }
 
 // Clear 清空 page 中所有元素，但不清空屏幕

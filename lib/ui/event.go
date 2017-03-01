@@ -3,7 +3,7 @@ package ui
 import (
 	"github.com/gizak/termui"
 	"github.com/gizak/termui/extra"
-	"github.com/nsf/termbox-go"
+	termbox "github.com/nsf/termbox-go"
 )
 
 func handleEvent(ev termbox.Event) (isContinueLoop, isRerender bool) {
@@ -23,8 +23,6 @@ func handleEvent(ev termbox.Event) (isContinueLoop, isRerender bool) {
 func handleEventKey(ev termbox.Event) (isContinueLoop bool) {
 	isContinueLoop = true
 	keyStr := evt2KeyStr(ev)
-	GCurrentRenderPage.KeyPressHandleLocker.Lock()
-	defer GCurrentRenderPage.KeyPressHandleLocker.Unlock()
 
 	if "C-c" == keyStr {
 		termui.Close()

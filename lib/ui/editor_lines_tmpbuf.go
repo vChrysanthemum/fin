@@ -15,3 +15,7 @@ func (p *EditorTmpLinesBuf) CopyLines(lines []*EditorLine) {
 		p.Lines = append(p.Lines, *line)
 	}
 }
+
+func (p *EditorTmpLinesBuf) CleanLines() {
+	p.Lines = []EditorLine{}
+}

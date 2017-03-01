@@ -62,12 +62,6 @@ do
     fi
 done
 
-if [ ! -e "$(pwd)/lua" ];
-then
-    mkdir -p "$(pwd)/lua"
-fi
-
-
 for folder in `ls ./lib/`
 do 
     if [ -e "$(pwd)/lib/$folder/lua" ];

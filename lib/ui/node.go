@@ -143,7 +143,7 @@ func (p *Node) addChild(child *Node) {
 	p.LastChild = child
 }
 
-func (p *Node) uiRender() {
+func (p *Node) UIRender() {
 	if false == p.CheckIfDisplay() {
 		return
 	}
@@ -228,18 +228,18 @@ func (p *Node) SetRelativeCursor(relativeX, relativeY int) (int, int) {
 	p.Cursor.Y = p.UIBlock.InnerArea.Min.Y + p.UIBlock.Y + relativeY
 
 	utils.UISetCursor(p.Cursor.X, p.Cursor.Y)
-	p.uiRender()
+	p.UIRender()
 	return relativeX, relativeY
 }
 
 func (p *Node) ResumeCursor() {
 	utils.UISetCursor(p.Cursor.X, p.Cursor.Y)
-	p.uiRender()
+	p.UIRender()
 }
 
 func (p *Node) HideCursor() {
 	utils.UISetCursor(-1, -1)
-	p.uiRender()
+	p.UIRender()
 }
 
 func (p *Node) CheckIfDisplay() bool {

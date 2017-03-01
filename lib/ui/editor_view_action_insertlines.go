@@ -26,7 +26,7 @@ func (p *EditorActionInsertLines) Apply(inputModeCursor *EditorViewCursor, param
 
 	p.Data = []EditorLine{}
 	for k := range insertLines {
-		p.Data = append(p.Data, p.EditorView.TmpLinesBuf.Lines[k])
+		p.Data = append(p.Data, insertLines[k])
 	}
 
 	lineIndex := p.StartLineIndex + 1

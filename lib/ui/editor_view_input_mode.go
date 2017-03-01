@@ -31,7 +31,7 @@ func (p *EditorView) InputModeWrite(inputModeCursor *EditorViewCursor, keyStr st
 }
 
 func (p *EditorView) RefreshInputModeBuf(inputModeCursor *EditorViewCursor) {
-	if 0 == p.InputModeBufAreaHeight {
+	if 0 == p.InputModeBufAreaHeight() {
 		return
 	}
 
@@ -62,7 +62,7 @@ REFRESH_BEGIN:
 
 	finalX, finalY = 0, 0
 	y, x, n, w = 0, 0, 0, 0
-	dx, dy = 0, p.InputModeBufAreaHeight
+	dx, dy = 0, p.InputModeBufAreaHeight()
 	pageLastEditorLine = inputModeCursor.DisplayLinesTopIndex
 	for k = inputModeCursor.DisplayLinesTopIndex; k < len(p.Lines); k++ {
 		line = p.Lines[k]
@@ -71,7 +71,7 @@ REFRESH_BEGIN:
 			builtLinesMark[k] = true
 		}
 
-		if y >= p.InputModeBufAreaHeight {
+		if y >= p.InputModeBufAreaHeight() {
 			if inputModeCursor.LineIndex == line.Index {
 				inputModeCursor.DisplayLinesTopIndex++
 				goto REFRESH_BEGIN
@@ -101,7 +101,7 @@ REFRESH_BEGIN:
 				x = 0
 				y++
 				// 输出一行未完成 且 超过内容区域
-				if y >= p.InputModeBufAreaHeight {
+				if y >= p.InputModeBufAreaHeight() {
 					inputModeCursor.DisplayLinesTopIndex++
 					goto REFRESH_BEGIN
 				}

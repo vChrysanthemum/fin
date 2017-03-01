@@ -14,7 +14,6 @@ type Editor struct {
 	Buf *termui.Buffer
 
 	// LastLineMode
-	LastLineModeBufAreaY      int
 	LastLineModeBufAreaHeight int
 	LastLineModeBuf           *EditorLine
 	LastLineModeCursor        *EditorCommandCursor
@@ -25,13 +24,13 @@ type Editor struct {
 	Views []*EditorView
 	*EditorView
 
-	TmpLinesBufs *EditorTmpLinesBuf
+	ClipboardLines *EditorTmpLinesBuf
 }
 
 func NewEditor() *Editor {
 	ret := &Editor{
-		Block:        *termui.NewBlock(),
-		TmpLinesBufs: NewEditorTmpLinesBuf(),
+		Block:          *termui.NewBlock(),
+		ClipboardLines: NewEditorTmpLinesBuf(),
 	}
 
 	ret.PrepareLastLineMode()
@@ -42,7 +41,7 @@ func NewEditor() *Editor {
 	ret.KeyEventsResultIsQuitActiveMode = make(chan bool)
 	ret.RegisterKeyEventHandlers()
 
-	ret.Views = append(ret.Views, NewEditorView(ret))
+	ret.Views = append(ret.Views, ret.NewEditorView())
 	ret.EditorView = ret.Views[0]
 
 	return ret
@@ -61,9 +60,7 @@ func (p *Editor) Buffer() termui.Buffer {
 		buf := p.Block.Buffer()
 		p.Buf = &buf
 		p.Buf.IfNotRenderByTermUI = true
-		p.LastLineModeBufAreaY = p.Block.InnerArea.Max.Y - 1
 		p.LastLineModeBufAreaHeight = 1
-		p.InputModeBufAreaHeight = p.Block.InnerArea.Dy() - p.LastLineModeBufAreaHeight
 		p.isShouldRefreshInputModeBuf = true
 		p.isShouldRefreshLastLineModeBuf = true
 	} else {
@@ -86,6 +83,10 @@ func (p *Editor) Buffer() termui.Buffer {
 	return *p.Buf
 }
 
+func (p *Editor) LastLineModeBufAreaY() int {
+	return p.Block.InnerArea.Max.Y - 1
+}
+
 func (p *Editor) RefreshCursorByEditorLine() {
 	switch p.Mode {
 	case EditorInputMode:
@@ -98,7 +99,7 @@ func (p *Editor) RefreshCursorByEditorLine() {
 }
 
 func (p *Editor) ActiveMode() {
-	p.InputModeEnter(p.InputModeCursor)
+	p.CommandModeEnter(p.InputModeCursor)
 }
 
 func (p *Editor) UnActiveMode() {

@@ -39,7 +39,7 @@ func (p *NodePar) NodeDataSetValue(content string) {
 	if height > uiBuffer.InnerArea.Dy() {
 		p.Node.page.ReRender()
 	} else {
-		p.Node.uiRender()
+		p.Node.UIRender()
 	}
 	return
 }

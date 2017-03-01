@@ -2,9 +2,11 @@ package ui
 
 import (
 	"fin/script"
+	"log"
 	"path/filepath"
 	"sync"
 
+	"github.com/gizak/termui"
 	lua "github.com/yuin/gopher-lua"
 )
 
@@ -111,6 +113,9 @@ func (p *Page) prepareScript() {
 	s.luaState.SetField(luaBase, "NodeTerminalClearCommandHistory",
 		s.luaState.NewFunction(s.luaFuncNodeTerminalClearCommandHistory))
 
+	s.luaState.SetField(luaBase, "NodeEditorLoadFile",
+		s.luaState.NewFunction(s.luaFuncNodeEditorLoadFile))
+
 	s.luaState.SetField(luaBase, "NodeTabpaneSetActiveTab",
 		s.luaState.NewFunction(s.luaFuncNodeTabpaneSetActiveTab))
 
@@ -145,6 +150,13 @@ func (p *Page) AppendScript(doc ScriptDoc) {
 }
 
 func (p *Script) Run() {
+	defer func() {
+		if r := recover(); nil != r {
+			termui.StopLoop()
+			log.Println(r)
+		}
+	}()
+
 	var err error
 	for _, doc := range p.luaDocs {
 		switch doc.DataType {

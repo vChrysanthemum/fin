@@ -10,7 +10,7 @@ import (
 )
 
 var GlobalOption = Option{
-	ResBaseDir:  filepath.Join(os.Getenv("HOME"), ".fin"),
+	ResBaseDir:  filepath.Join(os.Getenv("HOME"), ".fin", "res"),
 	ProjectPath: filepath.Join(os.Getenv("HOME"), ".fin", "project", "traveller"),
 }
 

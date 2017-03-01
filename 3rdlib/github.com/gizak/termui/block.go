@@ -153,6 +153,10 @@ func (b *Block) Align() {
 	// outer
 	b.Area.Min.X = 0
 	b.Area.Min.Y = 0
+	b.RefreshSize()
+}
+
+func (b *Block) RefreshSize() {
 	b.Area.Max.X = b.Width
 	b.Area.Max.Y = b.Height
 

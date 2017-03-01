@@ -51,11 +51,17 @@ func (p *EditorView) PrepareCommandMode() {
 func (p *EditorView) CommandModeEnter(inputModeCursor *EditorViewCursor) {
 	p.Mode = EditorCommandMode
 	p.CommandModeCommandStack = ""
-	if inputModeCursor.CellOffX >= len(inputModeCursor.Line().Cells) {
-		if 0 == len(inputModeCursor.Line().Cells) {
-			inputModeCursor.CellOffX = 0
-		} else {
-			inputModeCursor.CellOffX = len(inputModeCursor.Line().Cells) - 1
+	if nil == inputModeCursor.Line() {
+		inputModeCursor.cellOffXVertical = 0
+		inputModeCursor.CellOffX = 0
+
+	} else {
+		if inputModeCursor.CellOffX >= len(inputModeCursor.Line().Cells) {
+			if 0 == len(inputModeCursor.Line().Cells) {
+				inputModeCursor.CellOffX = 0
+			} else {
+				inputModeCursor.CellOffX = len(inputModeCursor.Line().Cells) - 1
+			}
 		}
 	}
 }
@@ -175,11 +181,11 @@ func (p *EditorView) commandCut(inputModeCursor *EditorViewCursor) {
 		return
 	}
 
-	p.TmpLinesBuf = NewEditorTmpLinesBuf()
+	p.Editor.ClipboardLines.CleanLines()
 	if linesNum+inputModeCursor.LineIndex < len(p.Lines) {
-		p.TmpLinesBuf.CopyLines(p.Lines[inputModeCursor.LineIndex : inputModeCursor.LineIndex+linesNum])
+		p.Editor.ClipboardLines.CopyLines(p.Lines[inputModeCursor.LineIndex : inputModeCursor.LineIndex+linesNum])
 	} else {
-		p.TmpLinesBuf.CopyLines(p.Lines[inputModeCursor.LineIndex:])
+		p.Editor.ClipboardLines.CopyLines(p.Lines[inputModeCursor.LineIndex:])
 	}
 
 	p.ActionGroup.AppendEditorAction(p.ActionGroup.NewEditorActionRemoveLines())
@@ -210,7 +216,7 @@ func (p *EditorView) commandPaste(inputModeCursor *EditorViewCursor) {
 	}
 
 	p.ActionGroup.AppendEditorAction(p.ActionGroup.NewEditorActionInsertLines())
-	p.ActionGroup.CurrentUndoAction.Value.(EditorAction).Apply(inputModeCursor, p.TmpLinesBuf.Lines, copyNum)
+	p.ActionGroup.CurrentUndoAction.Value.(EditorAction).Apply(inputModeCursor, p.Editor.ClipboardLines.Lines, copyNum)
 
 	inputModeCursor.LineIndex++
 	p.MoveCursorLeftmost(inputModeCursor, inputModeCursor.Line())

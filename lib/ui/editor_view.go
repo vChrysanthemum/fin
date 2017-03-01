@@ -16,25 +16,26 @@ type EditorView struct {
 	// CommandMode
 	CommandModeCommands     []EditorCommandModeCommand
 	CommandModeCommandStack string
-	TmpLinesBuf             *EditorTmpLinesBuf
 
 	// InputMode
+	inputModeBufAreaHeight    int
 	isDisplayEditorLineNumber bool
-	Lines                     []*EditorLine
 	InputModeCursor           *EditorViewCursor
-	InputModeBufAreaHeight    int
 	ActionGroup               *EditorActionGroup
+	Lines                     []*EditorLine
 
 	isShouldRefreshInputModeBuf    bool
 	isShouldRefreshLastLineModeBuf bool
 
 	IsModifiable bool
+
+	FilePath string
 }
 
-func NewEditorView(editor *Editor) *EditorView {
+func (p *Editor) NewEditorView() *EditorView {
 	ret := &EditorView{
-		Editor:       editor,
-		Block:        &editor.Block,
+		Editor:       p,
+		Block:        &p.Block,
 		Lines:        []*EditorLine{},
 		TextFgColor:  termui.ThemeAttr("par.text.fg"),
 		TextBgColor:  termui.ThemeAttr("par.text.bg"),
@@ -53,6 +54,10 @@ func NewEditorView(editor *Editor) *EditorView {
 	ret.isDisplayEditorLineNumber = true
 
 	return ret
+}
+
+func (p *EditorView) InputModeBufAreaHeight() int {
+	return p.Editor.Block.InnerArea.Dy() - p.Editor.LastLineModeBufAreaHeight
 }
 
 func (p *EditorView) RefreshBuf() {

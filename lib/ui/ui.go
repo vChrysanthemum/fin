@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 
 	"github.com/gizak/termui"
-	"github.com/nsf/termbox-go"
+	termbox "github.com/nsf/termbox-go"
 )
 
 var (
@@ -16,7 +16,7 @@ var (
 )
 
 var GlobalOption = Option{
-	ResBaseDir:  filepath.Join(os.Getenv("HOME"), ".fin"),
+	ResBaseDir:  filepath.Join(os.Getenv("HOME"), ".fin", "res"),
 	ProjectPath: filepath.Join(os.Getenv("HOME"), ".fin", "project", "traveller"),
 }
 

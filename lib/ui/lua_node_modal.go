@@ -61,7 +61,7 @@ func (p *Script) luaFuncNodeModalShow(L *lua.LState) int {
 
 	p.page.ClearActiveNode()
 	uiClear(0, -1)
-	nodeModal.page.uiRender()
+	nodeModal.page.UIRender()
 	go nodeModal.page.Script.Run()
 
 	p.page.CurrentModal = nodeModal
@@ -76,7 +76,7 @@ func (p *Script) luaFuncModalClose(L *lua.LState) int {
 
 	p.page.ClearActiveNode()
 	uiClear(0, -1)
-	p.page.MainPage.uiRender()
+	p.page.MainPage.UIRender()
 
 	return 0
 }

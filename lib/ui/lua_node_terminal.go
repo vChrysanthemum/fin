@@ -96,7 +96,7 @@ func (p *Script) luaFuncNodeTerminalWriteString(L *lua.LState) int {
 	}
 
 	nodeTerminal.WriteString(L.ToString(2))
-	nodeTerminal.Node.uiRender()
+	nodeTerminal.Node.UIRender()
 	return 1
 }
 
@@ -111,7 +111,7 @@ func (p *Script) luaFuncNodeTerminalWriteNewLine(L *lua.LState) int {
 	}
 
 	nodeTerminal.WriteNewLine(L.ToString(2))
-	nodeTerminal.Node.uiRender()
+	nodeTerminal.Node.UIRender()
 	return 1
 }
 
@@ -126,7 +126,7 @@ func (p *Script) luaFuncNodeTerminalClearLines(L *lua.LState) int {
 	}
 
 	nodeTerminal.ClearLines()
-	nodeTerminal.Node.uiRender()
+	nodeTerminal.Node.UIRender()
 	return 0
 }
 

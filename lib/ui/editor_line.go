@@ -10,22 +10,22 @@ import (
 type EditorLine struct {
 	ContentStartX, ContentStartY int
 
-	Index  int
-	Editor *Editor
-	Data   []byte
-	Cells  []termui.Cell
+	Index      int
+	EditorView *EditorView
+	Data       []byte
+	Cells      []termui.Cell
 }
 
-func (p *Editor) NewLine() *EditorLine {
+func (p *Editor) NewLine(editorView *EditorView) *EditorLine {
 	return &EditorLine{
-		Editor:        p,
+		EditorView:    editorView,
 		ContentStartX: p.Block.InnerArea.Min.X,
 		ContentStartY: p.Block.InnerArea.Min.Y,
 	}
 }
 
 func (p *EditorView) InputModeAppendNewLine(inputModeCursor *EditorViewCursor) *EditorLine {
-	ret := p.Editor.NewLine()
+	ret := p.Editor.NewLine(p)
 
 	if 0 == len(p.Lines) {
 		ret.Index = 0
@@ -120,7 +120,7 @@ func (p *EditorView) RemoveLines(lineIndex, linesNum int) {
 		p.Lines = []*EditorLine{p.Lines[0]}
 		p.Lines[0].Data = []byte{}
 	} else if linesNum == len(p.Lines) {
-		p.Lines = []*EditorLine{p.Editor.NewLine()}
+		p.Lines = []*EditorLine{p.Editor.NewLine(p)}
 	} else {
 		p.Lines = append(p.Lines[:lineIndex], p.Lines[lineIndex+linesNum:]...)
 	}
@@ -142,6 +142,14 @@ func (p *EditorView) InsertLines(lineIndex int, lines []EditorLine) {
 	copy(tmpLines, p.Lines[lineIndex:])
 	p.Lines = append(p.Lines[:lineIndex], paramlines...)
 	p.Lines = append(p.Lines, tmpLines...)
+}
+
+// AppendLineData 在 EditorView.Lines 末尾插入 一行数据
+func (p *EditorView) AppendLineData(data []byte) {
+	line := p.Editor.NewLine(p)
+	line.Index = len(p.Lines)
+	line.Data = data
+	p.Lines = append(p.Lines, line)
 }
 
 // InsertPointerLines 在 EditorView.Lines 中插入几行数据
@@ -167,7 +175,7 @@ func (p *EditorView) InsertPointerLines(lineIndex int, lines []*EditorLine) {
 //		lastEditorLineIndex		int		 输出 line 的前缀需要与整个页面的 line 前缀对齐
 //									 	 lastEditorLineIndex 为 页面中最后一条 line 的 index
 func (p *EditorLine) getEditorLinePrefix(lineIndex, lastEditorLineIndex int) string {
-	if true == p.Editor.isDisplayEditorLineNumber {
+	if true == p.EditorView.isDisplayEditorLineNumber {
 		lineNumberWidth := len(strconv.Itoa(lastEditorLineIndex + 1))
 		if lineNumberWidth < 3 {
 			lineNumberWidth = 3
@@ -184,7 +192,7 @@ func (p *EditorLine) Copy() *EditorLine {
 		ContentStartX: p.ContentStartX,
 		ContentStartY: p.ContentStartY,
 		Index:         p.Index,
-		Editor:        p.Editor,
+		EditorView:    p.EditorView,
 	}
 	ret.Data = make([]byte, len(p.Data))
 	copy(ret.Data, p.Data)
@@ -202,7 +210,7 @@ func (p *EditorLine) CutAway(offStart, offEnd int) {
 		} else {
 			p.Data = append(p.Data[:offStart], p.Data[offEnd:]...)
 		}
-		p.Cells = DefaultRawTextBuilder.Build(string(p.Data), p.Editor.TextFgColor, p.Editor.TextBgColor)
+		p.Cells = DefaultRawTextBuilder.Build(string(p.Data), p.EditorView.TextFgColor, p.EditorView.TextBgColor)
 	}
 }
 
@@ -231,13 +239,13 @@ func (p *EditorLine) InputModeBackspace(inputModeCursor *EditorViewCursor) {
 		inputModeCursor.CellOffX = len(p.Cells)
 	}
 
-	if len(p.Editor.Lines) <= 1 && 0 == inputModeCursor.CellOffX {
+	if len(p.EditorView.Lines) <= 1 && 0 == inputModeCursor.CellOffX {
 		return
 	}
 
 	if 0 == inputModeCursor.CellOffX {
 		if inputModeCursor.LineIndex > 0 {
-			p.Editor.InputModeReduceLine(inputModeCursor.LineIndex)
+			p.EditorView.InputModeReduceLine(inputModeCursor.LineIndex)
 			inputModeCursor.LineIndex--
 			inputModeCursor.CellOffX = len(inputModeCursor.Line().Cells)
 		}
@@ -259,12 +267,12 @@ func (p *EditorLine) Write(cursor *EditorCursor, keyStr string) {
 	if cursor.CellOffX >= len(p.Cells) {
 		_off = len(p.Data)
 		p.Data = append(p.Data, []byte(keyStr)...)
-		p.Cells = append(p.Cells, termui.Cell{[]rune(keyStr)[0], p.Editor.TextFgColor, p.Editor.TextBgColor, 0, 0, _off})
+		p.Cells = append(p.Cells, termui.Cell{[]rune(keyStr)[0], p.EditorView.TextFgColor, p.EditorView.TextBgColor, 0, 0, _off})
 
 	} else if 0 == cursor.CellOffX {
 		_off = 0
 		p.Data = append([]byte(keyStr), p.Data...)
-		p.Cells = DefaultRawTextBuilder.Build(string(p.Data), p.Editor.TextFgColor, p.Editor.TextBgColor)
+		p.Cells = DefaultRawTextBuilder.Build(string(p.Data), p.EditorView.TextFgColor, p.EditorView.TextBgColor)
 
 	} else {
 		newData := make([]byte, len(p.Data)+len(keyStr))
@@ -273,7 +281,7 @@ func (p *EditorLine) Write(cursor *EditorCursor, keyStr string) {
 		copy(newData[_off:], []byte(keyStr))
 		copy(newData[_off+len(keyStr):], p.Data[_off:])
 		p.Data = newData
-		p.Cells = DefaultRawTextBuilder.Build(string(p.Data), p.Editor.TextFgColor, p.Editor.TextBgColor)
+		p.Cells = DefaultRawTextBuilder.Build(string(p.Data), p.EditorView.TextFgColor, p.EditorView.TextBgColor)
 	}
 
 	cursor.CellOffX++

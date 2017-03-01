@@ -52,7 +52,7 @@ func (p *NodeLineChart) NodeDataSetValue(content string) {
 	}
 	uiBuffer.Data = arr
 
-	p.Node.uiRender()
+	p.Node.UIRender()
 	return
 }
 

@@ -5,7 +5,7 @@ bin/
 log/
 *.pyc
 .idea/
-/lua/
 *.db
 *.db-journal
 *.log
+./res/editor/main.log

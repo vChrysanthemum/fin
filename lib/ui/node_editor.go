@@ -22,7 +22,7 @@ func (p *Node) InitNodeEditor() {
 	p.isShouldCalculateWidth = true
 	p.isShouldCalculateHeight = false
 	p.UIBlock.Height = 10
-	p.UIBlock.Border = true
+	p.UIBlock.Border = false
 
 	p.isWorkNode = true
 
@@ -45,7 +45,7 @@ func (p *NodeEditor) NodeDataFocusMode() {
 		p.Node.tmpFocusModeBorderFg = p.Node.UIBlock.BorderFg
 		p.Node.UIBlock.Border = true
 		p.Node.UIBlock.BorderFg = ColorFocusModeBorderFg
-		p.Node.uiRender()
+		p.Node.UIRender()
 	}
 }
 
@@ -54,7 +54,7 @@ func (p *NodeEditor) NodeDataUnFocusMode() {
 		p.Node.isCalledFocusMode = false
 		p.Node.UIBlock.Border = p.Node.tmpFocusModeBorder
 		p.Node.UIBlock.BorderFg = p.Node.tmpFocusModeBorderFg
-		p.Node.uiRender()
+		p.Node.UIRender()
 	}
 }
 
@@ -65,7 +65,7 @@ func (p *NodeEditor) NodeDataActiveMode() {
 		p.Node.UIBlock.BorderFg = ColorActiveModeBorderFg
 	}
 	p.Editor.ActiveMode()
-	p.Node.uiRender()
+	p.Node.UIRender()
 }
 
 func (p *NodeEditor) NodeDataUnActiveMode() {
@@ -74,7 +74,7 @@ func (p *NodeEditor) NodeDataUnActiveMode() {
 		p.Node.UIBlock.BorderFg = p.Node.tmpActiveModeBorderFg
 	}
 	p.Editor.UnActiveMode()
-	p.Node.uiRender()
+	p.Node.UIRender()
 }
 
 func (p *NodeEditor) NodeDataParseAttribute(attr []html.Attribute) (isUIChange, isNeedReRenderPage bool) {

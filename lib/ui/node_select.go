@@ -75,7 +75,7 @@ func (p *NodeSelect) KeyPress(keyStr string) (isExecNormalKeyPressWork bool) {
 		} else {
 			p.SelectedOptionIndex--
 			p.Node.refreshUIBufferItems()
-			p.Node.uiRender()
+			p.Node.UIRender()
 		}
 		return
 	}
@@ -85,7 +85,7 @@ func (p *NodeSelect) KeyPress(keyStr string) (isExecNormalKeyPressWork bool) {
 		} else {
 			p.SelectedOptionIndex++
 			p.Node.refreshUIBufferItems()
-			p.Node.uiRender()
+			p.Node.UIRender()
 		}
 		return
 	}
@@ -114,14 +114,14 @@ func (p *NodeSelect) NodeDataSetValue(value string) {
 		if option.Value == value {
 			p.SelectedOptionIndex = k
 			p.Node.refreshUIBufferItems()
-			p.Node.uiRender()
+			p.Node.UIRender()
 			return
 		}
 	}
 
 	p.SelectedOptionIndex = -1
 	p.Node.refreshUIBufferItems()
-	p.Node.uiRender()
+	p.Node.UIRender()
 }
 
 func (p *NodeSelect) AppendOption(value, data string) {
@@ -131,7 +131,7 @@ func (p *NodeSelect) AppendOption(value, data string) {
 		p.ChildrenMaxStringWidth = width
 	}
 	p.Node.refreshUIBufferItems()
-	p.Node.uiRender()
+	p.Node.UIRender()
 }
 
 func (p *NodeSelect) ClearOptions() {
@@ -139,7 +139,7 @@ func (p *NodeSelect) ClearOptions() {
 	p.Children = []NodeSelectOption{}
 	p.ChildrenMaxStringWidth = 0
 	p.Node.refreshUIBufferItems()
-	p.Node.uiRender()
+	p.Node.UIRender()
 }
 
 func (p *NodeSelect) SetOptionData(value, newData string) {
@@ -148,7 +148,7 @@ func (p *NodeSelect) SetOptionData(value, newData string) {
 			v.Data = newData
 			p.Children[k] = v
 			p.Node.refreshUIBufferItems()
-			p.Node.uiRender()
+			p.Node.UIRender()
 			break
 		}
 	}
@@ -161,7 +161,7 @@ func (p *NodeSelect) NodeDataFocusMode() {
 		p.Node.tmpFocusModeBorderFg = p.Node.UIBlock.BorderFg
 		p.Node.UIBlock.Border = true
 		p.Node.UIBlock.BorderFg = ColorFocusModeBorderFg
-		p.Node.uiRender()
+		p.Node.UIRender()
 	}
 }
 
@@ -170,7 +170,7 @@ func (p *NodeSelect) NodeDataUnFocusMode() {
 		p.Node.isCalledFocusMode = false
 		p.Node.UIBlock.Border = p.Node.tmpFocusModeBorder
 		p.Node.UIBlock.BorderFg = p.Node.tmpFocusModeBorderFg
-		p.Node.uiRender()
+		p.Node.UIRender()
 	}
 }
 
@@ -179,7 +179,7 @@ func (p *NodeSelect) NodeDataActiveMode() {
 		p.Node.isCalledActiveMode = true
 		p.Node.tmpActiveModeBorderFg = p.Node.UIBlock.BorderFg
 		p.Node.UIBlock.BorderFg = ColorActiveModeBorderFg
-		p.Node.uiRender()
+		p.Node.UIRender()
 	}
 }
 
@@ -187,6 +187,6 @@ func (p *NodeSelect) NodeDataUnActiveMode() {
 	if true == p.Node.isCalledActiveMode && true == p.Node.UIBlock.Border {
 		p.Node.isCalledActiveMode = false
 		p.Node.UIBlock.BorderFg = p.Node.tmpActiveModeBorderFg
-		p.Node.uiRender()
+		p.Node.UIRender()
 	}
 }
