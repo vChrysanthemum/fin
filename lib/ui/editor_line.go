@@ -144,11 +144,12 @@ func (p *EditorView) InsertLines(lineIndex int, lines []EditorLine) {
 	p.Lines = append(p.Lines, tmpLines...)
 }
 
-// AppendLineData 在 EditorView.Lines 末尾插入 一行数据
-func (p *EditorView) AppendLineData(data []byte) {
+// AppendLineWithData 在 EditorView.Lines 末尾插入 新的 EditorLine，该 EditorLine.Data = data
+func (p *EditorView) AppendLineWithData(data []byte) {
 	line := p.Editor.NewLine(p)
 	line.Index = len(p.Lines)
-	line.Data = data
+	line.Data = make([]byte, len(data))
+	copy(line.Data, data)
 	p.Lines = append(p.Lines, line)
 }
 

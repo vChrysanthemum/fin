@@ -20,7 +20,7 @@ func (p *EditorView) LoadFile(filePath string) error {
 
 	scanner := bufio.NewScanner(f)
 	for scanner.Scan() {
-		p.AppendLineData(scanner.Bytes())
+		p.AppendLineWithData(scanner.Bytes())
 	}
 
 	p.isShouldRefreshInputModeBuf = true

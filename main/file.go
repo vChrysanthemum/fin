@@ -36,8 +36,6 @@ func hookersAfterFirstUIRender(arg interface{}) {
 		log.Println(err)
 	}
 
-	defaultTab.UIRender()
-	defaultEditor.UIBlock.RefreshSize()
 	ui.GCurrentRenderPage.ReRender()
 }
 
