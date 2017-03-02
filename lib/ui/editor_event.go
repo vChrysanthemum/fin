@@ -11,10 +11,6 @@ import (
 func (p *Editor) handleKeyEvent(keyStr string) (isQuitActiveMode bool) {
 	isQuitActiveMode = false
 
-	if 0 == len(p.Lines) {
-		p.InputModeAppendNewLine(p.InputModeCursor)
-	}
-
 	switch keyStr {
 	case "<escape>":
 		p.ActionGroup.makeStatePrepareWrite()

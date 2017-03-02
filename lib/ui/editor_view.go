@@ -41,13 +41,14 @@ func (p *Editor) NewEditorView() *EditorView {
 		TextBgColor:  termui.ThemeAttr("par.text.bg"),
 		IsModifiable: true,
 	}
-
 	ret.Mode = EditorModeNone
 
 	ret.PrepareCommandMode()
 	ret.PrepareInputMode()
 
 	ret.InputModeCursor = NewEditorViewCursor(ret)
+
+	ret.InputModeAppendNewLine(ret.InputModeCursor)
 
 	ret.ActionGroup = NewEditorActionGroup(ret)
 

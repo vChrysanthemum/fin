@@ -54,9 +54,6 @@ func (p *Editor) Close() {
 
 func (p *Editor) Buffer() termui.Buffer {
 	if nil == p.Buf {
-		if 0 == len(p.Lines) {
-			p.InputModeAppendNewLine(p.InputModeCursor)
-		}
 		buf := p.Block.Buffer()
 		p.Buf = &buf
 		p.Buf.IfNotRenderByTermUI = true
