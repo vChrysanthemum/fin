@@ -4,6 +4,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/gizak/termui"
+	rw "github.com/mattn/go-runewidth"
 )
 
 var DefaultRawTextBuilder = NewRawTextBuilder()
@@ -22,17 +23,17 @@ func (p *RawTextBuilder) Build(bs []byte, fg, bg termui.Attribute) []termui.Cell
 			if '\t' == rs[i] {
 				cs[i] = termui.Cell{Ch: rs[i], Fg: fg, Bg: bg, BytesOff: 0, UIWidth: p.TabWidth}
 			} else {
-				cs[i] = termui.Cell{Ch: rs[i], Fg: fg, Bg: bg, BytesOff: 0, UIWidth: utf8.RuneLen(rs[i])}
+				cs[i] = termui.Cell{Ch: rs[i], Fg: fg, Bg: bg, BytesOff: 0, UIWidth: rw.RuneWidth(rs[i])}
 			}
 			continue
 		}
 
 		_uiOff += cs[i-1].UIWidth
-		_off += cs[i-1].Width()
+		_off += utf8.RuneLen(cs[i-1].Ch)
 		if '\t' == rs[i] {
 			cs[i] = termui.Cell{Ch: rs[i], Fg: fg, Bg: bg, BytesOff: _off, UIWidth: p.TabWidth}
 		} else {
-			cs[i] = termui.Cell{Ch: rs[i], Fg: fg, Bg: bg, BytesOff: _off, UIWidth: utf8.RuneLen(rs[i])}
+			cs[i] = termui.Cell{Ch: rs[i], Fg: fg, Bg: bg, BytesOff: _off, UIWidth: rw.RuneWidth(rs[i])}
 		}
 
 	}
