@@ -217,7 +217,7 @@ func WrapTx(cs []Cell, wl int) []Cell {
 				trigger = "stop"
 			} else if plainRune[i] != plainWrappedRune[i] && plainWrappedRune[i] == 10 {
 				trigger = "go"
-				cell := Cell{10, 0, 0, 0, 0, 0}
+				cell := Cell{10, 0, 0, 0, 0, 0, 0}
 				j := i - 0
 
 				// insert a cell into the []Cell in correct position

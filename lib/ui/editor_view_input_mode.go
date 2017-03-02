@@ -49,7 +49,7 @@ func (p *EditorView) RefreshInputModeBuf(inputModeCursor *EditorViewCursor) {
 REFRESH_BEGIN:
 	for x = p.InnerArea.Min.X; x < p.InnerArea.Max.X; x++ {
 		for y = p.InnerArea.Min.Y; y < p.InnerArea.Max.Y; y++ {
-			p.Editor.Buf.Set(x, y, termui.Cell{' ', p.TextFgColor, p.TextBgColor, 0, 0, 0})
+			p.Editor.Buf.Set(x, y, termui.Cell{' ', p.TextFgColor, p.TextBgColor, 0, 0, 0, 0})
 		}
 	}
 
@@ -67,7 +67,7 @@ REFRESH_BEGIN:
 	for k = inputModeCursor.DisplayLinesTopIndex; k < len(p.Lines); k++ {
 		line = p.Lines[k]
 		if _, ok = builtLinesMark[k]; false == ok {
-			line.Cells = DefaultRawTextBuilder.Build(string(line.Data), p.TextFgColor, p.TextBgColor)
+			line.Cells = DefaultRawTextBuilder.Build(line.Data, p.TextFgColor, p.TextBgColor)
 			builtLinesMark[k] = true
 		}
 
@@ -89,14 +89,14 @@ REFRESH_BEGIN:
 		for _, v := range linePrefix {
 			finalX = p.Block.InnerArea.Min.X + x
 			finalY = p.Block.InnerArea.Min.Y + y
-			p.Editor.Buf.Set(finalX, finalY, termui.Cell{rune(v), p.TextFgColor, p.TextBgColor, finalX, finalY, 0})
+			p.Editor.Buf.Set(finalX, finalY, termui.Cell{rune(v), p.TextFgColor, p.TextBgColor, finalX, finalY, 1, 0})
 			x++
 		}
 
 		dx = p.Block.InnerArea.Dx() - len(linePrefix)
 		x, n = 0, 0
 		for n < len(line.Cells) {
-			w = line.Cells[n].Width()
+			w = line.Cells[n].UIWidth
 			if x+w > dx {
 				x = 0
 				y++
@@ -124,6 +124,6 @@ REFRESH_BEGIN:
 	for ; y < dy; y++ {
 		finalX = p.Block.InnerArea.Min.X
 		finalY = p.Block.InnerArea.Min.Y + y
-		p.Editor.Buf.Set(finalX, finalY, termui.Cell{'~', p.TextFgColor, p.TextBgColor, finalX, finalY, 0})
+		p.Editor.Buf.Set(finalX, finalY, termui.Cell{'~', p.TextFgColor, p.TextBgColor, finalX, finalY, 1, 0})
 	}
 }

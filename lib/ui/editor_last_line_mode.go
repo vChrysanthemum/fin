@@ -55,12 +55,12 @@ func (p *Editor) RefreshLastLineModeBuf(lastLineModeCursor *EditorCommandCursor)
 	maxY := p.LastLineModeBufAreaY() + p.LastLineModeBufAreaHeight
 	for x = p.Buf.Area.Min.X + 1; x < p.Buf.Area.Max.X-1; x++ {
 		for y = p.LastLineModeBufAreaY(); y < maxY; y++ {
-			p.Buf.Set(x, y, termui.Cell{' ', p.TextFgColor, p.TextBgColor, 0, 0, 0})
+			p.Buf.Set(x, y, termui.Cell{' ', p.TextFgColor, p.TextBgColor, 0, 0, 0, 0})
 		}
 	}
 
 	p.LastLineModeBuf.Cells =
-		DefaultRawTextBuilder.Build(string(p.LastLineModeBuf.Data), p.TextFgColor, p.TextBgColor)
+		DefaultRawTextBuilder.Build(p.LastLineModeBuf.Data, p.TextFgColor, p.TextBgColor)
 
 	x = p.Block.InnerArea.Min.X
 	y = p.LastLineModeBufAreaY()
@@ -68,7 +68,7 @@ func (p *Editor) RefreshLastLineModeBuf(lastLineModeCursor *EditorCommandCursor)
 	for n < len(p.LastLineModeBuf.Cells) {
 		p.Buf.Set(x, y, p.LastLineModeBuf.Cells[n])
 		p.LastLineModeBuf.Cells[n].X, p.LastLineModeBuf.Cells[n].Y = x, y
-		x += p.LastLineModeBuf.Cells[n].Width()
+		x += p.LastLineModeBuf.Cells[n].UIWidth
 		n++
 	}
 }

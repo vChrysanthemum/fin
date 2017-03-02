@@ -12,6 +12,7 @@ type Cell struct {
 	Fg       Attribute
 	Bg       Attribute
 	X, Y     int
+	UIWidth  int
 	BytesOff int
 }
 
@@ -66,7 +67,7 @@ func (b *Buffer) Sync() {
 
 // NewCell returns a new cell
 func NewCell(ch rune, fg, bg Attribute) Cell {
-	return Cell{ch, fg, bg, 0, 0, 0}
+	return Cell{ch, fg, bg, 0, 0, 0, 0}
 }
 
 // Merge merges bs Buffers onto b
@@ -92,7 +93,7 @@ func NewBuffer() Buffer {
 func (b Buffer) Fill(ch rune, fg, bg Attribute) {
 	for x := b.Area.Min.X; x < b.Area.Max.X; x++ {
 		for y := b.Area.Min.Y; y < b.Area.Max.Y; y++ {
-			b.Set(x, y, Cell{ch, fg, bg, 0, 0, 0})
+			b.Set(x, y, Cell{ch, fg, bg, 0, 0, 0, 0})
 		}
 	}
 }
@@ -105,7 +106,7 @@ func NewFilledBuffer(x0, y0, x1, y1 int, ch rune, fg, bg Attribute) Buffer {
 
 	for x := buf.Area.Min.X; x < buf.Area.Max.X; x++ {
 		for y := buf.Area.Min.Y; y < buf.Area.Max.Y; y++ {
-			buf.Set(x, y, Cell{ch, fg, bg, 0, 0, 0})
+			buf.Set(x, y, Cell{ch, fg, bg, 0, 0, 0, 0})
 		}
 	}
 	return buf

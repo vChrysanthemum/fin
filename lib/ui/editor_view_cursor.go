@@ -55,7 +55,7 @@ func (p *EditorView) InputModeMoveCursorUp(cursor *EditorViewCursor, runenum int
 		if cursor.CellOffX >= len(line.Cells) {
 			cursor.CellOffX = len(line.Cells)
 			cell := line.Cells[cursor.CellOffX-1]
-			cursor.UISetCursor(cell.X+cell.Width(), cell.Y+cell.Width())
+			cursor.UISetCursor(cell.X+cell.UIWidth, cell.Y)
 		} else {
 			cell := line.Cells[cursor.CellOffX]
 			cursor.UISetCursor(cell.X, cell.Y)
@@ -151,7 +151,7 @@ func (p *EditorView) InputModeMoveCursorDown(cursor *EditorViewCursor, runenum i
 		if cursor.CellOffX >= len(line.Cells) {
 			cursor.CellOffX = len(line.Cells)
 			cell := line.Cells[cursor.CellOffX-1]
-			cursor.UISetCursor(cell.X+cell.Width(), cell.Y+cell.Width())
+			cursor.UISetCursor(cell.X+cell.UIWidth, cell.Y)
 		} else {
 			cell := line.Cells[cursor.CellOffX]
 			cursor.UISetCursor(cell.X, cell.Y)
@@ -271,7 +271,7 @@ func (p *EditorView) MoveCursorRight(cursor *EditorViewCursor, line *EditorLine,
 		case EditorInputMode:
 			cursor.CellOffX = len(line.Cells)
 			cell := line.Cells[cursor.CellOffX-1]
-			cursor.UISetCursor(cell.X+cell.Width(), cell.Y)
+			cursor.UISetCursor(cell.X+cell.UIWidth, cell.Y)
 		}
 
 	} else {
@@ -301,11 +301,10 @@ func (p *EditorViewCursor) RefreshCursorByEditorLine(line *EditorLine) {
 	var cell termui.Cell
 	if p.CellOffX == len(line.Cells) {
 		cell = line.Cells[p.CellOffX-1]
-		width := cell.Width()
-		if cell.X+width >= p.EditorView.Block.InnerArea.Max.X {
+		if cell.X+cell.UIWidth >= p.EditorView.Block.InnerArea.Max.X {
 			x, y = line.ContentStartX, cell.Y+1
 		} else {
-			x, y = cell.X+width, cell.Y
+			x, y = cell.X+cell.UIWidth, cell.Y
 		}
 
 		if y >= p.EditorView.Block.InnerArea.Max.Y {

@@ -70,16 +70,16 @@ func (b Block) DrawBorder(buf Buffer) {
 
 	// draw corners
 	if b.BorderTop && b.BorderLeft && b.Area.Dx() > 0 && b.Area.Dy() > 0 {
-		buf.Set(x0, y0, Cell{TOP_LEFT, b.BorderFg, b.BorderBg, 0, 0, 0})
+		buf.Set(x0, y0, Cell{TOP_LEFT, b.BorderFg, b.BorderBg, 0, 0, 0, 0})
 	}
 	if b.BorderTop && b.BorderRight && b.Area.Dx() > 1 && b.Area.Dy() > 0 {
-		buf.Set(x1, y0, Cell{TOP_RIGHT, b.BorderFg, b.BorderBg, 0, 0, 0})
+		buf.Set(x1, y0, Cell{TOP_RIGHT, b.BorderFg, b.BorderBg, 0, 0, 0, 0})
 	}
 	if b.BorderBottom && b.BorderLeft && b.Area.Dx() > 0 && b.Area.Dy() > 1 {
-		buf.Set(x0, y1, Cell{BOTTOM_LEFT, b.BorderFg, b.BorderBg, 0, 0, 0})
+		buf.Set(x0, y1, Cell{BOTTOM_LEFT, b.BorderFg, b.BorderBg, 0, 0, 0, 0})
 	}
 	if b.BorderBottom && b.BorderRight && b.Area.Dx() > 1 && b.Area.Dy() > 1 {
-		buf.Set(x1, y1, Cell{BOTTOM_RIGHT, b.BorderFg, b.BorderBg, 0, 0, 0})
+		buf.Set(x1, y1, Cell{BOTTOM_RIGHT, b.BorderFg, b.BorderBg, 0, 0, 0, 0})
 	}
 }
 

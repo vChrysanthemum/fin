@@ -3,6 +3,7 @@ package ui
 import (
 	"fmt"
 	"strconv"
+	"unicode/utf8"
 
 	"github.com/gizak/termui"
 )
@@ -211,7 +212,7 @@ func (p *EditorLine) CutAway(offStart, offEnd int) {
 		} else {
 			p.Data = append(p.Data[:offStart], p.Data[offEnd:]...)
 		}
-		p.Cells = DefaultRawTextBuilder.Build(string(p.Data), p.EditorView.TextFgColor, p.EditorView.TextBgColor)
+		p.Cells = DefaultRawTextBuilder.Build(p.Data, p.EditorView.TextFgColor, p.EditorView.TextBgColor)
 	}
 }
 
@@ -268,12 +269,20 @@ func (p *EditorLine) Write(cursor *EditorCursor, keyStr string) {
 	if cursor.CellOffX >= len(p.Cells) {
 		_off = len(p.Data)
 		p.Data = append(p.Data, []byte(keyStr)...)
-		p.Cells = append(p.Cells, termui.Cell{[]rune(keyStr)[0], p.EditorView.TextFgColor, p.EditorView.TextBgColor, 0, 0, _off})
+		if "\t" == keyStr {
+			p.Cells = append(p.Cells, termui.Cell{[]rune(keyStr)[0],
+				p.EditorView.TextFgColor, p.EditorView.TextBgColor, 0, 0,
+				DefaultRawTextBuilder.TabWidth, _off})
+		} else {
+			p.Cells = append(p.Cells, termui.Cell{[]rune(keyStr)[0],
+				p.EditorView.TextFgColor, p.EditorView.TextBgColor, 0, 0,
+				utf8.RuneLen([]rune(keyStr)[0]), _off})
+		}
 
 	} else if 0 == cursor.CellOffX {
 		_off = 0
 		p.Data = append([]byte(keyStr), p.Data...)
-		p.Cells = DefaultRawTextBuilder.Build(string(p.Data), p.EditorView.TextFgColor, p.EditorView.TextBgColor)
+		p.Cells = DefaultRawTextBuilder.Build(p.Data, p.EditorView.TextFgColor, p.EditorView.TextBgColor)
 
 	} else {
 		newData := make([]byte, len(p.Data)+len(keyStr))
@@ -282,7 +291,7 @@ func (p *EditorLine) Write(cursor *EditorCursor, keyStr string) {
 		copy(newData[_off:], []byte(keyStr))
 		copy(newData[_off+len(keyStr):], p.Data[_off:])
 		p.Data = newData
-		p.Cells = DefaultRawTextBuilder.Build(string(p.Data), p.EditorView.TextFgColor, p.EditorView.TextBgColor)
+		p.Cells = DefaultRawTextBuilder.Build(p.Data, p.EditorView.TextFgColor, p.EditorView.TextBgColor)
 	}
 
 	cursor.CellOffX++
