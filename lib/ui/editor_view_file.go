@@ -10,6 +10,7 @@ import (
 func (p *EditorView) LoadFile(filePath string) error {
 	p = p.Editor.NewEditorView()
 	p.Editor.EditorView = p
+	p.Lines = []*EditorLine{}
 	p.FilePath = filePath
 
 	f, err := os.OpenFile(filePath, os.O_RDWR, 0777)
