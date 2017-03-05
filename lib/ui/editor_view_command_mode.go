@@ -5,49 +5,6 @@ import (
 	"strconv"
 )
 
-type CommandModeCommandHandler func(inputModeCursor *EditorViewCursor)
-
-type EditorCommandModeCommand struct {
-	MatchKey interface{}
-	Handler  CommandModeCommandHandler
-}
-
-var (
-	_commandMatchKeyEnterInputModeBackward = byte('i')
-	_commandMatchKeyEnterInputModeForward  = byte('a')
-	_commandMatchKeyEnterLastLineMode      = byte(':')
-	_commandMatchKeyUndo                   = byte('u')
-	_commandMatchKeyRedo                   = "C-r"
-	_commandMatchKeyMoveUpOneStep          = "<up>"
-	_commandMatchKeyMoveDownOneStep        = "<down>"
-	_commandMatchKeyBackspace              = "C-8"
-	_commandMatchKeyMoveUp                 = regexp.MustCompile(`[^\d]*(\d*)k$`)
-	_commandMatchKeyMoveDown               = regexp.MustCompile(`[^\d]*(\d*)j$`)
-	_commandMatchKeyMoveLeft               = regexp.MustCompile(`[^\d]*(\d*)h$`)
-	_commandMatchKeyMoveRight              = regexp.MustCompile(`[^\d]*(\d*)l$`)
-	_commandMatchKeyCut                    = regexp.MustCompile(`[^\d]*(\d*)dd$`)
-	_commandMatchKeyPaste                  = regexp.MustCompile(`[^\d]*(\d*)p$`)
-)
-
-func (p *EditorView) PrepareCommandMode() {
-	p.CommandModeCommands = []EditorCommandModeCommand{
-		{_commandMatchKeyEnterInputModeBackward, p.commandEnterInputModeBackward},
-		{_commandMatchKeyEnterInputModeForward, p.commandEnterInputModeForward},
-		{_commandMatchKeyEnterLastLineMode, p.commandEnterLastLineMode},
-		{_commandMatchKeyUndo, p.commandUndo},
-		{_commandMatchKeyRedo, p.commandRedo},
-		{_commandMatchKeyMoveUpOneStep, p.commandMoveUpOneStep},
-		{_commandMatchKeyMoveDownOneStep, p.commandMoveDownOneStep},
-		{_commandMatchKeyBackspace, p.commandBackspace},
-		{_commandMatchKeyMoveUp, p.commandMoveUp},
-		{_commandMatchKeyMoveDown, p.commandMoveDown},
-		{_commandMatchKeyMoveLeft, p.commandMoveLeft},
-		{_commandMatchKeyMoveRight, p.commandMoveRight},
-		{_commandMatchKeyCut, p.commandCut},
-		{_commandMatchKeyPaste, p.commandPaste},
-	}
-}
-
 func (p *EditorView) CommandModeEnter(inputModeCursor *EditorViewCursor) {
 	p.Mode = EditorCommandMode
 	p.CommandModeCommandStack = ""
@@ -68,17 +25,17 @@ func (p *EditorView) CommandModeEnter(inputModeCursor *EditorViewCursor) {
 
 func (p *EditorView) CommandModeWrite(inputModeCursor *EditorViewCursor, keyStr string) {
 	p.CommandModeCommandStack += keyStr
-	for _, cmd := range p.CommandModeCommands {
+	for _, cmd := range p.Editor.CommandModeCommands {
 		switch cmd.MatchKey.(type) {
 		case *regexp.Regexp:
 			if true == cmd.MatchKey.(*regexp.Regexp).Match([]byte(p.CommandModeCommandStack)) {
-				cmd.Handler(inputModeCursor)
+				cmd.Handler(cmd.MatchKey, inputModeCursor)
 				p.CommandModeCommandStack = ""
 				return
 			}
 		case byte:
 			if p.CommandModeCommandStack[len(p.CommandModeCommandStack)-1] == cmd.MatchKey.(byte) {
-				cmd.Handler(inputModeCursor)
+				cmd.Handler(cmd.MatchKey, inputModeCursor)
 				p.CommandModeCommandStack = ""
 				return
 			}
@@ -86,7 +43,7 @@ func (p *EditorView) CommandModeWrite(inputModeCursor *EditorViewCursor, keyStr 
 			matchkey := cmd.MatchKey.(string)
 			if len(p.CommandModeCommandStack) >= len(matchkey) &&
 				p.CommandModeCommandStack[len(p.CommandModeCommandStack)-len(matchkey):] == matchkey {
-				cmd.Handler(inputModeCursor)
+				cmd.Handler(cmd.MatchKey, inputModeCursor)
 				p.CommandModeCommandStack = ""
 				return
 			}
@@ -94,43 +51,43 @@ func (p *EditorView) CommandModeWrite(inputModeCursor *EditorViewCursor, keyStr 
 	}
 }
 
-func (p *EditorView) commandEnterInputModeBackward(inputModeCursor *EditorViewCursor) {
+func (p *EditorView) commandEnterInputModeBackward(matchKey interface{}, inputModeCursor *EditorViewCursor) {
 	p.InputModeEnter(inputModeCursor)
 }
 
-func (p *EditorView) commandEnterInputModeForward(inputModeCursor *EditorViewCursor) {
+func (p *EditorView) commandEnterInputModeForward(matchKey interface{}, inputModeCursor *EditorViewCursor) {
 	if len(inputModeCursor.Line().Cells) > 0 {
 		inputModeCursor.CellOffX++
 	}
 	p.InputModeEnter(inputModeCursor)
 }
 
-func (p *EditorView) commandEnterLastLineMode(inputModeCursor *EditorViewCursor) {
+func (p *EditorView) commandEnterLastLineMode(matchKey interface{}, inputModeCursor *EditorViewCursor) {
 	p.Editor.LastLineModeEnter()
 }
 
-func (p *EditorView) commandUndo(inputModeCursor *EditorViewCursor) {
+func (p *EditorView) commandUndo(matchKey interface{}, inputModeCursor *EditorViewCursor) {
 	p.ActionGroup.Undo(inputModeCursor)
 }
 
-func (p *EditorView) commandRedo(inputModeCursor *EditorViewCursor) {
+func (p *EditorView) commandRedo(matchKey interface{}, inputModeCursor *EditorViewCursor) {
 	p.ActionGroup.Redo(inputModeCursor)
 }
 
-func (p *EditorView) commandMoveUpOneStep(inputModeCursor *EditorViewCursor) {
+func (p *EditorView) commandMoveUpOneStep(matchKey interface{}, inputModeCursor *EditorViewCursor) {
 	p.CommandModeMoveCursorUp(inputModeCursor, 1)
 }
 
-func (p *EditorView) commandMoveDownOneStep(inputModeCursor *EditorViewCursor) {
+func (p *EditorView) commandMoveDownOneStep(matchKey interface{}, inputModeCursor *EditorViewCursor) {
 	p.CommandModeMoveCursorDown(inputModeCursor, 1)
 }
 
-func (p *EditorView) commandBackspace(inputModeCursor *EditorViewCursor) {
+func (p *EditorView) commandBackspace(matchKey interface{}, inputModeCursor *EditorViewCursor) {
 	p.MoveCursorLeft(inputModeCursor, inputModeCursor.Line(), 1)
 }
 
-func (p *EditorView) commandMoveUp(inputModeCursor *EditorViewCursor) {
-	_n := _commandMatchKeyMoveUp.FindSubmatch([]byte(p.CommandModeCommandStack))
+func (p *EditorView) commandMoveUp(matchKey interface{}, inputModeCursor *EditorViewCursor) {
+	_n := matchKey.(*regexp.Regexp).FindSubmatch([]byte(p.CommandModeCommandStack))
 	n, err := strconv.Atoi(string(_n[1]))
 	if nil == err {
 		p.CommandModeMoveCursorUp(inputModeCursor, n)
@@ -139,8 +96,8 @@ func (p *EditorView) commandMoveUp(inputModeCursor *EditorViewCursor) {
 	}
 }
 
-func (p *EditorView) commandMoveDown(inputModeCursor *EditorViewCursor) {
-	_n := _commandMatchKeyMoveDown.FindSubmatch([]byte(p.CommandModeCommandStack))
+func (p *EditorView) commandMoveDown(matchKey interface{}, inputModeCursor *EditorViewCursor) {
+	_n := matchKey.(*regexp.Regexp).FindSubmatch([]byte(p.CommandModeCommandStack))
 	n, err := strconv.Atoi(string(_n[1]))
 	if nil == err {
 		p.CommandModeMoveCursorDown(inputModeCursor, n)
@@ -149,8 +106,8 @@ func (p *EditorView) commandMoveDown(inputModeCursor *EditorViewCursor) {
 	}
 }
 
-func (p *EditorView) commandMoveLeft(inputModeCursor *EditorViewCursor) {
-	_n := _commandMatchKeyMoveLeft.FindSubmatch([]byte(p.CommandModeCommandStack))
+func (p *EditorView) commandMoveLeft(matchKey interface{}, inputModeCursor *EditorViewCursor) {
+	_n := matchKey.(*regexp.Regexp).FindSubmatch([]byte(p.CommandModeCommandStack))
 	n, err := strconv.Atoi(string(_n[1]))
 	if nil == err {
 		p.MoveCursorLeft(inputModeCursor, inputModeCursor.Line(), n)
@@ -159,8 +116,8 @@ func (p *EditorView) commandMoveLeft(inputModeCursor *EditorViewCursor) {
 	}
 }
 
-func (p *EditorView) commandMoveRight(inputModeCursor *EditorViewCursor) {
-	_n := _commandMatchKeyMoveRight.FindSubmatch([]byte(p.CommandModeCommandStack))
+func (p *EditorView) commandMoveRight(matchKey interface{}, inputModeCursor *EditorViewCursor) {
+	_n := matchKey.(*regexp.Regexp).FindSubmatch([]byte(p.CommandModeCommandStack))
 	n, err := strconv.Atoi(string(_n[1]))
 	if nil == err {
 		p.MoveCursorRight(inputModeCursor, inputModeCursor.Line(), n)
@@ -169,8 +126,8 @@ func (p *EditorView) commandMoveRight(inputModeCursor *EditorViewCursor) {
 	}
 }
 
-func (p *EditorView) commandCut(inputModeCursor *EditorViewCursor) {
-	_n := _commandMatchKeyCut.FindSubmatch([]byte(p.CommandModeCommandStack))
+func (p *EditorView) commandCut(matchKey interface{}, inputModeCursor *EditorViewCursor) {
+	_n := matchKey.(*regexp.Regexp).FindSubmatch([]byte(p.CommandModeCommandStack))
 	linesNum, err := strconv.Atoi(string(_n[1]))
 	if nil != err {
 		linesNum = 1
@@ -199,13 +156,13 @@ func (p *EditorView) commandCut(inputModeCursor *EditorViewCursor) {
 	p.isShouldRefreshInputModeBuf = true
 }
 
-func (p *EditorView) commandPaste(inputModeCursor *EditorViewCursor) {
+func (p *EditorView) commandPaste(matchKey interface{}, inputModeCursor *EditorViewCursor) {
 	var (
 		copyNum int
 		err     error
 	)
 
-	_n := _commandMatchKeyPaste.FindSubmatch([]byte(p.CommandModeCommandStack))
+	_n := matchKey.(*regexp.Regexp).FindSubmatch([]byte(p.CommandModeCommandStack))
 	if len(_n) > 1 {
 		copyNum, err = strconv.Atoi(string(_n[1]))
 		if nil != err {

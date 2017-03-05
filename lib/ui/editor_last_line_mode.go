@@ -5,6 +5,7 @@ import "github.com/gizak/termui"
 func (p *Editor) PrepareLastLineMode() {
 	editorView := p.NewEditorView()
 	p.LastLineModeBuf = p.NewLine(editorView)
+	p.PrepareLastLineModeCommand()
 }
 
 func (p *Editor) LastLineModeQuit() {
@@ -25,6 +26,7 @@ func (p *Editor) LastLineModeWrite(
 	p.LastLineModeBuf.ContentStartY = p.LastLineModeBufAreaY()
 
 	if "<enter>" == keyStr {
+		p.ExecLastLineCommand()
 		p.LastLineModeQuit()
 		p.CommandModeEnter(inputModeCursor)
 

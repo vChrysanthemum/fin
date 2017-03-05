@@ -8,8 +8,7 @@ import (
 )
 
 func (p *EditorView) LoadFile(filePath string) error {
-	p = p.Editor.NewEditorView()
-	p.Editor.EditorView = p
+	p.Prepare()
 	p.FilePath = filePath
 
 	f, err := os.OpenFile(filePath, os.O_RDWR, 0777)
@@ -32,6 +31,25 @@ func (p *EditorView) LoadFile(filePath string) error {
 	p.isShouldRefreshInputModeBuf = true
 	p.Editor.Buffer()
 	termbox.Flush()
+
+	return nil
+}
+
+func (p *EditorView) SaveFile() error {
+	if "" == p.FilePath {
+		return nil
+	}
+
+	f, err := os.OpenFile(p.FilePath, os.O_RDWR|os.O_CREATE, 0777)
+	if nil != err {
+		return err
+	}
+	defer f.Close()
+
+	for k, _ := range p.Lines {
+		f.Write(p.Lines[k].Data)
+		f.Write([]byte("\n"))
+	}
 
 	return nil
 }

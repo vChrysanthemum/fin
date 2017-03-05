@@ -14,6 +14,7 @@ type Editor struct {
 	Buf *termui.Buffer
 
 	// LastLineMode
+	LastLineModeCommands      []EditorLastLineModeCommand
 	LastLineModeBufAreaHeight int
 	LastLineModeBuf           *EditorLine
 	LastLineModeCursor        *EditorCommandCursor

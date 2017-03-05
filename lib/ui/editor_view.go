@@ -1,9 +1,37 @@
 package ui
 
 import (
+	"regexp"
+
 	"github.com/gizak/termui"
 	termbox "github.com/nsf/termbox-go"
 )
+
+type CommandModeCommandHandler func(matchKey interface{}, inputModeCursor *EditorViewCursor)
+
+type EditorCommandModeCommand struct {
+	MatchKey interface{}
+	Handler  CommandModeCommandHandler
+}
+
+func (p *EditorView) PrepareCommandMode() {
+	p.CommandModeCommands = []EditorCommandModeCommand{
+		{byte('i'), p.commandEnterInputModeBackward},
+		{byte('a'), p.commandEnterInputModeForward},
+		{byte(':'), p.commandEnterLastLineMode},
+		{byte('u'), p.commandUndo},
+		{"C-r", p.commandRedo},
+		{"<up>", p.commandMoveUpOneStep},
+		{"<down>", p.commandMoveDownOneStep},
+		{"C-8", p.commandBackspace},
+		{regexp.MustCompile(`[^\d]*(\d*)k$`), p.commandMoveUp},
+		{regexp.MustCompile(`[^\d]*(\d*)j$`), p.commandMoveDown},
+		{regexp.MustCompile(`[^\d]*(\d*)h$`), p.commandMoveLeft},
+		{regexp.MustCompile(`[^\d]*(\d*)l$`), p.commandMoveRight},
+		{regexp.MustCompile(`[^\d]*(\d*)dd$`), p.commandCut},
+		{regexp.MustCompile(`[^\d]*(\d*)p$`), p.commandPaste},
+	}
+}
 
 type EditorView struct {
 	Editor *Editor
@@ -33,28 +61,32 @@ type EditorView struct {
 }
 
 func (p *Editor) NewEditorView() *EditorView {
-	ret := &EditorView{
-		Editor:       p,
-		Block:        &p.Block,
-		Lines:        []*EditorLine{},
-		TextFgColor:  termui.ThemeAttr("par.text.fg"),
-		TextBgColor:  termui.ThemeAttr("par.text.bg"),
-		IsModifiable: true,
-	}
-	ret.Mode = EditorModeNone
+	ret := new(EditorView)
+	ret.Editor = p
+	ret.Block = &p.Block
 
-	ret.PrepareCommandMode()
-	ret.PrepareInputMode()
-
-	ret.InputModeCursor = NewEditorViewCursor(ret)
-
-	ret.InputModeAppendNewLine(ret.InputModeCursor)
-
-	ret.ActionGroup = NewEditorActionGroup(ret)
-
-	ret.isDisplayEditorLineNumber = true
+	ret.Prepare()
 
 	return ret
+}
+
+func (p *EditorView) Prepare() {
+	p.Lines = []*EditorLine{}
+	p.TextFgColor = termui.ThemeAttr("par.text.fg")
+	p.TextBgColor = termui.ThemeAttr("par.text.bg")
+	p.IsModifiable = true
+	p.Mode = EditorModeNone
+
+	p.PrepareCommandMode()
+	p.PrepareInputMode()
+
+	p.InputModeCursor = NewEditorViewCursor(p)
+
+	p.InputModeAppendNewLine(p.InputModeCursor)
+
+	p.ActionGroup = NewEditorActionGroup(p)
+
+	p.isDisplayEditorLineNumber = true
 }
 
 func (p *EditorView) InputModeBufAreaHeight() int {
