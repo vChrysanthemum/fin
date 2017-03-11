@@ -1,9 +1,12 @@
 # Fin & Traveller
 
 #### Fin 是一款终端下可以玩游戏的编辑器 -- 雏形
-#### Traveller 是基于 Fin 的星际旅行游戏 -- 简单的实现
 
 <center><img src="./fin.gif" align=center /></center>
+
+#### Traveller 是基于 Fin 的星际旅行游戏 -- 简单的实现
+
+<center><img src="./traveller.gif" align=center /></center>
 
 [更详细的演示视频](http://www.bilibili.com/video/av8131488/)
 
