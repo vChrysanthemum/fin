@@ -7,7 +7,7 @@ func (p *EditorView) PrepareInputMode() {
 
 func (p *EditorView) InputModeEnter(inputModeCursor *EditorViewCursor) {
 	if false == p.IsModifiable {
-		p.Editor.CommandShowError(EditorErrNotModifiable)
+		p.Editor.CommandShowMsg(EditorErrNotModifiable.Error())
 		p.CommandModeEnter(inputModeCursor)
 
 	} else {

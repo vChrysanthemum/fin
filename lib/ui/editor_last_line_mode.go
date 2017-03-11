@@ -9,7 +9,6 @@ func (p *Editor) PrepareLastLineMode() {
 }
 
 func (p *Editor) LastLineModeQuit() {
-	p.LastLineModeBuf.CleanData(p.LastLineModeCursor.EditorCursor)
 }
 
 func (p *Editor) LastLineModeEnter() {
@@ -75,7 +74,7 @@ func (p *Editor) RefreshLastLineModeBuf(lastLineModeCursor *EditorCommandCursor)
 	}
 }
 
-func (p *Editor) CommandShowError(err error) {
+func (p *Editor) CommandShowMsg(msg string) {
 	p.isShouldRefreshLastLineModeBuf = true
-	p.LastLineModeBuf.Data = []byte(err.Error())
+	p.LastLineModeBuf.Data = []byte(msg)
 }

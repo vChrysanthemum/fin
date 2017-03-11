@@ -35,6 +35,9 @@ func (p *Editor) handleKeyEvent(keyStr string) (isQuitActiveMode bool) {
 		case EditorLastLineMode:
 			p.LastLineModeWrite(p.InputModeCursor, p.LastLineModeCursor, keyStr)
 		default:
+			if len(p.LastLineModeBuf.Data) > 0 {
+				p.LastLineModeBuf.CleanData(p.LastLineModeCursor.EditorCursor)
+			}
 			p.ActionGroup.Write(p.InputModeCursor, keyStr)
 		}
 

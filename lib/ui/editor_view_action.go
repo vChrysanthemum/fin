@@ -60,7 +60,7 @@ func (p *EditorActionGroup) Write(inputModeCursor *EditorViewCursor, keyStr stri
 			}
 
 			if false == p.EditorView.IsModifiable {
-				p.EditorView.Editor.CommandShowError(EditorErrNotModifiable)
+				p.EditorView.Editor.CommandShowMsg(EditorErrNotModifiable.Error())
 				p.EditorView.CommandModeEnter(inputModeCursor)
 
 			} else {

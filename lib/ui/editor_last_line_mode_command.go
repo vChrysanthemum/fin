@@ -1,6 +1,9 @@
 package ui
 
-import "regexp"
+import (
+	"fmt"
+	"regexp"
+)
 
 type LastLineModeCommandHandler func(matchKey interface{})
 
@@ -16,7 +19,12 @@ func (p *Editor) PrepareLastLineModeCommand() {
 }
 
 func (p *Editor) lastLineCommandSaveFile(matchKey interface{}) {
-	p.EditorView.SaveFile()
+	err := p.EditorView.SaveFile()
+	if nil == err {
+		p.CommandShowMsg(fmt.Sprintf("%v saved", p.EditorView.FilePath))
+	} else {
+		p.CommandShowMsg(fmt.Sprintf("%v", err.Error()))
+	}
 }
 
 func (p *Editor) ExecLastLineCommand() {
