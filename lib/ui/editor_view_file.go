@@ -48,7 +48,7 @@ func (p *EditorView) SaveFile() error {
 
 	if len(p.Lines) > 0 {
 		for i := 0; i < len(p.Lines)-1; i++ {
-			f.Write(p.Lines[k].Data)
+			f.Write(p.Lines[i].Data)
 			f.Write([]byte("\n"))
 		}
 		f.Write(p.Lines[len(p.Lines)-1].Data)
