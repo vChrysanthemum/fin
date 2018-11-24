@@ -6,6 +6,7 @@ local _mtWorld = {__index = _World}
 
 function NewWorld()
     local World             = setmetatable({}, _mtWorld)
+    World.maxPlanetID       = 0
     World.LoopEventSig      = nil
     World.WorkBlockWidth    = 60
     World.WorkBlockHeight   = 20
@@ -176,11 +177,14 @@ function _World.initAreaPlanets(self, createBlockIndex)
     end
 
     for k, planet in pairs(planets) do
+        self.maxPlanetID = self.maxPlanetID + 1
+        planet_id = self.maxPlanetID
         sql = string.format([[
-        insert into b_planet (planets_block_x, planets_block_y, data) values(%d, %d, '%s')
-        ]], createBlockStartPosition.X, createBlockStartPosition.Y, DB:QuoteSQL(json.encode(planet.Info)))
+        insert into b_planet (planet_id, planets_block_x, planets_block_y, data) values(%d, %d, %d, '%s')
+        ]], planet_id, createBlockStartPosition.X, createBlockStartPosition.Y, DB:QuoteSQL(json.encode(planet.Info)))
         queryRet = DB:Exec(sql)
-        planets[k].Info.PlanetId = queryRet:LastInsertId()
+        -- planets[k].Info.PlanetId = queryRet:LastInsertId()
+        planets[k].Info.PlanetId = planet_id
         self.Planets[planets[k].Info.PlanetId] = planets[k]
         table.insert(planetIds, planets[k].Info.PlanetId)
     end
